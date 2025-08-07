@@ -354,7 +354,38 @@
     animation: marquee-reverse 15s linear infinite;
   }
 
+
+  .neon-glow {
+    animation: neonPulse 1.5s ease-in-out infinite alternate;
+    box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #ffffff, 0 0 40px #3b82f6;
+  }
+
+  @keyframes neonPulse {
+    0% {
+      box-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #ffffff, 0 0 20px #3b82f6;
+    }
+    100% {
+      box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6, 0 0 40px #ffffff, 0 0 50px #3b82f6;
+    }
+  }
+
+/* Typing Animation CSS start*/
+  .typing-text {
+    display: inline-block;
+    border-right: 2px solid #3b82f6;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: blink-caret 0.75s step-end infinite;
+  }
+
+  @keyframes blink-caret {
+    50% {
+      border-color: transparent;
+    }
+  } 
+  /* Typing Animation CSS e*/
   </style>
+ 
 </head>
 
 <body>
@@ -396,14 +427,16 @@
 
     <!-- Text -->
     <div class="text-center md:text-left max-w-xl animated-text">
-  <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 leading-tight mb-6 animate-slide-in-left">
+      <div class="animate-slide-in-left">
+  <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 leading-tight mb-6 ">
     Get Free <span class="text-blue-600">Subscription</span> By sharing our Website
-    <a href="#" class="text-2xl sm:text-base md:text-balance bg-gray-800 text-white rounded-full px-3 py-1 border-2 ring-2 ring-blue-400">
-      Conditions Apply
-    </a>
   </h1>
+  <a href="#" class="bg-gray-800 text-white rounded-full px-3 py-1 border-2 ring-2 ring-blue-400 transition-all duration-300">
+  Conditions Apply
+  </a>
+      </div>
 
-  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up">
+  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up mt-6">
     Enjoy subscriptions from Bangladesh number 1 trusted shop and all your favorite platforms — all in one place.
   </p>
 
