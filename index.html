@@ -124,7 +124,7 @@
     }
 
     .card-title {
-      font-size: 1.25rem;
+      font-size: 18px;
       font-weight: 600;
       margin-bottom: 0.75rem;
       color: #1e3a8a;
@@ -497,8 +497,17 @@
 
 
  <!-- under development end -->
+  <!-- product Catagory start-->
+  <section class="mx-3">
+    <div class="mt-6">
+      <p class="text-center text-lg font-bold text-black">
+        Select Catagory From Below
+      </p>
+    </div>
+  </section>
+  <!-- product Catagory end-->
   <!-- Category Filters -->
-  <div class="flex flex-wrap justify-center gap-4 mb-8 mt-6" id="category-filters">
+  <div class="flex flex-wrap justify-center gap-4 mb-8 mt-3" id="category-filters">
     <button data-category="All" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">All</button>
     <button data-category="Streaming" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Streaming</button>
     <button data-category="Music" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Music</button>
@@ -506,6 +515,9 @@
     <button data-category="AI" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">AI</button>
     <button data-category="Drive" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Cloud Storage</button>
     <button data-category="Adult" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Adult 18+</button>
+    <button data-category="Combo" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Combo</button>
+    <button data-category="Offer" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Offer</button>
+    <button data-category="VPN" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Premium VPN</button>
   </div>
 
   <!-- Main Content -->
@@ -544,8 +556,10 @@
 
     // Services data
 const services = [
-  { name: "Netflix Regular", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Unlimited movies, series & trending originals.", price: "379 TK/Month", category: "Streaming" },
+  { name: "Netflix Renewable", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Unlimited movies, series & trending originals.", price: "379 TK/Month", category: "Streaming" },
   { name: "Disney+", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", description: "Marvel, Star Wars, Pixar & family favorites.", price: "299 TK/Month", category: "Streaming" },
+  { name: "Amazon Prime Video + Surfshark VPN", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png", description: "Exclusive Amazon Originals and more.", price: "149 TK/Month", category: "Combo" },
+  { name: "Hulu", logo: "https://download.logo.wine/logo/Hulu/Hulu-Logo.wine.png", description: "Stream new episodes, hit movies & more.", price: "149 TK/Month", category: "Streaming" },
   { name: "HBO Max", logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg", description: "Premium TV series & blockbuster movies.", price: "799 TK/Year", category: "Streaming" },
   { name: "Netflix For TV", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Watch Wednesday, Money Heist and top rated series", price: "549 TK/Month", category: "Streaming" },
   { name: "Amazon Prime Video", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png", description: "Exclusive Amazon Originals and more.", price: "99 TK/Month", category: "Streaming" },
@@ -556,19 +570,19 @@ const services = [
   { name: "Crunchyroll", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Crunchyroll_Logo.svg", description: "Anime streaming with latest episodes.", price: "99 TK/Month", category: "Streaming" },
   { name: "Chorki", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Chorki_Logo.png", description: "Watch Chorki originals, movies & TV shows.", price: "149 TK/Month", category: "Streaming" },
   { name: "Hoichoi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hoichoi-720p-transperant.png/1200px-Hoichoi-720p-transperant.png", description: "Watch latest Bengali movies & web series.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Voot", logo: "https://upload.wikimedia.org/wikipedia/commons/8/89/Voot_website_logo.png", description: "Indian TV shows and originals.", price: "Free / 0 TK", category: "Streaming" },
+  { name: "Voot", logo: "https://upload.wikimedia.org/wikipedia/commons/8/89/Voot_website_logo.png", description: "Indian TV shows and originals.", price: "249 TK/Month", category: "Streaming" },
   { name: "SonyLiv", logo: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/sony-liv-logo.png", description: "Live sports, originals, and more.", price: "149 TK/Month", category: "Streaming" },
   { name: "YouTube Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/YouTube_Premium_logo.svg/2560px-YouTube_Premium_logo.svg.png", description: "Ad-free videos & music streaming.", price: "229 TK/Month", category: "Music" },
   { name: "Discovery+", logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Discovery_Plus_logo.svg", description: "Documentaries, reality, and lifestyle shows.", price: "149 TK/Month", category: "Streaming" },
   { name: "Bongo", logo: "assets/images/bongo-seeklogo.png", description: "Live sports and exclusive analysis.", price: "149 TK/Month", category: "Streaming" },
   { name: "Hotstar", logo: "assets/images/Disney+_Hotstar_logo.svg.png", description: "Sports, movies, and TV shows from India.", price: "349 TK/Month", category: "Streaming" },
   { name: "Funimation", logo: "assets/images/Funimation-Logo-700x394.png", description: "Popular anime series streaming.", price: "850 TK/Month", category: "Streaming" },
-  { name: "CuriosityStream", logo: "https://upload.wikimedia.org/wikipedia/en/4/43/CuriosityStream_logo.png", description: "Documentaries and non-fiction series.", price: "320 TK/Month", category: "Education" },
-  { name: "Mubi", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mubi_logo.svg", description: "Curated indie & classic movies.", price: "1,200 TK/Month", category: "Streaming" },
-  { name: "Shudder", logo: "https://upload.wikimedia.org/wikipedia/en/e/e3/Shudder_Logo.svg", description: "Horror movies and thrillers.", price: "650 TK/Month", category: "Streaming" },
-  { name: "Starz", logo: "https://upload.wikimedia.org/wikipedia/en/9/94/Starz_Logo.svg", description: "Premium original TV shows and movies.", price: "980 TK/Month", category: "Streaming" },
-  { name: "Showtime", logo: "https://upload.wikimedia.org/wikipedia/en/0/09/Showtime_Logo.svg", description: "Award-winning original series & movies.", price: "1,200 TK/Month", category: "Streaming" },
-  { name: "BritBox", logo: "https://upload.wikimedia.org/wikipedia/en/4/45/BritBox_logo.png", description: "British TV series and films.", price: "760 TK/Month", category: "Streaming" },
+  { name: "CuriosityStream", logo: "https://upload.wikimedia.org/wikipedia/en/4/43/CuriosityStream_logo.png", description: "Documentaries and non-fiction series.", price: "149 TK/Month", category: "Education" },
+  { name: "Mubi", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mubi_logo.svg", description: "Curated indie & classic movies.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Shudder", logo: "https://upload.wikimedia.org/wikipedia/en/e/e3/Shudder_Logo.svg", description: "Horror movies and thrillers.", price: "99 TK/Month", category: "Streaming" },
+  { name: "Starz", logo: "https://upload.wikimedia.org/wikipedia/en/9/94/Starz_Logo.svg", description: "Premium original TV shows and movies.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Showtime + Surfshark VPN", logo: "https://upload.wikimedia.org/wikipedia/en/0/09/Showtime_Logo.svg", description: "Award-winning original series & movies.", price: "129 TK/Month", category: "Streaming" },
+  { name: "BritBox", logo: "https://upload.wikimedia.org/wikipedia/en/4/45/BritBox_logo.png", description: "British TV series and films.", price: "129 TK/Month", category: "Streaming" },
   { name: "Acorn TV", logo: "https://upload.wikimedia.org/wikipedia/en/f/f3/Acorn_TV_logo.png", description: "Mystery and drama from the UK & beyond.", price: "650 TK/Month", category: "Streaming" },
   { name: "DAZN", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/DAZN_logo.svg", description: "Live & on-demand sports streaming.", price: "2,190 TK/Month", category: "Streaming" },
   { name: "Sundance Now", logo: "https://upload.wikimedia.org/wikipedia/en/f/fb/Sundance_Now_logo.svg", description: "Thrillers, dramas, and documentaries.", price: "760 TK/Month", category: "Streaming" },
