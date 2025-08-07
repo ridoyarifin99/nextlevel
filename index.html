@@ -442,33 +442,45 @@
 
 <!-- under development start -->
 <section class="mt-6">
-  <!-- Animated wave background using SVG -->
-
-
-  <!-- Text content -->
-  <div class="relative z-10 flex justify-center items-center px-4">
-    <p class="text-black text-sm md:text-sm lg:text-base font-bold capitalize px-6 py-3 rounded-3xl bg-white bg-opacity-80 backdrop-blur-md shadow-2xl border border-blue-300 animate-ripple transition-all duration-500 ease-in-out hover:scale-105 shadow-blue-300 shadow-md">
-      This website is under development, more products and features will be coming soon. <span class="text-yellow-500">You can purchase your favourite products now.</span>
+  <div class="relative z-10 flex justify-center items-center px-2">
+    <p class="neon-glow text-white text-sm md:text-sm lg:text-base font-bold capitalize px-6 py-1 rounded-3xl bg-white bg-opacity-80 backdrop-blur-md shadow-lg transition-all duration-500 ease-in-out hover:scale-105">
+      This website is under development, more products and features will be coming soon.
+      <span class="text-white">You can purchase your favourite products now.</span>
     </p>
   </div>
 </section>
 
 <style>
-  @keyframes ripple {
-    0%, 100% {
-      transform: scale(1);
-      text-shadow: 0 0 6px rgba(0, 174, 255, 0.3);
-    }
-    50% {
-      transform: scale(1.01);
-      text-shadow: 0 0 14px rgba(0, 174, 255, 0.6);
-    }
-  }
+.neon-glow {
+  position: relative;
+  z-index: 1;
+}
 
-  .animate-ripple {
-    animation: ripple 3s infinite ease-in-out;
+.neon-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 9999px;
+  background: linear-gradient(270deg, #ff0080, #7928ca, #00ffff, #00ff00, #ff9900, #ff0080);
+  background-size: 600% 600%;
+  animation: neonBorder 6s linear infinite;
+  z-index: -1;
+}
+
+@keyframes neonBorder {
+  0% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 </style>
+
+
 
 
  <!-- under development end -->
