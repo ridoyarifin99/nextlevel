@@ -443,31 +443,45 @@
 <!-- under development start -->
 <section class="mt-6">
   <div class="relative z-10 flex justify-center items-center px-2">
-    <p class="neon-glow text-white text-sm md:text-sm lg:text-base font-bold capitalize px-6 py-1 rounded-3xl bg-white bg-opacity-80 backdrop-blur-md shadow-lg transition-all duration-500 ease-in-out hover:scale-105">
+    <p class="neon-border text-black text-sm md:text-sm lg:text-base font-bold capitalize px-6 py-2 rounded-3xl bg-white">
       This website is under development, more products and features will be coming soon.
-      <span class="text-white">You can purchase your favourite products now.</span>
+      <span class="text-black">You can purchase your favourite products now.</span>
     </p>
   </div>
 </section>
 
 <style>
-.neon-glow {
+.neon-border {
   position: relative;
-  z-index: 1;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
 }
 
-.neon-glow::before {
+.neon-border::before {
   content: "";
   position: absolute;
-  inset: -2px;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
   border-radius: 9999px;
   background: linear-gradient(270deg, #ff0080, #7928ca, #00ffff, #00ff00, #ff9900, #ff0080);
   background-size: 600% 600%;
-  animation: neonBorder 6s linear infinite;
+  animation: animateBorder 6s linear infinite;
   z-index: -1;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  padding: 2px;
 }
 
-@keyframes neonBorder {
+@keyframes animateBorder {
   0% {
     background-position: 0% 50%;
   }
@@ -479,7 +493,6 @@
   }
 }
 </style>
-
 
 
 
