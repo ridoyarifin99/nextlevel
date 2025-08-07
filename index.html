@@ -425,55 +425,44 @@
 <section class="relative overflow-hidden pt-20 lg:pb-20 sm:pb-10 px-6 bg-gradient-to-br from-blue-100 to-white">
   <div class="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12">
 
-    <!-- Hero Text with Typing Effect -->
-    <div class="text-center md:text-left max-w-xl">
+    <!-- Text -->
+    <div class="text-center md:text-left max-w-xl animated-text">
       <div class="animate-slide-in-left">
-<div class="min-h-[4.5rem]">
-  <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-shadow-blue-800 leading-tight mb-3">
-    <span class="text-blue-600 block text-shadow-2xs text-shadow-gray-200 break-words max-w-full" id="typing"></span>
+  <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 leading-tight mb-6 ">
+    Get Free <span class="text-blue-600">Subscription</span> By sharing our Website
   </h1>
-        <a href="#services-container"
-         class="inline-block bg-blue-700 hover:bg-blue-900 text-white font-semibold px-3 py-1 rounded-full shadow-lg transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-bounce-in">
-        Explore Now
-      </a>
+  <a href="#" class="bg-gray-800 text-white rounded-full px-3 py-1 border-2 ring-2 ring-blue-400 transition-all duration-300">
+  Conditions Apply
+  </a>
+      </div>
+
+  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up mt-6">
+    Enjoy subscriptions from Bangladesh number 1 trusted shop and all your favorite platforms — all in one place.
+  </p>
+
+  <!-- Rainbow animated border -->
+  <p class="text-xl text-white text-shadow-2xs border-r-white backdrop-blur-2xl border-4 text-shadow-gray-700 mb-3 p-2 text-center font-bold rounded-3xl rainbow-neon-border animate-fade-in-up">
+    Payment Method: Bkash / Rocket / Nagad
+  </p>
+
+  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up">
+    Get instant Delivery. 24/7 Support through whatsapp. Have warranty in every account.
+  </p>
+<div class="text-lg mb-3 animate-fade-in-up flex sm:items-center">
+  <a class="flex items-center space-x-2" href="https://wa.me/8801644490566" target="_blank">
+    <img src="/images/icon/whatsapp (1).png" class="h-6" alt="WhatsApp Icon">
+    <p class="text-gray-700 font-black bg-white px-3 py-1 rounded-3xl shadow shake-animation">
+      01644490566
+    </p>
+  </a>
 </div>
-<style>
-  #typing::after {
-    content: '|';
-    animation: blink 1s infinite;
-  }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-</style>
-
-      </div>
-
-      <p class="text-lg text-gray-700 mb-3 animate-fade-in-up mt-6">
-        Enjoy subscriptions from Bangladesh number 1 trusted shop and all your favorite platforms — all in one place.
-      </p>
-
-      <!-- Rainbow animated border -->
-      <p class="text-xl text-white text-shadow-2xs border-r-white backdrop-blur-2xl border-4 text-shadow-gray-700 mb-3 p-2 text-center font-bold rounded-3xl rainbow-neon-border animate-fade-in-up">
-        Payment Method: Bkash / Rocket / Nagad
-      </p>
-
-      <p class="text-lg text-gray-700 mb-3 animate-fade-in-up">
-        Get instant Delivery. 24/7 Support through whatsapp. Have warranty in every account.
-      </p>
-
-      <div class="text-lg mb-3 animate-fade-in-up flex sm:items-center">
-        <a class="flex items-center space-x-2" href="https://wa.me/8801644490566" target="_blank">
-          <img src="/images/icon/whatsapp (1).png" class="h-6" alt="WhatsApp Icon">
-          <p class="text-gray-700 font-black bg-white px-3 py-1 rounded-3xl shadow shake-animation">
-            01644490566
-          </p>
-        </a>
-      </div>
-
-    </div>
+  <a href="#services-container"
+     class="inline-block bg-blue-700 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-bounce-in">
+    Explore Now
+  </a>
+</div>
+    
 
     <!-- Carousel with Rotating Neon Border -->
     <div class="relative w-full lg:w-full p-1 md:w-[480px] h-[280px] rounded-2xl overflow-hidden rainbow-neon-border">
@@ -486,44 +475,6 @@
     </div>
   </div>
 </section>
-
-<!-- Typing Script -->
-<script>
-  const phrases = [
-    "Get Free Subscription By sharing our Website",
-    "Buy Subscription in a very cheap price",
-    "#1 Trusted Platform in Bangladesh",
-    "Buy subscription and get instant delivery"
-  ];
-
-  const typingElement = document.getElementById("typing");
-  let phraseIndex = 0;
-  let letterIndex = 0;
-  let isDeleting = false;
-
-  function type() {
-    const currentPhrase = phrases[phraseIndex];
-    const currentText = currentPhrase.substring(0, letterIndex);
-    typingElement.textContent = currentText;
-
-    if (!isDeleting && letterIndex < currentPhrase.length) {
-      letterIndex++;
-      setTimeout(type, 80);
-    } else if (isDeleting && letterIndex > 0) {
-      letterIndex--;
-      setTimeout(type, 40);
-    } else {
-      isDeleting = !isDeleting;
-      if (!isDeleting) {
-        phraseIndex = (phraseIndex + 1) % phrases.length;
-      }
-      setTimeout(type, 1000);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", type);
-</script>
-
 
 <!-- under development start -->
 <section class="mt-6">
