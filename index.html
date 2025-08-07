@@ -1,86 +1,654 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
 
-    <title>Next Level E-store</title>
+<head>
+  <!-- Required Open Graph Tags for WhatsApp -->
+  <meta property="og:title" content="Next Level - Premium Subscriptions Store" />
+  <meta property="og:description" content="Buy Netflix, Disney+, HBO Max subscriptions in Bangladesh." />
+  <meta property="og:image" content="https://i.imgur.com/LwwQQSH.jpg" />
+  <meta property="og:url" content="https://nextlevelestore.xo.je" />
+  <meta property="og:type" content="website" />
+
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" href="/images/icon/icon.svg" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Next Level Estore</title>
+  <link href="output.css" rel="stylesheet">
+
+  <!-- Google Fonts Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  
+  <style>
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(90deg, #eff6ff 0%, #ffffff 50%, #eff6ff 100%);
+      color: #1e40af;
+      min-height: 100vh;
+    }
+
+    img.service-logo {
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+      transition: filter 0.3s ease;
+    }
+
+    .card:hover img.service-logo {
+      filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.7));
+    }
+
+    header {
+      backdrop-filter: saturate(180%) blur(8px);
+      background-color: rgba(255 255 255 / 0.9);
+      box-shadow: 0 2px 10px rgb(59 130 246 / 0.2);
+      z-index: 100;
+    }
+
+    .search-input {
+      max-width: 300px;
+      border: 2px solid #2563eb;
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      color: #1e40af;
+      background: white;
+      box-shadow: 0 0 5px rgb(37 99 235 / 0.3);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      outline-offset: 2px;
+    }
+
+    .search-input::placeholder {
+      color: #93c5fd;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #1e3a8a;
+      box-shadow: 0 0 15px rgb(37 99 235 / 0.8);
+    }
+
+    .card {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 6px 15px rgb(59 130 246 / 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      overflow: hidden;
+      will-change: transform;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s forwards;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 12px 25px rgb(59 130 246 / 0.3);
+    }
+
+    .card-link {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .card-header {
+      background-color: #e0e7ff;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #1e3a8a;
+    }
+
+    .card-desc {
+      flex-grow: 1;
+      color: #475569;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .card-price {
+      margin-top: 1rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #2563eb;
+    }
+
+    .details-btn {
+      margin-top: 1.25rem;
+      background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 0;
+      border-radius: 0.75rem;
+      box-shadow: 0 6px 15px rgb(37 99 235 / 0.6);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      cursor: pointer;
+      outline-offset: 3px;
+      will-change: box-shadow, transform;
+    }
+
+    .details-btn:hover {
+      background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+      box-shadow: 0 8px 20px rgb(37 99 235 / 0.85);
+      transform: scale(1.05);
+    }
+
+    @keyframes neonBlink {
+      0%,
+      100% {
+        box-shadow: 0 0 8px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #60a5fa, 0 0 40px #93c5fd, 0 0 50px #bfdbfe;
+        transform: scale(1);
+      }
+
+      50% {
+        box-shadow: 0 0 12px #2563eb, 0 0 25px #60a5fa, 0 0 35px #93c5fd, 0 0 45px #bfdbfe, 0 0 60px #bfdbfe;
+        transform: scale(1.1);
+      }
+    }
+
+    .blink {
+      animation: neonBlink 1s ease-in-out 2;
+      color: #dbeafe;
+      user-select: none;
+    }
+
+    #loader {
+      transition: opacity 0.4s ease;
+      background-color: rgba(255 255 255 / 0.9);
+      backdrop-filter: saturate(180%) blur(10px);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Pulsing hero dot */
+    .hero-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 9999px;
+      background-color: #2563eb;
+      opacity: 0.5;
+      transform: scale(1);
+      transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hero-dot.active {
+      opacity: 1;
+      transform: scale(1.4);
+      background-color: #1e40af;
+      animation: pulseDot 1s infinite alternate;
+    }
+
+    @keyframes pulseDot {
+      from {
+        transform: scale(1.4);
+        opacity: 1;
+      }
+
+      to {
+        transform: scale(1.7);
+        opacity: 0.7;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .search-input {
+        max-width: 100%;
+      }
+
+      nav.md\\:flex {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+    }
+
+    @keyframes slideInLeft {
+  0% { opacity: 0; transform: translateX(-100px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounceIn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.animate-slide-in-left { animation: slideInLeft 1s ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; animation-delay: 0.5s; }
+.animate-bounce-in { animation: bounceIn 0.8s ease-in-out forwards; animation-delay: 1s; }
+
+.animated-text > * { opacity: 0; }
+
+ /* Neon Rainbow Border */
+/* Rainbow flow + neon glow border */
+.rainbow-neon-border {
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  color: white;
+}
+
+.rainbow-neon-border::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(
+    270deg,
+    #ff00cc,
+    #3333ff,
+    #00ffff,
+    #33ff33,
+    #ffff00,
+    #ff6600,
+    #ff0000,
+    #ff00cc
+  );
+  background-size: 600% 600%;
+  z-index: -1;
+  border-radius: 1.2rem;
+  filter: blur(8px); /* soft glow */
+  animation: borderFlow 6s linear infinite;
+}
+
+.rainbow-neon-border::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  z-index: 1;
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* whatsapp Animation shaking */
+  @keyframes shakeSmooth {
+    0% { transform: translateX(0); }
+    15% { transform: translateX(-3px); }
+    30% { transform: translateX(3px); }
+    45% { transform: translateX(-2px); }
+    60% { transform: translateX(2px); }
+    75% { transform: translateX(-1px); }
+    90% { transform: translateX(1px); }
+    100% { transform: translateX(0); }
+  }
+
+  .shake-animation {
+    animation: shakeSmooth 1.5s infinite ease-in-out;
+  }
+  /* whatsapp Animation end */
+  </style>
 </head>
+
 <body>
-    <table width="1200" cellpadding="0" cellspacing="0" align="center">
-        <tr>
-            <td>
-           <!-- menu row starts here -->
-                <table width="=1200" height="100" border="0" cellspacing="0" cellpadding="0" bgcolor="#d6f3ff">
-                <tr>
-                    <td width="400"> <center><img src="images/Next-Level-Estore-New-logo.png" width="150" alt="livestream logo"></center></td>
-                    <td width="200"> <a href="#"> <center><h3>HOME</h3></td></a></center>
-                    <td width="200"> <a href="#"> <center><h3>CATAGORIES</h3></center></td></a>
-                    <td width="200"> <a href="#"><center><h3>ALL PRODUCTS</h3></td></a></center>
-                    <td width="200"> <a href="#"><center><h3>CART</h3></td></a></center>
-                </tr>
-            </table>
-            <!-- menu row ends here -->
-             <!-- Banner Row Starts -->
-            <br>
-            <table width="1200" cellspacing="0" cellpadding="0" align="center">
-                <tr>
-                    <td><img src="https://www.techiyan.com/wp-content/uploads/2024/10/Creative-subscription.webp" alt="Banner Next Level" width="590" ></td>
-                    <td width="20"></td>
-                    <td><img src="https://www.techiyan.com/wp-content/uploads/2024/10/ezgif-4-f84965df57.png" alt="Banner Next Level" width="590" ></td>
-                </tr>
-                <!-- Banner Row Ends -->
-            </table>
-             <!-- Top Selling ROW Starts -->
-             <table width="1200" height="50" cellspacing="0" cellpadding="0" bgcolor="#d6f3ff" align="center">
-                <tr>
-                <td><h1><center><b>Top Selling Products</b></center></h1></td>
-             </tr>
-             <br>
-             <!-- Top Selling ROW Ends -->
-              <!-- Top product starts -->
-              <table>
-                <tr>
-                    <td></td>
-                </tr>
-                <br>
-              </table>
-            </table>
-             <table width="=1200" height="400" border="0" cellspacing="0" cellpadding="0" align="center">
-                <tr>
-                    <td><img src="https://genflix.in/cdn/shop/files/netflix__1__4x_d886be96-3abf-4232-8960-bb99f2c34e8c.png?v=1725840702" width="285" alt="netflix subscription pic"> <center><h3>Netflix Premium</h3><p><strike>769</strike> <b>329</b> Taka Only<br> <a href="#">Add to Cart</a></p></center></td>
-                    <td width="20"></td>
-                    <td> <img src="https://store-images.s-microsoft.com/image/apps.16730.14618985536919905.3e754390-a812-43d7-87fc-335159cd867b.433b2d6b-1694-4511-b3c6-4dcaf99d3bbe" alt="prime video image" width="285" ><center><h3>Amazon Prime Video</h3><p><strike>439</strike> <b>99</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                    <td width="20"></td>
-                    <td><img src="https://play-lh.googleusercontent.com/bvyVXgpxu65YO3PNeVhNM9Y7ao7g7FnnKdoNXcwqO48aOlVvnH_b2O9rcZzgEFHzHtI" alt="hbo max image" width="285" ><center><p><h3> HBO Max</h3><strike>860</strike> <b>189</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                    <td width="20"></td>
-                    <td><img src="https://play-lh.googleusercontent.com/G166NGtIsLp_UdpDjC1FF6dooIgd83fs2lstSI7mhW06q7gmiE1cw4BZ16OCX0WokPE" alt="Nord Vpn image" width="285" ><center><h3>Nord VPN</h3><p> <strike>1280</strike> <b>129</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                </tr>
-                <!-- Top product Ends -->
-                <table width="1200" height="50" cellspacing="0" cellpadding="0" bgcolor="#d6f3ff" align="center">
-                    <tr>
-                    <td><h1><center><b>COMBO OFFER</b></center></h1></td>
-                 </tr>
-                 <table>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <br>
-                 </table>
-                 <!-- Combo Offer Starts -->
-                 <table width="=1200" height="400" border="0" cellspacing="0" cellpadding="0" align="center">
-                    <tr>
-                        <td><a href="#"><img src="images/Netflix+Prime-Video.jpg" width="285" alt="netflix + Prime Video"></a> <center><h3>Netflix Premium + Prime Video</h3><p><strike>1048</strike> <b>349</b> Taka Only<br> <a href="#">Add to Cart</a></p></center></td>
-                        <td width="20"></td>
-                        <td> <a href="#"><img src="images/Max-+-prime-video.jpg" alt="prime video image" width="285" ></a> <center><h3>HBO Max + Prime Video</h3><p><strike>300</strike> <b>250</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                        <td width="20"></td>
-                        <td><a href="#"><img src="images/youtube-premium+music.jpg" alt="hbo max image" width="285" ></a><center><p><h3> Youtube Premium + Youtube Music</h3><strike>700</strike> <b>350</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                        <td width="20"></td>
-                        <td><a href="#"><img src="images/Max+Disney.png" alt="Nord Vpn image" width="285" ></a><center><h3>Disney + HBO Max</h3><p> <strike>499</strike> <b>399</b> Taka Only <br><a href="#">Add to Cart</a></p></center></td>
-                    </tr>
-                    </table>
-                 <!-- Combo Offer Ends -->
-             </table>
-            </td>
-        </tr>
-    </table>
+
+  <!-- Header -->
+  <header class="sticky top-0">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="flex items-center">
+        <img src="/images/Next-Level-Estore-New-logo.png" alt="Next Level Estore Logo" class="h-10" />
+      </a>
+
+      <nav class="hidden md:flex space-x-8 text-blue-700 font-medium items-center flex-grow max-w-4xl justify-center">
+        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Home</a>
+        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">All Subscription</a>
+        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Offers</a>
+        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Contact</a>
+        <input type="search" id="search-input" placeholder="Search any services..." aria-label="Search anн services" class="search-input ml-6" />
+      </nav>
+
+      <button id="mobile-menu-btn" class="md:hidden p-2 rounded hover:bg-blue-100 transition focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Toggle mobile menu">
+        <i data-feather="menu" class="w-6 h-6 text-blue-700"></i>
+      </button>
+    </div>
+
+    <nav id="mobile-menu" class="hidden md:hidden bg-white border-t border-blue-200 px-6 py-4">
+      <div class="flex flex-col space-y-4 text-blue-700 font-medium">
+        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Home</a>
+        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">All Subscription</a>
+        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Offers</a>
+        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Contact</a>
+        <input type="search" id="mobile-search-input" placeholder="Search streaming services..." aria-label="Search streaming services" class="search-input mt-2" />
+      </div>
+    </nav>
+  </header>
+
+<!-- Hero Section -->
+<section class="relative overflow-hidden pt-20 lg:pb-20 sm:pb-10 px-6 bg-gradient-to-br from-blue-100 to-white">
+  <div class="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12">
+
+    <!-- Text -->
+    <div class="text-center md:text-left max-w-xl animated-text">
+  <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 leading-tight mb-6 animate-slide-in-left">
+    Elevate Your <span class="text-blue-600">Subscription</span> Experience
+  </h1>
+
+  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up">
+    Discover, choose, and enjoy subscriptions from Bangladesh number 1 trusted shop and all your favorite platforms — all in one place.
+  </p>
+
+  <!-- Rainbow animated border -->
+  <p class="text-xl text-white text-shadow-2xs border-r-white backdrop-blur-2xl border-4 text-shadow-gray-700 mb-3 p-2 text-center font-bold rounded-3xl rainbow-neon-border animate-fade-in-up">
+    Payment Method: Bkash / Rocket / Nagad
+  </p>
+
+  <p class="text-lg text-blue-700 mb-3 animate-fade-in-up">
+    Get instant Delivery. 24/7 Support through whatsapp. Have warranty in every account.
+  </p>
+<div class="text-lg mb-3 animate-fade-in-up flex sm:items-center">
+  <a class="flex items-center space-x-2" href="https://wa.me/8801644490566" target="_blank">
+    <img src="/images/icon/whatsapp (1).png" class="h-6" alt="WhatsApp Icon">
+    <p class="text-gray-700 font-black bg-white px-3 py-1 rounded-3xl shadow shake-animation">
+      01644490566
+    </p>
+  </a>
+</div>
+
+  <a href="#services-container"
+     class="inline-block bg-blue-700 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-bounce-in">
+    Explore Now
+  </a>
+</div>
+    
+
+    <!-- Carousel with Rotating Neon Border -->
+    <div class="relative lg:w-full p-1 md:w-[480px] h-[280px] rounded-2xl overflow-hidden rainbow-neon-border">
+      <!-- Rotating neon border -->
+      <div class="absolute inset-0 rounded-2xl border-4 border-transparent neon-rotate z-0"></div>
+      <img id="heroImage" src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
+           alt="Streaming Banner" 
+           class="w-full h-full object-contain transition-opacity duration-1000 ease-in-out rounded-2xl relative z-10 bg-white p-5">
+      <div id="heroDots" class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-3 z-20"></div>
+    </div>
+  </div>
+</section>
+
+  <!-- Category Filters -->
+  <div class="flex flex-wrap justify-center gap-4 mb-8 mt-6" id="category-filters">
+    <button data-category="All" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">All</button>
+    <button data-category="Streaming" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Streaming</button>
+    <button data-category="Music" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Music</button>
+    <button data-category="Education" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Education</button>
+    <button data-category="AI" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">AI</button>
+    <button data-category="Adult" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Adult</button>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-4xl font-extrabold mb-10 text-center text-blue-900 select-none">Choose Your Favourite Subscription</h2>
+    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8" aria-live="polite" aria-atomic="true" id="services-container"></section>
+  </main>
+
+  <!-- Loader -->
+  <div id="loader" class="fixed inset-0 z-50 hidden flex items-center justify-center pointer-events-none select-none" aria-hidden="true" role="alert" aria-live="assertive" aria-label="Loading">
+    <svg width="80" height="24" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#2563EB" aria-hidden="true">
+      <circle cx="15" cy="15" r="15">
+        <animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
+      </circle>
+      <circle cx="60" cy="15" r="9" fill-opacity="0.3">
+        <animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite" />
+      </circle>
+      <circle cx="105" cy="15" r="15">
+        <animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  </div>
+
+  <script>
+    feather.replace();
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Services data
+const services = [
+  { name: "Netflix Regular", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Unlimited movies, series & trending originals.", price: "379 TK/Month", category: "Streaming" },
+  { name: "Disney+", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", description: "Marvel, Star Wars, Pixar & family favorites.", price: "299 TK/Month", category: "Streaming" },
+  { name: "HBO Max", logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg", description: "Premium TV series & blockbuster movies.", price: "799 TK/Year", category: "Streaming" },
+  { name: "Netflix For TV", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Watch Wednesday, Money Heist and top rated series", price: "549 TK/Month", category: "Streaming" },
+  { name: "Amazon Prime Video", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png", description: "Exclusive Amazon Originals and more.", price: "99 TK/Month", category: "Streaming" },
+  { name: "Hulu", logo: "https://download.logo.wine/logo/Hulu/Hulu-Logo.wine.png", description: "Stream new episodes, hit movies & more.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Apple TV+", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", description: "Apple Originals with award-winning content.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Paramount+", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/1200px-Paramount_Plus.svg.png", description: "Movies, sports & live TV channels.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Peacock", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/NBCUniversal_Peacock_Logo.svg/1280px-NBCUniversal_Peacock_Logo.svg.png", description: "Movies, WWE & classic TV content.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Crunchyroll", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Crunchyroll_Logo.svg", description: "Anime streaming with latest episodes.", price: "99 TK/Month", category: "Streaming" },
+  { name: "Chorki", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Chorki_Logo.png", description: "Watch Chorki originals, movies & TV shows.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Hoichoi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hoichoi-720p-transperant.png/1200px-Hoichoi-720p-transperant.png", description: "Watch latest Bengali movies & web series.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Voot", logo: "https://upload.wikimedia.org/wikipedia/commons/8/89/Voot_website_logo.png", description: "Indian TV shows and originals.", price: "Free / 0 TK", category: "Streaming" },
+  { name: "SonyLiv", logo: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/sony-liv-logo.png", description: "Live sports, originals, and more.", price: "149 TK/Month", category: "Streaming" },
+  { name: "YouTube Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/YouTube_Premium_logo.svg/2560px-YouTube_Premium_logo.svg.png", description: "Ad-free videos & music streaming.", price: "229 TK/Month", category: "Music" },
+  { name: "Discovery+", logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Discovery_Plus_logo.svg", description: "Documentaries, reality, and lifestyle shows.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Bongo", logo: "assets/images/bongo-seeklogo.png", description: "Live sports and exclusive analysis.", price: "149 TK/Month", category: "Streaming" },
+  { name: "Hotstar", logo: "assets/images/Disney+_Hotstar_logo.svg.png", description: "Sports, movies, and TV shows from India.", price: "349 TK/Month", category: "Streaming" },
+  { name: "Funimation", logo: "assets/images/Funimation-Logo-700x394.png", description: "Popular anime series streaming.", price: "850 TK/Month", category: "Streaming" },
+  { name: "CuriosityStream", logo: "https://upload.wikimedia.org/wikipedia/en/4/43/CuriosityStream_logo.png", description: "Documentaries and non-fiction series.", price: "320 TK/Month", category: "Education" },
+  { name: "Mubi", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mubi_logo.svg", description: "Curated indie & classic movies.", price: "1,200 TK/Month", category: "Streaming" },
+  { name: "Shudder", logo: "https://upload.wikimedia.org/wikipedia/en/e/e3/Shudder_Logo.svg", description: "Horror movies and thrillers.", price: "650 TK/Month", category: "Streaming" },
+  { name: "Starz", logo: "https://upload.wikimedia.org/wikipedia/en/9/94/Starz_Logo.svg", description: "Premium original TV shows and movies.", price: "980 TK/Month", category: "Streaming" },
+  { name: "Showtime", logo: "https://upload.wikimedia.org/wikipedia/en/0/09/Showtime_Logo.svg", description: "Award-winning original series & movies.", price: "1,200 TK/Month", category: "Streaming" },
+  { name: "BritBox", logo: "https://upload.wikimedia.org/wikipedia/en/4/45/BritBox_logo.png", description: "British TV series and films.", price: "760 TK/Month", category: "Streaming" },
+  { name: "Acorn TV", logo: "https://upload.wikimedia.org/wikipedia/en/f/f3/Acorn_TV_logo.png", description: "Mystery and drama from the UK & beyond.", price: "650 TK/Month", category: "Streaming" },
+  { name: "DAZN", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/DAZN_logo.svg", description: "Live & on-demand sports streaming.", price: "2,190 TK/Month", category: "Streaming" },
+  { name: "Sundance Now", logo: "https://upload.wikimedia.org/wikipedia/en/f/fb/Sundance_Now_logo.svg", description: "Thrillers, dramas, and documentaries.", price: "760 TK/Month", category: "Streaming" },
+  { name: "Vimeo OTT", logo: "https://upload.wikimedia.org/wikipedia/commons/9/99/Vimeo_Logo.svg", description: "Indie films and creator content.", price: "220 TK/Month", category: "Streaming" },
+  { name: "FuboTV", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Fubo_2023.svg/1200px-Fubo_2023.svg.png", description: "Sports, news, and entertainment streaming.", price: "99 TK/Month", category: "Streaming" },
+  { name: "Tubi", logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Tubi_Logo.svg", description: "Free movies and TV shows with ads.", price: "Free", category: "Streaming" },
+  { name: "Pluto TV", logo: "https://upload.wikimedia.org/wikipedia/commons/4/48/Pluto_TV_logo.svg", description: "Free live TV and movies.", price: "Free", category: "Streaming" },
+  { name: "Kanopy", logo: "https://upload.wikimedia.org/wikipedia/en/3/37/Kanopy_Logo.png", description: "Documentaries and indie films, free with library card.", price: "Free", category: "Education" },
+
+  // --- Added AI, Music, Adult, Education ---
+  { name: "Spotify", logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", description: "Stream millions of songs and playlists.", price: "199 TK/Month", category: "Music" },
+  { name: "Apple Music", logo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Apple_Music_logo.svg", description: "Listen to your favorite tracks and curated playlists.", price: "199 TK/Month", category: "Music" },
+  { name: "Tidal", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Tidal_logo.svg", description: "High-fidelity music streaming with exclusive content.", price: "299 TK/Month", category: "Music" },
+  { name: "ChatGPT Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg", description: "Get faster responses and priority access to ChatGPT.", price: "2,200 TK/Month", category: "AI" },
+  { name: "Jasper AI", logo: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Jasper_logo.svg", description: "AI content generator for marketing and writing.", price: "3,000 TK/Month", category: "AI" },
+  { name: "Grammarly Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/3/35/Grammarly_Logo.svg", description: "Advanced grammar, spelling, and writing suggestions.", price: "1,500 TK/Month", category: "AI" },
+  { name: "Notion AI", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg", description: "AI-powered productivity and note-taking assistant.", price: "1,200 TK/Month", category: "AI" },
+  { name: "Duolingo Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Duolingo_logo.svg", description: "Ad-free language learning with unlimited hearts.", price: "499 TK/Month", category: "Education" },
+  { name: "Coursera Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Coursera_logo.svg", description: "Access to thousands of online courses and specializations.", price: "4,900 TK/Month", category: "Education" },
+  { name: "Skillshare", logo: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Skillshare_logo.svg", description: "Creative classes in design, illustration, and more.", price: "1,900 TK/Month", category: "Education" },
+  { name: "Brazzers", logo: "https://upload.wikimedia.org/wikipedia/commons/7/70/Brazzers_logo.png", description: "Premium adult content streaming.", price: "1,400 TK/Month", category: "Adult" },
+  { name: "Pornhub Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/5/57/Pornhub_logo.svg", description: "High-quality adult videos and content.", price: "1,000 TK/Month", category: "Adult" },
+  { name: "OnlyFans", logo: "https://upload.wikimedia.org/wikipedia/commons/4/49/OnlyFans_logo.svg", description: "Creator-driven subscription platform with adult content.", price: "1,200 TK/Month", category: "Adult" },
+  { name: "Reality Kings", logo: "https://upload.wikimedia.org/wikipedia/commons/2/29/Reality_Kings_logo.png", description: "Adult entertainment videos and premium content.", price: "1,900 TK/Month", category: "Adult" },
+  { name: "Bang Bros", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/BangBros_logo.png", description: "Exclusive adult content and videos.", price: "1,400 TK/Month", category: "Adult" },
+  { name: "Babes.com", logo: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Babes_logo.png", description: "Premium adult models and content.", price: "1,200 TK/Month", category: "Adult" }
+];
+
+
+    const container = document.getElementById('services-container');
+
+    // Function to create card HTML with fade-in animation delay staggered
+    function createCard({ name, logo, description, price }, index) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = `${index * 100}ms`;
+
+      const href = `details.html?service=${encodeURIComponent(name)}`;
+
+      card.innerHTML = `
+        <a href="${href}" class="card-link" tabindex="0" aria-label="More details about ${name}">
+          <div class="card-header">
+            <img src="${logo}" alt="${name} logo" class="service-logo" loading="lazy" />
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${name}</h3>
+            <p class="card-desc">${description}</p>
+            <p class="card-price">${price}</p>
+            <button type="button" class="details-btn" aria-describedby="details-btn-desc-${index}">MORE DETAILS</button>
+            <span id="details-btn-desc-${index}" class="sr-only">Click to see more details about ${name}</span>
+          </div>
+        </a>
+      `;
+
+      return card;
+    }
+
+    // Render all cards initially
+    function renderCards(data) {
+      container.innerHTML = '';
+      data.forEach((service, i) => {
+        container.appendChild(createCard(service, i));
+      });
+    }
+
+    renderCards(services);
+
+    // Search filter function (case insensitive)
+    function performSearch(query) {
+      query = query.trim().toLowerCase();
+      const filtered = services.filter(({ name, description }) =>
+        name.toLowerCase().includes(query) || description.toLowerCase().includes(query)
+      );
+      renderCards(filtered);
+    }
+
+    // Live search for desktop
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', e => performSearch(e.target.value));
+
+    // Live search for mobile
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    mobileSearchInput.addEventListener('input', e => performSearch(e.target.value));
+
+    // Button blink & loader animation + navigation
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('.details-btn');
+      if (!btn) return;
+
+      e.preventDefault();
+      const cardLink = btn.closest('.card-link');
+      if (!cardLink) return;
+
+      btn.disabled = true;
+      btn.classList.add('blink');
+
+      const loader = document.getElementById('loader');
+      loader.classList.remove('hidden');
+      loader.style.pointerEvents = 'auto';
+
+      // After animation, navigate
+      setTimeout(() => {
+        window.location.href = cardLink.getAttribute('href');
+      }, 1200);
+    });
+    // Hero image carousel animation
+    const heroImages = [
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+      "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+      "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg",
+      "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png",
+      "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+      "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/ullu-logo.png",
+      "https://m.media-amazon.com/images/G/01/digital/music/logos/Two_stack_Unlimited_all_black_transparent.png",
+    
+    ];
+
+    let currentHero = 0;
+    const heroImgEl = document.getElementById("heroImage");
+
+    setInterval(() => {
+      currentHero = (currentHero + 1) % heroImages.length;
+      heroImgEl.src = heroImages[currentHero];
+    }, 2500);
+const categoryButtons = document.querySelectorAll('.category-btn');
+
+categoryButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const category = btn.getAttribute('data-category');
+
+    // Filter services
+    const filtered = category === 'All' ? services : services.filter(s => s.category === category);
+
+    renderCards(filtered);
+
+    // Optional: Highlight active button
+    categoryButtons.forEach(b => b.classList.remove('bg-blue-700', 'text-white'));
+    btn.classList.add('bg-blue-700', 'text-white');
+  });
+});
+
+  </script>
+  
+<script>
+  // Smooth fading carousel images
+  const images = [
+    "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+    "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png"
+  ];
+
+  let index = 0;
+  const heroImage = document.getElementById("heroImage");
+
+  function nextImage() {
+    heroImage.style.opacity = 0;
+    setTimeout(() => {
+      index = (index + 1) % images.length;
+      heroImage.src = images[index];
+      heroImage.style.opacity = 1;
+    }, 500);
+  }
+
+  setInterval(nextImage, 4000);
+</script>
+
+
 </body>
+
 </html>

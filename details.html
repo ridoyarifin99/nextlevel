@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscription Details</title>
+  <link href="output.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f4ff;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fade-in-up {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.7s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .glow-blink {
+      animation: glowBlink 1.8s infinite;
+    }
+
+    @keyframes glowBlink {
+      0%,
+      100% {
+        box-shadow: 0 0 8px 2px #2563eb, 0 0 20px 6px #3b82f6;
+      }
+
+      50% {
+        box-shadow: 0 0 12px 4px #60a5fa, 0 0 24px 10px #2563eb;
+      }
+    }
+
+    #loader {
+      border: 3.5px solid #dbeafe;
+      border-top: 3.5px solid #2563eb;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      animation: spin 1s linear infinite;
+      display: none;
+      margin-left: 12px;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .price-option.selected {
+      background-color: #bfdbfe;
+      border-color: #2563eb;
+      box-shadow: 0 0 10px 4px #2563ebaa;
+    }
+
+    .price-option {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .price-option:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+      animation: pulse 1.2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1.05);
+      }
+
+      100% {
+        transform: scale(1.08);
+      }
+    }
+  </style>
+</head>
+
+<body class="flex flex-col">
+
+  <header class="bg-white shadow-md p-5 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <h1 class="text-3xl font-extrabold tracking-tight text-blue-900 select-none">Subscription Details</h1>
+      <a href="index.html"
+        class="text-blue-700 font-semibold border border-blue-700 rounded-lg px-5 py-2 hover:bg-blue-50 transition focus:outline-none focus:ring-2 focus:ring-blue-600">Back</a>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl mx-auto p-8">
+    <section id="details-container" class="bg-white rounded-xl shadow-xl p-10 fade-in-up">
+
+      <h2 id="service-name" class="text-5xl font-extrabold mb-6 text-center select-text">Loading...</h2>
+
+      <img id="service-logo" class="mx-auto mb-8 max-h-28 object-contain transition-all duration-500 scale-0"
+        src="" alt="" />
+
+      <p id="service-description"
+        class="text-lg text-slate-700 mb-10 max-w-3xl mx-auto text-center leading-relaxed opacity-0 transition-opacity duration-700">Please
+        wait while we load the details.</p>
+
+      <div id="pricing-section" class="mb-10 max-w-4xl mx-auto"></div>
+
+      <ul id="features-list" class="list-disc pl-8 space-y-3 text-slate-800 max-w-3xl mx-auto opacity-0 transition-opacity duration-700"></ul>
+    </section>
+  </main>
+
+  <script>
+    // --- FULL SERVICE DATA ---
+    const serviceDetails = {
+      "Netflix Regular": {
+        logo: "../assets/images/Netflix_2015_logo.svg.webp",
+        description: "Netflix offers unlimited movies, TV shows, and originals. Enjoy popular content across all genres, anytime on any device.",
+        features: [
+          "এই অ্যাকাউন্টটি সাভাবিক ভাবে টিভিতে ব্যাবহার করা যাবে না",
+          "টিভিতে ব্যাবহার করতে চাইলে অবশ্যই Screen Casting এর মাধ্যমে ব্যবহার করতে হবে",
+          "যে সকল টিভিতে Screen Casting Option নেই সে সকল টিভিতে এই অ্যাকাউন্টি ব্যবহার করা যাবে না",
+          "মেয়াদ সর্বচ্চো ৩০ দিন থাকবে",
+          "এটি সম্পূর্ন একটি রিনিউয়েবল অ্যাকাউন্ট",
+          "এটি একটি 4K/HDR অ্যাকাউন্ট",
+          " ১ মাস পর পর রিনিউ করতে পারবেন",
+          "স্মার্ট ফোন/কম্পিউটার/ সহ যেকোন ডিভিইসে ব্যাবহার করা যাবে",
+        ]
+      },
+      "Disney+": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
+        description: "Disney+ brings you Marvel, Star Wars, Pixar, and classic Disney movies. Perfect for family entertainment and exclusive originals.",
+        features: [
+          "মার্ভেল, স্টার ওয়ার্স ও পিক্সার সিনেমা।",
+          "ফ্যামিলি-ফ্রেন্ডলি কনটেন্ট।",
+          "অসাধারণ অরিজিনাল সিরিজ।",
+          "স্ক্রিন ক্যাস্টিং সাপোর্ট।"
+        ]
+      },
+      "HBO Max": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg",
+        description: "HBO Max delivers premium TV series, blockbuster movies, and exclusive HBO originals.",
+        features: [
+          "প্রিমিয়াম টিভি সিরিজ ও ব্লকবাস্টার সিনেমা।",
+          "বিশেষ HBO অরিজিনালস।",
+          "উচ্চ মানের ভিডিও স্ট্রিমিং।",
+          "মাল্টি-ডিভাইস সাপোর্ট।"
+        ]
+      },
+      "Netflix For TV": {
+        logo: "assets/images/Netflix_2015_logo.svg.webp",
+        description: "Netflix For TV offers unlimited movies, TV shows, and originals. Enjoy popular content across all genres, anytime on any device.",
+        features: [
+          "প্রিমিয়াম টিভি সিরিজ ও ব্লকবাস্টার সিনেমা।",
+          "বিশেষ HBO অরিজিনালস।",
+          "উচ্চ মানের ভিডিও স্ট্রিমিং।",
+          "মাল্টি-ডিভাইস সাপোর্ট।"
+        ]
+      },
+      "Amazon Prime Video": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png",
+        description: "Watch exclusive Amazon Originals The Boys, The Wheel Of Times, Mirzapur, movies and many more.",
+        features: [
+          "প্রাইম অরিজিনাল সিরিজ ও সিনেমা।",
+          "মিউজিক এবং শপিং সুবিধা সহ।",
+          "স্ক্রিন শেয়ারিং সাপোর্ট।"
+        ]
+      },
+      "Hulu": {
+        logo: "https://download.logo.wine/logo/Hulu/Hulu-Logo.wine.png",
+        description: "Hulu offers a wide variety of web series and movies, including original content, licensed TV shows and films, and live TV options with the Hulu + Live TV plan.",
+        features: [
+          "নতুন এপিসোড ও হিট সিনেমা।",
+          "লাইভ টিভি অপশন (অতিরিক্ত)।",
+          "এড-সাপোর্টেড এবং অ্যাড-ফ্রি প্ল্যান।"
+        ]
+      },
+      "Apple TV+": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+        description: "Apple TV+ offers a variety of benefits including access to exclusive, ad-free original shows and movies, the ability to share a subscription with up to six family members, and offline viewing options",
+        features: [
+          "অ্যাপল অরিজিনাল সিরিজ ও সিনেমা।",
+          "উচ্চ মানের 4K HDR ভিডিও।",
+          "পরিবারের জন্য শেয়ারিং অপশন।"
+        ]
+      },
+      "Paramount+": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/1200px-Paramount_Plus.svg.png",
+        description: "Paramount Plus is a subscription streaming service from ViacomCBS. It includes select programs from CBS, BET, Comedy Central, Nickelodeon, MTV, The Smithsonian Channel, and more. You also get 24/7 news programming.",
+        features: [
+          "লাইভ স্পোর্টস এবং এক্সক্লুসিভ শো।",
+          "বিভিন্ন জনপ্রিয় সিনেমা ও সিরিজ।",
+          "বিল্ট-ইন রেকর্ডিং ফিচার।"
+        ]
+      },
+      "Peacock": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/NBCUniversal_Peacock_Logo.svg/1280px-NBCUniversal_Peacock_Logo.svg.png",
+        description: "Peacock TV offers a variety of benefits including access to a wide range of content, live sports, and the ability to stream on multiple devices. Users can enjoy NBC shows, movies, live sports, and exclusive Peacock originals. Premium plans offer ad-free viewing and access to local NBC channels.",
+        features: [
+          "বিনামূল্যে এবং প্রিমিয়াম অপশন।",
+          "WWE এবং অন্যান্য স্পোর্টস কনটেন্ট।",
+          "ক্লাসিক টিভি শো।"
+        ]
+      },
+      "Crunchyroll": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Crunchyroll_Logo.svg",
+        description: "Anime streaming with latest episodes.",
+        features: [
+          "হাজারো অ্যানিমে সিরিজ।",
+          "সবশেষ এপিসোড লিভestream।",
+          "সাবটাইটেল এবং ডাবেড অপশন।"
+        ]
+      },
+      "Chorki": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Chorki_Logo.png",
+        description: "Watch Boli, Borbaad, Daagi, Shonibar Bikel, Karagar, Utshob, Chorki originals, movies & TV shows and more.",
+        features: [
+          "ভারতীয় ভাষায় বিশাল কনটেন্ট।",
+          "লাইভ টিভি ও সিনেমা।",
+          "অরিজিনাল ওয়েব সিরিজ।"
+        ]
+      },
+      "Hoichoi": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hoichoi-720p-transperant.png/1200px-Hoichoi-720p-transperant.png",
+        description: "Watch Bengali movies & web series Byomkesh (Season 6),.",
+        features: [
+          "বাঙালি সিনেমা ও ওয়েব সিরিজ।",
+          "নতুন রিলিজ এবং ক্লাসিক।",
+          "ফাস্ট স্ট্রিমিং ও সহজ ইউজার ইন্টারফেস।"
+        ]
+      },
+      "Voot": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/8/89/Voot_website_logo.png",
+        description: "Indian TV shows and originals.",
+        features: [
+          "সেরা ভারতীয় টিভি শো।",
+          "অনন্য অরিজিনাল কনটেন্ট।",
+          "লাইভ টিভি স্ট্রিমিং।"
+        ]
+      },
+      "SonyLiv": {
+        logo: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/sony-liv-logo.png",
+        description: "Live sports, originals, and more.",
+        features: [
+          "লাইভ স্পোর্টস কভারেজ।",
+          "অরিজিনাল সিরিজ ও সিনেমা।",
+          "ডাউনলোড অপশন।"
+        ]
+      },
+      "YouTube Premium": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/e/ef/YouTube_logo.png",
+        description: "Ad-free videos & music streaming.",
+        features: [
+          "বিজ্ঞাপন মুক্ত ভিডিও দেখুন।",
+          "অফলাইন মিউজিক প্লেব্যাক।",
+          "মূল কনটেন্টের এক্সক্লুসিভ অ্যাক্সেস।"
+        ]
+      },
+      "Discovery+": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Discovery_Plus_logo.svg",
+        description: "Discovery Channel offers a wide array of documentaries, reality, and lifestyle shows. Popular documentaries include How the Universe Works, Planet Earth, and MythBusters. Reality series include Gold Rush, Deadliest Catch, Naked and Afraid, and 90 Day Fiancé. Lifestyle shows range from Alaska: The Last Frontier to Dirty Jobs.",
+        features: [
+          "রিয়্যালিটি ও ডকুমেন্টারি শো।",
+          "লাইফস্টাইল ও শিক্ষামূলক প্রোগ্রাম।",
+          "এক্সক্লুসিভ ডিসকভারি কনটেন্ট।"
+        ]
+      },
+      "ESPN+": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/ESPN%2B_logo.svg",
+        description: "Live sports and exclusive analysis.",
+        features: [
+          "লাইভ স্পোর্টস ইভেন্টস।",
+          "বিশেষ স্পোর্টস বিশ্লেষণ।",
+          "স্পোর্টস ডকুমেন্টারি ও শো।"
+        ]
+      },
+      "Hotstar": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/7/7e/Disney%2B_Hotstar_logo.svg",
+        description: "Sports, movies, and TV shows from India.",
+        features: [
+          "লাইভ ক্রিকেট ও অন্যান্য স্পোর্টস।",
+          "বিখ্যাত ভারতীয় সিনেমা ও সিরিজ।",
+          "ডিসনি ওয়ার্নার ব্রাদার্স কনটেন্ট।"
+        ]
+      },
+      "Funimation": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/9/95/Funimation_logo.svg",
+        description: "Popular anime series streaming.",
+        features: [
+          "জনপ্রিয় অ্যানিমে সিরিজ।",
+          "ডাবেড ও সাবটাইটেল অপশন।",
+          "নতুন রিলিজ দ্রুত।"
+        ]
+      },
+      "CuriosityStream": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/43/CuriosityStream_logo.png",
+        description: "Documentaries and non-fiction series.",
+        features: [
+          "শিক্ষামূলক ডকুমেন্টারি।",
+          "বৈজ্ঞানিক ও প্রকৃতি বিষয়ক সিরিজ।",
+          "অফলাইন দেখার সুবিধা।"
+        ]
+      },
+      "Mubi": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mubi_logo.svg",
+        description: "Curated indie & classic movies.",
+        features: [
+          "সিনেমার নির্বাচন সংকলন।",
+          "বিশ্বব্যাপী স্বাধীন ফিল্ম।",
+          "প্রতিদিন নতুন সিনেমা।"
+        ]
+      },
+      "Shudder": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/e/e3/Shudder_Logo.svg",
+        description: "Horror movies and thrillers.",
+        features: [
+          "ভয়ের থিমের সিনেমা।",
+          "থ্রিলার ও সাসপেন্স।",
+          "এক্সক্লুসিভ অরিজিনাল কনটেন্ট।"
+        ]
+      },
+      "Starz": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/9/94/Starz_Logo.svg",
+        description: "Premium original TV shows and movies.",
+        features: [
+          "প্রিমিয়াম সিরিজ ও সিনেমা।",
+          "অরিজিনাল প্রোডাকশন।",
+          "বিভিন্ন ক্যাটাগরির কনটেন্ট।"
+        ]
+      },
+      "Showtime": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/0/09/Showtime_Logo.svg",
+        description: "Award-winning original series & movies.",
+        features: [
+          "পুরস্কার বিজয়ী সিরিজ।",
+          "বিখ্যাত সিনেমা এবং ডকুমেন্টারি।",
+          "লাইভ ইভেন্ট স্ট্রিমিং।"
+        ]
+      },
+      "BritBox": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/4/45/BritBox_logo.png",
+        description: "British TV series and films.",
+        features: [
+          "ব্রিটিশ টিভি শো ও সিনেমা।",
+          "ক্লাসিক এবং আধুনিক কনটেন্ট।",
+          "এক্সক্লুসিভ ব্রিটিশ অরিজিনালস।"
+        ]
+      },
+      "Acorn TV": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/f3/Acorn_TV_logo.png",
+        description: "Mystery and drama from the UK & beyond.",
+        features: [
+          "মিস্ট্রি ও ড্রামা সিরিজ।",
+          "ব্রিটিশ এবং আন্তর্জাতিক প্রোগ্রাম।",
+          "বিশেষ ডকুমেন্টারি ও শো।"
+        ]
+      },
+      "DAZN": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/DAZN_logo.svg",
+        description: "Live & on-demand sports streaming.",
+        features: [
+          "লাইভ স্পোর্টস স্ট্রিমিং।",
+          "বিশেষ স্পোর্টস কভারেজ।",
+          "মোবাইল এবং টিভি অ্যাপ সাপোর্ট।"
+        ]
+      },
+      "Sundance Now": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/f/fb/SundanceNow_logo.png",
+        description: "True crime, documentaries & dramas.",
+        features: [
+          "ট্রু ক্রাইম সিরিজ।",
+          "নির্দেশক এবং ডকুমেন্টারি।",
+          "এক্সক্লুসিভ অরিজিনাল কনটেন্ট।"
+        ]
+      },
+      "Vimeo OTT": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Vimeo_Logo.svg",
+        description: "Premium video on demand platform.",
+        features: [
+          "প্রিমিয়াম ভিডিও অন ডিমান্ড।",
+          "স্বতন্ত্র নির্মাতাদের সমর্থন।",
+          "উচ্চ গুণমান ভিডিও স্ট্রিমিং।"
+        ]
+      },
+      "FuboTV": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/1/17/FuboTV_logo.svg",
+        description: "Live sports and entertainment streaming.",
+        features: [
+          "লাইভ স্পোর্টস চ্যানেল।",
+          "বিভিন্ন বিনোদন প্রোগ্রাম।",
+          "উচ্চ রেজোলিউশনের ভিডিও।"
+        ]
+      },
+      "Tubi": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/6/67/Tubi_logo.svg",
+        description: "Free streaming service with movies and TV shows.",
+        features: [
+          "বিনামূল্যে সিনেমা ও শো।",
+          "বিজ্ঞাপন দ্বারা অর্থায়িত।",
+          "বিভিন্ন ক্যাটাগরির কনটেন্ট।"
+        ]
+      },
+      "Pluto TV": {
+        logo: "https://upload.wikimedia.org/wikipedia/commons/4/48/Pluto_TV_logo.svg",
+        description: "Free live TV and movies.",
+        features: [
+          "বিনামূল্যে লাইভ টিভি।",
+          "বিভিন্ন চ্যানেল ও প্রোগ্রাম।",
+          "বিজ্ঞাপন সাপোর্ট।"
+        ]
+      },
+      "Kanopy": {
+        logo: "https://upload.wikimedia.org/wikipedia/en/3/37/Kanopy_Logo.png",
+        description: "Documentaries and indie films, free with library card.",
+        features: [
+          "লাইব্রেরি কার্ডের মাধ্যমে বিনামূল্যে।",
+          "ডকুমেন্টারি ও স্বাধীন সিনেমা।",
+          "শিক্ষামূলক ও আর্ট ফিল্ম।"
+        ]
+      }
+    };
+
+
+    // --- FULL PRICING DATA ---
+    const pricingOptions = {
+      "Netflix Regular": [
+        { label: "1 Month", price: 379 },
+        { label: "3 Months", price: 1100 },
+        { label: "1 Year", price: 4399 }
+      ],
+      "Disney+": [
+        { label: "1 Month", price: 299 },
+        { label: "6 Months", price: 1749 },
+        { label: "1 Year", price: 3499 }
+      ],
+      "HBO Max": [
+        { label: "1 Month", price: 179 },
+        { label: "3 Months", price: 499 },
+        { label: "1 Year", price: 899 }
+      ],
+      "Netflix For TV": [
+        { label: "1 Month", price: 549 },
+        { label: "3 Months", price: 1100 },
+        { label: "1 Year", price: 4399 }
+      ],
+      "Amazon Prime Video": [
+        { label: "1 Month", price: 99 },
+        { label: "3 Months", price: 250 },
+        { label: "1 Year", price: 799 }
+      ],
+      "Hulu": [
+        { label: "1 Month", price: 199 },
+        { label: "3 Months", price: 399 },
+        { label: "1 Year", price: 2299 }
+      ],
+      "Apple TV+": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 549 },
+        { label: "1 Year", price: 999 }
+      ],
+      "Paramount+": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 349 },
+        { label: "1 Year", price: 999 }
+      ],
+      "Peacock": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 449 },
+        { label: "1 Year", price: 699 }
+      ],
+      "Crunchyroll": [
+        { label: "1 Month", price: 99 },
+        { label: "3 Months", price: 299 },
+        { label: "1 Year", price: 599 }
+      ],
+      "Chorki": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 399 },
+        { label: "1 Year", price: 999 }
+      ],
+      "Hoichoi": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 449 },
+        { label: "1 Year", price: 1499 }
+      ],
+      "Voot": [
+        { label: "1 Month", price: 130 },
+        { label: "3 Months", price: 350 },
+        { label: "1 Year", price: 1250 }
+      ],
+      "SonyLiv": [
+        { label: "1 Month", price: 160 },
+        { label: "3 Months", price: 420 },
+        { label: "1 Year", price: 1450 }
+      ],
+      "YouTube Premium": [
+        { label: "1 Month", price: 300 },
+        { label: "3 Months", price: 850 },
+        { label: "1 Year", price: 3100 }
+      ],
+      "Discovery+": [
+        { label: "1 Month", price: 149 },
+        { label: "3 Months", price: 399 },
+        { label: "1 Year", price: 1300 }
+      ],
+      "ESPN+": [
+        { label: "1 Month", price: 200 },
+        { label: "3 Months", price: 540 },
+        { label: "1 Year", price: 1800 }
+      ],
+      "Hotstar": [
+        { label: "1 Month", price: 210 },
+        { label: "3 Months", price: 570 },
+        { label: "1 Year", price: 1900 }
+      ],
+      "Funimation": [
+        { label: "1 Month", price: 170 },
+        { label: "3 Months", price: 460 },
+        { label: "1 Year", price: 1600 }
+      ],
+      "CuriosityStream": [
+        { label: "1 Month", price: 110 },
+        { label: "3 Months", price: 300 },
+        { label: "1 Year", price: 1000 }
+      ],
+      "Mubi": [
+        { label: "1 Month", price: 130 },
+        { label: "3 Months", price: 350 },
+        { label: "1 Year", price: 1200 }
+      ],
+      "Shudder": [
+        { label: "1 Month", price: 150 },
+        { label: "3 Months", price: 400 },
+        { label: "1 Year", price: 1400 }
+      ],
+      "Starz": [
+        { label: "1 Month", price: 180 },
+        { label: "3 Months", price: 480 },
+        { label: "1 Year", price: 1700 }
+      ],
+      "Showtime": [
+        { label: "1 Month", price: 190 },
+        { label: "3 Months", price: 510 },
+        { label: "1 Year", price: 1800 }
+      ],
+      "BritBox": [
+        { label: "1 Month", price: 160 },
+        { label: "3 Months", price: 440 },
+        { label: "1 Year", price: 1500 }
+      ],
+      "Acorn TV": [
+        { label: "1 Month", price: 140 },
+        { label: "3 Months", price: 380 },
+        { label: "1 Year", price: 1300 }
+      ],
+      "DAZN": [
+        { label: "1 Month", price: 230 },
+        { label: "3 Months", price: 650 },
+        { label: "1 Year", price: 2700 }
+      ],
+      "Sundance Now": [
+        { label: "1 Month", price: 120 },
+        { label: "3 Months", price: 330 },
+        { label: "1 Year", price: 1100 }
+      ],
+      "Vimeo OTT": [
+        { label: "1 Month", price: 150 },
+        { label: "3 Months", price: 420 },
+        { label: "1 Year", price: 1400 }
+      ],
+      "FuboTV": [
+        { label: "1 Month", price: 260 },
+        { label: "3 Months", price: 720 },
+        { label: "1 Year", price: 2800 }
+      ],
+      "Tubi": [
+        { label: "Free", price: 0 }
+      ],
+      "Pluto TV": [
+        { label: "Free", price: 0 }
+      ],
+      "Kanopy": [
+        { label: "Free", price: 0 }
+      ]
+    };
+
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    function selectPlan(element) {
+      document.querySelectorAll('.price-option').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    function buyNow() {
+      const btn = document.getElementById('buy-btn');
+      const loader = document.getElementById('loader');
+      const selected = document.querySelector('.price-option.selected');
+
+      if (!selected) return alert("Please select a plan first.");
+
+      btn.disabled = true;
+      btn.classList.add('glow-blink');
+      loader.style.display = "inline-block";
+
+      const planLabel = selected.getAttribute('data-label');
+      const price = selected.getAttribute('data-price');
+      const service = document.getElementById('service-name').innerText;
+
+      const message = `Hello! I want to buy the ${service} ${planLabel} plan (${price}৳). Please assist me.`;
+      const whatsappURL = `https://wa.me/8801644490566?text=${encodeURIComponent(message)}`;
+
+      setTimeout(() => {
+        loader.style.display = "none";
+        btn.disabled = false;
+        btn.classList.remove('glow-blink');
+        window.open(whatsappURL, '_blank');
+      }, 2200);
+    }
+
+    window.onload = () => {
+      const rawServiceName = getQueryParam('service');
+      const decodedServiceName = rawServiceName ? decodeURIComponent(rawServiceName).trim().toLowerCase() : null;
+      const matchedServiceKey = Object.keys(serviceDetails).find(key => key.toLowerCase() === decodedServiceName);
+
+      const nameElem = document.getElementById('service-name');
+      const logoElem = document.getElementById('service-logo');
+      const descElem = document.getElementById('service-description');
+      const pricingSection = document.getElementById('pricing-section');
+      const featuresList = document.getElementById('features-list');
+
+      if (matchedServiceKey && serviceDetails[matchedServiceKey]) {
+        const info = serviceDetails[matchedServiceKey];
+        nameElem.textContent = matchedServiceKey;
+        logoElem.src = info.logo;
+        logoElem.alt = `${matchedServiceKey} logo`;
+        logoElem.classList.add('scale-100');
+        descElem.textContent = info.description;
+        descElem.classList.add('opacity-100');
+        featuresList.classList.add('opacity-100');
+
+        const prices = pricingOptions[matchedServiceKey] || [{ label: "1 Month", price: "N/A" }];
+        pricingSection.innerHTML = `
+          <h3 class="text-2xl font-semibold mb-6 text-center text-blue-900">Select a Plan</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8 max-w-4xl mx-auto">
+            ${prices.map(({ label, price }) => `
+              <div
+                tabindex="0"
+                role="button"
+                class="price-option cursor-pointer rounded-xl border border-blue-300 p-5 text-center transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                data-label="${label}" data-price="${price}"
+                onclick="selectPlan(this)" onkeydown="if(event.key==='Enter'){selectPlan(this)}"
+              >
+                <p class="text-lg font-semibold mb-2">${label}</p>
+                <p class="text-3xl font-extrabold text-blue-800">${price === 0 ? "Free" : price + "৳"}</p>
+              </div>`).join('')}
+          </div>
+          <button id="buy-btn" onclick="buyNow()"
+            class="flex items-center justify-center gap-3 w-full max-w-sm mx-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-2xl text-2xl font-extrabold shadow-lg transition focus:outline-none focus:ring-4 focus:ring-blue-500">
+            BUY NOW
+            <span id="loader" aria-hidden="true"></span>
+          </button>
+        `;
+
+        featuresList.innerHTML = info.features.map(f => `<li>${f}</li>`).join('');
+      } else {
+        nameElem.textContent = "Service Not Found";
+        logoElem.style.display = "none";
+        descElem.textContent = "Sorry, we could not find details for this service.";
+        pricingSection.innerHTML = "";
+        featuresList.innerHTML = "";
+      }
+    };
+  </script>
+
+</body>
+</html>
