@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - StreamHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --primary-dark: #4a0699;
+            --primary-light: #9d4edd;
+            --secondary-color: #2575fc;
+            --accent-color: #E74C3C;
+            --light-bg: #F8F9FA;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --border-color: #E5E7EB;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        
+        .animate-pulse-once {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Button styles */
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            transition: var(--transition);
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(106, 17, 203, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(106, 17, 203, 0.3);
+        }
+        
+        .btn-whatsapp {
+            background: linear-gradient(to right, #25D366, #128C7E);
+            color: white;
+            transition: var(--transition);
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+        }
+        
+        .btn-whatsapp:hover {
+            background: linear-gradient(to right, #128C7E, #0E6B5D);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 211, 102, 0.3);
+        }
+        
+        /* Form styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        }
+        
+        /* Payment method styles */
+        .payment-method {
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .payment-method:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .payment-method.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(106, 17, 203, 0.1);
+        }
+        
+        /* Order summary styles */
+        .order-item {
+            transition: var(--transition);
+        }
+        
+        .order-item:hover {
+            background-color: rgba(106, 17, 203, 0.05);
+        }
+        
+        /* Quantity controls */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            overflow: hidden;
+        }
+        
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-bg);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            outline: none;
+        }
+        
+        /* Remove button */
+        .remove-btn {
+            color: var(--accent-color);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .remove-btn:hover {
+            color: #C0392B;
+        }
+        
+        /* Modal backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* WhatsApp button */
+        .whatsapp-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #25D366, #128C7E);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-hover);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .whatsapp-fab:hover {
+            transform: scale(1.1);
+        }
+        
+        .whatsapp-fab i {
+            font-size: 24px;
+        }
+        
+        /* Logo styles */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .logo-image {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        
+        /* Logo text container styles */
+        .logo-text-container {
+            position: relative;
+            height: 24px;
+            width: 120px;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+        
+        .logo-text-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0;
+            animation: vanishingSlide 8s linear infinite;
+        }
+        
+        .logo-text-item:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .logo-text-item:nth-child(2) {
+            animation-delay: 2s;
+        }
+        
+        .logo-text-item:nth-child(3) {
+            animation-delay: 4s;
+        }
+        
+        .logo-text-item:nth-child(4) {
+            animation-delay: 6s;
+        }
+        
+        /* Vanishing sliding animation for logo text */
+        @keyframes vanishingSlide {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .whatsapp-fab {
+                bottom: 100px;
+                right: 30px;
+            }
+        }
+        
+        /* Promo code badge */
+        .promo-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        
+        /* Toggle switch styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <img src="/images/next_level.png" alt="StreamHub Logo" class="logo-image">
+                    <div class="logo-text-container">
+                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Trusted</div>
+                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Cheap</div>
+                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Secure</div>
+                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">24/7 Support</div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-gray-600 hover:text-blue-500 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+                </a>
+                <div class="relative">
+                    <a href="checkout.html" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors">
+                        <i class="fas fa-shopping-cart text-2xl"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Checkout Progress -->
+    <section class="py-6 bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">1</div>
+                    <span class="ml-2 font-medium">Cart</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">2</div>
+                    <span class="ml-2 font-medium">Details</span>
+                </div>
+                <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-500 font-bold">3</div>
+                    <span class="ml-2 font-medium text-gray-500">Complete</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Main Content -->
+    <main class="py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Checkout Form -->
+                <div class="lg:col-span-2">
+                    <h2 class="text-2xl font-bold mb-6">Billing Information</h2>
+                    
+                    <form id="checkoutForm" class="bg-white rounded-xl shadow-md p-6 mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name</label>
+                                <input type="text" id="firstName" class="form-input" placeholder="John" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name</label>
+                                <input type="text" id="lastName" class="form-input" placeholder="Doe" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input" placeholder="+880 1XXX XXXXXX" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="address">Address</label>
+                            <textarea id="address" class="form-input" rows="3" placeholder="123 Main Street, City, Country" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="notes">Order Notes (Optional)</label>
+                            <textarea id="notes" class="form-input" rows="2" placeholder="Any special instructions or notes for your order"></textarea>
+                        </div>
+                    </form>
+                    
+                    <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="payment-method p-4 rounded-lg border border-gray-200 text-center selected" onclick="selectPaymentMethod('whatsapp')">
+                                <i class="fab fa-whatsapp text-3xl text-green-500 mb-2"></i>
+                                <h3 class="font-semibold">WhatsApp</h3>
+                                <p class="text-sm text-gray-600">Pay via WhatsApp</p>
+                            </div>
+                            
+                            <div class="payment-method p-4 rounded-lg border border-gray-200 text-center" onclick="selectPaymentMethod('bank')">
+                                <i class="fas fa-university text-3xl text-blue-500 mb-2"></i>
+                                <h3 class="font-semibold">Bank Transfer</h3>
+                                <p class="text-sm text-gray-600">Direct bank transfer</p>
+                            </div>
+                        </div>
+                        
+                        <div id="paymentDetails" class="mt-6 p-4 bg-gray-50 rounded-lg">
+                            <h3 class="font-semibold mb-2">WhatsApp Payment Instructions</h3>
+                            <p class="text-sm text-gray-600">
+                                After placing your order, we'll send you a message via WhatsApp with payment instructions. 
+                                Once payment is confirmed, we'll activate your subscription.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-md p-6 sticky top-24">
+                        <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+                        
+                        <div id="orderSummary" class="space-y-4 mb-6">
+                            <!-- Order items will be dynamically added here -->
+                        </div>
+                        
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="flex justify-between mb-2">
+                                <span>Subtotal</span>
+                                <span id="subtotal">৳0.00</span>
+                            </div>
+                            <div class="flex justify-between mb-2">
+                                <span>Tax (1.85%)</span>
+                                <span id="tax">৳0.00</span>
+                            </div>
+                            <div class="flex justify-between mb-4">
+                                <span>Discount</span>
+                                <span id="discount" class="text-green-500">-৳0.00</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-lg">
+                                <span>Total</span>
+                                <span id="total">৳0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-medium">Apply Promo Code</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="promoToggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div id="promoCodeSection" class="hidden mt-2">
+                                <div class="flex">
+                                    <input type="text" id="promoCode" placeholder="Enter promo code" class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                    <button id="applyPromo" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r-lg hover:bg-gray-300 transition-colors">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="placeOrderBtn" class="w-full mt-6 py-3 rounded-lg font-semibold text-white btn-whatsapp">
+                            <i class="fab fa-whatsapp mr-2"></i>Place Order via WhatsApp
+                        </button>
+                        
+                        <div class="mt-4 text-center text-sm text-gray-500">
+                            <i class="fas fa-lock mr-1"></i> Secure Checkout
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- WhatsApp Floating Button -->
+    <div id="whatsappFab" class="whatsapp-fab" onclick="sendToWhatsApp()">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center animate-fade-in">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-3xl text-green-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
+                <p class="text-gray-600 mb-6">Your order details have been sent to WhatsApp. We'll contact you soon for payment confirmation.</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="closeSuccessModal()" class="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                        Continue Shopping
+                    </button>
+                    <a href="index.html" class="px-6 py-2 rounded-lg font-semibold text-white btn-primary">
+                        Go to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Cart state
+        let cart = [];
+        let selectedPaymentMethod = 'whatsapp';
+        let discountAmount = 0;
+        let appliedPromoCode = '';
+        
+        // DOM elements
+        const orderSummary = document.getElementById('orderSummary');
+        const subtotalEl = document.getElementById('subtotal');
+        const taxEl = document.getElementById('tax');
+        const discountEl = document.getElementById('discount');
+        const totalEl = document.getElementById('total');
+        const promoToggle = document.getElementById('promoToggle');
+        const promoCodeSection = document.getElementById('promoCodeSection');
+        const promoCode = document.getElementById('promoCode');
+        const applyPromo = document.getElementById('applyPromo');
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+        const paymentDetails = document.getElementById('paymentDetails');
+        const successModal = document.getElementById('successModal');
+        const whatsappFab = document.getElementById('whatsappFab');
+        const cartCount = document.getElementById('cartCount');
+        
+        // Initialize the page
+        function init() {
+            // Load cart from localStorage
+            cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
+            
+            // Standardize cart items to have selectedPlan
+            cart = cart.map(item => {
+                if (item.selectedPlan) {
+                    return item;
+                } else {
+                    return {
+                        ...item,
+                        selectedPlan: {
+                            price: item.price,
+                            duration: item.duration,
+                            currency: 'BDT'
+                        }
+                    };
+                }
+            });
+            
+            // Check if cart is empty
+            if (cart.length === 0) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Render order summary
+            renderOrderSummary();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Event listeners
+            promoToggle.addEventListener('change', togglePromoSection);
+            applyPromo.addEventListener('click', applyPromoCode);
+            placeOrderBtn.addEventListener('click', placeOrder);
+            
+            // Show/hide WhatsApp button
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    whatsappFab.style.opacity = '1';
+                    whatsappFab.style.visibility = 'visible';
+                } else {
+                    whatsappFab.style.opacity = '0';
+                    whatsappFab.style.visibility = 'hidden';
+                }
+            });
+        }
+        
+        // Calculate tax based on price (1.85%)
+        function calculateTax(price) {
+            // Calculate 1.85% of the price
+            return price * 0.0185;
+        }
+        
+        // Render order summary
+        function renderOrderSummary() {
+            orderSummary.innerHTML = '';
+            let subtotal = 0;
+            let totalTax = 0;
+            
+            cart.forEach((item, index) => {
+                const itemTotal = item.selectedPlan.price * item.quantity;
+                subtotal += itemTotal;
+                
+                // Calculate tax for this item (1.85%)
+                const itemTax = calculateTax(itemTotal);
+                totalTax += itemTax;
+                
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item p-3 border-b border-gray-200';
+                
+                // Create product image HTML for cart items
+                const productImageHTML = item.image 
+                    ? `<img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg mr-3 object-contain">`
+                    : `<div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${item.color}20;">
+                        <i class="${item.icon}" style="color: ${item.color};"></i>
+                    </div>`;
+                
+                orderItem.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-start">
+                            ${productImageHTML}
+                            <div>
+                                <h4 class="font-medium">${item.name}</h4>
+                                <p class="text-sm text-gray-500">${item.selectedPlan.duration}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-medium">৳${itemTotal.toFixed(2)}</span>
+                            <p class="text-sm text-gray-500">Qty: ${item.quantity}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <button class="remove-btn flex items-center text-sm" onclick="removeItem('${item.name}')">
+                            <i class="fas fa-trash mr-1"></i> Remove
+                        </button>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" onclick="decreaseQuantity('${item.name}')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
+                            <button class="quantity-btn" onclick="increaseQuantity('${item.name}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                orderSummary.appendChild(orderItem);
+            });
+            
+            // Calculate totals
+            const total = subtotal + totalTax - discountAmount;
+            
+            // Update UI
+            subtotalEl.textContent = `৳${subtotal.toFixed(2)}`;
+            taxEl.textContent = `৳${totalTax.toFixed(2)}`;
+            discountEl.textContent = `-৳${discountAmount.toFixed(2)}`;
+            totalEl.textContent = `৳${total.toFixed(2)}`;
+        }
+        
+        // Update cart count
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+        }
+        
+        // Remove item from cart
+        function removeItem(name) {
+            cart = cart.filter(item => item.name !== name);
+            localStorage.setItem('streamHubCart', JSON.stringify(cart));
+            renderOrderSummary();
+            updateCartCount();
+            
+            // If cart becomes empty, redirect to home
+            if (cart.length === 0) {
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Increase item quantity
+        function increaseQuantity(name) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                item.quantity += 1;
+                localStorage.setItem('streamHubCart', JSON.stringify(cart));
+                renderOrderSummary();
+                updateCartCount();
+            }
+        }
+        
+        // Decrease item quantity
+        function decreaseQuantity(name) {
+            const item = cart.find(item => item.name === name);
+            if (item && item.quantity > 1) {
+                item.quantity -= 1;
+                localStorage.setItem('streamHubCart', JSON.stringify(cart));
+                renderOrderSummary();
+                updateCartCount();
+            }
+        }
+        
+        // Toggle promo code section
+        function togglePromoSection() {
+            if (promoToggle.checked) {
+                promoCodeSection.classList.remove('hidden');
+            } else {
+                promoCodeSection.classList.add('hidden');
+                // Reset discount if promo is toggled off
+                discountAmount = 0;
+                appliedPromoCode = '';
+                renderOrderSummary();
+            }
+        }
+        
+        // Apply promo code
+        function applyPromoCode() {
+            const code = promoCode.value.trim().toUpperCase();
+            
+            if (code === 'TAXFREE') {
+                // Apply tax-free discount (remove the 1.85% tax)
+                const taxAmount = parseFloat(taxEl.textContent.replace(/[^0-9.-]+/g,""));
+                discountAmount = taxAmount;
+                appliedPromoCode = 'TAXFREE';
+                
+                // Update UI
+                renderOrderSummary();
+                
+                // Show success message
+                applyPromo.textContent = 'Tax Free!';
+                applyPromo.classList.add('bg-green-500', 'text-white');
+                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
+                
+                setTimeout(() => {
+                    applyPromo.textContent = 'Apply';
+                    applyPromo.classList.remove('bg-green-500', 'text-white');
+                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
+                }, 2000);
+                
+            } else if (code === 'JULY36') {
+                // Apply 30 Taka discount
+                discountAmount = 30;
+                appliedPromoCode = 'JULY36';
+                
+                // Update UI
+                renderOrderSummary();
+                
+                // Show success message
+                applyPromo.textContent = '30 Taka Off!';
+                applyPromo.classList.add('bg-green-500', 'text-white');
+                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
+                
+                setTimeout(() => {
+                    applyPromo.textContent = 'Apply';
+                    applyPromo.classList.remove('bg-green-500', 'text-white');
+                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
+                }, 2000);
+                
+            } else if (code === 'STREAM10') {
+                // Apply 10% discount
+                const subtotal = parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,""));
+                discountAmount = Math.round(subtotal * 0.1);
+                appliedPromoCode = 'STREAM10';
+                
+                // Update UI
+                renderOrderSummary();
+                
+                // Show success message
+                applyPromo.textContent = '10% Off!';
+                applyPromo.classList.add('bg-green-500', 'text-white');
+                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
+                
+                setTimeout(() => {
+                    applyPromo.textContent = 'Apply';
+                    applyPromo.classList.remove('bg-green-500', 'text-white');
+                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
+                }, 2000);
+                
+            } else {
+                // Show error message
+                applyPromo.textContent = 'Invalid';
+                applyPromo.classList.add('bg-red-500', 'text-white');
+                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
+                
+                setTimeout(() => {
+                    applyPromo.textContent = 'Apply';
+                    applyPromo.classList.remove('bg-red-500', 'text-white');
+                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
+                }, 2000);
+            }
+        }
+        
+        // Select payment method
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            
+            // Update payment details
+            if (method === 'whatsapp') {
+                paymentDetails.innerHTML = `
+                    <h3 class="font-semibold mb-2">WhatsApp Payment Instructions</h3>
+                    <p class="text-sm text-gray-600">
+                        After placing your order, we'll send you a message via WhatsApp with payment instructions. 
+                        Once payment is confirmed, we'll activate your subscription.
+                    </p>
+                `;
+            } else if (method === 'bank') {
+                paymentDetails.innerHTML = `
+                    <h3 class="font-semibold mb-2">Bank Transfer Instructions</h3>
+                    <p class="text-sm text-gray-600">
+                        After placing your order, we'll send you our bank details via email. 
+                        Please include your order number in the payment reference.
+                    </p>
+                `;
+            }
+        }
+        
+        // Place order
+        function placeOrder() {
+            // Get form data
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Validate form
+            if (!firstName || !lastName || !email || !phone || !address) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Show loading state
+            placeOrderBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+            placeOrderBtn.disabled = true;
+            
+            // Simulate order processing
+            setTimeout(() => {
+                // Create order details
+                const subtotal = parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,""));
+                const tax = parseFloat(taxEl.textContent.replace(/[^0-9.-]+/g,""));
+                const total = parseFloat(totalEl.textContent.replace(/[^0-9.-]+/g,""));
+                
+                // Send order to WhatsApp
+                sendOrderToWhatsApp({
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    address,
+                    notes,
+                    subtotal,
+                    tax,
+                    discount: discountAmount,
+                    total,
+                    items: cart,
+                    promoCode: appliedPromoCode
+                });
+                
+                // Clear cart
+                localStorage.removeItem('streamHubCart');
+                
+                // Show success modal
+                successModal.classList.remove('hidden');
+                
+                // Reset button
+                placeOrderBtn.innerHTML = '<i class="fab fa-whatsapp mr-2"></i>Place Order via WhatsApp';
+                placeOrderBtn.disabled = false;
+            }, 1500);
+        }
+        
+        // Send order to WhatsApp
+        function sendOrderToWhatsApp(orderData) {
+            try {
+                // Create WhatsApp message
+                let message = `*New Order - StreamHub*\n\n`;
+                message += `*Customer Information:*\n`;
+                message += `Name: ${orderData.firstName} ${orderData.lastName}\n`;
+                message += `Email: ${orderData.email}\n`;
+                message += `Phone: ${orderData.phone}\n`;
+                message += `Address: ${orderData.address}\n\n`;
+                
+                if (orderData.notes) {
+                    message += `*Notes:*\n${orderData.notes}\n\n`;
+                }
+                
+                message += `*Order Items:*\n`;
+                orderData.items.forEach(item => {
+                    message += `- ${item.name} (${item.selectedPlan.duration}): ৳${item.selectedPlan.price} x ${item.quantity}\n`;
+                });
+                
+                message += `\n*Order Summary:*\n`;
+                message += `Subtotal: ৳${orderData.subtotal.toFixed(2)}\n`;
+                message += `Tax (1.85%): ৳${orderData.tax.toFixed(2)}\n`;
+                if (orderData.discount > 0) {
+                    message += `Discount: ৳${orderData.discount.toFixed(2)}`;
+                    if (orderData.promoCode) {
+                        message += ` (${orderData.promoCode})`;
+                    }
+                    message += `\n`;
+                }
+                message += `Total: ৳${orderData.total.toFixed(2)}\n\n`;
+                
+                message += `*Payment Method:*\n${selectedPaymentMethod === 'whatsapp' ? 'WhatsApp' : 'Bank Transfer'}\n\n`;
+                
+                message += `Please confirm this order and provide payment instructions. Thank you!`;
+                
+                // Encode message for URL
+                const encodedMessage = encodeURIComponent(message);
+                
+                // Create WhatsApp URL with your number
+                const whatsappURL = `https://wa.me/8801644490566?text=${encodedMessage}`;
+                
+                // Open WhatsApp in a new tab
+                console.log('Opening WhatsApp URL:', whatsappURL);
+                window.open(whatsappURL, '_blank');
+                
+            } catch (error) {
+                console.error('Error sending to WhatsApp:', error);
+                alert('There was an error sending your order to WhatsApp. Please try again.');
+            }
+        }
+        
+        // Send to WhatsApp from floating button
+        function sendToWhatsApp() {
+            placeOrder();
+        }
+        
+        // Close success modal
+        function closeSuccessModal() {
+            successModal.classList.add('hidden');
+            window.location.href = 'index.html';
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>

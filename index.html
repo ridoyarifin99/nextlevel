@@ -1,776 +1,1883 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Required Open Graph Tags for WhatsApp -->
-    <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Next Level Estore</title>
-  
-  <!-- WhatsApp and Social Media Preview -->
-  <meta property="og:title" content="Next Level - Premium Subscriptions Store" />
-  <meta property="og:description" content="Buy Netflix, Disney+, HBO Max subscriptions in Bangladesh." />
-  <meta property="og:image" content="https://i.imgur.com/LwwQQSH.jpg" />
-  <meta property="og:url" content="https://nextlevelbd.store" />
-  <meta property="og:type" content="website" />
-  
-  <link rel="shortcut icon" href="/images/icon/icon.svg" type="image/x-icon">
-  <link href="output.css" rel="stylesheet" />
-
-  <!-- Google Fonts Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-
-  <!-- Feather Icons -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  <script>
-  if (window.location.pathname.endsWith("index.html")) {
-    window.location.replace(window.location.origin + "/");
-  }
-</script>
-
-
-  
-  <style>
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(90deg, #eff6ff 0%, #ffffff 50%, #eff6ff 100%);
-      color: #1e40af;
-      min-height: 100vh;
-    }
-
-    img.service-logo {
-      height: 64px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
-      transition: filter 0.3s ease;
-    }
-
-    .card:hover img.service-logo {
-      filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.7));
-    }
-
-    header {
-      backdrop-filter: saturate(180%) blur(8px);
-      background-color: rgba(255 255 255 / 0.9);
-      box-shadow: 0 2px 10px rgb(59 130 246 / 0.2);
-      z-index: 100;
-    }
-
-    .search-input {
-      max-width: 300px;
-      border: 2px solid #2563eb;
-      border-radius: 9999px;
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      color: #1e40af;
-      background: white;
-      box-shadow: 0 0 5px rgb(37 99 235 / 0.3);
-      transition: box-shadow 0.3s ease, border-color 0.3s ease;
-      outline-offset: 2px;
-    }
-
-    .search-input::placeholder {
-      color: #93c5fd;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: #1e3a8a;
-      box-shadow: 0 0 15px rgb(37 99 235 / 0.8);
-    }
-
-    .card {
-      background: white;
-      border-radius: 1rem;
-      box-shadow: 0 6px 15px rgb(59 130 246 / 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      overflow: hidden;
-      will-change: transform;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.5s forwards;
-    }
-
-    .card:hover {
-      transform: translateY(-6px) scale(1.03);
-      box-shadow: 0 12px 25px rgb(59 130 246 / 0.3);
-    }
-
-    .card-link {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .card-header {
-      background-color: #e0e7ff;
-      padding: 1.25rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .card-body {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      color: #1e3a8a;
-    }
-
-    .card-desc {
-      flex-grow: 1;
-      color: #475569;
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-
-    .card-price {
-      margin-top: 1rem;
-      font-size: 1.125rem;
-      font-weight: 700;
-      color: #2563eb;
-    }
-
-    .details-btn {
-      margin-top: 1.25rem;
-      background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
-      color: white;
-      font-weight: 600;
-      padding: 0.75rem 0;
-      border-radius: 0.75rem;
-      box-shadow: 0 6px 15px rgb(37 99 235 / 0.6);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-      cursor: pointer;
-      outline-offset: 3px;
-      will-change: box-shadow, transform;
-    }
-
-    .details-btn:hover {
-      background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
-      box-shadow: 0 8px 20px rgb(37 99 235 / 0.85);
-      transform: scale(1.05);
-    }
-
-    @keyframes neonBlink {
-      0%,
-      100% {
-        box-shadow: 0 0 8px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #60a5fa, 0 0 40px #93c5fd, 0 0 50px #bfdbfe;
-        transform: scale(1);
-      }
-
-      50% {
-        box-shadow: 0 0 12px #2563eb, 0 0 25px #60a5fa, 0 0 35px #93c5fd, 0 0 45px #bfdbfe, 0 0 60px #bfdbfe;
-        transform: scale(1.1);
-      }
-    }
-
-    .blink {
-      animation: neonBlink 1s ease-in-out 2;
-      color: #dbeafe;
-      user-select: none;
-    }
-
-    #loader {
-      transition: opacity 0.4s ease;
-      background-color: rgba(255 255 255 / 0.9);
-      backdrop-filter: saturate(180%) blur(10px);
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Pulsing hero dot */
-    .hero-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 9999px;
-      background-color: #2563eb;
-      opacity: 0.5;
-      transform: scale(1);
-      transition: transform 0.3s ease, opacity 0.3s ease, background-color 0.3s ease;
-      cursor: pointer;
-    }
-
-    .hero-dot.active {
-      opacity: 1;
-      transform: scale(1.4);
-      background-color: #1e40af;
-      animation: pulseDot 1s infinite alternate;
-    }
-
-    @keyframes pulseDot {
-      from {
-        transform: scale(1.4);
-        opacity: 1;
-      }
-
-      to {
-        transform: scale(1.7);
-        opacity: 0.7;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .search-input {
-        max-width: 100%;
-      }
-
-      nav.md\\:flex {
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-    }
-
-    @keyframes slideInLeft {
-  0% { opacity: 0; transform: translateX(-100px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes fadeInUp {
-  0% { opacity: 0; transform: translateY(40px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounceIn {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.animate-slide-in-left { animation: slideInLeft 1s ease-out forwards; }
-.animate-fade-in-up { animation: fadeInUp 1s ease-out forwards; animation-delay: 0.5s; }
-.animate-bounce-in { animation: bounceIn 0.8s ease-in-out forwards; animation-delay: 1s; }
-
-.animated-text > * { opacity: 0; }
-
- /* Neon Rainbow Border */
-/* Rainbow flow + neon glow border */
-.rainbow-neon-border {
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-  color: white;
-}
-
-.rainbow-neon-border::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(
-    270deg,
-    #ff00cc,
-    #3333ff,
-    #00ffff,
-    #33ff33,
-    #ffff00,
-    #ff6600,
-    #ff0000,
-    #ff00cc
-  );
-  background-size: 600% 600%;
-  z-index: -1;
-  border-radius: 1.2rem;
-  filter: blur(8px); /* soft glow */
-  animation: borderFlow 6s linear infinite;
-}
-
-.rainbow-neon-border::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border: 2px solid transparent;
-  border-radius: 1rem;
-  z-index: 1;
-}
-
-@keyframes borderFlow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-/* whatsapp Animation shaking */
-  @keyframes shakeSmooth {
-    0% { transform: translateX(0); }
-    15% { transform: translateX(-3px); }
-    30% { transform: translateX(3px); }
-    45% { transform: translateX(-2px); }
-    60% { transform: translateX(2px); }
-    75% { transform: translateX(-1px); }
-    90% { transform: translateX(1px); }
-    100% { transform: translateX(0); }
-  }
-
-  .shake-animation {
-    animation: shakeSmooth 1.5s infinite ease-in-out;
-  }
-  /* whatsapp Animation end */
-
-  
-
-  @keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-  }
-
-  @keyframes marquee-reverse {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-
-  .animate-marquee {
-    animation: marquee 15s linear infinite;
-  }
-
-  .animate-marquee-reverse {
-    animation: marquee-reverse 15s linear infinite;
-  }
-
-
-  .neon-glow {
-    animation: neonPulse 1.5s ease-in-out infinite alternate;
-    box-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #ffffff, 0 0 40px #3b82f6;
-  }
-
-  @keyframes neonPulse {
-    0% {
-      box-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6, 0 0 15px #ffffff, 0 0 20px #3b82f6;
-    }
-    100% {
-      box-shadow: 0 0 15px #3b82f6, 0 0 30px #3b82f6, 0 0 40px #ffffff, 0 0 50px #3b82f6;
-    }
-  }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Level Estore- Premium Subscriptions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --primary-dark: #4a0699;
+            --primary-light: #9d4edd;
+            --secondary-color: #2575fc;
+            --accent-color: #E74C3C;
+            --light-bg: #F8F9FA;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --border-color: #E5E7EB;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        .skeleton-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .skeleton-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+        
+        .skeleton-title {
+            height: 20px;
+            border-radius: 4px;
+            width: 70%;
+            margin-bottom: 8px;
+        }
+        
+        .skeleton-text {
+            height: 16px;
+            border-radius: 4px;
+            width: 90%;
+        }
+        
+        .skeleton-price {
+            height: 24px;
+            border-radius: 4px;
+            width: 30%;
+        }
+        
+        .skeleton-button {
+            height: 40px;
+            border-radius: 8px;
+            width: 100%;
+            margin-top: 16px;
+        }
+        
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        
+        .animate-pulse-once {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        /* Vanishing sliding animation for logo text */
+        @keyframes vanishingSlide {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+        
+        .logo-text-container {
+            position: relative;
+            height: 24px;
+            width: 120px;
+            overflow: hidden;
+            margin-left: 10px;
+        }
+        
+        .logo-text-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            text-align: left;
+            font-size: 0.7rem;
+            font-weight: 500;
+            opacity: 0;
+            animation: vanishingSlide 8s linear infinite;
+        }
+        
+        .logo-text-item:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .logo-text-item:nth-child(2) {
+            animation-delay: 2s;
+        }
+        
+        .logo-text-item:nth-child(3) {
+            animation-delay: 4s;
+        }
+        
+        .logo-text-item:nth-child(4) {
+            animation-delay: 6s;
+        }
+        
+        /* Logo styles */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .logo-image {
+            height: 40px;
+            width: auto;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Card hover effect */
+        .subscription-card {
+            transition: var(--transition);
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: white;
+        }
+        
+        .subscription-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.15);
+        }
+        
+        /* Button styles */
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            transition: var(--transition);
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(106, 17, 203, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(106, 17, 203, 0.3);
+        }
+        
+        /* Cart badge animation */
+        .cart-badge {
+            transition: var(--transition);
+        }
+        
+        .cart-badge.pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        /* Filter range slider */
+        .range-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: var(--primary-light);
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .range-slider::-webkit-slider-thumb:hover {
+            background: var(--primary-dark);
+            transform: scale(1.2);
+        }
+        
+        /* Modal backdrop */
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid white;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Search dropdown */
+        .search-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-hover);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 40;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .search-dropdown.active {
+            display: block;
+        }
+        
+        .search-dropdown-item {
+            transition: var(--transition);
+        }
+        
+        .search-dropdown-item:hover {
+            background-color: var(--light-bg);
+        }
+        
+        /* Highlight active search */
+        .search-highlight {
+            background-color: rgba(106, 17, 203, 0.2);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        
+        /* Card link */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* Success notification */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-hover);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        /* Category section styles */
+        .category-section {
+            margin-bottom: 4rem;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        
+        .category-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .category-description {
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+        
+        /* Best seller badge */
+        .best-seller-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #FFD700;
+            color: #333;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Combo badge */
+        .combo-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Combo card styles */
+        .combo-card {
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.05), rgba(37, 117, 252, 0.05));
+            border: 1px solid rgba(106, 17, 203, 0.2);
+        }
+        
+        .combo-services {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+            gap: 0.5rem;
+        }
+        
+        .combo-service-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
+        
+        /* Product image styles */
+        .product-image-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.1), rgba(37, 117, 252, 0.1));
+            position: relative;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .subscription-card:hover .product-image {
+            transform: scale(1.05);
+        }
+        
+        .product-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+        
+        /* Cart sidebar styles */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 999;
+            overflow-y: auto;
+        }
+        
+        .cart-sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        body.cart-open {
+            overflow: hidden;
+        }
+        
+        /* Mobile menu styles */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .mobile-menu-btn.active {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+            color: white;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 48;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Footer styles */
+        footer {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-section ul li a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Search container adjustments */
+        .search-container {
+            position: relative;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -280px;
+                width: 280px;
+                height: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 5rem 1.5rem 2rem;
+                box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s ease;
+                z-index: 49;
+                overflow-y: auto;
+            }
+            
+            .nav-menu.active {
+                right: 0;
+            }
+            
+            .nav-menu .nav-link {
+                display: block;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--border-color);
+                font-size: 1.1rem;
+            }
+            
+            .nav-menu .nav-link:last-child {
+                border-bottom: none;
+            }
+            
+            .nav-menu .nav-link::after {
+                display: none;
+            }
+            
+            .header-content {
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .logo-container {
+                margin-right: auto;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .search-input {
+                font-size: 0.875rem;
+                padding-left: 2.5rem;
+                padding-right: 0.75rem;
+            }
+            
+            .search-icon {
+                left: 0.75rem;
+            }
+            
+            .product-image-container {
+                aspect-ratio: 4/3;
+            }
+            
+            .product-icon {
+                font-size: 2.5rem;
+            }
+            
+            .subscription-card .p-6 {
+                padding: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .product-image-container {
+                aspect-ratio: 3/2;
+            }
+            
+            .product-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-  <!-- Header -->
-  <header class="sticky top-0">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="#" class="flex items-center">
-        <img src="/images/Next-Level-Estore-New-logo.png" alt="Next Level Estore Logo" class="h-10" />
-      </a>
-
-      <nav class="hidden md:flex space-x-8 text-blue-700 font-medium items-center flex-grow max-w-4xl justify-center">
-        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Home</a>
-        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">All Subscription</a>
-        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Offers</a>
-        <a href="#" class="hover:text-blue-900 transition focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">Contact</a>
-        <input type="search" id="search-input" placeholder="Search any services..." aria-label="Search anн services" class="search-input ml-6" />
-      </nav>
-
-      <button id="mobile-menu-btn" class="md:hidden p-2 rounded hover:bg-blue-100 transition focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Toggle mobile menu">
-        <i data-feather="menu" class="w-6 h-6 text-blue-700"></i>
-      </button>
-    </div>
-
-    <nav id="mobile-menu" class="hidden md:hidden bg-white border-t border-blue-200 px-6 py-4">
-      <div class="flex flex-col space-y-4 text-blue-700 font-medium">
-        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Home</a>
-        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">All Subscription</a>
-        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Offers</a>
-        <a href="#" class="hover:text-blue-900 transition py-2 border-b border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">Contact</a>
-        <input type="search" id="mobile-search-input" placeholder="Search streaming services..." aria-label="Search streaming services" class="search-input mt-2" />
-      </div>
-    </nav>
-  </header>
-
-<!-- Hero Section -->
-<section class="relative overflow-hidden pt-20 lg:pb-20 sm:pb-10 px-6 bg-gradient-to-br from-blue-100 to-white">
-  <div class="max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-12">
-
-    <!-- Text -->
-    <div class="text-center md:text-left max-w-xl animated-text">
-      <div class="animate-slide-in-left">
-  <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 leading-tight mb-6 ">
-    Get Free <span class="text-blue-600">Subscription</span> By sharing our Website
-  </h1>
-  <a href="#" class="bg-gray-800 text-white rounded-full px-3 py-1 border-2 ring-2 ring-blue-400 transition-all duration-300">
-  Conditions Apply
-  </a>
-      </div>
-
-  <p class="text-lg text-gray-700 mb-3 animate-fade-in-up mt-6">
-    Enjoy subscriptions from Bangladesh number 1 trusted shop and all your favorite platforms — all in one place.
-  </p>
-
-  <!-- Rainbow animated border -->
-  <p class="text-xl text-white text-shadow-2xs border-r-white backdrop-blur-2xl border-4 text-shadow-gray-700 mb-3 p-2 text-center font-bold rounded-3xl rainbow-neon-border animate-fade-in-up">
-    Payment Method: Bkash / Rocket / Nagad
-  </p>
-
-  <p class="text-lg text-gray-700 mb-3 animate-fade-in-up">
-    Get instant Delivery. 24/7 Support through whatsapp. Have warranty in every account.
-  </p>
-<div class="text-lg mb-3 animate-fade-in-up flex sm:items-center">
-  <a class="flex items-center space-x-2" href="https://wa.me/8801644490566" target="_blank">
-    <img src="/images/icon/whatsapp (1).png" class="h-6" alt="WhatsApp Icon">
-    <p class="text-gray-700 font-black bg-white px-3 py-1 rounded-3xl shadow shake-animation">
-      01644490566
-    </p>
-  </a>
-</div>
-
-  <a href="#services-container"
-     class="inline-block bg-blue-700 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 animate-bounce-in">
-    Explore Now
-  </a>
-</div>
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     
-
-    <!-- Carousel with Rotating Neon Border -->
-    <div class="relative w-full lg:w-full p-1 md:w-[480px] h-[280px] rounded-2xl overflow-hidden rainbow-neon-border">
-      <!-- Rotating neon border -->
-      <div class="absolute inset-0 rounded-2xl border-4 border-transparent neon-rotate z-0"></div>
-      <img id="heroImage" src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" 
-           alt="Streaming Banner" 
-           class="w-full h-full object-contain transition-opacity duration-1000 ease-in-out rounded-2xl relative z-10 bg-white p-5">
-      <div id="heroDots" class="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-3 z-20"></div>
-    </div>
-  </div>
-</section>
-
-<!-- under development start -->
-<section class="mt-6">
-  <div class="relative z-10 flex justify-center items-center px-2">
-    <p class="neon-border text-black text-sm md:text-sm lg:text-base font-bold capitalize px-6 py-2 rounded-3xl bg-white">
-      This website is under development, more products and features will be coming soon.
-      <span class="text-black">You can purchase your favourite products now.</span>
-    </p>
-  </div>
-</section>
-
-<style>
-.neon-border {
-  position: relative;
-  border: 2px solid transparent;
-  border-radius: 9999px;
-  background-clip: padding-box;
-}
-
-.neon-border::before {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border-radius: 9999px;
-  background: linear-gradient(270deg, #ff0080, #7928ca, #00ffff, #00ff00, #ff9900, #ff0080);
-  background-size: 600% 600%;
-  animation: animateBorder 6s linear infinite;
-  z-index: -1;
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  -webkit-mask-composite: destination-out;
-  padding: 2px;
-}
-
-@keyframes animateBorder {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-</style>
-
-
-
- <!-- under development end -->
-  <!-- product Catagory start-->
-  <section class="mx-3">
-    <div class="mt-6">
-      <p class="text-center text-lg font-bold text-black">
-        Select Catagory From Below
-      </p>
-    </div>
-  </section>
-  <!-- product Catagory end-->
-  <!-- Category Filters -->
-  <div class="flex flex-wrap justify-center gap-4 mb-8 mt-3" id="category-filters">
-    <button data-category="All" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">All</button>
-    <button data-category="Streaming" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Streaming</button>
-    <button data-category="Music" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Music</button>
-    <button data-category="Education" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Education</button>
-    <button data-category="AI" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">AI</button>
-    <button data-category="Drive" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Cloud Storage</button>
-    <button data-category="Adult" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Adult 18+</button>
-    <button data-category="Combo" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Combo</button>
-    <button data-category="Offer" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Offer</button>
-    <button data-category="VPN" class="category-btn bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-semibold hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Premium VPN</button>
-  </div>
-
-  <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-6 py-12">
-    <h2 class="text-4xl font-extrabold mb-10 text-center text-blue-900 select-none">Choose Your Favourite Subscription</h2>
-    <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8" aria-live="polite" aria-atomic="true" id="services-container"></section>
-  </main>
-
-  <!-- Loader -->
-  <div id="loader" class="fixed inset-0 z-50 hidden flex items-center justify-center pointer-events-none select-none" aria-hidden="true" role="alert" aria-live="assertive" aria-label="Loading">
-    <svg width="80" height="24" viewBox="0 0 120 30" xmlns="http://www.w3.org/2000/svg" fill="#2563EB" aria-hidden="true">
-      <circle cx="15" cy="15" r="15">
-        <animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" />
-        <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
-      </circle>
-      <circle cx="60" cy="15" r="9" fill-opacity="0.3">
-        <animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite" />
-        <animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite" />
-      </circle>
-      <circle cx="105" cy="15" r="15">
-        <animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite" />
-        <animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  </div>
-
-  <script>
-    feather.replace();
-
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-    });
-
-    // Services data
-const services = [
-  { name: "Netflix Renewable", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Unlimited movies, series & trending originals.", price: "379 TK/Month", category: "Streaming" },
-  { name: "Disney+", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", description: "Marvel, Star Wars, Pixar & family favorites.", price: "299 TK/Month", category: "Streaming" },
-  { name: "Prime Video + Surfshark VPN", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png", description: "Unlock 50000+ Content Via Surfshark VPN", price: "149 TK/Month", category: "Combo" },
-  { name: "Hulu", logo: "https://download.logo.wine/logo/Hulu/Hulu-Logo.wine.png", description: "Stream new episodes, hit movies & more.", price: "149 TK/Month", category: "Streaming" },
-  { name: "HBO Max", logo: "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg", description: "Premium TV series & blockbuster movies.", price: "799 TK/Year", category: "Streaming" },
-   { name: "Netflix + Prime Video", logo: "assets/images/prime+netflix.png", description: "Premium TV series & blockbuster movies.", price: "429 TK/Month", category: "Combo" },
-  { name: "Netflix For TV", logo: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg", description: "Watch Wednesday, Money Heist and top rated series", price: "549 TK/Month", category: "Streaming" },
-  { name: "Amazon Prime Video", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png", description: "Exclusive Amazon Originals and more.", price: "99 TK/Month", category: "Streaming" },
-  { name: "Hulu", logo: "https://download.logo.wine/logo/Hulu/Hulu-Logo.wine.png", description: "Stream new episodes, hit movies & more.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Apple TV+", logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", description: "Apple Originals with award-winning content.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Paramount+", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Paramount_Plus.svg/1200px-Paramount_Plus.svg.png", description: "Movies, sports & live TV channels.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Peacock", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/NBCUniversal_Peacock_Logo.svg/1280px-NBCUniversal_Peacock_Logo.svg.png", description: "Movies, WWE & classic TV content.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Crunchyroll", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Crunchyroll_Logo.svg", description: "Anime streaming with latest episodes.", price: "99 TK/Month", category: "Streaming" },
-  { name: "Chorki", logo: "https://upload.wikimedia.org/wikipedia/commons/d/d2/Chorki_Logo.png", description: "Watch Chorki originals, movies & TV shows.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Hoichoi", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Hoichoi-720p-transperant.png/1200px-Hoichoi-720p-transperant.png", description: "Watch latest Bengali movies & web series.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Voot", logo: "https://upload.wikimedia.org/wikipedia/commons/8/89/Voot_website_logo.png", description: "Indian TV shows and originals.", price: "249 TK/Month", category: "Streaming" },
-  { name: "SonyLiv", logo: "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/sony-liv-logo.png", description: "Live sports, originals, and more.", price: "149 TK/Month", category: "Streaming" },
-  { name: "YouTube Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/YouTube_Premium_logo.svg/2560px-YouTube_Premium_logo.svg.png", description: "Ad-free videos & music streaming.", price: "229 TK/Month", category: "Music" },
-  { name: "Discovery+", logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Discovery_Plus_logo.svg", description: "Documentaries, reality, and lifestyle shows.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Bongo", logo: "assets/images/bongo-seeklogo.png", description: "Live sports and exclusive analysis.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Hotstar", logo: "assets/images/Disney+_Hotstar_logo.svg.png", description: "Sports, movies, and TV shows from India.", price: "349 TK/Month", category: "Streaming" },
-  { name: "Funimation", logo: "assets/images/Funimation-Logo-700x394.png", description: "Popular anime series streaming.", price: "850 TK/Month", category: "Streaming" },
-  { name: "CuriosityStream", logo: "https://upload.wikimedia.org/wikipedia/en/4/43/CuriosityStream_logo.png", description: "Documentaries and non-fiction series.", price: "149 TK/Month", category: "Education" },
-  { name: "Mubi", logo: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Mubi_logo.svg", description: "Curated indie & classic movies.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Shudder", logo: "https://upload.wikimedia.org/wikipedia/en/e/e3/Shudder_Logo.svg", description: "Horror movies and thrillers.", price: "99 TK/Month", category: "Streaming" },
-  { name: "Starz", logo: "https://upload.wikimedia.org/wikipedia/en/9/94/Starz_Logo.svg", description: "Premium original TV shows and movies.", price: "149 TK/Month", category: "Streaming" },
-  { name: "Showtime + Surfshark VPN", logo: "https://upload.wikimedia.org/wikipedia/en/0/09/Showtime_Logo.svg", description: "Award-winning original series & movies.", price: "129 TK/Month", category: "Streaming" },
-  { name: "BritBox", logo: "https://upload.wikimedia.org/wikipedia/en/4/45/BritBox_logo.png", description: "British TV series and films.", price: "129 TK/Month", category: "Streaming" },
-  { name: "Acorn TV", logo: "https://upload.wikimedia.org/wikipedia/en/f/f3/Acorn_TV_logo.png", description: "Mystery and drama from the UK & beyond.", price: "650 TK/Month", category: "Streaming" },
-  { name: "DAZN", logo: "https://upload.wikimedia.org/wikipedia/commons/6/69/DAZN_logo.svg", description: "Live & on-demand sports streaming.", price: "2,190 TK/Month", category: "Streaming" },
-  { name: "Sundance Now", logo: "https://upload.wikimedia.org/wikipedia/en/f/fb/Sundance_Now_logo.svg", description: "Thrillers, dramas, and documentaries.", price: "760 TK/Month", category: "Streaming" },
-  { name: "Vimeo OTT", logo: "https://upload.wikimedia.org/wikipedia/commons/9/99/Vimeo_Logo.svg", description: "Indie films and creator content.", price: "220 TK/Month", category: "Streaming" },
-  { name: "FuboTV", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Fubo_2023.svg/1200px-Fubo_2023.svg.png", description: "Sports, news, and entertainment streaming.", price: "99 TK/Month", category: "Streaming" },
-  { name: "Tubi", logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Tubi_Logo.svg", description: "Free movies and TV shows with ads.", price: "Free", category: "Streaming" },
-  { name: "Pluto TV", logo: "https://upload.wikimedia.org/wikipedia/commons/4/48/Pluto_TV_logo.svg", description: "Free live TV and movies.", price: "Free", category: "Streaming" },
-  { name: "Kanopy", logo: "https://upload.wikimedia.org/wikipedia/en/3/37/Kanopy_Logo.png", description: "Documentaries and indie films, free with library card.", price: "Free", category: "Education" },
-
-  // --- Added AI, Music, Adult, Education ---
-  { name: "Spotify", logo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", description: "Stream millions of songs and playlists.", price: "199 TK/Month", category: "Music" },
-  { name: "Apple Music", logo: "https://upload.wikimedia.org/wikipedia/commons/d/df/Apple_Music_logo.svg", description: "Listen to your favorite tracks and curated playlists.", price: "199 TK/Month", category: "Music" },
-  { name: "Tidal", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Tidal_logo.svg", description: "High-fidelity music streaming with exclusive content.", price: "299 TK/Month", category: "Music" },
-  { name: "ChatGPT Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/0/04/OpenAI_Logo.svg", description: "Get faster responses and priority access to ChatGPT.", price: "2,200 TK/Month", category: "AI" },
-  { name: "Jasper AI", logo: "https://upload.wikimedia.org/wikipedia/commons/6/6b/Jasper_logo.svg", description: "AI content generator for marketing and writing.", price: "3,000 TK/Month", category: "AI" },
-  { name: "Grammarly Premium", logo: "https://upload.wikimedia.org/wikipedia/commons/3/35/Grammarly_Logo.svg", description: "Advanced grammar, spelling, and writing suggestions.", price: "1,500 TK/Month", category: "AI" },
-  { name: "Notion AI", logo: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg", description: "AI-powered productivity and note-taking assistant.", price: "1,200 TK/Month", category: "AI" },
-  { name: "Duolingo Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Duolingo_logo.svg", description: "Ad-free language learning with unlimited hearts.", price: "499 TK/Month", category: "Education" },
-  { name: "Coursera Plus", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Coursera_logo.svg", description: "Access to thousands of online courses and specializations.", price: "4,900 TK/Month", category: "Education" },
-  { name: "Skillshare", logo: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Skillshare_logo.svg", description: "Creative classes in design, illustration, and more.", price: "1,900 TK/Month", category: "Education" },
-  { name: "Brazzers", logo: "https://logos-world.net/wp-content/uploads/2021/09/Brazzers-Logo.png", description: "Premium adult content 4K streaming.", price: "149 TK/Month", category: "Adult" },
-  { name: "Brazzers + Surfshark VPN", logo: "https://upload.wikimedia.org/wikipedia/commons/7/70/Brazzers_logo.png", description: "Premium adult content 4K streaming.", price: "199 TK/Month", category: "Combo" },
-  { name: "Pornhub Premium", logo: "https://cdn3.iconfinder.com/data/icons/logos-brands-in-colors/512/pornhub-512.png", description: "High-quality adult videos and content.", price: "149 TK/Month", category: "Adult" },
-  { name: "OnlyFans", logo: "https://logos-world.net/wp-content/uploads/2022/02/OnlyFans-Logo-2016.png", description: "Creator-driven subscription platform with adult content.", price: "499 TK/Month", category: "Adult" },
-  { name: "Reality Kings", logo: "https://logos-world.net/wp-content/uploads/2023/01/RealityKings-Logo-2008.png", description: "Adult entertainment videos and premium content.", price: "499 TK/6 Month", category: "Adult" },
-  { name: "Bang Bros", logo: "https://logos-world.net/wp-content/uploads/2023/01/Bang-Bros-Logo.png", description: "Exclusive adult content and videos.", price: "899 TK/Year", category: "Adult" },
-  { name: "Babes.com", logo: "https://logos-world.net/wp-content/uploads/2023/01/BabesNetwork-Logo.png", description: "Premium adult models and content.", price: "199 TK/Month", category: "Adult" }
-];
-
-
-    const container = document.getElementById('services-container');
-
-    // Function to create card HTML with fade-in animation delay staggered
-    function createCard({ name, logo, description, price }, index) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.style.animationDelay = `${index * 100}ms`;
-
-      const href = `details.html?service=${encodeURIComponent(name)}`;
-
-      card.innerHTML = `
-        <a href="${href}" class="card-link" tabindex="0" aria-label="More details about ${name}">
-          <div class="card-header">
-            <img src="${logo}" alt="${name} logo" class="service-logo" loading="lazy" />
-          </div>
-          <div class="card-body">
-            <h3 class="card-title">${name}</h3>
-            <p class="card-desc">${description}</p>
-            <p class="card-price">${price}</p>
-            <button type="button" class="details-btn" aria-describedby="details-btn-desc-${index}">MORE DETAILS</button>
-            <span id="details-btn-desc-${index}" class="sr-only">Click to see more details about ${name}</span>
-          </div>
-        </a>
-      `;
-
-      return card;
-    }
-
-    // Render all cards initially
-    function renderCards(data) {
-      container.innerHTML = '';
-      data.forEach((service, i) => {
-        container.appendChild(createCard(service, i));
-      });
-    }
-
-    renderCards(services);
-
-    // Search filter function (case insensitive)
-    function performSearch(query) {
-      query = query.trim().toLowerCase();
-      const filtered = services.filter(({ name, description }) =>
-        name.toLowerCase().includes(query) || description.toLowerCase().includes(query)
-      );
-      renderCards(filtered);
-    }
-
-    // Live search for desktop
-    const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', e => performSearch(e.target.value));
-
-    // Live search for mobile
-    const mobileSearchInput = document.getElementById('mobile-search-input');
-    mobileSearchInput.addEventListener('input', e => performSearch(e.target.value));
-
-    // Button blink & loader animation + navigation
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('.details-btn');
-      if (!btn) return;
-
-      e.preventDefault();
-      const cardLink = btn.closest('.card-link');
-      if (!cardLink) return;
-
-      btn.disabled = true;
-      btn.classList.add('blink');
-
-      const loader = document.getElementById('loader');
-      loader.classList.remove('hidden');
-      loader.style.pointerEvents = 'auto';
-
-      // After animation, navigate
-      setTimeout(() => {
-        window.location.href = cardLink.getAttribute('href');
-      }, 1200);
-    });
-    // Hero image carousel animation
-    const heroImages = [
-      "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
-      "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
-      "https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg",
-      "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png",
-      "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-      "https://pnghdpro.com/wp-content/themes/pnghdpro/download/social-media-and-brands/ullu-logo.png",
-      "https://m.media-amazon.com/images/G/01/digital/music/logos/Two_stack_Unlimited_all_black_transparent.png",
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="header-content flex items-center justify-between">
+                <div class="flex items-center">
+                    <button class="mobile-menu-btn mr-4" id="mobileMenuBtn" aria-label="Toggle mobile menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo-container">
+                        <img src="/images/next_level.png" alt="StreamHub Logo" class="logo-image">
+                        <div class="logo-text-container">
+                            <div class="logo-text-item" style="color: var(--primary-color);">Trusted</div>
+                            <div class="logo-text-item" style="color: var(--primary-color);">Cheap</div>
+                            <div class="logo-text-item" style="color: var(--primary-color);">Secure</div>
+                            <div class="logo-text-item" style="color: var(--primary-color);">24/7 Support</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <a href="#best-selling" class="nav-link">Best Sellers</a>
+                    <a href="#streaming" class="nav-link">Streaming</a>
+                    <a href="#music" class="nav-link">Music</a>
+                    <a href="#storage" class="nav-link">Cloud Storage</a>
+                    <a href="#vpn" class="nav-link">VPN</a>
+                    <a href="#combos" class="nav-link">Combos</a>
+                    <a href="#education" class="nav-link">Education</a>
+                    <a href="#adult" class="nav-link">Adult</a>
+                </nav>
+                
+                <div class="flex items-center gap-4">
+                    <div class="search-container relative flex-1 max-w-md">
+                        <input type="text" id="searchInput" placeholder="Search subscriptions..." 
+                            class="search-input w-full py-2 px-4 pl-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
+                        <i class="fas fa-search search-icon absolute left-3 top-3 text-gray-400"></i>
+                        
+                        <!-- Search Results Dropdown -->
+                        <div id="searchDropdown" class="search-dropdown">
+                            <div id="searchResults" class="py-2">
+                                <!-- Search results will be dynamically added here -->
+                            </div>
+                            <div id="noSearchResults" class="hidden p-4 text-center text-gray-500">
+                                <i class="fas fa-search text-2xl mb-2"></i>
+                                <p>No subscriptions found</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <button id="cartBtn" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors" aria-label="Shopping cart">
+                            <i class="fas fa-shopping-cart text-2xl"></i>
+                            <span id="cartCount" class="cart-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     
-    ];
-
-    let currentHero = 0;
-    const heroImgEl = document.getElementById("heroImage");
-
-    setInterval(() => {
-      currentHero = (currentHero + 1) % heroImages.length;
-      heroImgEl.src = heroImages[currentHero];
-    }, 2500);
-const categoryButtons = document.querySelectorAll('.category-btn');
-
-categoryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const category = btn.getAttribute('data-category');
-
-    // Filter services
-    const filtered = category === 'All' ? services : services.filter(s => s.category === category);
-
-    renderCards(filtered);
-
-    // Optional: Highlight active button
-    categoryButtons.forEach(b => b.classList.remove('bg-blue-700', 'text-white'));
-    btn.classList.add('bg-blue-700', 'text-white');
-  });
-});
-
-  </script>
-  
-<script>
-  // Smooth fading carousel images
-  const images = [
-    "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
-    "https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png"
-  ];
-
-  let index = 0;
-  const heroImage = document.getElementById("heroImage");
-
-  function nextImage() {
-    heroImage.style.opacity = 0;
-    setTimeout(() => {
-      index = (index + 1) % images.length;
-      heroImage.src = images[index];
-      heroImage.style.opacity = 1;
-    }, 500);
-  }
-
-  setInterval(nextImage, 4000);
-</script>
-
-
+    <!-- Hero Section -->
+    <section class="py-12 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Premium Subscriptions</h1>
+            <p class="text-xl max-w-2xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">Get access to all your favorite services in one place at unbeatable prices</p>
+            <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 flex items-center" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>Instant Delivery</span>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 flex items-center" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg p-4 flex items-center" data-aos="fade-up" data-aos-delay="500">
+                    <i class="fas fa-headset mr-2"></i>
+                    <span>24/7 Support</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Filters Section -->
+    <section class="py-8 bg-white shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-2xl font-bold" data-aos="fade-right">Available Subscriptions</h2>
+                
+                <div class="flex flex-wrap gap-4" data-aos="fade-left">
+                    <div class="flex items-center">
+                        <label class="mr-2 text-gray-700">Price Range:</label>
+                        <div class="flex items-center space-x-2">
+                            <span id="minPriceValue" class="text-sm font-medium">৳0</span>
+                            <input type="range" id="minPrice" min="0" max="3300" value="0" class="range-slider w-24">
+                            <span>-</span>
+                            <input type="range" id="maxPrice" min="0" max="3300" value="3300" class="range-slider w-24">
+                            <span id="maxPriceValue" class="text-sm font-medium">৳3300</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <label class="mr-2 text-gray-700">Sort By:</label>
+                        <select id="sortSelect" class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            <option value="default">Default</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Name</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Subscriptions Section -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+            <!-- Best-selling Subscriptions -->
+            <div id="best-selling" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(255, 215, 0, 0.2);">
+                        <i class="fas fa-crown text-yellow-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Best-selling Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Our most popular services</p>
+                    </div>
+                </div>
+                <div id="bestSellingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Popular Streaming Subscriptions -->
+            <div id="streaming" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(135, 206, 235, 0.2);">
+                        <i class="fas fa-fire text-blue-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Popular Streaming Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Trending video and movie streaming platforms</p>
+                    </div>
+                </div>
+                <div id="popularStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Music Streaming Subscriptions -->
+            <div id="music" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(29, 185, 84, 0.2);">
+                        <i class="fas fa-music text-green-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Music Streaming Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Unlimited music and podcast streaming</p>
+                    </div>
+                </div>
+                <div id="musicStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Cloud Storage Subscriptions -->
+            <div id="storage" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(33, 150, 243, 0.2);">
+                        <i class="fas fa-cloud text-blue-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Cloud Storage Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Secure and reliable cloud storage solutions</p>
+                    </div>
+                </div>
+                <div id="cloudStorageContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Premium VPN Subscriptions -->
+            <div id="vpn" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(76, 175, 80, 0.2);">
+                        <i class="fas fa-shield-alt text-green-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Premium VPN Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Secure your internet connection with premium VPN services</p>
+                    </div>
+                </div>
+                <div id="vpnContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Combo Subscriptions -->
+            <div id="combos" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(156, 39, 176, 0.2);">
+                        <i class="fas fa-layer-group text-purple-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Combo Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Get more value with our combo packages</p>
+                    </div>
+                </div>
+                <div id="comboContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Education-based Subscriptions -->
+            <div id="education" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(156, 39, 176, 0.2);">
+                        <i class="fas fa-graduation-cap text-purple-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Education-based Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Learn new skills with online courses and tutorials</p>
+                    </div>
+                </div>
+                <div id="educationContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <!-- Adult 18+ Subscriptions -->
+            <div id="adult" class="category-section">
+                <div class="category-header">
+                    <div class="category-icon" style="background-color: rgba(233, 30, 99, 0.2);">
+                        <i class="fas fa-eye text-pink-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Adult 18+ Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Premium adult content streaming platforms</p>
+                    </div>
+                </div>
+                <div id="adultContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </div>
+            
+            <div id="noResults" class="hidden text-center py-12">
+                <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600">No subscriptions found</h3>
+                <p class="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section" data-aos="fade-up">
+                    <h3>About Next Level</h3>
+                    <p>Your one-stop destination for premium digital subscriptions at unbeatable prices. We offer a wide range of services from streaming platforms to cloud storage solutions.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/nextlevelestorebd" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/8801644490566" aria-label="Whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#best-selling">Best Sellers</a></li>
+                        <li><a href="#streaming">Streaming</a></li>
+                        <li><a href="#music">Music</a></li>
+                        <li><a href="#storage">Cloud Storage</a></li>
+                        <li><a href="#vpn">VPN</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="200">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#combos">Combo Packages</a></li>
+                        <li><a href="#education">Education</a></li>
+                        <li><a href="#adult">Adult Subscription</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Special Offers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section" data-aos="fade-up" data-aos-delay="300">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom" data-aos="fade-up" data-aos-delay="400">
+                <p>&copy; 2023 Next Level Estore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Cart Overlay -->
+    <div id="cartOverlay" class="cart-overlay"></div>
+    
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Your Cart</h2>
+            <button id="closeCartBtn" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div id="cartItems" class="p-6 flex-grow">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        
+        <div id="cartFooter" class="hidden p-6 border-t border-gray-200">
+            <div class="flex justify-between mb-4">
+                <span class="font-semibold">Total:</span>
+                <span id="cartTotal" class="font-bold text-xl">৳0</span>
+            </div>
+            <button id="checkoutBtn" class="w-full py-3 rounded-lg font-semibold text-white btn-primary">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+    
+    <!-- Success Notification -->
+    <div id="notification" class="notification">
+        <span id="notificationText">Item added to cart!</span>
+    </div>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Subscription data with categories and images (prices in BDT)
+        const subscriptions = [
+            // Best-selling Subscriptions
+            { name: "Netflix Premium", price: 379, duration: "month", image: "./assets/cards/netflix.webp", icon: "fab fa-netflix", color: "#E50914", description: "Watch unlimited movies and TV shows", categories: ["best-selling", "popular-streaming"] },
+            { name: "Amazon Prime Video", price: 99, duration: "month", image: "./assets/cards/prime_video.svg", icon: "fab fa-amazon", color: "#FF9900", description: "Thousands of movies and TV shows", categories: ["best-selling", "popular-streaming"] },
+            { name: "HBO Max", price: 599, duration: "year", image: "./assets/cards/hbo_max.svg", icon: "fab fa-disney", color: "#113ccf", description: "Disney, Pixar, Marvel, Star Wars", categories: ["best-selling", "popular-streaming"] },
+            { name: "Crunchy Roll Mega", price: 699, duration: "year", image: "./assets/cards/crunchy.png", icon: "fab fa-disney", color: "#113ccf", description: "Disney, Pixar, Marvel, Star Wars", categories: ["best-selling", "popular-streaming"] },            
+            { name: "Spotify Premium", price: 229, duration: "month", image: "./assets/cards/spotify.jpg", icon: "fab fa-spotify", color: "#1DB954", description: "Ad-free music and podcasts", categories: ["best-selling", "music-streaming"] },
+            { name: "Amazon Music Unlimited", price: 499, duration: "year", image: "./assets/cards/amazon-music-unlimited.jpeg", icon: "fa-brands fa-amazon", color: "#1DB954", description: "HIFI quality music and podcasts", categories: ["best-selling", "music-streaming"] }, 
+            { name: "Microsoft OneDrive", price: 499, duration: "6 months", image: "./assets/cards/onedrive.svg", icon: "fab fa-microsoft", color: "#0078D4", description: "1TB cloud storage with Office apps", categories: ["best-selling", "cloud-storage"] }, 
+            { name: "Youtube Premium", price: 249, duration: "month", image: "./assets/cards/youtube.webp", icon: "fa-brands fa-square-youtube", color: "#0078D4", description: "Add free videos and music", categories: ["best-selling", "cloud-storage"] },      
+            { name: "True Caller Gold", price: 799, duration: "year", image: "./assets/cards/truecaller.avif", icon: "fa-solid fa-phone", color: "#0078D4", description: "Add free videos and music", categories: ["best-selling"] },         
+            
+            // Popular Streaming Subscriptions
+            { name: "Disney +", price: 179, duration: "month", image: "./assets/cards/disney.jpg", icon: "fas fa-tv", color: "#6a19ff", description: "Premium content and Warner Bros. movies", categories: ["popular-streaming"] },
+            { name: "Hulu", price: 249, duration: "month", image: "./assets/cards/hulu.svg", icon: "fas fa-play-circle", color: "#1ce783", description: "Next-day TV and original content", categories: ["popular-streaming"] },
+            { name: "Apple TV+", price: 149, duration: "month", image: "./assets/cards/apple_tv.jpg", icon: "fab fa-apple", color: "#555555", description: "Original shows and movies", categories: ["popular-streaming"] },
+            { name: "Paramount+", price: 129, duration: "month", image: "./assets/cards/paramount.webp", icon: "fas fa-film", color: "#0068b7", description: "Movies, live sports, and exclusive originals", categories: ["popular-streaming"] },
+            { name: "Peacock", price: 149, duration: "month", image: "./assets/cards/Peacock.avif", icon: "fas fa-peacock", color: "#000000", description: "NBCUniversal content and live sports", categories: ["popular-streaming"] },
+            { name: "YouTube Premium", price: 249, duration: "month", image: "./assets/cards/youtube.avif", icon: "fab fa-youtube", color: "#FF0000", description: "Ad-free videos and YouTube Music", categories: ["popular-streaming", "music-streaming"] },
+            
+            // Music Streaming Subscriptions
+            { name: "Apple Music", price: 149, duration: "month", image: "./assets/cards/apple_music.jpg", icon: "fab fa-apple", color: "#555555", description: "Stream over 75 million songs", categories: ["music-streaming"] },
+            { name: "Tidal", price: 149, duration: "month", image: "./assets/cards/tidal.svg", icon: "fas fa-music", color: "#000000", description: "High-fidelity music streaming", categories: ["music-streaming"] },
+            { name: "Pandora Premium", price: 169, duration: "month", image: "./assets/cards/pandora.svg", icon: "fas fa-podcast", color: "#005487", description: "Personalized music and podcasts", categories: ["music-streaming"] },
+            { name: "SoundCloud Go+", price: 149, duration: "month", image: "./assets/cards/sound_cloud.svg", icon: "fab fa-soundcloud", color: "#FF5500", description: "Ad-free music and offline listening", categories: ["music-streaming"] },
+            { name: "Deezer HiFi", price: 159, duration: "month", image: "./assets/cards/deezer.svg", icon: "fas fa-headphones", color: "#FEAA2D", description: "High-quality audio streaming", categories: ["music-streaming"] },
+            { name: "Amazon Music Unlimited", price: 699, duration: "month", image: "./assets/cards/amazon-music-unlimited.jpeg", icon: "fas fa-headphones", color: "#FEAA2D", description: "High-quality audio streaming", categories: ["music-streaming"] },
+            
+            // Cloud Storage Subscriptions
+            { name: "Microsoft OneDrive", price: 499, duration: "6 months", image: "./assets/cards/onedrive.svg", icon: "fab fa-microsoft", color: "#0078D4", description: "1TB cloud storage with Office apps", categories: ["cloud-storage"] },
+            { name: "Dropbox Plus", price: 149, duration: "month", image: "./assets/cards/Dropbox_(service)-Logo.wine.svg", icon: "fab fa-dropbox", color: "#0061FF", description: "2TB secure cloud storage", categories: ["cloud-storage"] },
+            { name: "Google Drive", price: 279, duration: "month", image: "./assets/cards/Google_Drive-Logo.wine.svg", icon: "fab fa-google-drive", color: "#4285F4", description: "1 TB cloud storage", categories: ["cloud-storage"] },
+            { name: "iCloud+", price: 299, duration: "month", image: "./assets/cards/icloud+webp.webp", icon: "fab fa-apple", color: "#555555", description: "50GB cloud storage for Apple users", categories: ["cloud-storage"] },
+            { name: "Amazon Drive", price: 199, duration: "month", image: "./assets/cards/amazon_drive.png", icon: "fab fa-amazon", color: "#FF9900", description: "100GB cloud storage", categories: ["cloud-storage"] },
+            
+            // Premium VPN Subscriptions
+            { name: "ExpressVPN", price: 699, duration: "year", image: "./assets/cards/expressVPN.png", icon: "fas fa-shield-alt", color: "#39AE69", description: "High-speed, secure VPN service", categories: ["vpn"] },
+            { name: "NordVPN", price: 149, duration: "month", image: "./assets/cards/nordvpn.webp", icon: "fas fa-shield-alt", color: "#4687FF", description: "Advanced security with double VPN", categories: ["vpn"] },
+            { name: "Surfshark", price: 149, duration: "month", image: "./assets/cards/surfsharkvpn.webp", icon: "fas fa-shield-alt", color: "#2A7DE1", description: "Unlimited devices and connections", categories: ["vpn"] },
+            { name: "CyberGhost", price: 149, duration: "month", image: "./assets/cards/cyberghost.png", icon: "fas fa-shield-alt", color: "#F8D12F", description: "User-friendly VPN with 45-day guarantee", categories: ["vpn"] },
+            { name: "IPVanish", price: 149, duration: "month", image: "./assets/cards/ipvanish.webp", icon: "fas fa-shield-alt", color: "#3A3A3A", description: "Fast connections with no logs", categories: ["vpn"] },
+            { name: "Private Internet Access", price: 189, duration: "month", image: "./assets/cards/pia.png", icon: "fas fa-shield-alt", color: "#4A4A4A", description: "Highly customizable VPN", categories: ["vpn"] },
+            { name: "Hotspot Shield", price: 159, duration: "month", image: "./assets/cards/Hotspot-Shield-vpn.webp", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["vpn"] },
+            
+            // Combo Subscriptions
+            { name: "Netflix + Prime Video", price: 429, duration: "month", image: "./assets/cards/Netflix-vs-Amazon.jpg", icon: "fas fa-layer-group", color: "#9C27B0", description: "Get both streaming services at a discount", categories: ["combo"], services: ["Netflix", "Prime Video"], serviceIcons: ["fab fa-netflix", "fab fa-amazon"], serviceColors: ["#E50914", "#FF9900"] },
+            { name: "Netflix + HBO Max", price: 499, duration: "month", image: "./assets/cards/netflix+hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Premium content from both platforms", categories: ["combo"], services: ["Netflix", "HBO Max"], serviceIcons: ["fab fa-netflix", "fas fa-tv"], serviceColors: ["#E50914", "#6a19ff"] },
+            { name: "HBO Max + Surfshark VPN", price: 229, duration: "month", image: "./assets/cards/hbo+surfshark.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Stream securely with VPN protection", categories: ["combo"], services: ["HBO Max", "Surfshark VPN"], serviceIcons: ["fas fa-tv", "fas fa-shield-alt"], serviceColors: ["#6a19ff", "#2A7DE1"] },
+            { name: "Spotify + YouTube Premium", price: 499, duration: "month", image: "./assets/cards/spotify+youtube.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Ad-free music and videos", categories: ["combo"], services: ["Spotify", "YouTube Premium"], serviceIcons: ["fab fa-spotify", "fab fa-youtube"], serviceColors: ["#1DB954", "#FF0000"] },
+            { name: "Disney + HBO Max", price: 399, duration: "month", image: "./assets/cards/disney+nordVPN.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Disney, HBO Max", categories: ["combo"], services: ["Disney+", "HBO Max"], serviceIcons: ["fa-solid fa-play", "fas fa-play-circle", "fab fa-disney"], serviceColors: ["#E50914", "#1ce783", "#113ccf"] },
+            { name: "Disney + Nord VPN", price: 379, duration: "month", image: "./assets/cards/disney+nordVPN.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Netflix, Hulu, and Disney+ bundle", categories: ["combo"], services: ["Disney+", "Nord VPN"], serviceIcons: ["fa-solid fa-play", "fas fa-play-circle", "fab fa-disney"], serviceColors: ["#E50914", "#1ce783", "#113ccf"] },
+            { name: "Music & Storage", price: 299, duration: "month", image: "./assets/cards/amazon+onedrive.png", icon: "fas fa-layer-group", color: "#9C27B0", description: "Amazon music HD and 1TB one drive storage", categories: ["combo"], services: ["Amazon Music", "One Drive"], serviceIcons: ["fa-solid fa-music", "fas fa-cloud"], serviceColors: ["#1DB954", "#0078D4"] },
+            { name: "Security Bundle", price: 319, duration: "month", image: "./assets/cards/expressvpn+onedrive.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "ExpressVPN and 1TB one drive cloud storage", categories: ["combo"], services: ["ExpressVPN", "One Drive"], serviceIcons: ["fas fa-shield-alt", "fas fa-cloud"], serviceColors: ["#39AE69", "#0078D4"] },
+            { name: "Ultimate Entertainment", price: 499, duration: "month", image: "./assets/cards/netflix_expressvpn_hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Netflix, HBO Max, and ExpressVPN", categories: ["combo"], services: ["Netflix", "HBO Max", "ExpressVPN"], serviceIcons: ["fab fa-netflix", "fas fa-tv", "fas fa-shield-alt"], serviceColors: ["#E50914", "#6a19ff", "#39AE69"] },
+            
+            // Education-based Subscriptions
+            { name: "MasterClass", price: 1650, duration: "month", image: "https://picsum.photos/seed/masterclass/600/400", icon: "fas fa-chalkboard-teacher", color: "#D0021B", description: "Learn from the world's best instructors", categories: ["education"] },
+            { name: "Coursera Plus", price: 6490, duration: "month", image: "https://picsum.photos/seed/coursera/600/400", icon: "fas fa-graduation-cap", color: "#0056D3", description: "Access thousands of courses", categories: ["education"] },
+            { name: "Skillshare", price: 2090, duration: "month", image: "https://picsum.photos/seed/skillshare/600/400", icon: "fas fa-palette", color: "#FFC300", description: "Online learning community", categories: ["education"] },
+            { name: "LinkedIn Learning", price: 3299, duration: "month", image: "https://picsum.photos/seed/linkedinlearning/600/400", icon: "fab fa-linkedin", color: "#0077B5", description: "Professional development courses", categories: ["education"] },
+            { name: "Udemy", price: 2199, duration: "month", image: "https://picsum.photos/seed/udemy/600/400", icon: "fas fa-book-reader", color: "#A435F0", description: "Wide range of online courses", categories: ["education"] },
+            { name: "Khan Academy", price: 0, duration: "month", image: "https://picsum.photos/seed/khanacademy/600/400", icon: "fas fa-university", color: "#14BF96", description: "Free learning resources", categories: ["education"] },
+            
+            // Adult 18+ Subscriptions
+            { name: "Digital Playground", price: 799, duration: "year", image: "./assets/cards/DigitalPlayground-logo.png", icon: "fas fa-star", color: "#00AFF0", description: "Exclusive content from creators", categories: ["adult"] },
+            { name: "Pornhub Premium", price: 199, duration: "month", image: "./assets/cards/pornhub.webp", icon: "fas fa-video", color: "#FF9000", description: "Ad-free adult entertainment", categories: ["adult"] },
+            { name: "Brazzers", price: 599, duration: "year", image: "./assets/cards/brazzers.webp", icon: "fas fa-fire", color: "#000000", description: "Premium adult content", categories: ["adult"] },
+            { name: "Spice Vids", price: 799, duration: "year", image: "./assets/cards/spicevids.webp", icon: "fas fa-clock", color: "#FF6B6B", description: "Adult streaming platform", categories: ["adult"] },
+            { name: "Reality Kings", price: 699, duration: "year", image: "./assets/cards/realitykings.webp", icon: "fas fa-crown", color: "#FFD700", description: "Reality adult content", categories: ["adult"] },
+            { name: "Bang Bros", price: 699, duration: "year", image: "./assets/cards/bangbros.webp", icon: "fas fa-crown", color: "#FFD700", description: "High-quality, exclusive adult entertainment", categories: ["adult"] },
+            { name: "Babes.com", price: 149, duration: "month", image: "./assets/cards/babes.webp", icon: "fas fa-crown", color: "#FFD700", description: "High-quality, exclusive adult video content", categories: ["adult"] }
+        ];
+        
+        // Category configuration for dynamic skeleton loading
+        const categoryConfig = [
+            { container: document.getElementById('bestSellingContainer'), categoryKey: 'best-selling' },
+            { container: document.getElementById('popularStreamingContainer'), categoryKey: 'popular-streaming' },
+            { container: document.getElementById('musicStreamingContainer'), categoryKey: 'music-streaming' },
+            { container: document.getElementById('cloudStorageContainer'), categoryKey: 'cloud-storage' },
+            { container: document.getElementById('vpnContainer'), categoryKey: 'vpn' },
+            { container: document.getElementById('comboContainer'), categoryKey: 'combo' },
+            { container: document.getElementById('educationContainer'), categoryKey: 'education' },
+            { container: document.getElementById('adultContainer'), categoryKey: 'adult' }
+        ];
+        
+        // Cart state
+        let cart = [];
+        let filteredSubscriptions = [...subscriptions];
+        let searchResults = [];
+        
+        // DOM elements
+        const searchInput = document.getElementById('searchInput');
+        const searchDropdown = document.getElementById('searchDropdown');
+        const searchResultsContainer = document.getElementById('searchResults');
+        const noSearchResults = document.getElementById('noSearchResults');
+        const minPriceSlider = document.getElementById('minPrice');
+        const maxPriceSlider = document.getElementById('maxPrice');
+        const minPriceValue = document.getElementById('minPriceValue');
+        const maxPriceValue = document.getElementById('maxPriceValue');
+        const sortSelect = document.getElementById('sortSelect');
+        const cartBtn = document.getElementById('cartBtn');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartItems = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartFooter = document.getElementById('cartFooter');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const noResults = document.getElementById('noResults');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        
+        // Initialize the page
+        function init() {
+            // Show skeleton loaders first
+            showSkeletonLoaders();
+            
+            // Load cart from localStorage
+            loadCart();
+            
+            // Event listeners
+            searchInput.addEventListener('input', handleSearch);
+            minPriceSlider.addEventListener('input', updatePriceRange);
+            maxPriceSlider.addEventListener('input', updatePriceRange);
+            sortSelect.addEventListener('change', sortSubscriptions);
+            cartBtn.addEventListener('click', openCart);
+            closeCartBtn.addEventListener('click', closeCart);
+            cartOverlay.addEventListener('click', closeCart);
+            checkoutBtn.addEventListener('click', proceedToCheckout);
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+            
+            // Close search dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+                    searchDropdown.classList.remove('active');
+                }
+            });
+            
+            // Simulate loading time and then show actual content
+            setTimeout(() => {
+                // Initialize filtered subscriptions with all subscriptions
+                filteredSubscriptions = [...subscriptions];
+                renderSubscriptionsByCategory();
+                updateCartUI();
+                
+                // Refresh AOS after dynamically adding content
+                AOS.refresh();
+            }, 1500); // 1.5 seconds loading time
+        }
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const isOpen = navMenu.classList.contains('active');
+            
+            if (isOpen) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+        
+        // Open mobile menu
+        function openMobileMenu() {
+            navMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            mobileMenuBtn.classList.add('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close mobile menu
+        function closeMobileMenu() {
+            navMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            document.body.style.overflow = '';
+        }
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                closeMobileMenu();
+            });
+        });
+        
+        // Show skeleton loaders for all containers
+        function showSkeletonLoaders() {
+            categoryConfig.forEach(config => {
+                const count = subscriptions.filter(sub => sub.categories.includes(config.categoryKey)).length;
+                config.container.innerHTML = '';
+                
+                // Create skeleton cards based on the actual number of subscriptions in each category
+                for (let i = 0; i < count; i++) {
+                    const skeletonCard = createSkeletonCard();
+                    config.container.appendChild(skeletonCard);
+                }
+            });
+        }
+        
+        // Create a skeleton card element
+        function createSkeletonCard() {
+            const card = document.createElement('div');
+            card.className = 'skeleton-card';
+            card.innerHTML = `
+                <div class="product-image-container skeleton" style="aspect-ratio: 16/9;">
+                    <!-- Skeleton for image area -->
+                </div>
+                <div class="p-4 sm:p-5 md:p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="skeleton skeleton-image"></div>
+                        <div class="flex-1">
+                            <div class="skeleton skeleton-title"></div>
+                            <div class="skeleton skeleton-text"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skeleton skeleton-text mb-2" style="width: 90%; height: 14px;"></div>
+                    <div class="skeleton skeleton-text mb-4" style="width: 70%; height: 14px;"></div>
+                    
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="skeleton skeleton-price"></div>
+                        <div class="flex items-center">
+                            <div class="skeleton" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;"></div>
+                            <div class="skeleton" style="width: 30px; height: 16px; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+            `;
+            return card;
+        }
+        
+        // Show skeleton loading during filtering/searching
+        function showLoadingState() {
+            // Show skeleton loaders for all containers
+            showSkeletonLoaders();
+            
+            // Hide no results message if it was showing
+            noResults.classList.add('hidden');
+        }
+        
+        // Load cart from localStorage
+        function loadCart() {
+            const savedCart = localStorage.getItem('streamHubCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+        }
+        
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('streamHubCart', JSON.stringify(cart));
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Handle search input
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                searchDropdown.classList.remove('active');
+                return;
+            }
+            
+            // Show loading state
+            showLoadingState();
+            
+            // Simulate a slight delay for searching
+            setTimeout(() => {
+                // Filter subscriptions based on search term
+                searchResults = subscriptions.filter(subscription => {
+                    return subscription.name.toLowerCase().includes(searchTerm) || 
+                           subscription.description.toLowerCase().includes(searchTerm);
+                });
+                
+                // Display search results in dropdown
+                displaySearchResults(searchTerm);
+                searchDropdown.classList.add('active');
+                
+                // Update the main content with search results
+                updateContentWithSearchResults(searchResults);
+                
+                // Refresh AOS after dynamically adding content
+                AOS.refresh();
+            }, 300); // Small delay to show loading state
+        }
+        
+        // Update content with search results
+        function updateContentWithSearchResults(results) {
+            if (results.length === 0) {
+                // Show no results message
+                document.querySelectorAll('.category-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                noResults.classList.remove('hidden');
+            } else {
+                // Show all sections and update them with search results
+                document.querySelectorAll('.category-section').forEach(section => {
+                    section.style.display = 'block';
+                });
+                
+                // Update each category with filtered results using categoryConfig
+                categoryConfig.forEach(config => {
+                    const categoryResults = results.filter(sub => sub.categories.includes(config.categoryKey));
+                    const showBestSeller = config.categoryKey === 'best-selling';
+                    const showCombo = config.categoryKey === 'combo';
+                    updateCategoryWithResults(config.categoryKey, categoryResults, config.container, showBestSeller, showCombo);
+                });
+            }
+        }
+        
+        // Update a specific category with results
+        function updateCategoryWithResults(categoryName, results, container, showBestSeller = false, showCombo = false) {
+            if (results.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center col-span-full">No subscriptions available in this category</p>';
+                return;
+            }
+            
+            renderCategorySubscriptions(results, container, showBestSeller, showCombo);
+        }
+        
+        // Display search results in dropdown
+        function displaySearchResults(searchTerm) {
+            searchResultsContainer.innerHTML = '';
+            
+            if (searchResults.length === 0) {
+                noSearchResults.classList.remove('hidden');
+                return;
+            }
+            
+            noSearchResults.classList.add('hidden');
+            
+            searchResults.forEach(subscription => {
+                const item = document.createElement('div');
+                item.className = 'search-dropdown-item p-3 cursor-pointer flex items-center justify-between';
+                
+                // Create product image HTML for search results
+                const productImageHTML = subscription.image 
+                    ? `<img src="${subscription.image}" alt="${subscription.name}" class="w-10 h-10 rounded-lg object-cover">`
+                    : `<div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${subscription.color}20;">
+                        <i class="${subscription.icon}" style="color: ${subscription.color};"></i>
+                    </div>`;
+                
+                // Highlight matching text
+                const highlightedName = highlightMatch(subscription.name, searchTerm);
+                const highlightedDesc = highlightMatch(subscription.description, searchTerm);
+                
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        ${productImageHTML}
+                        <div class="ml-3">
+                            <h4 class="font-medium">${highlightedName}</h4>
+                            <p class="text-sm text-gray-500">${highlightedDesc}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-bold mr-3">৳${subscription.price}</span>
+                        <button onclick="addToCartFromSearch('${subscription.name}')" class="btn-primary text-sm px-3 py-1 rounded-full">
+                            Add
+                        </button>
+                    </div>
+                `;
+                
+                searchResultsContainer.appendChild(item);
+            });
+        }
+        
+        // Highlight matching text
+        function highlightMatch(text, searchTerm) {
+            if (!searchTerm) return text;
+            
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+        
+        // Add item to cart from search dropdown
+        function addToCartFromSearch(name) {
+            addToCart(name);
+            searchDropdown.classList.remove('active');
+            searchInput.value = '';
+        }
+        
+        // Filter subscriptions based on price range
+        function filterSubscriptions() {
+            // Show loading state
+            showLoadingState();
+            
+            // Simulate a slight delay for filtering
+            setTimeout(() => {
+                const minPrice = parseFloat(minPriceSlider.value);
+                const maxPrice = parseFloat(maxPriceSlider.value);
+                
+                filteredSubscriptions = subscriptions.filter(subscription => {
+                    return subscription.price >= minPrice && subscription.price <= maxPrice;
+                });
+                
+                sortSubscriptions();
+            }, 300); // Small delay to show loading state
+        }
+        
+        // Update price range display
+        function updatePriceRange() {
+            const minPrice = parseFloat(minPriceSlider.value);
+            const maxPrice = parseFloat(maxPriceSlider.value);
+            
+            // Ensure min doesn't exceed max
+            if (minPrice > maxPrice) {
+                minPriceSlider.value = maxPrice;
+            }
+            
+            // Ensure max doesn't go below min
+            if (maxPrice < minPrice) {
+                maxPriceSlider.value = minPrice;
+            }
+            
+            minPriceValue.textContent = `৳${minPrice}`;
+            maxPriceValue.textContent = `৳${maxPrice}`;
+            
+            filterSubscriptions();
+        }
+        
+        // Sort subscriptions
+        function sortSubscriptions() {
+            // Show loading state
+            showLoadingState();
+            
+            // Simulate a slight delay for sorting
+            setTimeout(() => {
+                const sortValue = sortSelect.value;
+                
+                switch (sortValue) {
+                    case 'price-low':
+                        filteredSubscriptions.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price-high':
+                        filteredSubscriptions.sort((a, b) => b.price - a.price);
+                        break;
+                    case 'name':
+                        filteredSubscriptions.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    default:
+                        // Reset to original filtered subscriptions
+                        const minPrice = parseFloat(minPriceSlider.value);
+                        const maxPrice = parseFloat(maxPriceSlider.value);
+                        filteredSubscriptions = subscriptions.filter(subscription => {
+                            return subscription.price >= minPrice && subscription.price <= maxPrice;
+                        });
+                }
+                
+                // Update all category containers with sorted subscriptions
+                renderSubscriptionsByCategory();
+                
+                // Refresh AOS after dynamically adding content
+                AOS.refresh();
+            }, 300); // Small delay to show loading state
+        }
+        
+        // Render subscriptions by category
+        function renderSubscriptionsByCategory() {
+            // Show all sections
+            document.querySelectorAll('.category-section').forEach(section => {
+                section.style.display = 'block';
+            });
+            noResults.classList.add('hidden');
+            
+            // Use categoryConfig to render each category
+            categoryConfig.forEach(config => {
+                const categorySubscriptions = filteredSubscriptions.filter(sub => sub.categories.includes(config.categoryKey));
+                const showBestSeller = config.categoryKey === 'best-selling';
+                const showCombo = config.categoryKey === 'combo';
+                renderCategorySubscriptions(categorySubscriptions, config.container, showBestSeller, showCombo);
+            });
+            
+            // Check if any results were found
+            const totalResults = categoryConfig.reduce((sum, config) => {
+                return sum + filteredSubscriptions.filter(sub => sub.categories.includes(config.categoryKey)).length;
+            }, 0);
+            
+            if (totalResults === 0) {
+                document.querySelectorAll('.category-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                noResults.classList.remove('hidden');
+            }
+        }
+        
+        // Render category subscriptions
+        function renderCategorySubscriptions(subscriptions, container, showBestSeller = false, showCombo = false) {
+            container.innerHTML = '';
+            
+            if (subscriptions.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center col-span-full">No subscriptions available in this category</p>';
+                return;
+            }
+            
+            subscriptions.forEach((subscription, index) => {
+                const card = document.createElement('div');
+                card.className = `subscription-card ${showCombo ? 'combo-card' : ''}`;
+                
+                // Add AOS attributes to cards
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', `${index * 100}`);
+                
+                // Add best seller badge if needed
+                const bestSellerBadge = showBestSeller ? '<span class="best-seller-badge">BEST SELLER</span>' : '';
+                
+                // Add combo badge if needed
+                const comboBadge = showCombo ? '<span class="combo-badge">COMBO</span>' : '';
+                
+                // Create combo services HTML if it's a combo subscription
+                let comboServicesHTML = '';
+                if (subscription.services && subscription.serviceIcons && subscription.serviceColors) {
+                    comboServicesHTML = '<div class="combo-services mt-2">';
+                    for (let i = 0; i < subscription.services.length; i++) {
+                        comboServicesHTML += `
+                            <div class="flex items-center">
+                                <div class="combo-service-icon mr-1" style="background-color: ${subscription.serviceColors[i]}20;">
+                                    <i class="${subscription.serviceIcons[i]}" style="color: ${subscription.serviceColors[i]}; font-size: 12px;"></i>
+                                </div>
+                                <span class="text-xs">${subscription.services[i]}</span>
+                            </div>
+                        `;
+                    }
+                    comboServicesHTML += '</div>';
+                }
+                
+                // Create product image HTML
+                const productImageHTML = subscription.image 
+                    ? `<img src="${subscription.image}" alt="${subscription.name}" class="product-image">`
+                    : `<i class="${subscription.icon} product-icon"></i>`;
+                
+                // Make the entire card clickable
+                card.innerHTML = `
+                    ${bestSellerBadge}
+                    ${comboBadge}
+                    <a href="details.html?name=${encodeURIComponent(subscription.name)}" class="card-link">
+                        <div class="product-image-container">
+                            ${productImageHTML}
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <h3 class="font-bold text-lg">${subscription.name}</h3>
+                            <p class="text-sm text-gray-500 mb-4">${subscription.description}</p>
+                            
+                            ${comboServicesHTML}
+                            
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <span class="text-2xl font-bold">৳${subscription.price}</span>
+                                    <span class="text-gray-500">/${subscription.duration}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <span class="ml-1 text-gray-600">${(Math.random() * 2 + 3).toFixed(1)}</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="event.preventDefault(); addToCart('${subscription.name}')" class="w-full py-2 rounded-lg font-medium text-white btn-primary">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </a>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // Add item to cart
+        function addToCart(name) {
+            const subscription = subscriptions.find(sub => sub.name === name);
+            
+            if (subscription) {
+                const existingItem = cart.find(item => item.name === name);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                    showNotification(`${subscription.name} quantity updated in cart`);
+                } else {
+                    cart.push({ ...subscription, quantity: 1 });
+                    showNotification(`${subscription.name} added to cart`);
+                }
+                
+                updateCartUI();
+                saveCart(); // Save cart to localStorage
+                
+                // Add animation to cart button
+                cartCount.classList.add('pulse');
+                setTimeout(() => cartCount.classList.remove('pulse'), 500);
+            }
+        }
+        
+        // Remove item from cart
+        function removeFromCart(name) {
+            const item = cart.find(item => item.name === name);
+            if (item) {
+                cart = cart.filter(item => item.name !== name);
+                showNotification(`${item.name} removed from cart`);
+                updateCartUI();
+                saveCart(); // Save cart to localStorage
+            }
+        }
+        
+        // Update cart quantity
+        function updateCartQuantity(name, quantity) {
+            const item = cart.find(item => item.name === name);
+            
+            if (item) {
+                if (quantity <= 0) {
+                    removeFromCart(name);
+                } else {
+                    item.quantity = quantity;
+                    updateCartUI();
+                    saveCart(); // Save cart to localStorage
+                }
+            }
+        }
+        
+        // Update cart UI
+        function updateCartUI() {
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Clear cart items container
+            cartItems.innerHTML = '';
+            
+            // Update cart items
+            if (cart.length === 0) {
+                // Show empty cart message
+                cartItems.innerHTML = `
+                    <div id="emptyCart" class="text-center py-12">
+                        <i class="fas fa-shopping-cart text-5xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600">Your cart is empty</h3>
+                        <p class="text-gray-500 mt-2">Add some subscriptions to get started</p>
+                    </div>
+                `;
+                cartFooter.classList.add('hidden');
+            } else {
+                // Show cart items
+                cartFooter.classList.remove('hidden');
+                
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'flex items-center justify-between py-4 border-b border-gray-200';
+                    
+                    // Create product image HTML for cart items
+                    const productImageHTML = item.image 
+                        ? `<img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg object-cover">`
+                        : `<div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${item.color}20;">
+                            <i class="${item.icon}" style="color: ${item.color};"></i>
+                        </div>`;
+                    
+                    cartItem.innerHTML = `
+                        <div class="flex items-center">
+                            ${productImageHTML}
+                            <div class="ml-3">
+                                <h4 class="font-medium">${item.name}</h4>
+                                <p class="text-sm text-gray-500">৳${item.price}/${item.duration}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="flex items-center border border-gray-300 rounded-md">
+                                <button onclick="updateCartQuantity('${item.name}', ${item.quantity - 1})" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="px-2 py-1">${item.quantity}</span>
+                                <button onclick="updateCartQuantity('${item.name}', ${item.quantity + 1})" class="px-2 py-1 text-gray-600 hover:bg-gray-100">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button onclick="removeFromCart('${item.name}')" class="ml-3 text-gray-400 hover:text-red-500">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    cartItems.appendChild(cartItem);
+                });
+                
+                // Update cart total
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                cartTotal.textContent = `৳${total}`;
+            }
+        }
+        
+        // Open cart
+        function openCart() {
+            cartSidebar.classList.add('open');
+            cartOverlay.classList.add('active');
+            document.body.classList.add('cart-open');
+        }
+        
+        // Close cart
+        function closeCart() {
+            cartSidebar.classList.remove('open');
+            cartOverlay.classList.remove('active');
+            document.body.classList.remove('cart-open');
+        }
+        
+        // Proceed to checkout
+        function proceedToCheckout() {
+            if (cart.length === 0) return;
+            
+            // Save cart to localStorage before redirecting
+            saveCart();
+            
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+        }
+        
+        // Initialize the app
+        init();
+    </script>
 </body>
-
 </html>
