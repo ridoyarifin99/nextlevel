@@ -858,11 +858,11 @@
                     applyPromo.classList.add('bg-gray-200', 'text-gray-700');
                 }, 2000);
                 
-            } else if (code === 'STREAM10') {
+            } else if (code === 'NEXTLEVEL10') {
                 // Apply 10% discount
                 const subtotal = parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,""));
                 discountAmount = Math.round(subtotal * 0.1);
-                appliedPromoCode = 'STREAM10';
+                appliedPromoCode = 'NEXTLEVEL10';
                 
                 // Update UI
                 renderOrderSummary();
@@ -982,7 +982,7 @@
         function sendOrderToWhatsApp(orderData) {
             try {
                 // Create WhatsApp message
-                let message = `*New Order - StreamHub*\n\n`;
+                let message = `*New Order - Next Level Estore*\n\n`;
                 message += `*Customer Information:*\n`;
                 message += `Name: ${orderData.firstName} ${orderData.lastName}\n`;
                 message += `Email: ${orderData.email}\n`;
