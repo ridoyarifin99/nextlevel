@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - StreamHub</title>
+    <title>Product Details - Next Level Estore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./src/output.css">
     <link rel="stylesheet" href="./src/all.min.css">
@@ -821,7 +821,7 @@
                 images: [
                     "./assets/details/primevideo/prime1.webp",
                     "./assets/details/primevideo/prime2.webp",
-                    "./assets/details/primevideo/prime3.webp"
+                    "./assets/details/primevideo/3.webp"
                 ],
                 categories: ["best-selling", "popular-streaming"],
                 rating: 4.5,
@@ -881,14 +881,14 @@
             },
             {
                 name: "HBO Max",
-                description: "Premium content and Warner Bros. movies",
+                description: "HBO, Warner Bros., DC, Max Originals",
                 icon: "fas fa-tv",
                 color: "#6a19ff",
                 image: "./assets/cards/hbo_max.svg",
                 images: [
-                    "./assets/cards/hbo_max.svg",
-                    "./assets/cards/hbo_max2.svg",
-                    "./assets/cards/hbo_max3.svg"
+                    "./assets/details/hbomax/1.webp",
+                    "./assets/details/hbomax/2.webp",
+                    "./assets/details/hbomax/3.webp"
                 ],
                 categories: ["best-selling", "popular-streaming"],
                 rating: 4.6,
@@ -900,6 +900,7 @@
                     { duration: "1 Year", price: 649, currency: "BDT", popular: false, discount: "Save 1739 Taka" }
                 ],
                 features: [
+                    "Renewable",
                     "VPN required",
                     "Single screen",
                     "Pin locked profile",
@@ -958,9 +959,9 @@
                 color: "#F47521",
                 image: "./assets/cards/crunchy.png",
                 images: [
-                    "./assets/cards/crunchy1.png",
-                    "./assets/cards/crunchy2.png",
-                    "./assets/cards/crunchy3.png"
+                    "./assets/details/crunchyroll/1.webp",
+                    "./assets/details/crunchyroll/2.jpg",
+                    "./assets/details/crunchyroll/3.webp"
                 ],
                 categories: ["best-selling", "popular-streaming"],
                 rating: 4.4,
@@ -972,7 +973,15 @@
                     { duration: "1 Year", price: 599, currency: "BDT", popular: false, discount: "Save 1189 Taka" }
                 ],
                 features: [
+                    "Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Pin locked profile",
+                    "Full day's warrany depending on your package duration",
+                    "Upto 3 device login limit",
                     "Ad-free anime streaming",
+                    "4K Ultra HD streaming",
                     "Simulcasts from Japan",
                     "Manga library access",
                     "Offline viewing",
@@ -1018,16 +1027,168 @@
                     }
                 ]
             },
+                      {
+                name: "Chorki Premium",
+                description: "Bengali. Bold. Streaming",
+                icon: "fas fa-play-circle",
+                color: "#ED1D51",
+                image: "./assets/cards/chorki.webp",
+                images: [
+                    "./assets/details/chorki/1.avif",
+                    "./assets/details/chorki/2.webp",
+                    "./assets/details/chorki/3.webp"
+                ],
+                categories: ["best-selling", "popular-streaming"],
+                rating: 4.4,
+                reviews: 8760,
+                pricing: [
+                    { duration: "1 Month", price: 199, currency: "BDT", popular: false },
+                    { duration: "3 Months", price: 449, currency: "BDT", popular: false, discount: "Save 250 Taka" },
+                    { duration: "6 Months", price: 899, currency: "BDT", popular: true, discount: "Save 295 Taka" },
+                    { duration: "1 Year", price: 1399, currency: "BDT", popular: false, discount: "Save 989 Taka" }
+                ],
+                features: [
+                    "Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Pin locked profile",
+                    "Full day's warrany depending on your package duration",
+                    "Upto 3 device login limit",
+                    "Ad-free streaming",
+                    "4K Ultra HD streaming",
+                    "Exclusive Bangladeshi originals and movies",
+                    "International movies and series library",
+                    "Offline viewing",
+                    "Watch on multiple devices",
+                    "Early access to new releases",
+                    "Exclusive Chorki Originals"
+                ],
+                customerReviews: [
+                    {
+                        name: "Alex Rivera",
+                        rating: 5,
+                        date: "2023-10-13",
+                        comment: "The best anime streaming service. Simulcasts are amazing and the manga library is a great bonus."
+                    },
+                    {
+                        name: "Samantha Kim",
+                        rating: 4,
+                        date: "2023-10-07",
+                        comment: "Great selection of anime. The app could use some improvements but the content is top-notch."
+                    },
+                    {
+                        name: "Tyler Johnson",
+                        rating: 4,
+                        date: "2023-10-02",
+                        comment: "Love the simulcasts and the exclusive content. The Mega Fan plan is worth it for the offline viewing."
+                    }
+                ],
+                faq: [
+                    {
+                        question: "What is included in Crunchyroll Mega Fan?",
+                        answer: "Crunchyroll Mega Fan includes ad-free anime streaming, simulcasts from Japan, offline viewing, and access to the manga library."
+                    },
+                    {
+                        question: "How soon after airing in Japan are episodes available?",
+                        answer: "Most episodes are available on Crunchyroll within one hour of their Japanese broadcast."
+                    },
+                    {
+                        question: "Can I watch Crunchyroll on multiple devices?",
+                        answer: "Yes, you can stream on multiple devices simultaneously with the Mega Fan plan."
+                    },
+                    {
+                        question: "Is there a difference between Crunchyroll and Crunchyroll Mega Fan?",
+                        answer: "Mega Fan offers additional benefits like offline viewing, simulcast access, and ad-free streaming compared to the free tier."
+                    }
+                ]
+            },
+                   {
+                name: "Hoichoi Premium",
+                description: "Bengali. Bold. Streaming",
+                icon: "fas fa-play-circle",
+                color: "#ED1D51",
+                image: "./assets/cards/hoichoi.png",
+                images: [
+                    "./assets/details/hoichoi/1.webp",
+                    "./assets/details/hoichoi/2.webp",
+                    "./assets/details/hoichoi/3.webp"
+                ],
+                categories: ["best-selling", "popular-streaming"],
+                rating: 4.4,
+                reviews: 8760,
+                pricing: [
+                    { duration: "1 Month", price: 149, currency: "BDT", popular: false },
+                    { duration: "3 Months", price: 449, currency: "BDT", popular: false, discount: "Save 250 Taka" },
+                    { duration: "6 Months", price: 899, currency: "BDT", popular: true, discount: "Save 295 Taka" },
+                    { duration: "1 Year", price: 1399, currency: "BDT", popular: false, discount: "Save 989 Taka" }
+                ],
+                features: [
+                    "Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Pin locked profile",
+                    "Full day's warrany depending on your package duration",
+                    "Upto 3 device login limit",
+                    "Ad-free streaming",
+                    "4K Ultra HD streaming",
+                    "Exclusive Bangladeshi originals and movies",
+                    "International movies and series library",
+                    "Offline viewing",
+                    "Watch on multiple devices",
+                    "Early access to new releases",
+                    "Exclusive Hoichoi Originals"
+                ],
+                customerReviews: [
+                    {
+                        name: "Alex Rivera",
+                        rating: 5,
+                        date: "2023-10-13",
+                        comment: "The best anime streaming service. Simulcasts are amazing and the manga library is a great bonus."
+                    },
+                    {
+                        name: "Samantha Kim",
+                        rating: 4,
+                        date: "2023-10-07",
+                        comment: "Great selection of anime. The app could use some improvements but the content is top-notch."
+                    },
+                    {
+                        name: "Tyler Johnson",
+                        rating: 4,
+                        date: "2023-10-02",
+                        comment: "Love the simulcasts and the exclusive content. The Mega Fan plan is worth it for the offline viewing."
+                    }
+                ],
+                faq: [
+                    {
+                        question: "What is included in Crunchyroll Mega Fan?",
+                        answer: "Crunchyroll Mega Fan includes ad-free anime streaming, simulcasts from Japan, offline viewing, and access to the manga library."
+                    },
+                    {
+                        question: "How soon after airing in Japan are episodes available?",
+                        answer: "Most episodes are available on Crunchyroll within one hour of their Japanese broadcast."
+                    },
+                    {
+                        question: "Can I watch Crunchyroll on multiple devices?",
+                        answer: "Yes, you can stream on multiple devices simultaneously with the Mega Fan plan."
+                    },
+                    {
+                        question: "Is there a difference between Crunchyroll and Crunchyroll Mega Fan?",
+                        answer: "Mega Fan offers additional benefits like offline viewing, simulcast access, and ad-free streaming compared to the free tier."
+                    }
+                ]
+            },
             {
                 name: "Spotify Premium",
                 description: "Ad-free music and podcasts",
                 icon: "fab fa-spotify",
                 color: "#1DB954",
-                image: "./assets/cards/spotify.jpg",
+                image: "./assets/details/spotify/1.webp",
                 images: [
-                    "./assets/cards/spotify.jpg",
-                    "./assets/cards/spotify2.jpg",
-                    "./assets/cards/spotify3.jpg"
+                "./assets/details/spotify/1.webp",
+                "./assets/details/spotify/2.webp",
+                "./assets/details/spotify/3.webp"
                 ],
                 categories: ["best-selling", "music-streaming"],
                 rating: 4.8,
@@ -1039,6 +1200,14 @@
                     { duration: "1 Year", price: 2599, currency: "BDT", popular: false, discount: "Save 149 Taka" }
                 ],
                 features: [
+                    "Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Personal email activation",
+                    "Full day's warrany depending on your package duration",
+                    "Upto 3 device login limit",
+                    "1 device streaming limit",
                     "Ad-free music listening",
                     "Download for offline listening",
                     "High-quality audio",
@@ -1092,9 +1261,9 @@
                 color: "#1DB954",
                 image: "./assets/cards/amazon-music-unlimited.jpeg",
                 images: [
-                    "./assets/cards/amazon-music-unlimited.jpeg",
-                    "./assets/cards/amazon-music-unlimited2.jpeg",
-                    "./assets/cards/amazon-music-unlimited3.jpeg"
+                "./assets/details/amazon_music/1.webp",
+                "./assets/details/amazon_music/2.webp",
+                "./assets/details/amazon_music/3.webp"
                 ],
                 categories: ["best-selling", "music-streaming"],
                 rating: 4.5,
@@ -1106,6 +1275,14 @@
                     { duration: "1 Year", price: 649, currency: "BDT", popular: false, discount: "Save 899 Taka" }
                 ],
                 features: [
+                    "Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Personal email activation",
+                    "Full day's warrany depending on your package duration",
+                    "Upto 3 device login limit",
+                    "1 device streaming limit",
                     "70 million songs in HD",
                     "Ad-free listening",
                     "Unlimited skips",
@@ -1230,7 +1407,7 @@
                     "./assets/cards/youtube2.webp",
                     "./assets/cards/youtube3.webp"
                 ],
-                categories: ["best-selling", "popular-streaming"],
+                categories: ["best-selling", "popular-streaming", "music-streaming"],
                 rating: 4.3,
                 reviews: 14320,
                 pricing: [
@@ -1688,73 +1865,6 @@
                     {
                         question: "Can I download content for offline viewing?",
                         answer: "Yes, Peacock Premium allows you to download select content to watch offline on your mobile devices."
-                    }
-                ]
-            },
-            {
-                name: "YouTube Premium",
-                description: "Ad-free videos and YouTube Music",
-                icon: "fab fa-youtube",
-                color: "#FF0000",
-                image: "../assets/cards/youtube.avif",
-                images: [
-                    "../assets/cards/youtube.avif",
-                    "../assets/cards/youtube2.avif",
-                    "../assets/cards/youtube3.avif"
-                ],
-                categories: ["popular-streaming", "music-streaming"],
-                rating: 4.3,
-                reviews: 14320,
-                pricing: [
-                    { duration: "1 Month", price: 249, currency: "BDT", popular: false },
-                    { duration: "3 Months", price: 729, currency: "BDT", popular: false, discount: "Save 18 Taka" },
-                    { duration: "6 Months", price: 1449, currency: "BDT", popular: true, discount: "Save 45 Taka" },
-                    { duration: "1 Year", price: 2899, currency: "BDT", popular: false, discount: "Save 89 Taka" }
-                ],
-                features: [
-                    "Ad-free videos",
-                    "Background play",
-                    "Offline downloads",
-                    "YouTube Music Premium",
-                    "Watch on multiple devices",
-                    "Exclusive content"
-                ],
-                customerReviews: [
-                    {
-                        name: "Christopher Hall",
-                        rating: 4,
-                        date: "2023-10-13",
-                        comment: "No ads makes YouTube so much better. The background play is great for podcasts and music."
-                    },
-                    {
-                        name: "Michelle White",
-                        rating: 4,
-                        date: "2023-10-08",
-                        comment: "YouTube Premium is worth it just to skip the ads. The offline downloads are very useful."
-                    },
-                    {
-                        name: "Brian Harris",
-                        rating: 4,
-                        date: "2023-10-02",
-                        comment: "Good value for what you get. The YouTube Music inclusion is a nice bonus."
-                    }
-                ],
-                faq: [
-                    {
-                        question: "What's included with YouTube Premium?",
-                        answer: "YouTube Premium includes ad-free videos, background play, offline downloads, YouTube Music Premium, and access to YouTube Originals."
-                    },
-                    {
-                        question: "Can I download videos for offline viewing?",
-                        answer: "Yes, YouTube Premium allows you to download videos to watch offline on your mobile devices."
-                    },
-                    {
-                        question: "Does YouTube Premium include YouTube Music?",
-                        answer: "Yes, YouTube Premium includes a subscription to YouTube Music Premium at no additional cost."
-                    },
-                    {
-                        question: "How many devices can I use with YouTube Premium?",
-                        answer: "You can use YouTube Premium on multiple devices, but background play and downloads are only available on mobile devices."
                     }
                 ]
             },
