@@ -263,7 +263,6 @@
         .logo-container {
             display: flex;
             align-items: center;
-            position: relative;
         }
         
         .logo-image {
@@ -383,6 +382,21 @@
             .whatsapp-fab {
                 bottom: 100px;
                 right: 30px;
+            }
+        }
+
+        /* Safari specific fixes */
+        @supports (-webkit-appearance: none) or (appearance: none) {
+            .form-input {
+                appearance: none;
+                -webkit-appearance: none;
+            }
+            
+            .quantity-btn {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
         }
     </style>
@@ -648,7 +662,7 @@
             // Update cart count
             updateCartCount();
             
-            // Event listeners
+           // Event listeners
             promoToggle.addEventListener('change', togglePromoSection);
             applyPromo.addEventListener('click', applyPromoCode);
             placeOrderBtn.addEventListener('click', placeOrder);
@@ -693,7 +707,7 @@
                     ? `<img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg mr-3 object-contain">`
                     : `<div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${item.color}20;">
                         <i class="${item.icon}" style="color: ${item.color};"></i>
-                    </div>`;
+                      </div>`;
                 
                 orderItem.innerHTML = `
                     <div class="flex justify-between items-start">
@@ -1005,11 +1019,6 @@
                 console.error('Error sending to WhatsApp:', error);
                 alert('There was an error sending your order to WhatsApp. Please try again.');
             }
-        }
-        
-        // Send to WhatsApp from floating button
-        function sendToWhatsApp() {
-            placeOrder();
         }
         
         // Close success modal
