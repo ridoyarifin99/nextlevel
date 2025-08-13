@@ -22,13 +22,6 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-        
         /* Custom animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -49,6 +42,21 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes checkmarkAnimation {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
         
         @keyframes vanishingSlide {
@@ -76,22 +84,8 @@
             animation: slideIn 0.4s ease-out forwards;
         }
         
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--light-bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+        .animate-checkmark {
+            animation: checkmarkAnimation 0.6s ease-out forwards;
         }
         
         /* Component-specific styles */
@@ -147,10 +141,12 @@
             transition: var(--transition);
         }
         
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
+        .form-input.invalid {
+            border-color: var(--accent-color);
+        }
+        
+        .form-input.valid {
+            border-color: #28a745;
         }
         
         .payment-method {
@@ -590,7 +586,7 @@
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center animate-fade-in">
                 <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-check text-3xl text-green-500"></i>
+                    <i class="fas fa-check text-3xl text-green-500 animate-checkmark"></i>
                 </div>
                 <h2 class="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
                 <p class="text-gray-600 mb-6">Your order details have been sent to WhatsApp. We'll contact you soon for payment confirmation.</p>
