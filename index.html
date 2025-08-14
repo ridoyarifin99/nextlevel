@@ -1,27 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- WhatsApp and Social Media Preview -->
-  <meta property="og:title" content="Next Level - Premium Subscriptions Store" />
-  <meta property="og:description" content="Buy Netflix, Disney+, and HBO Max subscriptions in Bangladesh at a cheap price." />
-  <meta property="og:image" content="https://www.nextlevelbd.store/images/preview.jpg">
-  <meta property="og:url" content="https://nextlevelbd.store" />
-  <meta property="og:type" content="website" />
-  
-  <link rel="shortcut icon" href="/images/icon/icon.svg" type="image/x-icon">
-    <title>Next Level Estore- Premium Subscriptions</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Buy Netflix, Disney+, HBO Max, Spotify and other premium subscriptions in Bangladesh at cheap prices. Instant delivery, secure payments, and 24/7 support.">
+    <meta name="keywords" content="Netflix Bangladesh, Disney+ Bangladesh, HBO Max Bangladesh, Spotify Premium, VPN Bangladesh, streaming subscriptions, cheap subscriptions, digital services Bangladesh">
+    <meta name="author" content="Next Level Estore">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nextlevelbd.store">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Next Level - Premium Subscriptions Store in Bangladesh" />
+    <meta property="og:description" content="Buy Netflix, Disney+, and HBO Max subscriptions in Bangladesh at cheap prices. Instant delivery and secure payments." />
+    <meta property="og:image" content="https://www.nextlevelbd.store/images/preview.jpg">
+    <meta property="og:url" content="https://nextlevelbd.store" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Next Level Estore">
+    <meta property="og:locale" content="en_BD">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Next Level - Premium Subscriptions Store in Bangladesh">
+    <meta name="twitter:description" content="Buy Netflix, Disney+, and HBO Max subscriptions in Bangladesh at cheap prices.">
+    <meta name="twitter:image" content="https://www.nextlevelbd.store/images/preview.jpg">
+    <meta name="twitter:site" content="@nextlevelbd">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/images/icon/icon.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/images/icon/apple-touch-icon.png">
+    
+    <!-- Title -->
+    <title>Next Level Estore - Premium Subscriptions in Bangladesh | Netflix, Disney+, HBO Max & More</title>
+    
     <!-- Tailwind CSS - CLI Version -->
     <link rel="stylesheet" href="./src/output.css">
     <link rel="stylesheet" href="./src/all.min.css">
+    
     <!-- AOS Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Next Level Estore",
+      "url": "https://nextlevelbd.store",
+      "description": "Premium digital subscriptions store in Bangladesh offering Netflix, Disney+, HBO Max, Spotify and more at cheap prices.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://nextlevelbd.store/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Next Level Estore",
+      "url": "https://nextlevelbd.store",
+      "logo": "https://www.nextlevelbd.store/images/next_level.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+8801644490566",
+        "contactType": "Customer Service",
+        "availableLanguage": ["English", "Bengali"]
+      },
+      "sameAs": [
+        "https://www.facebook.com/nextlevelestorebd",
+        "https://wa.me/8801644490566"
+      ]
+    }
+    </script>
 </head>
 <body>
- <!-- Mobile Menu Overlay -->
+    <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     
     <!-- Header -->
@@ -33,7 +91,7 @@
                         <i class="fas fa-bars"></i>
                     </button>
                     <div class="logo-container">
-                        <img src="/images/next_level.png" alt="StreamHub Logo" class="logo-image">
+                        <img src="/images/next_level.png" alt="Next Level Estore Logo" class="logo-image">
                         <div class="logo-text-container">
                             <div class="logo-text-item" style="color: var(--primary-color);">Trusted</div>
                             <div class="logo-text-item" style="color: var(--primary-color);">Cheap</div>
@@ -43,7 +101,7 @@
                     </div>
                 </div>
                 
-                <nav class="nav-menu" id="navMenu">
+                <nav class="nav-menu" id="navMenu" aria-label="Main navigation">
                     <a href="#best-selling" class="nav-link">Best Sellers</a>
                     <a href="#streaming" class="nav-link">Streaming</a>
                     <a href="#music" class="nav-link">Music</a>
@@ -58,8 +116,8 @@
                 <div class="flex items-center gap-4">
                     <div class="search-container relative flex-1 max-w-md">
                         <input type="text" id="searchInput" placeholder="Search subscriptions..." 
-                            class="search-input w-full py-2 px-4 pl-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent">
-                        <i class="fas fa-search search-icon absolute left-3 top-3 text-gray-400"></i>
+                            class="search-input w-full py-2 px-4 pl-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" aria-label="Search subscriptions">
+                        <i class="fas fa-search search-icon absolute left-3 top-3 text-gray-400" aria-hidden="true"></i>
                         
                         <!-- Search Results Dropdown -->
                         <div id="searchDropdown" class="search-dropdown">
@@ -67,7 +125,7 @@
                                 <!-- Search results will be dynamically added here -->
                             </div>
                             <div id="noSearchResults" class="hidden p-4 text-center text-gray-500">
-                                <i class="fas fa-search text-2xl mb-2"></i>
+                                <i class="fas fa-search text-2xl mb-2" aria-hidden="true"></i>
                                 <p>No subscriptions found</p>
                             </div>
                         </div>
@@ -75,7 +133,7 @@
                     
                     <div class="relative">
                         <button id="cartBtn" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors cursor-pointer" aria-label="Shopping cart">
-                            <i class="fas fa-shopping-cart text-2xl"></i>
+                            <i class="fas fa-shopping-cart text-2xl" aria-hidden="true"></i>
                             <span id="cartCount" class="cart-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
                         </button>
                     </div>
@@ -87,31 +145,30 @@
     <!-- Hero Section -->
     <section class="py-12 bg-gradient-to-r from-purple-600 to-blue-500 text-white">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Premium Subscriptions</h1>
-            <p class="text-xl max-w-2xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">Get access to all your favorite services in one place at unbeatable prices</p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Premium Subscriptions in Bangladesh</h1>
+            <p class="text-xl max-w-2xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">Get access to all your favorite services at unbeatable prices with instant delivery</p>
             <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="300">
-                    <i class="fas fa-check-circle mr-2"></i>
+                    <i class="fas fa-check-circle mr-2" aria-hidden="true"></i>
                     <span>Instant Delivery</span>
                 </div>
                 <div class="flex justify-between gap-4">
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="400">
-                    <i class="fas fa-shield-alt mr-2"></i>
+                    <i class="fas fa-shield-alt mr-2" aria-hidden="true"></i>
                     <span>Secure Payments</span>
                 </div>
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="500">
-                    <i class="fas fa-headset mr-2"></i>
+                    <i class="fas fa-headset mr-2" aria-hidden="true"></i>
                     <span>24/7 Support</span>
                 </div>    
                 </div>
                 </div>
-
                     <div class="dbid flex flex-wrap gap-4 justify-center mt-6" data-aos="fade-up">
                      <h4 class="text-3xl font-bold" >
                         Verified By 
                     </h4>
                     <div class="h-10 flex animate-bounce justify-center">
-                        <img src="./images/logo-dbid.png" alt="dbid">
+                        <img src="./images/logo-dbid.png" alt="DBID Verification Badge">
                     </div>
                     </div>
         </div>
@@ -125,19 +182,19 @@
                 
                 <div class="flex flex-wrap gap-4" data-aos="fade-left">
                     <div class="flex items-center">
-                        <label class="mr-2 text-gray-700">Price Range:</label>
-                        <div class="flex items-center space-x-2">
+                        <label for="priceRange" class="mr-2 text-gray-700">Price Range:</label>
+                        <div class="flex items-center space-x-2" id="priceRange">
                             <span id="minPriceValue" class="text-sm font-medium">৳0</span>
-                            <input type="range" id="minPrice" min="0" max="3300" value="0" class="range-slider w-24">
+                            <input type="range" id="minPrice" min="0" max="3300" value="0" class="range-slider w-24" aria-label="Minimum price">
                             <span>-</span>
-                            <input type="range" id="maxPrice" min="0" max="3300" value="3300" class="range-slider w-24">
+                            <input type="range" id="maxPrice" min="0" max="3300" value="3300" class="range-slider w-24" aria-label="Maximum price">
                             <span id="maxPriceValue" class="text-sm font-medium">৳3300</span>
                         </div>
                     </div>
                     
                     <div class="flex items-center">
-                        <label class="mr-2 text-gray-700">Sort By:</label>
-                        <select id="sortSelect" class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        <label for="sortSelect" class="mr-2 text-gray-700">Sort By:</label>
+                        <select id="sortSelect" class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-300" aria-label="Sort subscriptions">
                             <option value="default">Default</option>
                             <option value="price-low">Price: Low to High</option>
                             <option value="price-high">Price: High to Low</option>
@@ -150,61 +207,61 @@
     </section>
     
     <!-- Subscriptions Section -->
-    <section class="py-12">
+    <main class="py-12">
         <div class="container mx-auto px-4">
             <!-- Best-selling Subscriptions -->
-            <div id="best-selling" class="category-section">
+            <section id="best-selling" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-crown text-yellow-500"></i>
+                        <i class="fas fa-crown text-yellow-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Best-selling Subscriptions</h2>
-                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Our most popular services</p>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Our most popular services in Bangladesh</p>
                     </div>
                 </div>
                 <div id="bestSellingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Popular Streaming Subscriptions -->
-            <div id="streaming" class="category-section">
+            <section id="streaming" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-fire text-blue-500"></i>
+                        <i class="fas fa-fire text-blue-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Popular Streaming Subscriptions</h2>
-                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Trending video and movie streaming platforms</p>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Trending video and movie streaming platforms in Bangladesh</p>
                     </div>
                 </div>
                 <div id="popularStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Music Streaming Subscriptions -->
-            <div id="music" class="category-section">
+            <section id="music" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-music text-green-500"></i>
+                        <i class="fas fa-music text-green-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Music Streaming Subscriptions</h2>
-                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Unlimited music and podcast streaming</p>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Unlimited music and podcast streaming services</p>
                     </div>
                 </div>
                 <div id="musicStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Cloud Storage Subscriptions -->
-            <div id="storage" class="category-section">
+            <section id="storage" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-cloud text-blue-500"></i>
+                        <i class="fas fa-cloud text-blue-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Cloud Storage Subscriptions</h2>
@@ -214,13 +271,13 @@
                 <div id="cloudStorageContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Premium VPN Subscriptions -->
-            <div id="vpn" class="category-section">
+            <section id="vpn" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-shield-alt text-green-500"></i>
+                        <i class="fas fa-shield-alt text-green-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Premium VPN Subscriptions</h2>
@@ -230,13 +287,13 @@
                 <div id="vpnContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Combo Subscriptions -->
-            <div id="combos" class="category-section">
+            <section id="combos" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-layer-group text-purple-500"></i>
+                        <i class="fas fa-layer-group text-purple-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Combo Subscriptions</h2>
@@ -246,13 +303,13 @@
                 <div id="comboContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Education-based Subscriptions -->
-            <div id="education" class="category-section">
+            <section id="education" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-graduation-cap text-purple-500"></i>
+                        <i class="fas fa-graduation-cap text-purple-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Education-based Subscriptions</h2>
@@ -262,13 +319,13 @@
                 <div id="educationContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <!-- Adult 18+ Subscriptions -->
-            <div id="adult" class="category-section">
+            <section id="adult" class="category-section">
                 <div class="flex  items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
                     <div class="category-icon">
-                        <i class="fas fa-eye text-pink-500"></i>
+                        <i class="fas fa-eye text-pink-500" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h2 class="category-title" data-aos="fade-right">Adult 18+ Subscriptions</h2>
@@ -278,15 +335,15 @@
                 <div id="adultContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
                     <!-- Skeleton loading cards will be shown initially -->
                 </div>
-            </div>
+            </section>
             
             <div id="noResults" class="hidden text-center py-12">
-                <i class="fas fa-search text-5xl text-gray-300 mb-4"></i>
+                <i class="fas fa-search text-5xl text-gray-300 mb-4" aria-hidden="true"></i>
                 <h3 class="text-xl font-semibold text-gray-600">No subscriptions found</h3>
                 <p class="text-gray-500 mt-2">Try adjusting your search or filter criteria</p>
             </div>
         </div>
-    </section>
+    </main>
     
     <!-- Footer -->
     <footer>
@@ -294,10 +351,10 @@
             <div class="footer-content">
                 <div class="footer-section" data-aos="fade-up">
                     <h3>About Next Level</h3>
-                    <p>Your one-stop destination for premium digital subscriptions at unbeatable prices. We offer a wide range of services from streaming platforms to cloud storage solutions.</p>
+                    <p>Your one-stop destination for premium digital subscriptions at unbeatable prices in Bangladesh. We offer a wide range of services from streaming platforms to cloud storage solutions with instant delivery.</p>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/nextlevelestorebd" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://wa.me/8801644490566" aria-label="Whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/nextlevelestorebd" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/8801644490566" aria-label="Whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a>
                         <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                         <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                     </div>
@@ -338,7 +395,7 @@
             </div>
             
             <div class="footer-bottom" data-aos="fade-up" data-aos-delay="400">
-                <p>&copy; 2023 Next Level Estore. All rights reserved.</p>
+                <p>&copy; 2023 Next Level Estore. All rights reserved. | Premium Subscriptions Store in Bangladesh</p>
             </div>
         </div>
     </footer>
@@ -350,8 +407,8 @@
     <div id="cartSidebar" class="cart-sidebar">
         <div class="p-6 border-b border-gray-200 flex justify-between items-center">
             <h2 class="text-2xl font-bold">Your Cart</h2>
-            <button id="closeCartBtn" class="text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times text-xl"></i>
+            <button id="closeCartBtn" class="text-gray-500 hover:text-gray-700" aria-label="Close cart">
+                <i class="fas fa-times text-xl" aria-hidden="true"></i>
             </button>
         </div>
         
@@ -687,7 +744,6 @@ function handleSearch() {
         AOS.refresh();
     }, 300); // Small delay to show loading state
 }
-
 // Close search dropdown when clicking outside
 document.addEventListener('click', function(event) {
     if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
