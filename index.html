@@ -149,7 +149,7 @@
                     <a href="#music" class="nav-link">Music</a>
                     <a href="#storage" class="nav-link">Cloud Storage</a>
                     <a href="#vpn" class="nav-link">VPN</a>
-                    <a href="#Ai & Design" class="nav-link">Ai & Design</a>
+                    <a href="#aiDesign" class="nav-link">Ai & Design</a>
                     <a href="#combos" class="nav-link">Combos</a>
                     <a href="#education" class="nav-link">Education</a>
                     <a href="#adult" class="nav-link">Adult</a>
@@ -210,7 +210,7 @@
                         Verified By 
                     </h4>
                     <div class="h-10 flex animate-bounce justify-center">
-                        <img src="./images/logo-dbid.png" alt="DBID Verification Badge">
+                        <img src="/images/logo-dbid.png" alt="DBID Verification Badge">
                     </div>
                     </div>
         </div>
@@ -331,6 +331,21 @@
                 </div>
             </section>
             
+                        <!-- Ai & Design -->
+            <section id="aiDesign" class="category-section">
+                <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
+                    <div class="category-icon">
+                        <i class="fas fa-shield-alt text-green-500" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h2 class="category-title" data-aos="fade-right">Ai & Design Subscriptions</h2>
+                        <p class="category-description" data-aos="fade-right" data-aos-delay="100">Power your creativity with premium AI & design tools</p>
+                    </div>
+                </div>
+                <div id="aiDesignContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6">
+                    <!-- Skeleton loading cards will be shown initially -->
+                </div>
+            </section>
             <!-- Combo Subscriptions -->
             <section id="combos" class="category-section">
                 <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
@@ -410,6 +425,7 @@
                         <li><a href="#music">Music</a></li>
                         <li><a href="#storage">Cloud Storage</a></li>
                         <li><a href="#vpn">VPN</a></li>
+                        <li><a href="#Ai_Design">VPN</a></li>
                     </ul>
                 </div>
                 
@@ -513,7 +529,6 @@
             { name: "Amazon Music Unlimited", price: 699, duration: "month", image: "/assets/cards/amazon-music-unlimited.jpeg", icon: "fas fa-headphones", color: "#FEAA2D", description: "High-quality audio streaming", categories: ["music-streaming"] },
             
             // Cloud Storage Subscriptions
-            { name: "Microsoft OneDrive", price: 499, duration: "6 months", image: "/assets/cards/onedrive.svg", icon: "fab fa-microsoft", color: "#0078D4", description: "1TB cloud storage with Office apps", categories: ["cloud-storage"] },
             { name: "Dropbox Plus", price: 149, duration: "month", image: "/assets/cards/Dropbox_(service)-Logo.wine.svg", icon: "fab fa-dropbox", color: "#0061FF", description: "2TB secure cloud storage", categories: ["cloud-storage"] },
             { name: "Google Drive", price: 279, duration: "month", image: "/assets/cards/Google_Drive-Logo.wine.svg", icon: "fab fa-google-drive", color: "#4285F4", description: "1 TB cloud storage", categories: ["cloud-storage"] },
             { name: "iCloud+", price: 299, duration: "month", image: "/assets/cards/icloud+webp.webp", icon: "fab fa-apple", color: "#555555", description: "50GB cloud storage for Apple users", categories: ["cloud-storage"] },
@@ -529,13 +544,15 @@
             { name: "Hotspot Shield", price: 159, duration: "month", image: "/assets/cards/Hotspot-Shield-vpn.webp", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["vpn"] },
 
             // Ai & Design Subscriptions
-            { name: "Canva Pro", price: 699, duration: "year", image: "/assets/cards/canva.png", icon: "fas fa-shield-alt", color: "#39AE69", description: "High-speed, secure VPN service", categories: ["vpn"] },
-            { name: "NordVPN", price: 149, duration: "month", image: "/assets/cards/nordvpn.webp", icon: "fas fa-shield-alt", color: "#4687FF", description: "Advanced security with double VPN", categories: ["vpn"] },
-            { name: "Surfshark", price: 149, duration: "month", image: "/assets/cards/surfsharkvpn.webp", icon: "fas fa-shield-alt", color: "#2A7DE1", description: "Unlimited devices and connections", categories: ["vpn"] },
-            { name: "CyberGhost", price: 149, duration: "month", image: "/assets/cards/cyberghost.png", icon: "fas fa-shield-alt", color: "#F8D12F", description: "User-friendly VPN with 45-day guarantee", categories: ["vpn"] },
-            { name: "IPVanish", price: 149, duration: "month", image: "/assets/cards/ipvanish.webp", icon: "fas fa-shield-alt", color: "#3A3A3A", description: "Fast connections with no logs", categories: ["vpn"] },
-            { name: "Private Internet Access", price: 189, duration: "month", image: "/assets/cards/pia.png", icon: "fas fa-shield-alt", color: "#4A4A4A", description: "Highly customizable VPN", categories: ["vpn"] },
-            { name: "Hotspot Shield", price: 159, duration: "month", image: "/assets/cards/Hotspot-Shield-vpn.webp", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["vpn"] },
+            { name: "Canva Pro", price: 149, duration: "month", image: "/assets/cards/canva.png", icon: "fas fa-shield-alt", color: "#39AE69", description: "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!", categories: ["aiDesign"] },
+            { name: "Photoroom Pro", price: 149, duration: "month", image: "/assets/cards/photoroom.jpg", icon: "fas fa-shield-alt", color: "#4687FF", description: "Advanced security with double VPN", categories: ["aiDesign"] },
+            { name: "Picsart Premium", price: 149, duration: "month", image: "/assets/cards/picsart.png", icon: "fas fa-shield-alt", color: "#2A7DE1", description: "Unlimited devices and connections", categories: ["aiDesign"] },
+            { name: "Photoroom Max", price: 199, duration: "month", image: "/assets/cards/photoroom.jpg", icon: "fas fa-shield-alt", color: "#F8D12F", description: "User-friendly VPN with 45-day guarantee", categories: ["aiDesign"] },
+            { name: "Black Box Ai(CHAT-GPT5)", price: 149, duration: "month", image: "/assets/cards/blackboxai.jpg", icon: "fas fa-shield-alt", color: "#3A3A3A", description: "Fast connections with no logs", categories: ["aiDesign"] },
+            { name: "Gemini Ai", price: 189, duration: "month", image: "/assets/cards/gemini.png", icon: "fas fa-shield-alt", color: "#4A4A4A", description: "Highly customizable VPN", categories: ["aiDesign"] },
+            { name: "Chat GPT", price: 499, duration: "month", image: "/assets/cards/chatgpt.jpg", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["aiDesign"] },
+            { name: "perplexity Pro Ai", price: 169, duration: "month", image: "/assets/cards/perplexity.svg", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["aiDesign"] },
+
             
             // Combo Subscriptions
             { name: "Netflix + Prime Video", price: 429, duration: "month", image: "/assets/cards/Netflix-vs-Amazon.jpg", icon: "fas fa-layer-group", color: "#9C27B0", description: "Get both streaming services at a discount", categories: ["combo"], services: ["Netflix", "Prime Video"], serviceIcons: ["fab fa-netflix", "fab fa-amazon"], serviceColors: ["#E50914", "#FF9900"] },
@@ -572,6 +589,7 @@
             { container: document.getElementById('musicStreamingContainer'), categoryKey: 'music-streaming' },
             { container: document.getElementById('cloudStorageContainer'), categoryKey: 'cloud-storage' },
             { container: document.getElementById('vpnContainer'), categoryKey: 'vpn' },
+            { container: document.getElementById('aiDesignContainer'), categoryKey: 'aiDesign' },
             { container: document.getElementById('comboContainer'), categoryKey: 'combo' },
             { container: document.getElementById('educationContainer'), categoryKey: 'education' },
             { container: document.getElementById('adultContainer'), categoryKey: 'adult' }

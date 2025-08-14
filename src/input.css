@@ -337,26 +337,39 @@
   color: var(--color-primary);
 }
 
-/* Cart Sidebar */
+/* Example CSS for cart sidebar */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
 .cart-sidebar {
-  @apply fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out z-[999] overflow-y-auto;
+    position: fixed;
+    right: -100%;
+    top: 0;
+    width: 350px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    overflow-y: auto;
+    transition: right 0.3s ease;
 }
 
 .cart-sidebar.open {
-  transform: translateX(0);
+    right: 0;
 }
 
-.cart-overlay {
-  @apply fixed top-0 left-0 w-full h-full bg-black/50 z-[998] opacity-0 invisible transition-all duration-300;
-}
-
-.cart-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-body.cart-open {
-  @apply overflow-hidden;
+.cart-sidebar .open {
+    /* Your open state styles */
 }
 
 /* Mobile Menu */
@@ -466,7 +479,7 @@ footer {
   }
 
   .nav-menu {
-    @apply fixed top-0 -right-70 w-70 h-full bg-white flex-col p-20 pt-24 pb-8 shadow-lg transition-right duration-300 z-[49] overflow-y-auto;
+    @apply fixed top-0 -right-70 w-70 h-full bg-white flex-col p-20 pt-24 pb-8 shadow-lg duration-300 z-[49] overflow-y-auto;
   }
 
   .nav-menu.active {
