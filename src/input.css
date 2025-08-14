@@ -11,6 +11,18 @@
   --color-text-dark: #2C3E50;
   --color-text-light: #7F8C8D;
   --color-border: #E5E7EB;
+            --primary-color: #6a11cb;
+            --primary-dark: #4a0699;
+            --primary-light: #9d4edd;
+            --secondary-color: #2575fc;
+            --accent-color: #E74C3C;
+            --light-bg: #F8F9FA;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
+            --border-color: #E5E7EB;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Custom Animations */
   --animate-fade-in: fadeIn 0.6s ease-out forwards;
