@@ -1,78 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- Homepage -->
   <url>
     <loc>https://nextlevelbd.store/</loc>
-    <lastmod>2025-08-14</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2023-10-01</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- Categories -->
-    <url>
-    <loc>https://www.nextlevelbd.store/#best-selling</loc>
-    <lastmod>2025-08-14</lastmod>
+  <url>
+    <loc>https://nextlevelbd.store/#best-selling</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-
-  <url>
-    <loc>https://www.nextlevelbd.store/#streaming</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#streaming</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#music</loc>
-    <lastmod>2025-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-    <url>
-    <loc>https://www.nextlevelbd.store/#storage</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#music</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#vpn</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#storage</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#combos</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#vpn</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#adult</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#combos</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
-  <!-- Example products -->
   <url>
-    <loc>https://www.nextlevelbd.store/details.html?name=Netflix%20Premium</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#education</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/details.html?name=Amazon%20Prime%20Video</loc>
-    <lastmod>2025-08-14</lastmod>
+    <loc>https://nextlevelbd.store/#adult</loc>
+    <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
-  <url>
-    <loc>https://www.nextlevelbd.store/details.html?name=HBO%20Max</loc>
-    <lastmod>2025-08-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
 </urlset>
