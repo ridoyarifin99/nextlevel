@@ -141,16 +141,16 @@
                 </div>
                 
                 <nav class="nav-menu" id="navMenu" aria-label="Main navigation">
-                    <a href="#best-selling" class="nav-link" data-section="best-selling">Best Sellers</a>
-                    <a href="#streaming" class="nav-link" data-section="streaming">Streaming</a>
-                    <a href="#music" class="nav-link" data-section="music">Music</a>
-                    <a href="#storage" class="nav-link" data-section="storage">Cloud Storage</a>
-                    <a href="#vpn" class="nav-link" data-section="vpn">VPN</a>
-                    <a href="#aiDesign" class="nav-link" data-section="aiDesign">Ai & Design</a>
-                    <a href="#combos" class="nav-link" data-section="combos">Combos</a>
-                    <a href="#education" class="nav-link" data-section="education">Education</a>
-                    <a href="#adult" class="nav-link" data-section="adult">Adult</a>
-                </nav>
+    <a href="/best-selling" class="nav-link" data-section="best-selling">Best Sellers</a>
+    <a href="/streaming" class="nav-link" data-section="streaming">Streaming</a>
+    <a href="/music" class="nav-link" data-section="music">Music</a>
+    <a href="/storage" class="nav-link" data-section="storage">Cloud Storage</a>
+    <a href="/vpn" class="nav-link" data-section="vpn">VPN</a>
+    <a href="/aiDesign" class="nav-link" data-section="aiDesign">Ai & Design</a>
+    <a href="/combos" class="nav-link" data-section="combos">Combos</a>
+    <a href="/education" class="nav-link" data-section="education">Education</a>
+    <a href="/adult" class="nav-link" data-section="adult">Adult</a>
+</nav>
                 
                 <div class="flex items-center gap-4">
                     <div class="search-container relative flex-1 max-w-md">
@@ -626,135 +626,138 @@
         const navLinks = document.querySelectorAll('.nav-link');
         const footerLinks = document.querySelectorAll('.footer-link');
         
-        // Initialize the page
-        function init() {
-            // Show skeleton loaders first
-            showSkeletonLoaders();
+  // Initialize the page
+function init() {
+    // Show skeleton loaders first
+    showSkeletonLoaders();
+    
+    // Load cart from localStorage
+    loadCart();
+    
+    // Set up navigation for SPA behavior
+    setupNavigation();
+    
+    // Check URL path on load and scroll to section if needed
+    handleInitialPath();
+    
+    // Event listeners
+    searchInput.addEventListener('input', handleSearch);
+    minPriceSlider.addEventListener('input', updatePriceRange);
+    maxPriceSlider.addEventListener('input', updatePriceRange);
+    sortSelect.addEventListener('change', sortSubscriptions);
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
+    checkoutBtn.addEventListener('click', proceedToCheckout);
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    
+    // Close search dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
+            searchDropdown.classList.remove('active');
+        }
+    });
+    
+    // Simulate loading time and then show actual content
+    setTimeout(() => {
+        // Initialize filtered subscriptions with all subscriptions
+        filteredSubscriptions = [...subscriptions];
+        renderSubscriptionsByCategory();
+        updateCartUI();
+        
+        // Refresh AOS after dynamically adding content
+        AOS.refresh();
+    }, 1500); // 1.5 seconds loading time
+}
+        
+    // Set up navigation for SPA behavior
+function setupNavigation() {
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionId = this.getAttribute('data-section');
+            const section = document.getElementById(sectionId);
             
-            // Load cart from localStorage
-            loadCart();
-            
-            // Set up navigation for SPA behavior
-            setupNavigation();
-            
-            // Check URL hash on load and scroll to section if needed
-            handleInitialHash();
-            
-            // Event listeners
-            searchInput.addEventListener('input', handleSearch);
-            minPriceSlider.addEventListener('input', updatePriceRange);
-            maxPriceSlider.addEventListener('input', updatePriceRange);
-            sortSelect.addEventListener('change', sortSubscriptions);
-            cartBtn.addEventListener('click', openCart);
-            closeCartBtn.addEventListener('click', closeCart);
-            cartOverlay.addEventListener('click', closeCart);
-            checkoutBtn.addEventListener('click', proceedToCheckout);
-            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
-            
-            // Close search dropdown when clicking outside
-            document.addEventListener('click', function(event) {
-                if (!searchInput.contains(event.target) && !searchDropdown.contains(event.target)) {
-                    searchDropdown.classList.remove('active');
-                }
-            });
-            
-            // Simulate loading time and then show actual content
-            setTimeout(() => {
-                // Initialize filtered subscriptions with all subscriptions
-                filteredSubscriptions = [...subscriptions];
-                renderSubscriptionsByCategory();
-                updateCartUI();
+            if (section) {
+                // Update URL without reloading the page
+                const path = this.getAttribute('href');
+                const newUrl = window.location.origin + path;
+                window.history.pushState({sectionId}, '', newUrl);
                 
-                // Refresh AOS after dynamically adding content
-                AOS.refresh();
-            }, 1500); // 1.5 seconds loading time
-        }
-        
-        // Set up navigation for SPA behavior
-        function setupNavigation() {
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const sectionId = this.getAttribute('href').substring(1);
-                    const section = document.getElementById(sectionId);
-                    
-                    if (section) {
-                        // Update URL without reloading the page
-                        const newUrl = window.location.pathname + '#' + sectionId;
-                        window.history.pushState({sectionId}, '', newUrl);
-                        
-                        // Update active nav link
-                        updateActiveNavLink(sectionId);
-                        
-                        // Scroll to section
-                        section.scrollIntoView({ behavior: 'smooth' });
-                        
-                        // Close mobile menu if open
-                        closeMobileMenu();
-                    }
-                });
-            });
-            
-            // Handle footer links
-            footerLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const href = this.getAttribute('href');
-                    if (href.startsWith('#')) {
-                        const sectionId = href.substring(1);
-                        const section = document.getElementById(sectionId);
-                        
-                        if (section) {
-                            // Update URL without reloading the page
-                            const newUrl = window.location.pathname + '#' + sectionId;
-                            window.history.pushState({sectionId}, '', newUrl);
-                            
-                            // Update active nav link
-                            updateActiveNavLink(sectionId);
-                            
-                            // Scroll to section
-                            section.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
-            
-            // Handle browser back/forward buttons
-            window.addEventListener('popstate', function(e) {
-                if (e.state && e.state.sectionId) {
-                    const section = document.getElementById(e.state.sectionId);
-                    if (section) {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                        updateActiveNavLink(e.state.sectionId);
-                    }
-                }
-            });
-        }
-        
-        // Update active navigation link
-        function updateActiveNavLink(sectionId) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === '#' + sectionId) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        // Handle initial hash on page load
-        function handleInitialHash() {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                const section = document.getElementById(hash);
+                // Update active nav link
+                updateActiveNavLink(sectionId);
+                
+                // Scroll to section
+                section.scrollIntoView({ behavior: 'smooth' });
+                
+                // Close mobile menu if open
+                closeMobileMenu();
+            }
+        });
+    });
+    
+    // Handle footer links
+    footerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            if (href.startsWith('/')) {
+                const sectionId = this.getAttribute('data-section');
+                const section = document.getElementById(sectionId);
+                
                 if (section) {
-                    setTimeout(() => {
-                        section.scrollIntoView({ behavior: 'smooth' });
-                        updateActiveNavLink(hash);
-                    }, 100);
+                    // Update URL without reloading the page
+                    const newUrl = window.location.origin + href;
+                    window.history.pushState({sectionId}, '', newUrl);
+                    
+                    // Update active nav link
+                    updateActiveNavLink(sectionId);
+                    
+                    // Scroll to section
+                    section.scrollIntoView({ behavior: 'smooth' });
                 }
             }
+        });
+    });
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.sectionId) {
+            const section = document.getElementById(e.state.sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+                updateActiveNavLink(e.state.sectionId);
+            }
         }
+    });
+}
+
+// Update active navigation link
+function updateActiveNavLink(sectionId) {
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Handle initial path on page load
+function handleInitialPath() {
+    const path = window.location.pathname;
+    const sectionId = path.substring(1); // Remove the leading slash
+    
+    if (sectionId) {
+        const section = document.getElementById(sectionId);
+        if (section) {
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth' });
+                updateActiveNavLink(sectionId);
+            }, 100);
+        }
+    }
+}
         
         // Toggle mobile menu
         function toggleMobileMenu() {

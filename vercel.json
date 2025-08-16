@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
+      "destination": "/index.html"
+    }
+  ]
+}
