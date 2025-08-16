@@ -13,11 +13,13 @@ const schemaDataList = {
         "name": "Netflix Premium Subscription in Bangladesh",
         "image": "https://www.nextlevelbd.store/images/netflix.png",
         "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
-        "description": "Buy Netflix Premium Subscription...",
+        "description": "Buy Netflix Premium Subscription in Bangladesh at a low price. Get instant delivery, secure payments, and 24/7 support.",
         "offers": {
           "@type": "Offer",
           "price": "379",
-          "priceCurrency": "BDT"
+          "priceCurrency": "BDT",
+          "availability": "https://schema.org/InStock",
+          "priceValidUntil": "2026-12-31"
         },
         "aggregateRating": {
           "@type": "AggregateRating",
@@ -34,11 +36,13 @@ const schemaDataList = {
         "name": "Amazon Prime Video Subscription in Bangladesh",
         "image": "https://www.nextlevelbd.store/images/prime-video.png",
         "url": "https://www.nextlevelbd.store/details.html?name=Amazon%20Prime%20Video",
-        "description": "Buy an Amazon Prime Video subscription...",
+        "description": "Buy an Amazon Prime Video subscription in Bangladesh at the best price. Get instant account delivery and access to thousands of movies and TV shows.",
         "offers": {
           "@type": "Offer",
           "price": "99",
-          "priceCurrency": "BDT"
+          "priceCurrency": "BDT",
+          "availability": "https://schema.org/InStock",
+          "priceValidUntil": "2026-12-31"
         },
         "aggregateRating": {
           "@type": "AggregateRating",
@@ -47,7 +51,6 @@ const schemaDataList = {
         }
       }
     }
-    // You can add more products here following the same ListItem structure
   ]
 };
 
