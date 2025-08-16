@@ -1,4 +1,46 @@
 @import "tailwindcss";
+   /* Custom styles for SPA behavior  */
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Active navigation link */
+        .nav-link.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        /* Ensure sections are visible */
+        .category-section {
+            display: block !important;
+        }
+        
+        /* Hero section fix */
+        #hero {
+            min-height: auto;
+            padding: 4rem 0;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
 
 @theme {
   /* Custom Colors */

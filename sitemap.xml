@@ -7,49 +7,55 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#best-selling</loc>
+    <loc>https://www.nextlevelbd.store/best-selling</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#streaming</loc>
+    <loc>https://www.nextlevelbd.store/streaming</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#music</loc>
+    <loc>https://www.nextlevelbd.store/music</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#storage</loc>
+    <loc>https://www.nextlevelbd.store/storage</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#vpn</loc>
+    <loc>https://www.nextlevelbd.store/vpn</loc>
+    <lastmod>2023-10-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+    <url>
+    <loc>https://www.nextlevelbd.store/aiDesign</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#combos</loc>
+    <loc>https://www.nextlevelbd.store/combos</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#education</loc>
+    <loc>https://www.nextlevelbd.store/education</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.nextlevelbd.store/#adult</loc>
+    <loc>https://www.nextlevelbd.store/adult</loc>
     <lastmod>2023-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

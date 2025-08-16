@@ -371,9 +371,6 @@
   .ml-3 {
     margin-left: calc(var(--spacing) * 3);
   }
-  .block {
-    display: block;
-  }
   .flex {
     display: flex;
   }
@@ -1055,6 +1052,33 @@
       grid-template-columns: repeat(5, minmax(0, 1fr));
     }
   }
+}
+html {
+  scroll-behavior: smooth;
+}
+.nav-link.active {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+.category-section {
+  display: block !important;
+}
+#hero {
+  min-height: auto;
+  padding: 4rem 0;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 .skeleton {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
