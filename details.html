@@ -6,9 +6,9 @@
     <title>Product Details - Next Level Estore</title>
     <link rel="stylesheet" href="/src/output.css">
     <link rel="stylesheet" href="/src/all.min.css">
-    <!-- AOS Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="stylesheet" href="./src/aos.css">
+        <script src="./src/aos.js"></script>
+
     <style>
 
         /* Skeleton Loading Animation */
@@ -706,6 +706,7 @@
         </div>
     </div>
     
+ 
     <script>
         // Initialize AOS
         AOS.init({
@@ -722,7 +723,7 @@
                 description: "Watch unlimited movies and TV shows",
                 icon: "fab fa-netflix",
                 color: "#E50914",
-                image: "./assets/details/netflix/netflix1.webp",
+                image: "./assets/details/netflix/netflix.webp",
                 images: [
                     "/assets/details/netflix/netflix1.webp",
                     "/assets/details/netflix/netflix2.webp",
@@ -5063,7 +5064,7 @@
                 <!-- Product Info -->
                 <div class="animate-slide-in-right" data-aos="fade-left">
                     <div class="flex items-center mb-4">
-                        <img src="${currentProduct.image}" alt="${currentProduct.name}" class="w-16 h-16 rounded-lg mr-4 object-cover">
+                        <img src="${currentProduct.image}" alt="${currentProduct.name}" class="w-16 h-16 rounded-lg mr-4 object-contain">
                         <div>
                             <h1 class="text-3xl font-bold">${currentProduct.name}</h1>
                             <div class="flex items-center mt-1">
@@ -5544,5 +5545,6 @@
         // Initialize the app
         init();
     </script>
+
 </body>
 </html>
