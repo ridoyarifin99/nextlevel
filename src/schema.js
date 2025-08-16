@@ -11,7 +11,7 @@ const schemaDataList = {
       "item": {
         "@type": "Product",
         "name": "Netflix Premium Subscription in Bangladesh",
-        "image": "https://www.nextlevelbd.store/assets/cards/netflix.webp",
+        "image": "https://www.nextlevelbd.store/images/netflix.png",
         "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
         "description": "Buy Netflix Premium Subscription...",
         "offers": {
@@ -32,7 +32,7 @@ const schemaDataList = {
       "item": {
         "@type": "Product",
         "name": "Amazon Prime Video Subscription in Bangladesh",
-        "image": "https://www.nextlevelbd.store/assets/cards/prime-video.jpg",
+        "image": "https://www.nextlevelbd.store/images/prime-video.png",
         "url": "https://www.nextlevelbd.store/details.html?name=Amazon%20Prime%20Video",
         "description": "Buy an Amazon Prime Video subscription...",
         "offers": {
@@ -55,11 +55,5 @@ const schemaDataList = {
 const script = document.createElement('script');
 script.type = "application/ld+json";
 script.text = JSON.stringify(schemaDataList);
-document.head.appendChild(script);
-
-// Dynamically inject JSON-LD into <head>
-const script = document.createElement('script');
-script.type = "application/ld+json";
-script.text = JSON.stringify(schemaData);
 document.head.appendChild(script);
 
