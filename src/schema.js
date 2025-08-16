@@ -1,68 +1,61 @@
-// javascript/schema.js
+// javascript/schema-list.js
 
-const schemaData = {
+const schemaDataList = {
   "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "Netflix Premium Subscription in Bangladesh",
-  "image": "https://www.nextlevelbd.store/assets/cards/netflix.webp",
-  "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
-  "description": "Buy Netflix Premium Subscription in Bangladesh at the lowest price. Enjoy instant delivery, secure payments, and 24/7 customer support from Next Level Estore.",
-  "sku": "NETFLIX-BD-001",
-  "mpn": "NETFLIX-BD-001",
-  "brand": {
-    "@type": "Brand",
-    "name": "Netflix"
-  },
-  "offers": {
-    "@type": "Offer",
-    "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
-    "priceCurrency": "BDT",
-    "price": "379",
-    "priceValidUntil": "2026-12-31",
-    "availability": "https://schema.org/InStock",
-    "itemCondition": "https://schema.org/NewCondition",
-    "seller": {
-      "@type": "Organization",
-      "name": "Next Level Estore",
-      "url": "https://www.nextlevelbd.store"
-    }
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.8",
-    "reviewCount": "125"
-  },
-  "review": [
+  "@type": "ItemList",
+  "name": "Digital Entertainment Subscriptions",
+  "itemListElement": [
     {
-      "@type": "Review",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5",
-        "bestRating": "5"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "Sajid Khan"
-      },
-      "reviewBody": "Fast service and a great price. Highly recommended!",
-      "datePublished": "2025-08-16"
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Product",
+        "name": "Netflix Premium Subscription in Bangladesh",
+        "image": "https://www.nextlevelbd.store/assets/cards/netflix.webp",
+        "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
+        "description": "Buy Netflix Premium Subscription...",
+        "offers": {
+          "@type": "Offer",
+          "price": "379",
+          "priceCurrency": "BDT"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "125"
+        }
+      }
     },
     {
-      "@type": "Review",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5",
-        "bestRating": "5"
-      },
-      "author": {
-        "@type": "Person",
-        "name": "Nisha Ahmed"
-      },
-      "reviewBody": "Quick delivery and reliable support. Will buy again.",
-      "datePublished": "2025-08-15"
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@type": "Product",
+        "name": "Amazon Prime Video Subscription in Bangladesh",
+        "image": "https://www.nextlevelbd.store/assets/cards/prime-video.jpg",
+        "url": "https://www.nextlevelbd.store/details.html?name=Amazon%20Prime%20Video",
+        "description": "Buy an Amazon Prime Video subscription...",
+        "offers": {
+          "@type": "Offer",
+          "price": "99",
+          "priceCurrency": "BDT"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.6",
+          "reviewCount": "85"
+        }
+      }
     }
+    // You can add more products here following the same ListItem structure
   ]
 };
+
+// Dynamically inject JSON-LD into <head>
+const script = document.createElement('script');
+script.type = "application/ld+json";
+script.text = JSON.stringify(schemaDataList);
+document.head.appendChild(script);
 
 // Dynamically inject JSON-LD into <head>
 const script = document.createElement('script');
