@@ -4,7 +4,7 @@ const schemaData = {
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Netflix Premium Subscription",
-  "image": "https://www.nextlevelbd.store/assets/cards/netflix.webp",
+  "image": "https://www.nextlevelbd.store/images/netflix.jpg",
   "description": "Buy Netflix Premium Subscription in Bangladesh at cheap prices. Instant delivery, secure payments, and 24/7 support.",
   "sku": "NETFLIX-BD-001",
   "brand": {
@@ -13,7 +13,7 @@ const schemaData = {
   },
   "offers": {
     "@type": "Offer",
-    "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
+    "url": "https://www.nextlevelbd.store/netflix",
     "priceCurrency": "BDT",
     "price": "379",
     "priceValidUntil": "2025-12-31",
@@ -23,7 +23,40 @@ const schemaData = {
       "@type": "Organization",
       "name": "Next Level Estore"
     }
-  }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.5",
+    "reviewCount": "50"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Mahmud H."
+      },
+      "reviewBody": "Excellent service and quick delivery!",
+      "datePublished": "2025-08-15"
+    },
+    {
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Sajid A."
+      },
+      "reviewBody": "Good price, works as expected.",
+      "datePublished": "2025-08-16"
+    }
+  ]
 };
 
 // Dynamically inject JSON-LD into <head>
