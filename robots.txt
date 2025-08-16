@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
 Sitemap: https://wwww.nextlevelbd.store/sitemap.xml
+Allow: /src/
+Allow: /css/
+Allow: /assets/
+Allow: /js/
