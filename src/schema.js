@@ -4,7 +4,7 @@ const schemaData = {
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Netflix Premium Subscription",
-  "image": "https://www.nextlevelbd.store/images/netflix.jpg",
+  "image": "https://www.nextlevelbd.store/assets/cards/netflix1.webp",
   "description": "Buy Netflix Premium Subscription in Bangladesh at cheap prices. Instant delivery, secure payments, and 24/7 support.",
   "sku": "NETFLIX-BD-001",
   "brand": {
@@ -13,7 +13,7 @@ const schemaData = {
   },
   "offers": {
     "@type": "Offer",
-    "url": "https://www.nextlevelbd.store/netflix",
+    "url": "https://www.nextlevelbd.store/details.html?name=Netflix%20Premium",
     "priceCurrency": "BDT",
     "price": "379",
     "priceValidUntil": "2025-12-31",
