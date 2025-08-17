@@ -43,21 +43,6 @@
     
 
     
-<!-- Structured Data for Website -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Next Level Estore",
-  "url": "https://www.nextlevelbd.store",
-  "description": "Premium digital subscriptions store in Bangladesh offering Netflix, Disney+, HBO Max, Spotify and more at cheap prices.",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://www.nextlevelbd.store/?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
 <!-- Structured Data for Organization & Logo -->
 <script type="application/ld+json">
 {
@@ -88,25 +73,7 @@
 }
 </script>
     
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Next Level Estore",
-      "url": "https://www.nextlevelbd.store",
-      "logo": "https://www.nextlevelbd.store/images/next_level.png",
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "telephone": "+8801644490566",
-        "contactType": "Customer Service",
-        "availableLanguage": ["English", "Bengali"]
-      },
-      "sameAs": [
-        "https://www.facebook.com/nextlevelestorebd",
-        "https://wa.me/8801644490566"
-      ]
-    }
-    </script>
+
         <!-- Google Analytics -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
@@ -116,6 +83,7 @@
       gtag('js', new Date());
       gtag('config', 'GA_MEASUREMENT_ID');
     </script>
+    <script src="./src/schema.js"></script>
 </head>
 <body>
     <!-- Mobile Menu Overlay -->
@@ -1323,4 +1291,8 @@ function handleInitialPath() {
         init();
     </script>
 </body>
+
 </html>
+
+
+
