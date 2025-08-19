@@ -95,7 +95,7 @@
             <div class="header-content flex items-center justify-between">
                 <div class="flex items-center">
                     <button class="mobile-menu-btn mr-4" id="mobileMenuBtn" aria-label="Toggle mobile menu">
-                        <i class="fas fa-bars"></i>
+                        <i class="fa-solid fa-bars-staggered"></i>
                     </button>
                     <div class="logo-container">
                         <img src="/images/next_level.png" alt="Next Level Estore Logo" class="logo-image">
@@ -140,7 +140,7 @@
                     
                     <div class="relative">
                         <button id="cartBtn" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors cursor-pointer" aria-label="Shopping cart">
-                            <i class="fas fa-shopping-cart text-2xl" aria-hidden="true"></i>
+                            <i class="fa-duotone fa-regular fa-cart-circle-plus text-2xl" aria-hidden="true"></i>
                             <span id="cartCount" class="cart-badge absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
                         </button>
                     </div>
@@ -521,16 +521,16 @@
             { name: "perplexity (ChatGPT-5)", price: 169, duration: "month", image: "/assets/cards/Perplexity.svg", icon: "fas fa-shield-alt", color: "#F48023", description: "Patented VPN technology", categories: ["aiDesign"] },
             
             // Combo Subscriptions
-            { name: "Netflix + Prime Video", price: 429, duration: "month", image: "/assets/cards/Netflix-vs-Amazon.jpg", icon: "fas fa-layer-group", color: "#9C27B0", description: "Get both streaming services at a discount", categories: ["combo"], services: ["Netflix", "Prime Video"], serviceIcons: ["fab fa-netflix", "fab fa-amazon"], serviceColors: ["#E50914", "#FF9900"] },
-            { name: "Netflix + HBO Max", price: 499, duration: "month", image: "/assets/cards/netflix+hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Premium content from both platforms", categories: ["combo"], services: ["Netflix", "HBO Max"], serviceIcons: ["fab fa-netflix", "fas fa-tv"], serviceColors: ["#E50914", "#6a19ff"] },
-            { name: "Prime Video + HBO Max", price: 499, duration: "month", image: "/assets/cards/prime+hbo.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Premium content from both platforms", categories: ["combo"], services: ["Amazon Prime Video", "HBO Max"], serviceIcons: ["fab fa-netflix", "fas fa-tv"], serviceColors: ["#E50914", "#6a19ff"] },
+            { name: "Netflix + Prime Video", price: 429, duration: "month", image: "/assets/cards/Netflix-vs-Amazon.jpg", icon: "fas fa-layer-group", color: "#9C27B0", description: "Get both streaming services at a discount", categories: ["combo"], services: ["Netflix", "Prime Video"], serviceIcons: ["fa-duotone fa-regular fa-clapperboard-play", "fab fa-amazon"], serviceColors: ["#E50914", "#FF9900"] },
+            { name: "Netflix + HBO Max", price: 499, duration: "month", image: "/assets/cards/netflix+hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Premium content from both platforms", categories: ["combo"], services: ["Netflix", "HBO Max"], serviceIcons: ["fa-duotone fa-regular fa-clapperboard-play", "fas fa-tv"], serviceColors: ["#E50914", "#6a19ff"] },
+            { name: "Prime Video + HBO Max", price: 499, duration: "month", image: "/assets/cards/prime+hbo.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Premium content from both platforms", categories: ["combo"], services: ["Amazon Prime Video", "HBO Max"], serviceIcons: ["fa-duotone fa-regular fa-clapperboard-play", "fas fa-tv"], serviceColors: ["#E50914", "#6a19ff"] },
             { name: "HBO Max + Surfshark VPN", price: 229, duration: "month", image: "/assets/cards/hbo+surfshark.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Stream securely with VPN protection", categories: ["combo"], services: ["HBO Max", "Surfshark VPN"], serviceIcons: ["fas fa-tv", "fas fa-shield-alt"], serviceColors: ["#6a19ff", "#2A7DE1"] },
             { name: "Spotify + YouTube Premium", price: 499, duration: "month", image: "/assets/cards/spotify+youtube.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Ad-free music and videos", categories: ["combo"], services: ["Spotify", "YouTube Premium"], serviceIcons: ["fab fa-spotify", "fab fa-youtube"], serviceColors: ["#1DB954", "#FF0000"] },
             { name: "Disney + HBO Max", price: 399, duration: "month", image: "/assets/cards/disney+nordVPN.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Disney, HBO Max", categories: ["combo"], services: ["Disney+", "HBO Max"], serviceIcons: ["fa-solid fa-play", "fas fa-play-circle", "fab fa-disney"], serviceColors: ["#E50914", "#1ce783", "#113ccf"] },
             { name: "Disney + Nord VPN", price: 379, duration: "month", image: "/assets/cards/disney+nordVPN.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Netflix, Hulu, and Disney+ bundle", categories: ["combo"], services: ["Disney+", "Nord VPN"], serviceIcons: ["fa-solid fa-play", "fas fa-play-circle", "fab fa-disney"], serviceColors: ["#E50914", "#1ce783", "#113ccf"] },
             { name: "Music & Storage", price: 299, duration: "month", image: "/assets/cards/amazon+onedrive.png", icon: "fas fa-layer-group", color: "#9C27B0", description: "Amazon music HD and 1TB one drive storage", categories: ["combo"], services: ["Amazon Music", "One Drive"], serviceIcons: ["fa-solid fa-music", "fas fa-cloud"], serviceColors: ["#1DB954", "#0078D4"] },
             { name: "Security Bundle", price: 319, duration: "month", image: "/assets/cards/expressvpn+onedrive.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "ExpressVPN and 1TB one drive cloud storage", categories: ["combo"], services: ["ExpressVPN", "One Drive"], serviceIcons: ["fas fa-shield-alt", "fas fa-cloud"], serviceColors: ["#39AE69", "#0078D4"] },
-            { name: "Ultimate Entertainment", price: 499, duration: "month", image: "/assets/cards/netflix_expressvpn_hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Netflix, HBO Max, and ExpressVPN", categories: ["combo"], services: ["Netflix", "HBO Max", "ExpressVPN"], serviceIcons: ["fab fa-netflix", "fas fa-tv", "fas fa-shield-alt"], serviceColors: ["#E50914", "#6a19ff", "#39AE69"] },
+            { name: "Ultimate Entertainment", price: 499, duration: "month", image: "/assets/cards/netflix_expressvpn_hbomax.webp", icon: "fas fa-layer-group", color: "#9C27B0", description: "Netflix, HBO Max, and ExpressVPN", categories: ["combo"], services: ["Netflix", "HBO Max", "ExpressVPN"], serviceIcons: ["fa-duotone fa-regular fa-clapperboard-play", "fas fa-tv", "fas fa-shield-alt"], serviceColors: ["#E50914", "#6a19ff", "#39AE69"] },
             
             // Education-based Subscriptions
             { name: "Doulingo", price: 149, duration: "month", image: "/assets/cards/doulingo.png", icon: "fas fa-chalkboard-teacher", color: "#D0021B", description: "Learn from the world's best instructors", categories: ["education"] },
@@ -753,7 +753,7 @@ function handleInitialPath() {
             navMenu.classList.remove('active');
             mobileMenuOverlay.classList.remove('active');
             mobileMenuBtn.classList.remove('active');
-            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars-staggered"></i>';
             document.body.style.overflow = '';
         }
         
@@ -1207,7 +1207,7 @@ function handleInitialPath() {
                 // Show empty cart message
                 cartItems.innerHTML = `
                     <div id="emptyCart" class="text-center py-12">
-                        <i class="fas fa-shopping-cart text-5xl text-gray-300 mb-4"></i>
+                        <i class="fa-duotone fa-regular fa-cart-circle-plus text-5xl text-gray-300 mb-4"></i>
                         <h3 class="text-xl font-semibold text-gray-600">Your cart is empty</h3>
                         <p class="text-gray-500 mt-2">Add some subscriptions to get started</p>
                     </div>
