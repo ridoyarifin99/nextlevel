@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "vite",
-      "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
-  "build:html": "html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --minify-css true --minify-js true -o dist/index.html src/index.html",
-  "build": "npm run build:css && npm run build:html"
+    "start": "vite"
+
   },
   "repository": {
     "type": "git",
