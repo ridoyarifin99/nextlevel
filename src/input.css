@@ -1,5 +1,6 @@
 @import "tailwindcss";
    /* Custom styles for SPA behavior  */
+   /* index.html page style code start */
 
         /* Smooth scrolling */
         html {
@@ -615,7 +616,9 @@ footer {
     @apply order-4 w-full justify-end mt-2;
   }
 }
- /* Skeleton Loading Animation */
+  /* index.html page style code end */
+ /* details.html page styles start */
+  /* Skeleton Loading Animation */
         .skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
@@ -1183,7 +1186,8 @@ footer {
                 padding: 0.2rem 0.5rem;
             }
         }
-       
+        /* deatils.html page styles code end */
+               /* checkout.html page styles code start */
       /* Custom animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -1557,3 +1561,4 @@ footer {
                 user-select: none;
             }
         }
+        /* checkout.html page styles code end */
