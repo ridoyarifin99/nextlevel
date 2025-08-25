@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,7 +108,7 @@
                     <div class="bg-white rounded-xl shadow-md p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="payment-method p-4 rounded-lg border border-gray-200 text-center selected" onclick="selectPaymentMethod('whatsapp')">
-                                <i class="fab fa-whatsapp text-3xl text-green-500 mb-2"></i>
+                                <i class="fa-brands fa-whatsapp text-3xl text-green-500 mb-2"></i>
                                 <h3 class="font-semibold">WhatsApp</h3>
                                 <p class="text-sm text-gray-600">Pay via WhatsApp</p>
                             </div>
@@ -174,7 +175,7 @@
                         </div>
                         
                         <button id="placeOrderBtn" class="w-full mt-6 py-3 rounded-lg font-semibold text-white btn-whatsapp">
-                            <i class="fab fa-whatsapp mr-2"></i>Place Order via WhatsApp
+                            <i class="fa-brands fa-whatsapp mr-2"></i>Place Order via WhatsApp
                         </button>
                         
                         <div class="mt-4 text-center text-sm text-gray-500">
@@ -188,7 +189,7 @@
     
     <!-- WhatsApp Floating Button -->
     <div id="whatsappFab" class="whatsapp-fab" onclick="sendToWhatsApp()">
-        <i class="fab fa-whatsapp"></i>
+        <i class="fa-brands fa-whatsapp"></i>
     </div>
     
     <!-- Success Modal -->
@@ -571,7 +572,7 @@
                 successModal.classList.remove('hidden');
                 
                 // Reset button
-                placeOrderBtn.innerHTML = '<i class="fab fa-whatsapp mr-2"></i>Place Order via WhatsApp';
+                placeOrderBtn.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Place Order via WhatsApp';
                 placeOrderBtn.disabled = false;
             }, 1500);
         }
