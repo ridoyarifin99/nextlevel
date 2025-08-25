@@ -1,26 +1,33 @@
 {
-  "name": "my-project",
+  "name": "nextlevel",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "vite",
-      "build:css": "tailwindcss -i ./src/input.css -o ./src/output.css --minify",
-  "build:html": "html-minifier-terser --collapse-whitespace --remove-optional-tags --minify-css true --minify-js true -o index.html src/index.html",
+      "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+  "build:html": "html-minifier-terser --collapse-whitespace --remove-comments --remove-optional-tags --minify-css true --minify-js true -o dist/index.html src/index.html",
   "build": "npm run build:css && npm run build:html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ridoyarifin99/nextlevel.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ridoyarifin99/nextlevel/issues"
+  },
+  "homepage": "https://github.com/ridoyarifin99/nextlevel#readme",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.11",
-    "aos": "^2.3.1",
+    "@tailwindcss/cli": "^4.1.12",
     "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.12",
+    "vite": "^7.1.3"
   },
   "devDependencies": {
-    "html-minifier-terser": "^7.2.0",
-    "vite": "^7.1.3",
-    "vite-plugin-html": "^3.2.2"
+    "html-minifier-terser": "^7.2.0"
   }
 }
