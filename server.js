@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 export default function handler(req, res) {
-  const host = req.headers.host;
-  let file = 'index.html'; // default homepage
+  const host = req.headers.host; // detect subdomain
+  let file = 'index.html';       // default homepage
 
   if (host.startsWith('details.')) file = 'details.html';
   else if (host.startsWith('payments.')) file = 'checkout.html';
