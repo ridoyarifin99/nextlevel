@@ -1,32 +1,21 @@
-const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
+export default function handler(req, res) {
+  const host = req.headers.host;
+  let file = 'index.html'; // default homepage
 
-const server = http.createServer((req, res) => {
-  const host = req.headers.host; // detect subdomain
-  let filePath = 'index.html';   // default homepage
+  if (host.startsWith('details.')) file = 'details.html';
+  else if (host.startsWith('payments.')) file = 'checkout.html';
 
-  if (host.startsWith('details.')) {
-    filePath = 'details.html';
-  } else if (host.startsWith('payments.')) {
-    filePath = 'checkout.html';
-  }
+  const filePath = path.join(process.cwd(), file);
 
-  const fullPath = path.join(__dirname, filePath);
-
-  fs.readFile(fullPath, (err, content) => {
+  fs.readFile(filePath, (err, content) => {
     if (err) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Server Error');
+      res.status(500).send('Server Error');
       return;
     }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
-    res.end(content);
+    res.setHeader('Content-Type', 'text/html');
+    res.status(200).send(content);
   });
-});
-
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+}
