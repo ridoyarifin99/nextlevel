@@ -5,23 +5,4 @@
       "destination": "/index.html"
     }
   ]
-  
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/index.html",
-      "headers": { "x-vercel-ip-subdomain": "nextlevelbd.store" }
-    },
-    {
-      "src": "/",
-      "dest": "/details.html",
-      "headers": { "x-vercel-ip-subdomain": "details.nextlevelbd.store" }
-    },
-    {
-      "src": "/",
-      "dest": "/payments.html",
-      "headers": { "x-vercel-ip-subdomain": "payments.nextlevelbd.store" }
-    }
-  ]
-
 }
