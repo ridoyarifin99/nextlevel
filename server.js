@@ -5,10 +5,9 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer((req, res) => {
-  const host = req.headers.host; // get full domain
+  const host = req.headers.host; // detect subdomain
   let filePath = 'index.html';   // default homepage
 
-  // detect subdomain
   if (host.startsWith('details.')) {
     filePath = 'details.html';
   } else if (host.startsWith('payments.')) {
