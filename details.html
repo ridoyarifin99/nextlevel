@@ -1624,6 +1624,81 @@
                     }
                 ]
             },
+             {
+                name: "Youtube Premium Non-Renewable",
+                description: "Ad-free videos and music",
+                icon: "fa-brands fa-square-youtube",
+                color: "#FF0000",
+                image: "./assets/cards/youtube.webp",
+                images: [
+                    "./assets/details/youtube/1.webp",
+                    "./assets/details/youtube/2.webp",
+                    "./assets/details/youtube/3.webp"
+                ],
+                categories: ["best-selling", "popular-streaming", "music-streaming"],
+                rating: 4.3,
+                reviews: 14320,
+                pricing: [
+                    { duration: "1 Month", price: 149, currency: "BDT", popular: false },
+                    { duration: "2 Months", price: 199, currency: "BDT", popular: false, discount: "Save 99 Taka" },
+                    { duration: "3 Months", price: 249, currency: "BDT", popular: true, discount: "Save 198 Taka" },
+                ],
+                features: [
+                    "Non-Renewable",
+                    "No VPN required",
+                    "No buffering issues",
+                    "Single screen",
+                    "Watch on PC/Laptop/Mobile/Tablet",
+                    "if personal email, then it must be fresh email",
+                    "Personal email activation",
+                    "Full day's warrany depending on your package duration",
+                    "Ad-free videos",
+                    "Background play",
+                    "Offline downloads",
+                    "YouTube Music Premium included",
+                    "Watch on multiple devices",
+                    "Exclusive content"
+                ],
+                customerReviews: [
+                    {
+                        name: "Christopher Hall",
+                        rating: 4,
+                        date: "2023-10-13",
+                        comment: "No ads makes YouTube so much better. The background play is great for podcasts and music."
+                    },
+                    {
+                        name: "Michelle White",
+                        rating: 4,
+                        date: "2023-10-08",
+                        comment: "YouTube Premium is worth it just to skip the ads. The offline downloads are very useful."
+                    },
+                    {
+                        name: "Brian Harris",
+                        rating: 4,
+                        date: "2023-10-02",
+                        comment: "Good value for what you get. The YouTube Music inclusion is a nice bonus."
+                    }
+                ],
+                faq: [
+                    {
+                        question: "What's included with YouTube Premium?",
+                        answer: "YouTube Premium includes ad-free videos, background play, offline downloads, YouTube Music Premium, and access to YouTube Originals."
+                    },
+                    {
+                        question: "Can I download videos for offline viewing?",
+                        answer: "Yes, YouTube Premium allows you to download videos to watch offline on your mobile devices."
+                    },
+                    {
+                        question: "Does YouTube Premium include YouTube Music?",
+                        answer: "Yes, YouTube Premium includes a subscription to YouTube Music Premium at no additional cost."
+                    },
+                    {
+                        question: "How many devices can I use with YouTube Premium?",
+                        answer: "You can use YouTube Premium on multiple devices, but background play and downloads are only available on mobile devices."
+                    }
+                ]
+            },
+            
             
             
             {
@@ -1716,10 +1791,10 @@
                 rating: 4.7,
                 reviews: 13240,
                 pricing: [
-                    { duration: "1 Month", price: 299, currency: "BDT", popular: false },
-                    { duration: "3 Months", price: 849, currency: "BDT", popular: false, discount: "Save 48 Taka" },
-                    { duration: "6 Months", price: 1699, currency: "BDT", popular: true, discount: "Save 95 Taka" },
-                    { duration: "1 Year", price: 3449, currency: "BDT", popular: false, discount: "Save 139 Taka" }
+                    { duration: "1 Month", price: 189, currency: "BDT", popular: false },
+                    { duration: "3 Months", price: 349, currency: "BDT", popular: false, discount: "Save 218 Taka" },
+                    { duration: "6 Months", price: 499, currency: "BDT", popular: true, discount: "Save 635 Taka" },
+                    { duration: "1 Year", price: 799, currency: "BDT", popular: false, discount: "Save 1469 Taka" }
                 ],
                 features: [
                     "Renewable",
@@ -1795,10 +1870,10 @@
                 rating: 4.4,
                 reviews: 9870,
                 pricing: [
-                    { duration: "1 Month", price: 249, currency: "BDT", popular: false },
-                    { duration: "3 Months", price: 699, currency: "BDT", popular: false, discount: "Save 6%" },
-                    { duration: "6 Months", price: 1399, currency: "BDT", popular: true, discount: "Save 95 Taka" },
-                    { duration: "1 Year", price: 2849, currency: "BDT", popular: false, discount: "Save 139 Taka" }
+                    { duration: "1 Month", price: 149, currency: "BDT", popular: false },
+                    { duration: "3 Months", price: 299, currency: "BDT", popular: false, discount: "Save 148 Taka" },
+                    { duration: "6 Months", price: 499, currency: "BDT", popular: true, discount: "Save 395 Taka" },
+                    { duration: "1 Year", price: 649, currency: "BDT", popular: false, discount: "Save 1139 Taka" }
                 ],
                 features: [
                      "Renewable",
@@ -3291,7 +3366,7 @@
                 ],
                 features: [       
                      "Renewable",
-                    "VPN required",
+                    "No VPN required",
                     "No buffering issues",
                     "Single screen",
                     "Pin locked profile",
@@ -5126,11 +5201,24 @@
         
         // Load product details
         function loadProduct(productName) {
-            currentProduct = products.find(p => p.name === productName);
+            // Find the product
+            const productIndex = products.findIndex(p => p.name === productName);
             
-            if (!currentProduct) {
+            if (productIndex === -1) {
                 window.location.href = 'index.html';
                 return;
+            }
+            
+            // Create a deep copy of the product to avoid modifying the original
+            currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+            
+            // Ensure required arrays exist
+            if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
+                currentProduct.customerReviews = [];
+            }
+            
+            if (!currentProduct.faq || !Array.isArray(currentProduct.faq)) {
+                currentProduct.faq = [];
             }
             
             // Update breadcrumb
@@ -5388,113 +5476,149 @@
             });
             
             // Update tab content
-            switch(tabName) {
-                case 'description':
-                    tabContent.innerHTML = `
-                        <div class="prose max-w-none">
-                            <p class="text-gray-700 mb-4">${currentProduct.description}</p>
-                            <h3 class="text-xl font-semibold mb-3">Why Choose ${currentProduct.name}?</h3>
-                            <p class="text-gray-700 mb-4">
-                                ${currentProduct.name} offers an unparalleled experience with a vast library of content. 
-                                From premium features to exclusive benefits, there's something for everyone.
-                            </p>
-                            <p class="text-gray-700 mb-4">
-                                With our subscription, you get unlimited access to all features without any ads or interruptions. 
-                                Experience the best quality service with our premium offerings.
-                            </p>
-                            <h3 class="text-xl font-semibold mb-3">What's Included?</h3>
-                            <ul class="list-disc list-inside text-gray-700 space-y-2">
-                                <li>Full access to all features</li>
-                                <li>Premium quality service</li>
-                                <li>Download for offline use (where applicable)</li>
-                                <li>Multiple device access</li>
-                                <li>Personalized experience</li>
-                                <li>24/7 customer support</li>
-                            </ul>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'features':
-                    tabContent.innerHTML = `
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            ${currentProduct.features.map((feature, index) => `
-                                <div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" 
-                                     data-aos="fade-up" data-aos-delay="${index * 100}">
-                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                                    <span class="text-gray-700">${feature}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    break;
-                    
-                case 'reviews':
-                    tabContent.innerHTML = `
-                        <div class="space-y-6">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h3 class="text-xl font-semibold">Customer Reviews</h3>
-                                    <div class="flex items-center mt-1">
-                                        <div class="flex text-yellow-400 text-xl">
-                                            ${generateStars(currentProduct.rating)}
-                                        </div>
-                                        <span class="ml-2 text-gray-600">${currentProduct.rating} out of 5</span>
-                                    </div>
-                                </div>
-                                <button class="btn-primary px-4 py-2 rounded-lg">
-                                    Write a Review
-                                </button>
+            try {
+                switch(tabName) {
+                    case 'description':
+                        tabContent.innerHTML = `
+                            <div class="prose max-w-none">
+                                <p class="text-gray-700 mb-4">${currentProduct.description}</p>
+                                <h3 class="text-xl font-semibold mb-3">Why Choose ${currentProduct.name}?</h3>
+                                <p class="text-gray-700 mb-4">
+                                    ${currentProduct.name} offers an unparalleled experience with a vast library of content. 
+                                    From premium features to exclusive benefits, there's something for everyone.
+                                </p>
+                                <p class="text-gray-700 mb-4">
+                                    With our subscription, you get unlimited access to all features without any ads or interruptions. 
+                                    Experience the best quality service with our premium offerings.
+                                </p>
+                                <h3 class="text-xl font-semibold mb-3">What's Included?</h3>
+                                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                    <li>Full access to all features</li>
+                                    <li>Premium quality service</li>
+                                    <li>Download for offline use (where applicable)</li>
+                                    <li>Multiple device access</li>
+                                    <li>Personalized experience</li>
+                                    <li>24/7 customer support</li>
+                                </ul>
                             </div>
-                            
-                            <div class="space-y-4">
-                                ${currentProduct.customerReviews.map((review, index) => `
-                                    <div class="border-b border-gray-200 pb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                                                    <span class="font-semibold text-gray-700">${review.name.charAt(0)}</span>
-                                                </div>
-                                                <div>
-                                                    <h4 class="font-medium">${review.name}</h4>
-                                                    <div class="flex text-yellow-400 text-sm">
-                                                        ${generateStars(review.rating)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <span class="text-sm text-gray-500">${formatDate(review.date)}</span>
-                                        </div>
-                                        <p class="text-gray-700">${review.comment}</p>
+                        `;
+                        break;
+                        
+                    case 'features':
+                        tabContent.innerHTML = `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${currentProduct.features.map((feature, index) => `
+                                    <div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" 
+                                         data-aos="fade-up" data-aos-delay="${index * 100}">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                        <span class="text-gray-700">${feature}</span>
                                     </div>
                                 `).join('')}
                             </div>
-                        </div>
-                    `;
-                    break;
-                    
-                case 'faq':
-                    tabContent.innerHTML = `
-                        <div class="space-y-4">
-                            ${currentProduct.faq.map((item, index) => `
-                                <div class="border border-gray-200 rounded-lg" data-aos="fade-up" data-aos-delay="${index * 100}">
-                                    <button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
-                                        <span class="font-medium">${item.question}</span>
-                                        <i class="fas fa-chevron-down transition-transform"></i>
-                                    </button>
-                                    <div class="hidden px-4 pb-3 text-gray-700">
-                                        ${item.answer}
-                                    </div>
+                        `;
+                        break;
+                        
+                    case 'reviews':
+                        // Create reviews HTML
+                        let reviewsHTML = '';
+                        
+                        if (currentProduct.customerReviews && currentProduct.customerReviews.length > 0) {
+                            reviewsHTML = `
+                                <div class="space-y-4">
+                                    ${currentProduct.customerReviews.map((review, index) => `
+                                        <div class="border-b border-gray-200 pb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <span class="font-semibold text-gray-700">${review.name.charAt(0)}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-medium">${review.name}</h4>
+                                                        <div class="flex text-yellow-400 text-sm">
+                                                            ${generateStars(review.rating)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="text-sm text-gray-500">${formatDate(review.date)}</span>
+                                            </div>
+                                            <p class="text-gray-700">${review.comment}</p>
+                                        </div>
+                                    `).join('')}
                                 </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    break;
+                            `;
+                        } else {
+                            reviewsHTML = `
+                                <div class="text-center py-8">
+                                    <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600">No reviews yet. Be the first to review this product!</p>
+                                </div>
+                            `;
+                        }
+                        
+                        tabContent.innerHTML = `
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-semibold">Customer Reviews</h3>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xl">
+                                                ${generateStars(currentProduct.rating)}
+                                            </div>
+                                            <span class="ml-2 text-gray-600">${currentProduct.rating} out of 5</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn-primary px-4 py-2 rounded-lg">
+                                        Write a Review
+                                    </button>
+                                </div>
+                                ${reviewsHTML}
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'faq':
+                        // Create FAQ HTML
+                        let faqHTML = '';
+                        
+                        if (currentProduct.faq && currentProduct.faq.length > 0) {
+                            faqHTML = `
+                                ${currentProduct.faq.map((item, index) => `
+                                    <div class="border border-gray-200 rounded-lg" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                        <button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+                                            <span class="font-medium">${item.question}</span>
+                                            <i class="fas fa-chevron-down transition-transform"></i>
+                                        </button>
+                                        <div class="hidden px-4 pb-3 text-gray-700">
+                                            ${item.answer}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            `;
+                        } else {
+                            faqHTML = `
+                                <div class="text-center py-8">
+                                    <i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600">No FAQs available for this product.</p>
+                                </div>
+                            `;
+                        }
+                        
+                        tabContent.innerHTML = `
+                            <div class="space-y-4">
+                                ${faqHTML}
+                            </div>
+                        `;
+                        break;
+                }
+                
+                // Refresh AOS after updating tab content
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 100);
+            } catch (error) {
+                console.error('Error in switchTab:', error);
+                tabContent.innerHTML = '<p class="text-gray-600">Error loading content. Please try again.</p>';
             }
-            
-            // Refresh AOS after updating tab content
-            setTimeout(() => {
-                AOS.refresh();
-            }, 100);
         }
         
         // Format date for reviews
