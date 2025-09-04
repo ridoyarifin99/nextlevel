@@ -857,12 +857,12 @@ footer {
             display: flex;
             align-items: center;
         }
-        
+/*         
         .logo-image {
             height: 40px;
             width: auto;
             margin-right: 10px;
-        }
+        } */
         
         .logo-text {
             font-size: 1.5rem;
