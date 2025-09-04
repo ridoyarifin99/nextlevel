@@ -123,7 +123,7 @@
     <a href="/adult" class="nav-link" data-section="adult">Adult</a>
 </nav>
                 
-                <div class="md:flex lg:felx xl:flex 2xl:flex items-center gap-4 hidden">
+                <div id="contentDiv" class="md:flex lg:felx xl:flex 2xl:flex items-center gap-4 hidden">
                     <div class="search-container relative flex-1 max-w-md">
                         <input type="text" id="searchInput" placeholder="Search subscriptions..." 
                             class="search-input w-full py-2 px-4 pl-10 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent" aria-label="Search subscriptions">
@@ -142,7 +142,7 @@
                     </div>
                     
                 </div>
-                <div class="text-2xl md:hidden lg:hidden xl:hidden 2xl:hidden">
+                <div id="toggleButton" class="text-2xl md:hidden lg:hidden xl:hidden 2xl:hidden">
                    <i class="cursor-pointer fa-duotone fa-solid fa-magnifying-glass" style="--fa-primary-color: #4dc9ff; --fa-secondary-color: #bf0fff; "></i>
 
                 </div>
@@ -155,6 +155,17 @@
             </div>
         </div>
     </header>
+    <script>
+        // Get references to the button and the content div
+const toggleButton = document.getElementById('toggleButton');
+const contentDiv = document.getElementById('contentDiv');
+
+// Add a click event listener to the button
+toggleButton.addEventListener('click', () => {
+  // Toggle the 'hidden' class on the content div
+  contentDiv.classList.toggle('hidden');
+});
+    </script>
     
     <!-- Hero Section -->
     <section class="py-12 bg-gradient-to-r from-purple-600 to-blue-500 text-white" id="hero">
