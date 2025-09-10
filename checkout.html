@@ -638,7 +638,8 @@
                 // Open WhatsApp in a new tab
                 console.log('Opening WhatsApp URL:', whatsappURL);
                 window.open(whatsappURL, '_blank');
-                // window.location.href = whatsappURL;
+                window.location.href = whatsappURL;
+
                 
             } catch (error) {
                 console.error('Error sending to WhatsApp:', error);
