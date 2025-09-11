@@ -994,14 +994,38 @@ footer {
             }
         }
         /* checkout.html page styles code end */
-  @keyframes gradientShift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* Neon border animation */
+@keyframes borderGlow {
+  0% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 
-  .animate-gradient {
-    background: linear-gradient(90deg, #34d399, #10b981, #60a5fa, #34d399);
-    background-size: 300% 300%;
-    animation: gradientShift 3.5s linear infinite;
-  }
+.animate-borderGlow {
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 9999px; /* fully rounded */
+  padding: 2px; /* border thickness */
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--primary-light),
+    var(--secondary-color),
+    var(--accent-color),
+    var(--primary-color)
+  );
+  background-size: 300% 300%;
+  animation: borderGlow 3s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
