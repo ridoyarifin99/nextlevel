@@ -88,7 +88,14 @@
     </script>
     <script src="./src/schema.js"></script>
 </head>
+<script>
+  // LOCAL:  http://localhost:8080
+  // PROD:   https://api.nextlevelbd.store  (or your deployed URL)
+  window.AUTH_API_BASE = "http://localhost:8080";
+</script>
+
 <body>
+    
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
     
@@ -121,6 +128,28 @@
     <a href="/combos" class="nav-link" data-section="combos">Combos</a>
     <a href="/education" class="nav-link" data-section="education">Education</a>
     <a href="/adult" class="nav-link" data-section="adult">Adult</a>
+<!-- Account Icon + Click Dropdown -->
+<div class="relative" id="accountMenu">
+  <!-- Icon Button -->
+   <a href="/login-signup.html">
+  <button
+    id="accountBtn"
+    class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition duration-200"
+    aria-label="Account"
+  >
+    <i class="fas fa-user text-xl text-gray-700"></i>
+  </button>
+  </a>
+
+  <!-- Dropdown (hidden by default) -->
+
+</div>
+
+
+
+
+
+    
 </nav>
                 
                 <div id="contentDiv" class="md:flex lg:felx xl:flex 2xl:flex items-center gap-4 hidden">

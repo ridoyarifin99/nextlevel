@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>Next Level — Login / Sign up</title>
+
+  <!-- Tailwind output + your custom CSS file (the one you sent) -->
+  <link rel="stylesheet" href="./src/output.css" />
+  <link rel="stylesheet" href="./src/all.min.css" />
+  <link rel="stylesheet" href="./src/aos.css" />
+  <link rel="stylesheet" href="./src/your-custom.css" /> <!-- replace with your CSS path if needed -->
+
+  <!-- API base (change to prod on deploy) -->
+  <script>
+    window.AUTH_API_BASE = window.AUTH_API_BASE || "http://localhost:8080";
+  </script>
+
+  <style>
+    /* Small extras to complement your CSS */
+    .auth-tab[data-active="true"] {
+      background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+      color: white;
+      box-shadow: 0 6px 12px rgba(106, 17, 203, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[var(--light-bg)] text-[var(--text-dark)]">
+
+  <!-- HEADER (minimal, link back home) -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <a href="/" class="logo-container">
+          <img src="/images/next_level.png" alt="Next Level Estore Logo" class="logo-image">
+
+          <div class="logo-text-container">
+            <div class="logo-text-item" style="color: var(--primary-color);">Trusted</div>
+            <div class="logo-text-item" style="color: var(--primary-color);">Cheap</div>
+            <div class="logo-text-item" style="color: var(--primary-color);">Secure</div>
+            <div class="logo-text-item" style="color: var(--primary-color);">24/7 Support</div>
+          </div>
+        </a>
+        <a href="/" class="text-sm text-[var(--text-light)] hover:text-[var(--primary-color)] transition">← Back to home</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container mx-auto px-4">
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch py-10">
+
+      <!-- Left: Brand/Trust side -->
+      <div class="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-[var(--primary-color)] to-[var(--secondary-color)] text-white p-8 flex">
+        <div class="relative z-10 my-auto">
+          <h1 class="text-3xl md:text-4xl font-bold mb-3">Premium Subscriptions, Instantly</h1>
+          <p class="text-white/90 mb-6 max-w-md">Log in or create an account to access unbeatable prices across Netflix, Disney+, Spotify, VPNs, cloud storage, and more — with 24/7 support.</p>
+
+          <ul class="space-y-3 text-white/95">
+            <li class="flex items-center gap-3">
+              <i class="fa-solid fa-badge-check text-xl"></i>
+              <span>Instant Delivery</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-solid fa-shield-halved text-xl"></i>
+              <span>Secure Payments</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-solid fa-user-headset text-xl"></i>
+              <span>24/7 Support</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <i class="fa-solid fa-bolt text-xl"></i>
+              <span>Verified & Trusted</span>
+            </li>
+          </ul>
+
+          <div class="mt-8 flex items-center gap-4">
+            <div class="h-10 flex justify-center">
+              <img src="/images/logo-dbid.png" alt="DBID Verification Badge" class="h-10 object-contain bg-white/10 p-1 rounded" />
+            </div>
+            <div class="text-white/90 text-sm">Verified by DBID</div>
+          </div>
+
+          <a href="tel:01644490566"
+             class="mt-8 inline-flex items-center gap-3 px-6 py-2 rounded-full bg-white/15 border border-white/20 text-white font-semibold backdrop-blur">
+            <i class="fa-regular fa-headset"></i>
+            01644490566
+          </a>
+        </div>
+
+        <!-- subtle shapes -->
+        <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-white/10 blur-2xl"></div>
+        <div class="absolute -left-24 -bottom-24 w-80 h-80 rounded-full bg-white/10 blur-2xl"></div>
+      </div>
+
+      <!-- Right: Auth card -->
+      <div class="flex">
+        <div class="w-full max-w-xl mx-auto my-auto bg-white rounded-2xl shadow-lg p-6 border border-[var(--border-color)]">
+
+          <!-- Tabs -->
+          <div class="flex items-center gap-2 bg-[var(--light-bg)] p-1 rounded-xl">
+            <button class="auth-tab flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition"
+                    data-tab="login" data-active="true">Log in</button>
+            <button class="auth-tab flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition"
+                    data-tab="signup">Sign up</button>
+          </div>
+
+          <!-- Panel: LOGIN -->
+          <form id="panel-login" class="mt-6 space-y-4" autocomplete="on">
+            <div>
+              <label class="block text-sm font-medium text-[var(--text-dark)]" for="login-email">Email</label>
+              <input id="login-email" type="email" required
+                     class="mt-1 w-full rounded-xl border border-[var(--border-color)] px-4 py-2 focus:ring-2 focus:ring-[var(--primary-light)] focus:outline-none"
+                     placeholder="you@example.com" />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-[var(--text-dark)]" for="login-password">Password</label>
+                <button type="button" id="login-toggle" class="text-xs text-[var(--secondary-color)] hover:underline">Show</button>
+              </div>
+              <input id="login-password" type="password" required minlength="6"
+                     class="mt-1 w-full rounded-xl border border-[var(--border-color)] px-4 py-2 focus:ring-2 focus:ring-[var(--primary-light)] focus:outline-none"
+                     placeholder="••••••••" />
+            </div>
+
+            <div class="flex items-center justify-between">
+              <label class="inline-flex items-center gap-2 text-sm text-[var(--text-light)]">
+                <input id="login-remember" type="checkbox" class="rounded border-[var(--border-color)]" />
+                Remember me
+              </label>
+              <a href="#" class="text-sm text-[var(--text-light)] hover:text-[var(--primary-color)]">Forgot password?</a>
+            </div>
+
+            <button class="w-full py-2.5 rounded-xl btn-primary">Log in</button>
+            <p id="login-error" class="hidden text-sm text-[var(--accent-color)]"></p>
+          </form>
+
+          <!-- Panel: SIGNUP -->
+          <form id="panel-signup" class="mt-6 space-y-4 hidden" autocomplete="on">
+            <div>
+              <label class="block text-sm font-medium text-[var(--text-dark)]" for="signup-name">Full name</label>
+              <input id="signup-name" type="text" required minlength="2"
+                     class="mt-1 w-full rounded-xl border border-[var(--border-color)] px-4 py-2 focus:ring-2 focus:ring-[var(--primary-light)] focus:outline-none"
+                     placeholder="Ridoy Arifin" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-[var(--text-dark)]" for="signup-email">Email</label>
+              <input id="signup-email" type="email" required
+                     class="mt-1 w-full rounded-xl border border-[var(--border-color)] px-4 py-2 focus:ring-2 focus:ring-[var(--primary-light)] focus:outline-none"
+                     placeholder="you@example.com" />
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-[var(--text-dark)]" for="signup-password">Password</label>
+                <button type="button" id="signup-toggle" class="text-xs text-[var(--secondary-color)] hover:underline">Show</button>
+              </div>
+              <input id="signup-password" type="password" required minlength="6"
+                     class="mt-1 w-full rounded-xl border border-[var(--border-color)] px-4 py-2 focus:ring-2 focus:ring-[var(--primary-light)] focus:outline-none"
+                     placeholder="Minimum 6 characters" />
+            </div>
+
+            <button class="w-full py-2.5 rounded-xl btn-primary">Create account</button>
+            <p id="signup-error" class="hidden text-sm text-[var(--accent-color)]"></p>
+          </form>
+
+          <!-- Terms -->
+          <div class="mt-6 text-center text-xs text-[var(--text-light)]">
+            By continuing you agree to our
+            <a href="/terms" class="underline hover:text-[var(--primary-color)]">Terms</a>
+            &amp;
+            <a href="/privacy" class="underline hover:text-[var(--primary-color)]">Privacy</a>.
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER (minimal) -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-bottom">
+        <p>&copy; 2025 Next Level Estore. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./src/aos.js"></script>
+  <script>
+    AOS?.init && AOS.init({ duration: 800, once: true, offset: 100 });
+  </script>
+
+  <!-- Auth page script -->
+  <script>
+    (function () {
+      const API = window.AUTH_API_BASE || "http://localhost:8080";
+      const qs = s => document.querySelector(s);
+
+      const tabs = document.querySelectorAll('.auth-tab');
+      const panelLogin = qs('#panel-login');
+      const panelSignup = qs('#panel-signup');
+
+      // Tab switching
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabs.forEach(b => b.dataset.active = 'false');
+          btn.dataset.active = 'true';
+          const which = btn.dataset.tab;
+          panelLogin.classList.toggle('hidden', which !== 'login');
+          panelSignup.classList.toggle('hidden', which !== 'signup');
+        });
+      });
+
+      // Show/hide password
+      qs('#login-toggle').addEventListener('click', () => togglePwd('#login-password', '#login-toggle'));
+      qs('#signup-toggle').addEventListener('click', () => togglePwd('#signup-password', '#signup-toggle'));
+      function togglePwd(inputSel, btnSel) {
+        const input = qs(inputSel), btn = qs(btnSel);
+        const isPwd = input.type === 'password';
+        input.type = isPwd ? 'text' : 'password';
+        btn.textContent = isPwd ? 'Hide' : 'Show';
+        input.focus();
+      }
+
+      // Helpers
+      function setLoading(form, on) {
+        const btn = form.querySelector('button[type="submit"]');
+        if (!btn) return;
+        btn.disabled = on;
+        btn.classList.toggle('opacity-60', on);
+        btn.innerHTML = on ? '<span class="inline-block animate-pulse">Please wait…</span>' : btn.dataset.original || btn.textContent || 'Submit';
+      }
+      [panelLogin, panelSignup].forEach(form => {
+        const btn = form.querySelector('button[type="submit"]');
+        if (btn) btn.dataset.original = btn.textContent;
+      });
+
+      async function postJSON(url, body) {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body)
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error || 'Request failed');
+        return data;
+      }
+
+      // Query params: redirect
+      const params = new URLSearchParams(location.search);
+      const redirectTo = params.get('redirect') || '/';
+
+      // LOGIN submit
+      panelLogin.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errEl = qs('#login-error');
+        errEl.classList.add('hidden');
+        const payload = {
+          email: qs('#login-email').value.trim(),
+          password: qs('#login-password').value
+        };
+        if (!payload.email || !payload.password) {
+          errEl.textContent = 'Email and password are required.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        setLoading(panelLogin, true);
+        try {
+          const { user, accessToken } = await postJSON(`${API}/api/auth/login`, payload);
+          localStorage.setItem('nl_access_token', accessToken || '');
+          localStorage.setItem('user', JSON.stringify(user || null));
+          // Go back (or to redirect target)
+          location.href = redirectTo;
+        } catch (e2) {
+          errEl.textContent = e2.message;
+          errEl.classList.remove('hidden');
+        } finally {
+          setLoading(panelLogin, false);
+        }
+      });
+
+      // SIGNUP submit
+      panelSignup.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errEl = qs('#signup-error');
+        errEl.classList.add('hidden');
+        const payload = {
+          name: qs('#signup-name').value.trim(),
+          email: qs('#signup-email').value.trim(),
+          password: qs('#signup-password').value
+        };
+        if (!payload.name || !payload.email || !payload.password) {
+          errEl.textContent = 'All fields are required.';
+          errEl.classList.remove('hidden');
+          return;
+        }
+        setLoading(panelSignup, true);
+        try {
+          const { user, accessToken } = await postJSON(`${API}/api/auth/signup`, payload);
+          localStorage.setItem('nl_access_token', accessToken || '');
+          localStorage.setItem('user', JSON.stringify(user || null));
+          location.href = redirectTo;
+        } catch (e2) {
+          errEl.textContent = e2.message;
+          errEl.classList.remove('hidden');
+        } finally {
+          setLoading(panelSignup, false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
