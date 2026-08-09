@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
-Sitemap: https://wwww.nextlevelsubs.com/sitemap.xml
+
+Sitemap: https://www.nextlevelsubs.com/sitemap.xml
+
 Allow: /src/
 Allow: /css/
 Allow: /assets/
