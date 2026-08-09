@@ -2198,7 +2198,7 @@ footer {
   .nav-menu {
     position: fixed;
     top: calc(var(--spacing) * 0);
-    right: calc(var(--spacing) * -70);
+    right: calc(var(--spacing) * -75);
     z-index: 49;
     height: 100%;
     width: calc(var(--spacing) * 75);
