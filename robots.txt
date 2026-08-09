@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://wwww.nextlevelbd.store/sitemap.xml
+Sitemap: https://wwww.nextlevelsubs.com/sitemap.xml
 Allow: /src/
 Allow: /css/
 Allow: /assets/
