@@ -288,7 +288,7 @@ const products = {
         category: "Cloud Storage"
     },
 
-    "True Caller Gold": {
+    "True-Caller-Gold": {
         name: "True Caller Gold",
         description: "Premium caller identification and protection",
         image: "/assets/cards/truecaller.avif",
