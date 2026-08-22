@@ -5088,6 +5088,15 @@
 // PRODUCT SLUG HELPER
 // ============================================================
 
+// ============================================================
+// NEXT LEVEL SUBS
+// details.html PRODUCT SYSTEM
+// ============================================================
+
+// ============================================================
+// PRODUCT SLUG
+// ============================================================
+
 function productSlug(name) {
     return String(name || "")
         .toLowerCase()
@@ -5101,12 +5110,12 @@ function productSlug(name) {
 // CART STATE
 // ============================================================
 
-let cart = JSON.parse(localStorage.getItem("streamHubCart")) || [];
+let cart = JSON.parse(
+    localStorage.getItem("streamHubCart")
+) || [];
 
 let currentProduct = null;
-
 let selectedPlan = 2;
-
 let currentSlide = 0;
 
 
@@ -5143,63 +5152,71 @@ const whatsappFab =
 
 
 // ============================================================
-// READ URL
+// URL PARAMETERS
 // ============================================================
 
 const urlParams =
-    new URLSearchParams(window.location.search);
+    new URLSearchParams(
+        window.location.search
+    );
 
-
-// Existing details.html?name=...
 const productNameFromURL =
     urlParams.get("name") || "";
 
-
-// Optional details.html?slug=...
 const productSlugFromURL =
     urlParams.get("slug") || "";
 
 
 // ============================================================
-// DETECT CLEAN /product/slug URL
+// GET CLEAN PRODUCT SLUG
+// ============================================================
+//
+// Clean URL:
+//
+// https://nextlevelsubs.com/product/netflix-premium
+//
 // ============================================================
 
 function getCleanProductSlug() {
 
-    const pathParts =
+    const pathname =
         window.location.pathname
-            .split("/")
-            .filter(Boolean);
+            .replace(/\/+$/, "");
 
-    // Example:
-    //
-    // /product/netflix-premium
-    //
-    // pathParts =
-    // ["product", "netflix-premium"]
+    const match =
+        pathname.match(
+            /^\/product\/([^/]+)$/i
+        );
 
-    if (
-        pathParts.length >= 2 &&
-        pathParts[0].toLowerCase() === "product"
-    ) {
-        return decodeURIComponent(pathParts[1])
+    if (!match || !match[1]) {
+        return "";
+    }
+
+    try {
+
+        return decodeURIComponent(
+            match[1]
+        )
+            .trim()
+            .toLowerCase();
+
+    } catch (error) {
+
+        return match[1]
             .trim()
             .toLowerCase();
     }
-
-    return "";
 }
 
 
 // ============================================================
-// DETECT PRODUCT SLUG FROM ALL POSSIBLE SOURCES
+// GET PRODUCT SLUG FROM URL
 // ============================================================
 
 function getRequestedProductSlug() {
 
     // --------------------------------------------------------
-    // Priority 1:
-    // /product/netflix-premium
+    // 1. CLEAN URL
     // --------------------------------------------------------
 
     const cleanSlug =
@@ -5211,29 +5228,29 @@ function getRequestedProductSlug() {
 
 
     // --------------------------------------------------------
-    // Priority 2:
-    // details.html?slug=netflix-premium
+    // 2. ?slug=netflix-premium
     // --------------------------------------------------------
 
     if (
         productSlugFromURL &&
         productSlugFromURL.trim()
     ) {
-        return productSlugFromURL
-            .trim()
-            .toLowerCase();
+
+        return productSlug(
+            productSlugFromURL
+        );
     }
 
 
     // --------------------------------------------------------
-    // Priority 3:
-    // details.html?name=Netflix Premium
+    // 3. ?name=Netflix Premium
     // --------------------------------------------------------
 
     if (
         productNameFromURL &&
         productNameFromURL.trim()
     ) {
+
         return productSlug(
             productNameFromURL
         );
@@ -5245,11 +5262,81 @@ function getRequestedProductSlug() {
 
 
 // ============================================================
-// REQUESTED PRODUCT
+// FIND PRODUCT BY SLUG
+// ============================================================
+//
+// IMPORTANT:
+// We use `products`.
+// NOT `subscriptions`.
+//
 // ============================================================
 
-const requestedProductSlug =
-    getRequestedProductSlug();
+function findProductBySlug(slug) {
+
+    if (
+        !slug ||
+        !Array.isArray(products)
+    ) {
+        return null;
+    }
+
+    const normalizedSlug =
+        productSlug(slug);
+
+    return products.find(product => {
+
+        const slugValue =
+            product.slug ||
+            productSlug(product.name);
+
+        return (
+            productSlug(slugValue) ===
+            normalizedSlug
+        );
+
+    }) || null;
+}
+
+
+// ============================================================
+// FIND PRODUCT BY NAME
+// ============================================================
+
+function findProductByName(name) {
+
+    if (
+        !name ||
+        !Array.isArray(products)
+    ) {
+        return null;
+    }
+
+    let decodedName = name;
+
+    try {
+        decodedName =
+            decodeURIComponent(name);
+    } catch (error) {
+        // Keep original value
+    }
+
+    const normalizedName =
+        decodedName
+            .trim()
+            .toLowerCase();
+
+    return products.find(product => {
+
+        return (
+            String(product.name || "")
+                .trim()
+                .toLowerCase()
+            ===
+            normalizedName
+        );
+
+    }) || null;
+}
 
 
 // ============================================================
@@ -5261,11 +5348,6 @@ function showSkeletonLoaders() {
     if (loadingOverlay) {
         loadingOverlay.classList.add("active");
     }
-
-
-    // --------------------------------------------------------
-    // Product skeleton
-    // --------------------------------------------------------
 
     if (productDetails) {
 
@@ -5334,16 +5416,13 @@ function showSkeletonLoaders() {
 
                     </div>
 
-
                     <div
                         class="skeleton skeleton-text mb-6"
                     ></div>
 
-
                     <div
                         class="skeleton skeleton-title mb-3"
                     ></div>
-
 
                     <div
                         class="grid grid-cols-2 gap-3 mb-6"
@@ -5351,7 +5430,9 @@ function showSkeletonLoaders() {
 
                         ${[1, 2, 3, 4]
                             .map(() => `
-                                <div class="skeleton-card p-4">
+                                <div
+                                    class="skeleton-card p-4"
+                                >
 
                                     <div
                                         class="skeleton skeleton-title mb-2"
@@ -5367,11 +5448,9 @@ function showSkeletonLoaders() {
 
                     </div>
 
-
                     <div
                         class="skeleton skeleton-title mb-3"
                     ></div>
-
 
                     ${[1, 2, 3, 4]
                         .map(() => `
@@ -5391,31 +5470,12 @@ function showSkeletonLoaders() {
                         `)
                         .join("")}
 
-
-                    <div
-                        class="flex space-x-4 mt-6"
-                    >
-
-                        <div
-                            class="skeleton skeleton-button flex-1"
-                        ></div>
-
-                        <div
-                            class="skeleton skeleton-button flex-1"
-                        ></div>
-
-                    </div>
-
                 </div>
 
             </div>
         `;
     }
 
-
-    // --------------------------------------------------------
-    // Related products skeleton
-    // --------------------------------------------------------
 
     if (relatedProducts) {
 
@@ -5455,21 +5515,9 @@ function showSkeletonLoaders() {
 
                     </div>
 
-
                     <div
-                        class="flex justify-between items-center mb-4"
-                    >
-
-                        <div
-                            class="skeleton skeleton-price"
-                        ></div>
-
-                        <div
-                            class="skeleton skeleton-text w-8"
-                        ></div>
-
-                    </div>
-
+                        class="skeleton skeleton-price mb-4"
+                    ></div>
 
                     <div
                         class="skeleton skeleton-button"
@@ -5487,7 +5535,7 @@ function showSkeletonLoaders() {
 
 
 // ============================================================
-// LOAD CART
+// CART
 // ============================================================
 
 function loadCart() {
@@ -5507,7 +5555,6 @@ function loadCart() {
             if (Array.isArray(parsedCart)) {
                 cart = parsedCart;
             }
-
         }
 
     } catch (error) {
@@ -5520,14 +5567,9 @@ function loadCart() {
         cart = [];
     }
 
-
     updateCartCount();
 }
 
-
-// ============================================================
-// SAVE CART
-// ============================================================
 
 function saveCart() {
 
@@ -5549,73 +5591,6 @@ function saveCart() {
 
 
 // ============================================================
-// FIND PRODUCT
-// ============================================================
-
-function findProductBySlug(slug) {
-
-    if (!slug) {
-        return null;
-    }
-
-
-    const normalizedSlug =
-        String(slug)
-            .trim()
-            .toLowerCase();
-
-
-    return subscriptions.find(product => {
-
-        const existingSlug =
-            product.slug
-                ? product.slug
-                : productSlug(product.name);
-
-        return (
-            existingSlug
-                .trim()
-                .toLowerCase()
-            ===
-            normalizedSlug
-        );
-
-    }) || null;
-}
-
-
-// ============================================================
-// FIND PRODUCT BY NAME
-// ============================================================
-
-function findProductByName(name) {
-
-    if (!name) {
-        return null;
-    }
-
-
-    const normalizedName =
-        decodeURIComponent(name)
-            .trim()
-            .toLowerCase();
-
-
-    return subscriptions.find(product => {
-
-        return (
-            product.name
-                .trim()
-                .toLowerCase()
-            ===
-            normalizedName
-        );
-
-    }) || null;
-}
-
-
-// ============================================================
 // LOAD PRODUCT
 // ============================================================
 
@@ -5625,23 +5600,25 @@ function loadProduct(slug) {
 
 
     // --------------------------------------------------------
-    // First try slug
+    // FIND BY SLUG
     // --------------------------------------------------------
 
     if (slug) {
+
         product =
             findProductBySlug(slug);
     }
 
 
     // --------------------------------------------------------
-    // If slug failed, try name
+    // FALLBACK TO NAME
     // --------------------------------------------------------
 
     if (
         !product &&
         productNameFromURL
     ) {
+
         product =
             findProductByName(
                 productNameFromURL
@@ -5650,7 +5627,7 @@ function loadProduct(slug) {
 
 
     // --------------------------------------------------------
-    // Product not found
+    // NOT FOUND
     // --------------------------------------------------------
 
     if (!product) {
@@ -5659,12 +5636,6 @@ function loadProduct(slug) {
             "Product not found:",
             slug
         );
-
-        // IMPORTANT:
-        // Do NOT redirect automatically to home.
-        //
-        // This prevents the clean URL from unexpectedly
-        // sending the user to "/".
 
         if (loadingOverlay) {
             loadingOverlay.classList.remove(
@@ -5676,7 +5647,9 @@ function loadProduct(slug) {
 
             productDetails.innerHTML = `
 
-                <div class="col-span-full text-center py-20">
+                <div
+                    class="col-span-full text-center py-20"
+                >
 
                     <i
                         class="fas fa-box-open text-5xl text-gray-300 mb-5"
@@ -5696,7 +5669,14 @@ function loadProduct(slug) {
 
                     <a
                         href="/"
-                        class="inline-block px-6 py-3 rounded-lg text-white btn-primary"
+                        class="
+                            inline-block
+                            px-6
+                            py-3
+                            rounded-lg
+                            text-white
+                            btn-primary
+                        "
                     >
                         Back to Home
                     </a>
@@ -5710,7 +5690,7 @@ function loadProduct(slug) {
 
 
     // --------------------------------------------------------
-    // Clone product
+    // CLONE PRODUCT
     // --------------------------------------------------------
 
     currentProduct =
@@ -5720,79 +5700,7 @@ function loadProduct(slug) {
 
 
     // --------------------------------------------------------
-    // Ensure arrays exist
-    // --------------------------------------------------------
-
-    if (
-        !Array.isArray(
-            currentProduct.images
-        )
-    ) {
-
-        currentProduct.images = [
-            currentProduct.image
-        ];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.customerReviews
-        )
-    ) {
-
-        currentProduct.customerReviews = [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.faq
-        )
-    ) {
-
-        currentProduct.faq = [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.features
-        )
-    ) {
-
-        currentProduct.features = [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.pricing
-        )
-    ) {
-
-        currentProduct.pricing = [];
-
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.categories
-        )
-    ) {
-
-        currentProduct.categories = [];
-
-    }
-
-
-    // --------------------------------------------------------
-    // Make sure slug exists
+    // NORMALIZE PRODUCT DATA
     // --------------------------------------------------------
 
     currentProduct.slug =
@@ -5802,8 +5710,56 @@ function loadProduct(slug) {
         );
 
 
+    currentProduct.images =
+        Array.isArray(
+            currentProduct.images
+        )
+            ? currentProduct.images
+            : [currentProduct.image];
+
+
+    currentProduct.customerReviews =
+        Array.isArray(
+            currentProduct.customerReviews
+        )
+            ? currentProduct.customerReviews
+            : [];
+
+
+    currentProduct.faq =
+        Array.isArray(
+            currentProduct.faq
+        )
+            ? currentProduct.faq
+            : [];
+
+
+    currentProduct.features =
+        Array.isArray(
+            currentProduct.features
+        )
+            ? currentProduct.features
+            : [];
+
+
+    currentProduct.pricing =
+        Array.isArray(
+            currentProduct.pricing
+        )
+            ? currentProduct.pricing
+            : [];
+
+
+    currentProduct.categories =
+        Array.isArray(
+            currentProduct.categories
+        )
+            ? currentProduct.categories
+            : [];
+
+
     // --------------------------------------------------------
-    // Reset selected plan
+    // PLAN
     // --------------------------------------------------------
 
     selectedPlan = 2;
@@ -5813,716 +5769,85 @@ function loadProduct(slug) {
     ) {
 
         selectedPlan = 0;
-
     }
 
 
     // --------------------------------------------------------
-    // Reset gallery
+    // GALLERY
     // --------------------------------------------------------
 
     currentSlide = 0;
 
 
     // --------------------------------------------------------
-    // Breadcrumb
+    // BREADCRUMB
     // --------------------------------------------------------
 
     if (breadcrumbProduct) {
 
         breadcrumbProduct.textContent =
             currentProduct.name;
-
     }
 
 
     // --------------------------------------------------------
-    // Render
+    // CLEAN URL
+    // --------------------------------------------------------
+    //
+    // If someone opens:
+    //
+    // details.html?name=Netflix%20Premium
+    //
+    // it becomes:
+    //
+    // /product/netflix-premium
+    //
+    // --------------------------------------------------------
+
+    const cleanURL =
+        `/product/${encodeURIComponent(
+            currentProduct.slug
+        )}`;
+
+    const currentCleanSlug =
+        getCleanProductSlug();
+
+    if (
+        window.location.pathname
+            .toLowerCase()
+            .includes("details.html") &&
+        currentCleanSlug !==
+            currentProduct.slug
+    ) {
+
+        window.history.replaceState(
+            {},
+            "",
+            cleanURL
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // RENDER
     // --------------------------------------------------------
 
     renderProductDetails();
 
-
-    // --------------------------------------------------------
-    // Default tab
-    // --------------------------------------------------------
-
     switchTab("description");
-
-
-    // --------------------------------------------------------
-    // Related products
-    // --------------------------------------------------------
 
     loadRelatedProducts();
 
-
-    // --------------------------------------------------------
-    // Refresh AOS
-    // --------------------------------------------------------
 
     setTimeout(() => {
 
         if (
             typeof AOS !== "undefined"
         ) {
-
             AOS.refresh();
-
         }
 
     }, 100);
-}
-
-
-// ============================================================
-// INITIALIZE
-// ============================================================
-
-function init() {
-
-    // --------------------------------------------------------
-    // Show loading skeleton
-    // --------------------------------------------------------
-
-    showSkeletonLoaders();
-
-
-    // --------------------------------------------------------
-    // Load cart
-    // --------------------------------------------------------
-
-    loadCart();
-
-
-    // --------------------------------------------------------
-    // IMPORTANT ROUTING FIX
-    // --------------------------------------------------------
-    //
-    // We do NOT require /product/slug anymore.
-    //
-    // The page can be:
-    //
-    // /product/netflix-premium
-    //
-    // OR:
-    //
-    // /details.html?name=Netflix%20Premium
-    //
-    // OR:
-    //
-    // /details.html?slug=netflix-premium
-    //
-    // --------------------------------------------------------
-
-    const requestedSlug =
-        getRequestedProductSlug();
-
-
-    // --------------------------------------------------------
-    // If there is no product identifier
-    // --------------------------------------------------------
-
-    if (!requestedSlug) {
-
-        console.warn(
-            "No product specified."
-        );
-
-
-        // Only redirect when details.html was opened
-        // without ANY product information.
-        //
-        // Do not redirect /product/... because that
-        // route has already been handled above.
-
-        if (
-            window.location.pathname
-                .toLowerCase()
-                .includes("details.html")
-        ) {
-
-            window.location.href = "/";
-
-            return;
-        }
-
-
-        // For an unexpected page state, show an error
-        // instead of blindly redirecting.
-
-        if (loadingOverlay) {
-
-            loadingOverlay.classList.remove(
-                "active"
-            );
-
-        }
-
-        return;
-    }
-
-
-    // --------------------------------------------------------
-    // Load product
-    // --------------------------------------------------------
-
-    setTimeout(() => {
-
-        loadProduct(
-            requestedSlug
-        );
-
-
-        if (loadingOverlay) {
-
-            loadingOverlay.classList.remove(
-                "active"
-            );
-
-        }
-
-    }, 500);
-
-
-    // --------------------------------------------------------
-    // Scroll buttons
-    // --------------------------------------------------------
-
-    window.addEventListener(
-        "scroll",
-        () => {
-
-            if (
-                window.pageYOffset > 300
-            ) {
-
-                if (fab) {
-
-                    fab.style.opacity = "1";
-
-                    fab.style.visibility =
-                        "visible";
-                }
-
-
-                if (whatsappFab) {
-
-                    whatsappFab.style.opacity =
-                        "1";
-
-                    whatsappFab.style.visibility =
-                        "visible";
-                }
-
-            } else {
-
-                if (fab) {
-
-                    fab.style.opacity = "0";
-
-                    fab.style.visibility =
-                        "hidden";
-                }
-
-
-                if (whatsappFab) {
-
-                    whatsappFab.style.opacity =
-                        "0";
-
-                    whatsappFab.style.visibility =
-                        "hidden";
-                }
-
-            }
-
-        }
-    );
-}
-
-
-// ============================================================
-// RENDER PRODUCT DETAILS
-// ============================================================
-
-function renderProductDetails() {
-
-    if (!productDetails) {
-        return;
-    }
-
-
-    productDetails.innerHTML = `
-
-        <!-- =================================================
-             PRODUCT IMAGES
-             ================================================= -->
-
-        <div
-            class="animate-slide-in-left"
-            data-aos="fade-right"
-        >
-
-            <div class="gallery-container">
-
-                <div
-                    class="gallery-slider"
-                    id="gallerySlider"
-                >
-
-                    ${currentProduct.images
-                        .map(
-                            (img, index) => `
-
-                            <div class="gallery-slide">
-
-                                <img
-                                    src="${img}"
-                                    alt="${currentProduct.name} ${index + 1}"
-                                >
-
-                                <div
-                                    class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer"
-                                    onclick="toggleFavorite()"
-                                >
-
-                                    <i
-                                        id="favoriteIcon"
-                                        class="far fa-heart text-xl"
-                                    ></i>
-
-                                </div>
-
-                            </div>
-
-                        `
-                        )
-                        .join("")}
-
-                </div>
-
-
-                <!-- Navigation -->
-
-                <div
-                    class="gallery-nav gallery-prev"
-                    onclick="prevSlide()"
-                >
-                    <i class="fas fa-chevron-left"></i>
-                </div>
-
-
-                <div
-                    class="gallery-nav gallery-next"
-                    onclick="nextSlide()"
-                >
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-
-            </div>
-
-
-            <!-- Dots -->
-
-            <div class="gallery-dots">
-
-                ${currentProduct.images
-                    .map(
-                        (_, index) => `
-
-                        <div
-                            class="gallery-dot ${
-                                index === 0
-                                    ? "active"
-                                    : ""
-                            }"
-                            onclick="goToSlide(${index})"
-                        ></div>
-
-                    `
-                    )
-                    .join("")}
-
-            </div>
-
-
-            <!-- Thumbnails -->
-
-            <div
-                class="flex mt-4 space-x-2 overflow-x-auto pb-2"
-            >
-
-                ${currentProduct.images
-                    .map(
-                        (img, index) => `
-
-                        <img
-                            src="${img}"
-                            alt="${currentProduct.name} ${index + 1}"
-                            class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${
-                                index === 0
-                                    ? "active"
-                                    : ""
-                            }"
-                            onclick="goToSlide(${index})"
-                        >
-
-                    `
-                    )
-                    .join("")}
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             PRODUCT INFORMATION
-             ================================================= -->
-
-        <div
-            class="animate-slide-in-right"
-            data-aos="fade-left"
-        >
-
-            <div class="flex items-center mb-4">
-
-                <img
-                    src="${currentProduct.image}"
-                    alt="${currentProduct.name}"
-                    class="w-16 h-16 rounded-lg mr-4 object-contain"
-                >
-
-                <div>
-
-                    <h1 class="text-3xl font-bold">
-                        ${currentProduct.name}
-                    </h1>
-
-                    <div
-                        class="flex items-center mt-1"
-                    >
-
-                        <div
-                            class="flex text-yellow-400"
-                        >
-                            ${generateStars(
-                                currentProduct.rating || 0
-                            )}
-                        </div>
-
-                        <span
-                            class="ml-2 text-gray-600"
-                        >
-                            ${currentProduct.rating || 0}
-                            (${(
-                                currentProduct.reviews || 0
-                            ).toLocaleString()} reviews)
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <p class="text-gray-600 mb-6">
-                ${currentProduct.description || ""}
-            </p>
-
-
-            <!-- =================================================
-                 PRICING
-                 ================================================= -->
-
-            <div class="mb-6">
-
-                <h3
-                    class="text-lg font-semibold mb-3"
-                >
-                    Select Subscription Plan:
-                </h3>
-
-                <div
-                    class="grid grid-cols-2 gap-3"
-                >
-
-                    ${currentProduct.pricing
-                        .map(
-                            (plan, index) => `
-
-                            <div
-                                class="
-                                    plan-card
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                    ${
-                                        plan.popular
-                                            ? "relative"
-                                            : ""
-                                    }
-                                    ${
-                                        index === selectedPlan
-                                            ? "selected"
-                                            : ""
-                                    }
-                                "
-                                onclick="selectPlan(${index})"
-                            >
-
-                                ${
-                                    plan.popular
-                                        ? `
-                                            <span
-                                                class="popular-badge"
-                                            >
-                                                Most Popular
-                                            </span>
-                                        `
-                                        : ""
-                                }
-
-                                <div
-                                    class="font-medium mt-3"
-                                >
-                                    ${plan.duration}
-                                </div>
-
-                                <div
-                                    class="text-2xl font-bold mt-1"
-                                >
-                                    ${plan.currency}
-                                    ${plan.price}
-                                </div>
-
-                                ${
-                                    plan.discount
-                                        ? `
-                                            <div
-                                                class="text-xs text-green-500 mt-1"
-                                            >
-                                                ${plan.discount}
-                                            </div>
-                                        `
-                                        : ""
-                                }
-
-                            </div>
-
-                        `
-                        )
-                        .join("")}
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 FEATURES
-                 ================================================= -->
-
-            <div class="mb-6">
-
-                <h3
-                    class="text-lg font-semibold mb-3"
-                >
-                    Key Features:
-                </h3>
-
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-2"
-                >
-
-                    ${currentProduct.features
-                        .map(
-                            (feature, index) => `
-
-                            <div
-                                class="
-                                    feature-item
-                                    flex
-                                    items-center
-                                    p-2
-                                    bg-gray-50
-                                    rounded-lg
-                                    hover:bg-gray-100
-                                    transition-colors
-                                "
-                                style="
-                                    animation-delay:
-                                    ${index * 0.1}s;
-                                "
-                                data-aos="fade-up"
-                                data-aos-delay="${
-                                    index * 100
-                                }"
-                            >
-
-                                <i
-                                    class="fas fa-check-circle text-green-500 mr-2"
-                                ></i>
-
-                                <span
-                                    class="text-gray-700"
-                                >
-                                    ${feature}
-                                </span>
-
-                            </div>
-
-                        `
-                        )
-                        .join("")}
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 ACTION BUTTONS
-                 ================================================= -->
-
-            <div class="flex space-x-4">
-
-                <button
-                    onclick="addToCart()"
-                    class="
-                        flex-1
-                        py-3
-                        rounded-lg
-                        font-semibold
-                        text-white
-                        btn-primary
-                    "
-                >
-
-                    <i
-                        class="fa-regular fa-cart-circle-plus mr-2"
-                    ></i>
-
-                    Add to Cart
-
-                </button>
-
-
-                <button
-                    onclick="buyNow()"
-                    class="
-                        flex-1
-                        py-3
-                        rounded-lg
-                        font-semibold
-                        text-white
-                        btn-whatsapp
-                    "
-                >
-
-                    <i
-                        class="fab fa-whatsapp mr-2"
-                    ></i>
-
-                    Buy Now
-
-                </button>
-
-            </div>
-
-
-            <!-- =================================================
-                 ADDITIONAL INFO
-                 ================================================= -->
-
-            <div
-                class="
-                    mt-6
-                    pt-6
-                    border-t
-                    border-gray-200
-                "
-            >
-
-                <div
-                    class="
-                        flex
-                        flex-wrap
-                        items-center
-                        justify-between
-                        text-sm
-                        text-gray-600
-                        gap-2
-                    "
-                >
-
-                    <div class="flex items-center">
-
-                        <i
-                            class="fas fa-shield-alt mr-2"
-                        ></i>
-
-                        <span>
-                            30-Day Money Back Guarantee
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex items-center">
-
-                        <i
-                            class="fas fa-lock mr-2"
-                        ></i>
-
-                        <span>
-                            Secure Payment
-                        </span>
-
-                    </div>
-
-
-                    <div class="flex items-center">
-
-                        <i
-                            class="fas fa-headset mr-2"
-                        ></i>
-
-                        <span>
-                            24/7 Support
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    `;
-
-
-    // Animate features
-
-    setTimeout(() => {
-
-        document
-            .querySelectorAll(".feature-item")
-            .forEach((item, index) => {
-
-                setTimeout(() => {
-
-                    item.classList.add("show");
-
-                }, index * 100);
-
-            });
-
-    }, 500);
 }
 
 
@@ -6540,7 +5865,6 @@ function updateGallery() {
     if (!slider) {
         return;
     }
-
 
     const dots =
         document.querySelectorAll(
@@ -6656,7 +5980,6 @@ function generateStars(rating) {
 
         stars +=
             '<i class="fas fa-star"></i>';
-
     }
 
 
@@ -6664,7 +5987,6 @@ function generateStars(rating) {
 
         stars +=
             '<i class="fas fa-star-half-alt"></i>';
-
     }
 
 
@@ -6680,7 +6002,6 @@ function generateStars(rating) {
 
         stars +=
             '<i class="far fa-star"></i>';
-
     }
 
 
@@ -6733,7 +6054,6 @@ function toggleFavorite() {
         favoriteIcon.classList.remove(
             "text-red-500"
         );
-
     }
 }
 
@@ -6769,6 +6089,571 @@ function selectPlan(index) {
 
 
 // ============================================================
+// RENDER PRODUCT DETAILS
+// ============================================================
+
+function renderProductDetails() {
+
+    if (!productDetails) {
+        return;
+    }
+
+
+    productDetails.innerHTML = `
+
+        <!-- PRODUCT GALLERY -->
+
+        <div
+            class="animate-slide-in-left"
+            data-aos="fade-right"
+        >
+
+            <div class="gallery-container">
+
+                <div
+                    class="gallery-slider"
+                    id="gallerySlider"
+                >
+
+                    ${currentProduct.images
+                        .map(
+                            (img, index) => `
+
+                            <div class="gallery-slide">
+
+                                <img
+                                    src="${img}"
+                                    alt="${currentProduct.name} ${index + 1}"
+                                >
+
+                                <div
+                                    class="
+                                        absolute
+                                        top-4
+                                        right-4
+                                        bg-white
+                                        rounded-full
+                                        p-2
+                                        shadow-md
+                                        cursor-pointer
+                                    "
+                                    onclick="toggleFavorite()"
+                                >
+
+                                    <i
+                                        id="favoriteIcon"
+                                        class="far fa-heart text-xl"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+                        `
+                        )
+                        .join("")}
+
+                </div>
+
+
+                <div
+                    class="gallery-nav gallery-prev"
+                    onclick="prevSlide()"
+                >
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+
+
+                <div
+                    class="gallery-nav gallery-next"
+                    onclick="nextSlide()"
+                >
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+
+            </div>
+
+
+            <div class="gallery-dots">
+
+                ${currentProduct.images
+                    .map(
+                        (_, index) => `
+
+                        <div
+                            class="
+                                gallery-dot
+                                ${
+                                    index === 0
+                                        ? "active"
+                                        : ""
+                                }
+                            "
+                            onclick="goToSlide(${index})"
+                        ></div>
+                    `
+                    )
+                    .join("")}
+
+            </div>
+
+
+            <div
+                class="
+                    flex
+                    mt-4
+                    space-x-2
+                    overflow-x-auto
+                    pb-2
+                "
+            >
+
+                ${currentProduct.images
+                    .map(
+                        (img, index) => `
+
+                        <img
+                            src="${img}"
+                            alt="${currentProduct.name} ${index + 1}"
+                            class="
+                                gallery-thumbnail
+                                w-20
+                                h-20
+                                rounded-lg
+                                object-cover
+                                flex-shrink-0
+                                cursor-pointer
+                                ${
+                                    index === 0
+                                        ? "active"
+                                        : ""
+                                }
+                            "
+                            onclick="goToSlide(${index})"
+                        >
+                    `
+                    )
+                    .join("")}
+
+            </div>
+
+        </div>
+
+
+        <!-- PRODUCT INFORMATION -->
+
+        <div
+            class="animate-slide-in-right"
+            data-aos="fade-left"
+        >
+
+            <div class="flex items-center mb-4">
+
+                <img
+                    src="${currentProduct.image}"
+                    alt="${currentProduct.name}"
+                    class="
+                        w-16
+                        h-16
+                        rounded-lg
+                        mr-4
+                        object-contain
+                    "
+                >
+
+                <div>
+
+                    <h1 class="text-3xl font-bold">
+                        ${currentProduct.name}
+                    </h1>
+
+                    <div
+                        class="
+                            flex
+                            items-center
+                            mt-1
+                        "
+                    >
+
+                        <div
+                            class="
+                                flex
+                                text-yellow-400
+                            "
+                        >
+                            ${generateStars(
+                                currentProduct.rating || 0
+                            )}
+                        </div>
+
+                        <span
+                            class="
+                                ml-2
+                                text-gray-600
+                            "
+                        >
+                            ${currentProduct.rating || 0}
+                            (${(
+                                currentProduct.reviews || 0
+                            ).toLocaleString()} reviews)
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <p
+                class="
+                    text-gray-600
+                    mb-6
+                "
+            >
+                ${currentProduct.description || ""}
+            </p>
+
+
+            <!-- PRICING -->
+
+            <div class="mb-6">
+
+                <h3
+                    class="
+                        text-lg
+                        font-semibold
+                        mb-3
+                    "
+                >
+                    Select Subscription Plan:
+                </h3>
+
+
+                <div
+                    class="
+                        grid
+                        grid-cols-2
+                        gap-3
+                    "
+                >
+
+                    ${currentProduct.pricing
+                        .map(
+                            (plan, index) => `
+
+                            <div
+                                class="
+                                    plan-card
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                    ${
+                                        plan.popular
+                                            ? "relative"
+                                            : ""
+                                    }
+                                    ${
+                                        index === selectedPlan
+                                            ? "selected"
+                                            : ""
+                                    }
+                                "
+                                onclick="selectPlan(${index})"
+                            >
+
+                                ${
+                                    plan.popular
+                                        ? `
+                                            <span
+                                                class="popular-badge"
+                                            >
+                                                Most Popular
+                                            </span>
+                                        `
+                                        : ""
+                                }
+
+
+                                <div
+                                    class="
+                                        font-medium
+                                        mt-3
+                                    "
+                                >
+                                    ${plan.duration}
+                                </div>
+
+
+                                <div
+                                    class="
+                                        text-2xl
+                                        font-bold
+                                        mt-1
+                                    "
+                                >
+                                    ${plan.currency}
+                                    ${plan.price}
+                                </div>
+
+
+                                ${
+                                    plan.discount
+                                        ? `
+                                            <div
+                                                class="
+                                                    text-xs
+                                                    text-green-500
+                                                    mt-1
+                                                "
+                                            >
+                                                ${plan.discount}
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+                        `
+                        )
+                        .join("")}
+
+                </div>
+
+            </div>
+
+
+            <!-- FEATURES -->
+
+            <div class="mb-6">
+
+                <h3
+                    class="
+                        text-lg
+                        font-semibold
+                        mb-3
+                    "
+                >
+                    Key Features:
+                </h3>
+
+
+                <div
+                    class="
+                        grid
+                        grid-cols-1
+                        sm:grid-cols-2
+                        gap-2
+                    "
+                >
+
+                    ${currentProduct.features
+                        .map(
+                            (feature, index) => `
+
+                            <div
+                                class="
+                                    feature-item
+                                    flex
+                                    items-center
+                                    p-2
+                                    bg-gray-50
+                                    rounded-lg
+                                    hover:bg-gray-100
+                                    transition-colors
+                                "
+                                style="
+                                    animation-delay:
+                                    ${index * 0.1}s;
+                                "
+                                data-aos="fade-up"
+                                data-aos-delay="${
+                                    index * 100
+                                }"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-check-circle
+                                        text-green-500
+                                        mr-2
+                                    "
+                                ></i>
+
+                                <span
+                                    class="text-gray-700"
+                                >
+                                    ${feature}
+                                </span>
+
+                            </div>
+                        `
+                        )
+                        .join("")}
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="flex space-x-4">
+
+                <button
+                    onclick="addToCart()"
+                    class="
+                        flex-1
+                        py-3
+                        rounded-lg
+                        font-semibold
+                        text-white
+                        btn-primary
+                    "
+                >
+
+                    <i
+                        class="
+                            fa-regular
+                            fa-cart-circle-plus
+                            mr-2
+                        "
+                    ></i>
+
+                    Add to Cart
+
+                </button>
+
+
+                <button
+                    onclick="buyNow()"
+                    class="
+                        flex-1
+                        py-3
+                        rounded-lg
+                        font-semibold
+                        text-white
+                        btn-whatsapp
+                    "
+                >
+
+                    <i
+                        class="
+                            fab
+                            fa-whatsapp
+                            mr-2
+                        "
+                    ></i>
+
+                    Buy Now
+
+                </button>
+
+            </div>
+
+
+            <!-- ADDITIONAL INFORMATION -->
+
+            <div
+                class="
+                    mt-6
+                    pt-6
+                    border-t
+                    border-gray-200
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        flex-wrap
+                        items-center
+                        justify-between
+                        text-sm
+                        text-gray-600
+                        gap-2
+                    "
+                >
+
+                    <div class="flex items-center">
+
+                        <i
+                            class="
+                                fas
+                                fa-shield-alt
+                                mr-2
+                            "
+                        ></i>
+
+                        <span>
+                            30-Day Money Back Guarantee
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex items-center">
+
+                        <i
+                            class="
+                                fas
+                                fa-lock
+                                mr-2
+                            "
+                        ></i>
+
+                        <span>
+                            Secure Payment
+                        </span>
+
+                    </div>
+
+
+                    <div class="flex items-center">
+
+                        <i
+                            class="
+                                fas
+                                fa-headset
+                                mr-2
+                            "
+                        ></i>
+
+                        <span>
+                            24/7 Support
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+
+    setTimeout(() => {
+
+        document
+            .querySelectorAll(".feature-item")
+            .forEach((item, index) => {
+
+                setTimeout(() => {
+
+                    item.classList.add("show");
+
+                }, index * 100);
+
+            });
+
+    }, 500);
+}
+
+
+// ============================================================
 // SWITCH TAB
 // ============================================================
 
@@ -6799,7 +6684,6 @@ function switchTab(tabName) {
                 btn.classList.add(
                     "active"
                 );
-
             }
 
         });
@@ -6809,27 +6693,28 @@ function switchTab(tabName) {
 
         switch (tabName) {
 
-            // ------------------------------------------------
-            // DESCRIPTION
-            // ------------------------------------------------
-
             case "description":
 
                 tabContent.innerHTML = `
 
-                    <div
-                        class="prose max-w-none"
-                    >
+                    <div class="prose max-w-none">
 
                         <p
-                            class="text-gray-700 mb-4"
+                            class="
+                                text-gray-700
+                                mb-4
+                            "
                         >
-                            ${currentProduct.description}
+                            ${currentProduct.description || ""}
                         </p>
 
 
                         <h3
-                            class="text-xl font-semibold mb-3"
+                            class="
+                                text-xl
+                                font-semibold
+                                mb-3
+                            "
                         >
                             Why Choose
                             ${currentProduct.name}?
@@ -6837,33 +6722,25 @@ function switchTab(tabName) {
 
 
                         <p
-                            class="text-gray-700 mb-4"
+                            class="
+                                text-gray-700
+                                mb-4
+                            "
                         >
                             ${currentProduct.name}
-                            offers an unparalleled
-                            experience with a vast
-                            library of content.
-                            From premium features to
-                            exclusive benefits,
-                            there's something for everyone.
-                        </p>
-
-
-                        <p
-                            class="text-gray-700 mb-4"
-                        >
-                            With our subscription,
-                            you get unlimited access
-                            to all features without
-                            unnecessary interruptions.
-                            Experience the best quality
-                            service with our premium
-                            offerings.
+                            offers a premium
+                            subscription experience
+                            with access to quality
+                            content and features.
                         </p>
 
 
                         <h3
-                            class="text-xl font-semibold mb-3"
+                            class="
+                                text-xl
+                                font-semibold
+                                mb-3
+                            "
                         >
                             What's Included?
                         </h3>
@@ -6879,7 +6756,7 @@ function switchTab(tabName) {
                         >
 
                             <li>
-                                Full access to all features
+                                Full access to included features
                             </li>
 
                             <li>
@@ -6887,16 +6764,7 @@ function switchTab(tabName) {
                             </li>
 
                             <li>
-                                Download for offline use
-                                where applicable
-                            </li>
-
-                            <li>
                                 Multiple device access
-                            </li>
-
-                            <li>
-                                Personalized experience
                             </li>
 
                             <li>
@@ -6910,10 +6778,6 @@ function switchTab(tabName) {
 
                 break;
 
-
-            // ------------------------------------------------
-            // FEATURES
-            // ------------------------------------------------
 
             case "features":
 
@@ -6965,7 +6829,6 @@ function switchTab(tabName) {
                                     </span>
 
                                 </div>
-
                             `
                             )
                             .join("")}
@@ -6976,27 +6839,23 @@ function switchTab(tabName) {
                 break;
 
 
-            // ------------------------------------------------
-            // REVIEWS
-            // ------------------------------------------------
-
             case "reviews": {
+
+                const reviews =
+                    currentProduct.customerReviews || [];
 
                 let reviewsHTML = "";
 
 
-                if (
-                    currentProduct.customerReviews &&
-                    currentProduct.customerReviews.length
-                ) {
+                if (reviews.length) {
 
                     reviewsHTML = `
 
                         <div class="space-y-4">
 
-                            ${currentProduct.customerReviews
+                            ${reviews
                                 .map(
-                                    (review, index) => `
+                                    review => `
 
                                     <div
                                         class="
@@ -7004,10 +6863,6 @@ function switchTab(tabName) {
                                             border-gray-200
                                             pb-4
                                         "
-                                        data-aos="fade-up"
-                                        data-aos-delay="${
-                                            index * 100
-                                        }"
                                     >
 
                                         <div
@@ -7020,7 +6875,10 @@ function switchTab(tabName) {
                                         >
 
                                             <div
-                                                class="flex items-center"
+                                                class="
+                                                    flex
+                                                    items-center
+                                                "
                                             >
 
                                                 <div
@@ -7042,7 +6900,9 @@ function switchTab(tabName) {
                                                             text-gray-700
                                                         "
                                                     >
-                                                        ${review.name.charAt(0)}
+                                                        ${String(
+                                                            review.name || "U"
+                                                        ).charAt(0)}
                                                     </span>
 
                                                 </div>
@@ -7051,9 +6911,11 @@ function switchTab(tabName) {
                                                 <div>
 
                                                     <h4
-                                                        class="font-medium"
+                                                        class="
+                                                            font-medium
+                                                        "
                                                     >
-                                                        ${review.name}
+                                                        ${review.name || "Customer"}
                                                     </h4>
 
                                                     <div
@@ -7064,7 +6926,7 @@ function switchTab(tabName) {
                                                         "
                                                     >
                                                         ${generateStars(
-                                                            review.rating
+                                                            review.rating || 0
                                                         )}
                                                     </div>
 
@@ -7088,9 +6950,11 @@ function switchTab(tabName) {
 
 
                                         <p
-                                            class="text-gray-700"
+                                            class="
+                                                text-gray-700
+                                            "
                                         >
-                                            ${review.comment}
+                                            ${review.comment || ""}
                                         </p>
 
                                     </div>
@@ -7126,8 +6990,6 @@ function switchTab(tabName) {
                                 class="text-gray-600"
                             >
                                 No reviews yet.
-                                Be the first to review
-                                this product!
                             </p>
 
                         </div>
@@ -7139,67 +7001,49 @@ function switchTab(tabName) {
 
                     <div class="space-y-6">
 
-                        <div
-                            class="
-                                flex
-                                items-center
-                                justify-between
-                            "
-                        >
+                        <div>
 
-                            <div>
+                            <h3
+                                class="
+                                    text-xl
+                                    font-semibold
+                                "
+                            >
+                                Customer Reviews
+                            </h3>
 
-                                <h3
-                                    class="text-xl font-semibold"
-                                >
-                                    Customer Reviews
-                                </h3>
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    mt-1
+                                "
+                            >
 
                                 <div
                                     class="
                                         flex
-                                        items-center
-                                        mt-1
+                                        text-yellow-400
                                     "
                                 >
-
-                                    <div
-                                        class="
-                                            flex
-                                            text-yellow-400
-                                            text-xl
-                                        "
-                                    >
-                                        ${generateStars(
-                                            currentProduct.rating || 0
-                                        )}
-                                    </div>
-
-                                    <span
-                                        class="
-                                            ml-2
-                                            text-gray-600
-                                        "
-                                    >
-                                        ${currentProduct.rating || 0}
-                                        out of 5
-                                    </span>
-
+                                    ${generateStars(
+                                        currentProduct.rating || 0
+                                    )}
                                 </div>
 
+                                <span
+                                    class="
+                                        ml-2
+                                        text-gray-600
+                                    "
+                                >
+                                    ${
+                                        currentProduct.rating || 0
+                                    }
+                                    out of 5
+                                </span>
+
                             </div>
-
-
-                            <button
-                                class="
-                                    btn-primary
-                                    px-4
-                                    py-2
-                                    rounded-lg
-                                "
-                            >
-                                Write a Review
-                            </button>
 
                         </div>
 
@@ -7213,24 +7057,20 @@ function switchTab(tabName) {
             }
 
 
-            // ------------------------------------------------
-            // FAQ
-            // ------------------------------------------------
-
             case "faq": {
+
+                const faq =
+                    currentProduct.faq || [];
 
                 let faqHTML = "";
 
 
-                if (
-                    currentProduct.faq &&
-                    currentProduct.faq.length
-                ) {
+                if (faq.length) {
 
                     faqHTML =
-                        currentProduct.faq
+                        faq
                             .map(
-                                (item, index) => `
+                                item => `
 
                                 <div
                                     class="
@@ -7238,10 +7078,6 @@ function switchTab(tabName) {
                                         border-gray-200
                                         rounded-lg
                                     "
-                                    data-aos="fade-up"
-                                    data-aos-delay="${
-                                        index * 100
-                                    }"
                                 >
 
                                     <button
@@ -7254,7 +7090,6 @@ function switchTab(tabName) {
                                             items-center
                                             justify-between
                                             hover:bg-gray-50
-                                            transition-colors
                                         "
                                         onclick="toggleFAQ(this)"
                                     >
@@ -7269,7 +7104,6 @@ function switchTab(tabName) {
                                             class="
                                                 fas
                                                 fa-chevron-down
-                                                transition-transform
                                             "
                                         ></i>
 
@@ -7336,22 +7170,18 @@ function switchTab(tabName) {
 
                 break;
             }
-
         }
 
 
-        setTimeout(() => {
+        if (
+            typeof AOS !== "undefined"
+        ) {
 
-            if (
-                typeof AOS !== "undefined"
-            ) {
-
+            setTimeout(() => {
                 AOS.refresh();
+            }, 100);
 
-            }
-
-        }, 100);
-
+        }
 
     } catch (error) {
 
@@ -7363,7 +7193,6 @@ function switchTab(tabName) {
         tabContent.innerHTML = `
             <p class="text-gray-600">
                 Error loading content.
-                Please try again.
             </p>
         `;
     }
@@ -7371,13 +7200,17 @@ function switchTab(tabName) {
 
 
 // ============================================================
-// FORMAT REVIEW DATE
+// DATE FORMAT
 // ============================================================
 
 function formatDate(dateString) {
 
     const date =
         new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+        return "";
+    }
 
     const now =
         new Date();
@@ -7421,7 +7254,7 @@ function formatDate(dateString) {
 
 
 // ============================================================
-// FAQ
+// FAQ TOGGLE
 // ============================================================
 
 function toggleFAQ(button) {
@@ -7432,6 +7265,10 @@ function toggleFAQ(button) {
     const icon =
         button.querySelector("i");
 
+    if (!content) {
+        return;
+    }
+
 
     if (
         content.classList.contains("hidden")
@@ -7441,8 +7278,10 @@ function toggleFAQ(button) {
             "hidden"
         );
 
-        icon.style.transform =
-            "rotate(180deg)";
+        if (icon) {
+            icon.style.transform =
+                "rotate(180deg)";
+        }
 
     } else {
 
@@ -7450,8 +7289,10 @@ function toggleFAQ(button) {
             "hidden"
         );
 
-        icon.style.transform =
-            "rotate(0deg)";
+        if (icon) {
+            icon.style.transform =
+                "rotate(0deg)";
+        }
     }
 }
 
@@ -7459,12 +7300,17 @@ function toggleFAQ(button) {
 // ============================================================
 // RELATED PRODUCTS
 // ============================================================
+//
+// IMPORTANT:
+// `subscriptions` was replaced with `products`.
+// ============================================================
 
 function loadRelatedProducts() {
 
     if (
         !relatedProducts ||
-        !currentProduct
+        !currentProduct ||
+        !Array.isArray(products)
     ) {
         return;
     }
@@ -7474,8 +7320,8 @@ function loadRelatedProducts() {
         currentProduct.categories || [];
 
 
-    const related =
-        subscriptions
+    let related =
+        products
             .filter(product => {
 
                 if (
@@ -7502,21 +7348,19 @@ function loadRelatedProducts() {
 
 
     // --------------------------------------------------------
-    // Fill remaining slots
+    // FILL REMAINING PRODUCTS
     // --------------------------------------------------------
 
     if (related.length < 5) {
 
         const additional =
-            subscriptions
+            products
                 .filter(product => {
 
                     return (
                         product.name !==
                             currentProduct.name &&
-                        !related.includes(
-                            product
-                        )
+                        !related.includes(product)
                     );
 
                 })
@@ -7553,7 +7397,8 @@ function loadRelatedProducts() {
                         pricing[0] ||
                         {
                             price: 0,
-                            duration: "month"
+                            duration: "month",
+                            currency: "BDT"
                         };
 
 
@@ -7608,7 +7453,10 @@ function loadRelatedProducts() {
                                     <div class="mb-4">
 
                                         <h3
-                                            class="font-bold text-lg"
+                                            class="
+                                                font-bold
+                                                text-lg
+                                            "
                                         >
                                             ${product.name}
                                         </h3>
@@ -7619,7 +7467,7 @@ function loadRelatedProducts() {
                                                 text-gray-500
                                             "
                                         >
-                                            ${product.description}
+                                            ${product.description || ""}
                                         </p>
 
                                     </div>
@@ -7642,12 +7490,16 @@ function loadRelatedProducts() {
                                                     font-bold
                                                 "
                                             >
-                                                BDT
+                                                ${
+                                                    plan.currency || "BDT"
+                                                }
                                                 ${plan.price}
                                             </span>
 
                                             <span
-                                                class="text-gray-500"
+                                                class="
+                                                    text-gray-500
+                                                "
                                             >
                                                 /
                                                 ${plan.duration}
@@ -7657,7 +7509,10 @@ function loadRelatedProducts() {
 
 
                                         <div
-                                            class="flex items-center"
+                                            class="
+                                                flex
+                                                items-center
+                                            "
                                         >
 
                                             <i
@@ -7675,8 +7530,7 @@ function loadRelatedProducts() {
                                                 "
                                             >
                                                 ${
-                                                    product.rating ||
-                                                    0
+                                                    product.rating || 0
                                                 }
                                             </span>
 
@@ -7764,7 +7618,6 @@ function addToCart() {
         cart.push(
             cartItem
         );
-
     }
 
 
@@ -7778,7 +7631,6 @@ function addToCart() {
         successModal.classList.remove(
             "hidden"
         );
-
     }
 }
 
@@ -7836,7 +7688,6 @@ function buyNow() {
         cart.push(
             cartItem
         );
-
     }
 
 
@@ -7875,23 +7726,19 @@ function sendToWhatsApp() {
         `*Product:* ${currentProduct.name}\n` +
         `*Plan:* ${selectedPlanData.duration}\n` +
         `*Price:* ${selectedPlanData.currency} ${selectedPlanData.price}\n` +
-        `${
+        (
             selectedPlanData.discount
                 ? `*Discount:* ${selectedPlanData.discount}\n`
                 : ""
-        }` +
+        ) +
         `\nPlease provide me with the payment details and activation instructions.\n\n` +
         `Thank you!`;
 
 
-    const encodedMessage =
-        encodeURIComponent(
-            message
-        );
-
-
     const whatsappURL =
-        `https://wa.me/8801644490566?text=${encodedMessage}`;
+        `https://wa.me/8801644490566?text=${encodeURIComponent(
+            message
+        )}`;
 
 
     window.open(
@@ -7902,7 +7749,7 @@ function sendToWhatsApp() {
 
 
 // ============================================================
-// UPDATE CART COUNT
+// CART COUNT
 // ============================================================
 
 function updateCartCount() {
@@ -7943,7 +7790,7 @@ function updateCartCount() {
 
 
 // ============================================================
-// CLOSE SUCCESS MODAL
+// SUCCESS MODAL
 // ============================================================
 
 function closeSuccessModal() {
@@ -7953,13 +7800,12 @@ function closeSuccessModal() {
         successModal.classList.add(
             "hidden"
         );
-
     }
 }
 
 
 // ============================================================
-// SCROLL TO TOP
+// SCROLL TOP
 // ============================================================
 
 function scrollToTop() {
@@ -7975,8 +7821,113 @@ function scrollToTop() {
 
 
 // ============================================================
-// START APPLICATION
+// INIT
 // ============================================================
+
+function init() {
+
+    showSkeletonLoaders();
+
+    loadCart();
+
+
+    // --------------------------------------------------------
+    // IMPORTANT:
+    // PRODUCTS MUST EXIST
+    // --------------------------------------------------------
+
+    if (!Array.isArray(products)) {
+
+        console.error(
+            "Product data is missing."
+        );
+
+        return;
+    }
+
+
+    const requestedSlug =
+        getRequestedProductSlug();
+
+
+    if (!requestedSlug) {
+
+        console.warn(
+            "No product specified."
+        );
+
+
+        if (
+            window.location.pathname
+                .toLowerCase()
+                .includes("details.html")
+        ) {
+
+            window.location.href =
+                "/";
+
+            return;
+        }
+
+        return;
+    }
+
+
+    setTimeout(() => {
+
+        loadProduct(
+            requestedSlug
+        );
+
+
+        if (loadingOverlay) {
+
+            loadingOverlay.classList.remove(
+                "active"
+            );
+        }
+
+    }, 500);
+
+
+    // --------------------------------------------------------
+    // FLOATING BUTTONS
+    // --------------------------------------------------------
+
+    window.addEventListener(
+        "scroll",
+        () => {
+
+            const visible =
+                window.pageYOffset > 300;
+
+
+            if (fab) {
+
+                fab.style.opacity =
+                    visible ? "1" : "0";
+
+                fab.style.visibility =
+                    visible
+                        ? "visible"
+                        : "hidden";
+            }
+
+
+            if (whatsappFab) {
+
+                whatsappFab.style.opacity =
+                    visible ? "1" : "0";
+
+                whatsappFab.style.visibility =
+                    visible
+                        ? "visible"
+                        : "hidden";
+            }
+
+        }
+    );
+}
 
 init();
     </script>
