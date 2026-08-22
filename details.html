@@ -591,7 +591,6 @@
         }
     </style>
 </head>
-
 <body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
@@ -608,10 +607,9 @@
             </div>
             
             <div class="flex items-center space-x-4">
-<a href="/"
-   class="text-gray-600 hover:text-blue-500 transition-colors">
-    <i class="fas fa-arrow-left mr-2"></i>Back to Shop
-</a>
+                <a href="index.html" class="text-gray-600 hover:text-blue-500 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Shop
+                </a>
                 <div class="relative">
                     <a href="checkout.html" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors">
                         <i class="fa-solid fa-basket-shopping-simple text-2xl"></i>
@@ -5067,2236 +5065,758 @@
             }
         ];
         
-  function productSlug(name) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
-
-
-// ============================================================
-// CART STATE
-// ============================================================
-
-let cart = JSON.parse(
-    localStorage.getItem("streamHubCart")
-) || [];
-
-let currentProduct = null;
-
-let selectedPlan = 2;
-
-let currentSlide = 0;
-
-
-// ============================================================
-// DOM ELEMENTS
-// ============================================================
-
-const loadingOverlay =
-    document.getElementById("loadingOverlay");
-
-const productDetails =
-    document.getElementById("productDetails");
-
-const breadcrumbProduct =
-    document.getElementById("breadcrumbProduct");
-
-const tabContent =
-    document.getElementById("tabContent");
-
-const relatedProducts =
-    document.getElementById("relatedProducts");
-
-const cartCount =
-    document.getElementById("cartCount");
-
-const successModal =
-    document.getElementById("successModal");
-
-const fab =
-    document.getElementById("fab");
-
-const whatsappFab =
-    document.getElementById("whatsappFab");
-
-
-// ============================================================
-// GET CURRENT PRODUCT SLUG
-// ============================================================
-//
-// Vercel receives:
-//
-// /products/netflix-premium
-//
-// and internally rewrites it to:
-//
-// /details.html?slug=netflix-premium
-//
-// Therefore JavaScript reads ?slug=...
-//
-// ============================================================
-
-function getCurrentProductSlug() {
-
-    const params =
-        new URLSearchParams(window.location.search);
-
-    return params.get("slug");
-}
-
-
-// ============================================================
-// INITIALIZE
-// ============================================================
-
-function init() {
-
-    showSkeletonLoaders();
-
-    loadCart();
-
-    const slug = getCurrentProductSlug();
-
-    setTimeout(() => {
-
-        if (!slug) {
-
-            console.error(
-                "No product slug found."
-            );
-
-            window.location.href = "/";
-
-            return;
-        }
-
-        loadProductBySlug(slug);
-
-        loadingOverlay.classList.remove("active");
-
-    }, 500);
-
-
-    // ========================================================
-    // SCROLL BUTTONS
-    // ========================================================
-
-    window.addEventListener("scroll", () => {
-
-        if (window.pageYOffset > 300) {
-
-            if (fab) {
-                fab.style.opacity = "1";
-                fab.style.visibility = "visible";
-            }
-
-            if (whatsappFab) {
-                whatsappFab.style.opacity = "1";
-                whatsappFab.style.visibility = "visible";
-            }
-
-        } else {
-
-            if (fab) {
-                fab.style.opacity = "0";
-                fab.style.visibility = "hidden";
-            }
-
-            if (whatsappFab) {
-                whatsappFab.style.opacity = "0";
-                whatsappFab.style.visibility = "hidden";
-            }
-
-        }
-
-    });
-}
-
-
-// ============================================================
-// BROWSER BACK / FORWARD
-// ============================================================
-//
-// Handles:
-//
-// Back
-// Forward
-//
-// while staying on details.html internally.
-//
-// ============================================================
-
-window.addEventListener("popstate", function () {
-
-    const slug = getCurrentProductSlug();
-
-    if (!slug) {
-        window.location.href = "/";
-        return;
-    }
-
-    showSkeletonLoaders();
-
-    loadProductBySlug(slug);
-
-    if (loadingOverlay) {
-        loadingOverlay.classList.remove("active");
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-});
-
-
-// ============================================================
-// SKELETON LOADERS
-// ============================================================
-
-function showSkeletonLoaders() {
-
-    if (loadingOverlay) {
-        loadingOverlay.classList.add("active");
-    }
-
-
-    // ========================================================
-    // PRODUCT SKELETON
-    // ========================================================
-
-    if (productDetails) {
-
-        productDetails.innerHTML = `
-
-            <div
-                class="animate-slide-in-left"
-                data-aos="fade-right"
-            >
-
-                <div class="skeleton-card">
-
-                    <div
-                        class="skeleton skeleton-image"
-                        style="aspect-ratio:16/9;"
-                    ></div>
-
-                </div>
-
-                <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
-
-                    ${[1,2,3].map(() => `
-
-                        <div
-                            class="skeleton w-20 h-20 rounded-lg"
-                        ></div>
-
-                    `).join("")}
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="animate-slide-in-right"
-                data-aos="fade-left"
-            >
-
-                <div
-                    class="skeleton-card p-6"
-                    style="height:500px;"
-                >
-
-                    <div class="flex items-center mb-4">
-
-                        <div
-                            class="skeleton skeleton-image mr-4"
-                        ></div>
-
-                        <div class="flex-1">
-
-                            <div
-                                class="skeleton skeleton-title mb-2"
-                            ></div>
-
-                            <div
-                                class="skeleton skeleton-text w-32"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        class="skeleton skeleton-text mb-6"
-                    ></div>
-
-                    <div
-                        class="skeleton skeleton-title mb-3"
-                    ></div>
-
-                    <div class="grid grid-cols-2 gap-3 mb-6">
-
-                        ${[1,2,3,4].map(() => `
-
-                            <div class="skeleton-card p-4">
-
-                                <div
-                                    class="skeleton skeleton-title mb-2"
-                                ></div>
-
-                                <div
-                                    class="skeleton skeleton-price"
-                                ></div>
-
-                            </div>
-
-                        `).join("")}
-
-                    </div>
-
-                    <div
-                        class="skeleton skeleton-title mb-3"
-                    ></div>
-
-                    ${[1,2,3,4].map(() => `
-
-                        <div class="flex items-center mb-2">
-
-                            <div
-                                class="skeleton w-4 h-4 rounded-full mr-2"
-                            ></div>
-
-                            <div
-                                class="skeleton skeleton-text flex-1"
-                            ></div>
-
-                        </div>
-
-                    `).join("")}
-
-                    <div class="flex space-x-4 mt-6">
-
-                        <div
-                            class="skeleton skeleton-button flex-1"
-                        ></div>
-
-                        <div
-                            class="skeleton skeleton-button flex-1"
-                        ></div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-    }
-
-
-    // ========================================================
-    // RELATED PRODUCT SKELETON
-    // ========================================================
-
-    if (relatedProducts) {
-
-        relatedProducts.innerHTML = "";
-
-        for (let i = 0; i < 5; i++) {
-
-            const skeletonCard =
-                document.createElement("div");
-
-            skeletonCard.className =
-                "skeleton-card";
-
-            skeletonCard.innerHTML = `
-
-                <div class="p-6">
-
-                    <div class="flex items-center mb-4">
-
-                        <div
-                            class="skeleton skeleton-image mr-3"
-                        ></div>
-
-                        <div class="flex-1">
-
-                            <div
-                                class="skeleton skeleton-title mb-1"
-                            ></div>
-
-                            <div
-                                class="skeleton skeleton-text w-32"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        class="flex justify-between items-center mb-4"
-                    >
-
-                        <div
-                            class="skeleton skeleton-price"
-                        ></div>
-
-                        <div
-                            class="skeleton skeleton-text w-8"
-                        ></div>
-
-                    </div>
-
-                    <div
-                        class="skeleton skeleton-button"
-                    ></div>
-
-                </div>
-
-            `;
-
-            relatedProducts.appendChild(
-                skeletonCard
-            );
-        }
-    }
-}
-
-
-// ============================================================
-// CART
-// ============================================================
-
-function loadCart() {
-
-    const savedCart =
-        localStorage.getItem("streamHubCart");
-
-    if (savedCart) {
-
-        try {
-
-            cart = JSON.parse(savedCart);
-
-        } catch (error) {
-
-            console.error(
-                "Invalid cart data:",
-                error
-            );
-
-            cart = [];
-        }
-    }
-
-    updateCartCount();
-}
-
-
-function saveCart() {
-
-    localStorage.setItem(
-        "streamHubCart",
-        JSON.stringify(cart)
-    );
-}
-
-
-// ============================================================
-// LOAD PRODUCT BY SLUG
-// ============================================================
-
-function loadProductBySlug(slug) {
-
-    if (!Array.isArray(products)) {
-
-        console.error(
-            "Products array is not available."
-        );
-
-        window.location.href = "/";
-
-        return;
-    }
-
-
-    const productIndex =
-        products.findIndex(
-            product =>
-                productSlug(product.name) === slug
-        );
-
-
-    // ========================================================
-    // PRODUCT NOT FOUND
-    // ========================================================
-
-    if (productIndex === -1) {
-
-        console.error(
-            "Product not found:",
-            slug
-        );
-
-        window.location.href = "/";
-
-        return;
-    }
-
-
-    // ========================================================
-    // DEEP COPY
-    // ========================================================
-
-    currentProduct =
-        JSON.parse(
-            JSON.stringify(
-                products[productIndex]
-            )
-        );
-
-
-    // ========================================================
-    // REQUIRED ARRAYS
-    // ========================================================
-
-    if (
-        !Array.isArray(
-            currentProduct.customerReviews
-        )
-    ) {
-
-        currentProduct.customerReviews = [];
-    }
-
-
-    if (
-        !Array.isArray(
-            currentProduct.faq
-        )
-    ) {
-
-        currentProduct.faq = [];
-    }
-
-
-    // ========================================================
-    // BREADCRUMB
-    // ========================================================
-
-    if (breadcrumbProduct) {
-
-        breadcrumbProduct.textContent =
-            currentProduct.name;
-    }
-
-
-    // ========================================================
-    // RESET PRODUCT STATE
-    // ========================================================
-
-    selectedPlan = 2;
-
-    currentSlide = 0;
-
-
-    // ========================================================
-    // RENDER
-    // ========================================================
-
-    renderProductDetails();
-
-    switchTab("description");
-
-    loadRelatedProducts();
-
-
-    // ========================================================
-    // REFRESH AOS
-    // ========================================================
-
-    setTimeout(() => {
-
-        if (
-            typeof AOS !== "undefined"
-        ) {
-
-            AOS.refresh();
-        }
-
-    }, 100);
-}
-
-
-// ============================================================
-// RENDER PRODUCT DETAILS
-// ============================================================
-
-function renderProductDetails() {
-
-    if (!productDetails) {
-        return;
-    }
-
-
-    productDetails.innerHTML = `
-
-        <!-- Product Images -->
-
-        <div
-            class="animate-slide-in-left"
-            data-aos="fade-right"
-        >
-
-            <div class="gallery-container">
-
-                <div
-                    class="gallery-slider"
-                    id="gallerySlider"
-                >
-
-                    ${
-                        currentProduct.images
-                            .map(
-                                (img, index) => `
-                            
-                            <div class="gallery-slide">
-
-                                <img
-                                    src="${img}"
-                                    alt="${currentProduct.name} ${index + 1}"
-                                >
-
-                                <div
-                                    class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer"
-                                    onclick="toggleFavorite()"
-                                >
-
-                                    <i
-                                        id="favoriteIcon"
-                                        class="far fa-heart text-xl"
-                                    ></i>
-
-                                </div>
-
-                            </div>
-
-                        `
-                            )
-                            .join("")
-                    }
-
-                </div>
-
-
-                <!-- Previous -->
-
-                <div
-                    class="gallery-nav gallery-prev"
-                    onclick="prevSlide()"
-                >
-
-                    <i class="fas fa-chevron-left"></i>
-
-                </div>
-
-
-                <!-- Next -->
-
-                <div
-                    class="gallery-nav gallery-next"
-                    onclick="nextSlide()"
-                >
-
-                    <i class="fas fa-chevron-right"></i>
-
-                </div>
-
-            </div>
-
-
-            <!-- Dots -->
-
-            <div class="gallery-dots">
-
-                ${
-                    currentProduct.images
-                        .map(
-                            (_, index) => `
-                            
-                            <div
-                                class="gallery-dot ${
-                                    index === 0
-                                        ? "active"
-                                        : ""
-                                }"
-                                onclick="goToSlide(${index})"
-                            ></div>
-
-                        `
-                        )
-                        .join("")
+        // Cart state
+        let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
+        let currentProduct = null;
+        let selectedPlan = 2; // Default to 6 months (index 2)
+        let currentSlide = 0; // Current slide index for image gallery
+        
+        // DOM elements
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const productDetails = document.getElementById('productDetails');
+        const breadcrumbProduct = document.getElementById('breadcrumbProduct');
+        const tabContent = document.getElementById('tabContent');
+        const relatedProducts = document.getElementById('relatedProducts');
+        const cartCount = document.getElementById('cartCount');
+        const successModal = document.getElementById('successModal');
+        const fab = document.getElementById('fab');
+        const whatsappFab = document.getElementById('whatsappFab');
+        
+        // Initialize the page
+        function init() {
+            // Show skeleton loaders first
+            showSkeletonLoaders();
+            
+            // Get product name from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productName = decodeURIComponent(urlParams.get('name'));
+            
+            // Load cart from localStorage
+            loadCart();
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                if (productName) {
+                    loadProduct(productName);
+                } else {
+                    // If no product name, redirect to index
+                    window.location.href = 'index.html';
                 }
-
-            </div>
-
-
-            <!-- Thumbnails -->
-
-            <div
-                class="flex mt-4 space-x-2 overflow-x-auto pb-2"
-            >
-
-                ${
-                    currentProduct.images
-                        .map(
-                            (img, index) => `
-                            
-                            <img
-                                src="${img}"
-                                alt="${currentProduct.name} ${index + 1}"
-                                class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${
-                                    index === 0
-                                        ? "active"
-                                        : ""
-                                }"
-                                onclick="goToSlide(${index})"
-                            >
-
-                        `
-                        )
-                        .join("")
+                
+                // Hide loading overlay
+                loadingOverlay.classList.remove('active');
+            }, 1500);
+            
+            // Show/hide scroll to top button
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    fab.style.opacity = '1';
+                    fab.style.visibility = 'visible';
+                    whatsappFab.style.opacity = '1';
+                    whatsappFab.style.visibility = 'visible';
+                } else {
+                    fab.style.opacity = '0';
+                    fab.style.visibility = 'hidden';
+                    whatsappFab.style.opacity = '0';
+                    whatsappFab.style.visibility = 'hidden';
                 }
-
-            </div>
-
-        </div>
-
-
-        <!-- Product Information -->
-
-        <div
-            class="animate-slide-in-right"
-            data-aos="fade-left"
-        >
-
-            <div class="flex items-center mb-4">
-
-                <img
-                    src="${currentProduct.image}"
-                    alt="${currentProduct.name}"
-                    class="w-16 h-16 rounded-lg mr-4 object-contain"
-                >
-
-                <div>
-
-                    <h1 class="text-3xl font-bold">
-                        ${currentProduct.name}
-                    </h1>
-
-                    <div class="flex items-center mt-1">
-
-                        <div class="flex text-yellow-400">
-
-                            ${generateStars(
-                                currentProduct.rating
-                            )}
-
-                        </div>
-
-                        <span class="ml-2 text-gray-600">
-
-                            ${currentProduct.rating}
-                            (${currentProduct.reviews.toLocaleString()} reviews)
-
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <p class="text-gray-600 mb-6">
-
-                ${currentProduct.description}
-
-            </p>
-
-
-            <!-- Pricing -->
-
-            <div class="mb-6">
-
-                <h3 class="text-lg font-semibold mb-3">
-
-                    Select Subscription Plan:
-
-                </h3>
-
-                <div class="grid grid-cols-2 gap-3">
-
-                    ${
-                        currentProduct.pricing
-                            .map(
-                                (plan, index) => `
-
-                            <div
-                                class="plan-card p-4 rounded-lg border border-gray-200 text-center ${
-                                    plan.popular
-                                        ? "relative"
-                                        : ""
-                                } ${
-                                    index === selectedPlan
-                                        ? "selected"
-                                        : ""
-                                }"
-                                onclick="selectPlan(${index})"
-                            >
-
-                                ${
-                                    plan.popular
-                                        ? `
-                                        <span class="popular-badge">
-                                            Most Popular
-                                        </span>
-                                    `
-                                        : ""
-                                }
-
-                                <div class="font-medium mt-3">
-                                    ${plan.duration}
-                                </div>
-
-                                <div class="text-2xl font-bold mt-1">
-
-                                    ${plan.currency}
-                                    ${plan.price}
-
-                                </div>
-
-                                ${
-                                    plan.discount
-                                        ? `
-                                        <div class="text-xs text-green-500 mt-1">
-                                            ${plan.discount}
-                                        </div>
-                                    `
-                                        : ""
-                                }
-
-                            </div>
-
-                        `
-                            )
-                            .join("")
-                    }
-
-                </div>
-
-            </div>
-
-
-            <!-- Features -->
-
-            <div class="mb-6">
-
-                <h3 class="text-lg font-semibold mb-3">
-
-                    Key Features:
-
-                </h3>
-
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 gap-2"
-                >
-
-                    ${
-                        currentProduct.features
-                            .map(
-                                (feature, index) => `
-
-                            <div
-                                class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                style="animation-delay:${index * 0.1}s;"
-                                data-aos="fade-up"
-                                data-aos-delay="${index * 100}"
-                            >
-
-                                <i
-                                    class="fas fa-check-circle text-green-500 mr-2"
-                                ></i>
-
-                                <span class="text-gray-700">
-
-                                    ${feature}
-
-                                </span>
-
-                            </div>
-
-                        `
-                            )
-                            .join("")
-                    }
-
-                </div>
-
-            </div>
-
-
-            <!-- Actions -->
-
-            <div class="flex space-x-4">
-
-                <button
-                    onclick="addToCart()"
-                    class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary"
-                >
-
-                    <i class="fa-regular fa-cart-circle-plus mr-2"></i>
-
-                    Add to Cart
-
-                </button>
-
-
-                <button
-                    onclick="buyNow()"
-                    class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp"
-                >
-
-                    <i class="fab fa-whatsapp mr-2"></i>
-
-                    Buy Now
-
-                </button>
-
-            </div>
-
-
-            <!-- Additional Information -->
-
-            <div
-                class="mt-6 pt-6 border-t border-gray-200"
-            >
-
-                <div
-                    class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2"
-                >
-
-                    <div class="flex items-center">
-
-                        <i class="fas fa-shield-alt mr-2"></i>
-
-                        <span>
-                            30-Day Money Back Guarantee
-                        </span>
-
-                    </div>
-
-                    <div class="flex items-center">
-
-                        <i class="fas fa-lock mr-2"></i>
-
-                        <span>
-                            Secure Payment
-                        </span>
-
-                    </div>
-
-                    <div class="flex items-center">
-
-                        <i class="fas fa-headset mr-2"></i>
-
-                        <span>
-                            24/7 Support
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    // ========================================================
-    // FEATURE ANIMATION
-    // ========================================================
-
-    setTimeout(() => {
-
-        document
-            .querySelectorAll(".feature-item")
-            .forEach((item, index) => {
-
-                setTimeout(() => {
-
-                    item.classList.add("show");
-
-                }, index * 100);
-
             });
-
-    }, 500);
-}
-
-
-// ============================================================
-// GALLERY
-// ============================================================
-
-function updateGallery() {
-
-    const slider =
-        document.getElementById(
-            "gallerySlider"
-        );
-
-    const dots =
-        document.querySelectorAll(
-            ".gallery-dot"
-        );
-
-    const thumbnails =
-        document.querySelectorAll(
-            ".gallery-thumbnail"
-        );
-
-
-    if (slider) {
-
-        slider.style.transform =
-            `translateX(-${currentSlide * 100}%)`;
-    }
-
-
-    dots.forEach((dot, index) => {
-
-        dot.classList.toggle(
-            "active",
-            index === currentSlide
-        );
-
-    });
-
-
-    thumbnails.forEach((thumb, index) => {
-
-        thumb.classList.toggle(
-            "active",
-            index === currentSlide
-        );
-
-    });
-}
-
-
-function nextSlide() {
-
-    if (
-        !currentProduct ||
-        !currentProduct.images ||
-        !currentProduct.images.length
-    ) {
-        return;
-    }
-
-    currentSlide =
-        (currentSlide + 1) %
-        currentProduct.images.length;
-
-    updateGallery();
-}
-
-
-function prevSlide() {
-
-    if (
-        !currentProduct ||
-        !currentProduct.images ||
-        !currentProduct.images.length
-    ) {
-        return;
-    }
-
-    currentSlide =
-        (
-            currentSlide -
-            1 +
-            currentProduct.images.length
-        ) %
-        currentProduct.images.length;
-
-    updateGallery();
-}
-
-
-function goToSlide(index) {
-
-    currentSlide = index;
-
-    updateGallery();
-}
-
-
-// ============================================================
-// STARS
-// ============================================================
-
-function generateStars(rating) {
-
-    const fullStars =
-        Math.floor(rating);
-
-    const hasHalfStar =
-        rating % 1 !== 0;
-
-    let stars = "";
-
-
-    for (
-        let i = 0;
-        i < fullStars;
-        i++
-    ) {
-
-        stars +=
-            '<i class="fas fa-star"></i>';
-    }
-
-
-    if (hasHalfStar) {
-
-        stars +=
-            '<i class="fas fa-star-half-alt"></i>';
-    }
-
-
-    const emptyStars =
-        5 - Math.ceil(rating);
-
-
-    for (
-        let i = 0;
-        i < emptyStars;
-        i++
-    ) {
-
-        stars +=
-            '<i class="far fa-star"></i>';
-    }
-
-
-    return stars;
-}
-
-
-// ============================================================
-// FAVORITE
-// ============================================================
-
-function toggleFavorite() {
-
-    const favoriteIcon =
-        document.getElementById(
-            "favoriteIcon"
-        );
-
-    if (!favoriteIcon) {
-        return;
-    }
-
-
-    if (
-        favoriteIcon.classList.contains("far")
-    ) {
-
-        favoriteIcon.classList.remove("far");
-
-        favoriteIcon.classList.add("fas");
-
-        favoriteIcon.classList.add(
-            "text-red-500"
-        );
-
-    } else {
-
-        favoriteIcon.classList.remove("fas");
-
-        favoriteIcon.classList.add("far");
-
-        favoriteIcon.classList.remove(
-            "text-red-500"
-        );
-
-    }
-}
-
-
-// ============================================================
-// SELECT PLAN
-// ============================================================
-
-function selectPlan(index) {
-
-    selectedPlan = index;
-
-
-    document
-        .querySelectorAll(".plan-card")
-        .forEach((card, i) => {
-
-            card.classList.toggle(
-                "selected",
-                i === index
-            );
-
-        });
-}
-
-
-// ============================================================
-// TABS
-// ============================================================
-
-function switchTab(tabName) {
-
-    if (!tabContent || !currentProduct) {
-        return;
-    }
-
-
-    document
-        .querySelectorAll(".tab-button")
-        .forEach(btn => {
-
-            btn.classList.remove("active");
-
-            if (
-                btn.textContent
-                    .toLowerCase()
-                    .includes(tabName)
-            ) {
-
-                btn.classList.add("active");
-            }
-
-        });
-
-
-    try {
-
-        switch (tabName) {
-
-
-            // ==================================================
-            // DESCRIPTION
-            // ==================================================
-
-            case "description":
-
-                tabContent.innerHTML = `
-
-                    <div class="prose max-w-none">
-
-                        <p class="text-gray-700 mb-4">
-
-                            ${currentProduct.description}
-
-                        </p>
-
-                        <h3 class="text-xl font-semibold mb-3">
-
-                            Why Choose
-                            ${currentProduct.name}?
-
-                        </h3>
-
-                        <p class="text-gray-700 mb-4">
-
-                            ${currentProduct.name}
-                            offers an unparalleled experience
-                            with a vast library of content.
-
-                        </p>
-
-                        <p class="text-gray-700 mb-4">
-
-                            With our subscription, you get
-                            unlimited access to all features
-                            without ads or interruptions.
-
-                        </p>
-
-                        <h3 class="text-xl font-semibold mb-3">
-
-                            What's Included?
-
-                        </h3>
-
-                        <ul
-                            class="list-disc list-inside text-gray-700 space-y-2"
-                        >
-
-                            <li>
-                                Full access to all features
-                            </li>
-
-                            <li>
-                                Premium quality service
-                            </li>
-
-                            <li>
-                                Download for offline use
-                                where applicable
-                            </li>
-
-                            <li>
-                                Multiple device access
-                            </li>
-
-                            <li>
-                                Personalized experience
-                            </li>
-
-                            <li>
-                                24/7 customer support
-                            </li>
-
-                        </ul>
-
+        }
+        
+        // Show skeleton loaders for the page
+        function showSkeletonLoaders() {
+            loadingOverlay.classList.add('active');
+            
+            // Show skeleton for product details
+            productDetails.innerHTML = `
+                <div class="animate-slide-in-left" data-aos="fade-right">
+                    <div class="skeleton-card">
+                        <div class="skeleton skeleton-image" style="aspect-ratio: 16/9;"></div>
                     </div>
-
-                `;
-
-                break;
-
-
-            // ==================================================
-            // FEATURES
-            // ==================================================
-
-            case "features":
-
-                tabContent.innerHTML = `
-
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                    >
-
-                        ${
-                            currentProduct.features
-                                .map(
-                                    (feature, index) => `
-
-                                    <div
-                                        class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                                        data-aos="fade-up"
-                                        data-aos-delay="${index * 100}"
-                                    >
-
-                                        <i
-                                            class="fas fa-check-circle text-green-500 mt-1 mr-3"
-                                        ></i>
-
-                                        <span class="text-gray-700">
-
-                                            ${feature}
-
-                                        </span>
-
-                                    </div>
-
-                                `
-                                )
-                                .join("")
-                        }
-
+                    <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
+                        ${[1, 2, 3].map(() => `
+                            <div class="skeleton w-20 h-20 rounded-lg"></div>
+                        `).join('')}
                     </div>
-
-                `;
-
-                break;
-
-
-            // ==================================================
-            // REVIEWS
-            // ==================================================
-
-            case "reviews": {
-
-                let reviewsHTML = "";
-
-
-                if (
-                    currentProduct.customerReviews &&
-                    currentProduct.customerReviews.length
-                ) {
-
-                    reviewsHTML = `
-
-                        <div class="space-y-4">
-
-                            ${
-                                currentProduct.customerReviews
-                                    .map(
-                                        (review, index) => `
-
-                                        <div
-                                            class="border-b border-gray-200 pb-4"
-                                            data-aos="fade-up"
-                                            data-aos-delay="${index * 100}"
-                                        >
-
-                                            <div
-                                                class="flex items-center justify-between mb-2"
-                                            >
-
-                                                <div class="flex items-center">
-
-                                                    <div
-                                                        class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3"
-                                                    >
-
-                                                        <span
-                                                            class="font-semibold text-gray-700"
-                                                        >
-
-                                                            ${review.name.charAt(0)}
-
-                                                        </span>
-
-                                                    </div>
-
-                                                    <div>
-
-                                                        <h4 class="font-medium">
-
-                                                            ${review.name}
-
-                                                        </h4>
-
-                                                        <div
-                                                            class="flex text-yellow-400 text-sm"
-                                                        >
-
-                                                            ${generateStars(
-                                                                review.rating
-                                                            )}
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-                                                <span
-                                                    class="text-sm text-gray-500"
-                                                >
-
-                                                    ${formatDate(
-                                                        review.date
-                                                    )}
-
-                                                </span>
-
-                                            </div>
-
-                                            <p class="text-gray-700">
-
-                                                ${review.comment}
-
-                                            </p>
-
-                                        </div>
-
-                                    `
-                                    )
-                                    .join("")
-                            }
-
-                        </div>
-
-                    `;
-
-                } else {
-
-                    reviewsHTML = `
-
-                        <div class="text-center py-8">
-
-                            <i
-                                class="fas fa-comments text-4xl text-gray-300 mb-4"
-                            ></i>
-
-                            <p class="text-gray-600">
-
-                                No reviews yet.
-                                Be the first to review this product!
-
-                            </p>
-
-                        </div>
-
-                    `;
-                }
-
-
-                tabContent.innerHTML = `
-
-                    <div class="space-y-6">
-
-                        <div
-                            class="flex items-center justify-between"
-                        >
-
-                            <div>
-
-                                <h3 class="text-xl font-semibold">
-
-                                    Customer Reviews
-
-                                </h3>
-
-                                <div class="flex items-center mt-1">
-
-                                    <div
-                                        class="flex text-yellow-400 text-xl"
-                                    >
-
-                                        ${generateStars(
-                                            currentProduct.rating
-                                        )}
-
-                                    </div>
-
-                                    <span
-                                        class="ml-2 text-gray-600"
-                                    >
-
-                                        ${currentProduct.rating}
-                                        out of 5
-
-                                    </span>
-
-                                </div>
-
+                </div>
+                <div class="animate-slide-in-right" data-aos="fade-left">
+                    <div class="skeleton-card p-6" style="height: 500px;">
+                        <div class="flex items-center mb-4">
+                            <div class="skeleton skeleton-image mr-4"></div>
+                            <div class="flex-1">
+                                <div class="skeleton skeleton-title mb-2"></div>
+                                <div class="skeleton skeleton-text w-32"></div>
                             </div>
-
-                            <button
-                                class="btn-primary px-4 py-2 rounded-lg"
-                            >
-
-                                Write a Review
-
-                            </button>
-
                         </div>
-
-                        ${reviewsHTML}
-
-                    </div>
-
-                `;
-
-                break;
-            }
-
-
-            // ==================================================
-            // FAQ
-            // ==================================================
-
-            case "faq": {
-
-                let faqHTML = "";
-
-
-                if (
-                    currentProduct.faq &&
-                    currentProduct.faq.length
-                ) {
-
-                    faqHTML =
-                        currentProduct.faq
-                            .map(
-                                (item, index) => `
-
-                                    <div
-                                        class="border border-gray-200 rounded-lg"
-                                        data-aos="fade-up"
-                                        data-aos-delay="${index * 100}"
-                                    >
-
-                                        <button
-                                            class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                                            onclick="toggleFAQ(this)"
-                                        >
-
-                                            <span class="font-medium">
-
-                                                ${item.question}
-
-                                            </span>
-
-                                            <i
-                                                class="fas fa-chevron-down transition-transform"
-                                            ></i>
-
-                                        </button>
-
-                                        <div
-                                            class="hidden px-4 pb-3 text-gray-700"
-                                        >
-
-                                            ${item.answer}
-
-                                        </div>
-
-                                    </div>
-
-                                `
-                            )
-                            .join("");
-
-                } else {
-
-                    faqHTML = `
-
-                        <div class="text-center py-8">
-
-                            <i
-                                class="fas fa-question-circle text-4xl text-gray-300 mb-4"
-                            ></i>
-
-                            <p class="text-gray-600">
-
-                                No FAQs available
-                                for this product.
-
-                            </p>
-
+                        <div class="skeleton skeleton-text mb-6"></div>
+                        <div class="skeleton skeleton-title mb-3"></div>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            ${[1, 2, 3, 4].map(() => `
+                                <div class="skeleton-card p-4">
+                                    <div class="skeleton skeleton-title mb-2"></div>
+                                    <div class="skeleton skeleton-price"></div>
+                                </div>
+                            `).join('')}
                         </div>
-
-                    `;
-                }
-
-
-                tabContent.innerHTML = `
-
-                    <div class="space-y-4">
-
-                        ${faqHTML}
-
+                        <div class="skeleton skeleton-title mb-3"></div>
+                        ${[1, 2, 3, 4].map(() => `
+                            <div class="flex items-center mb-2">
+                                <div class="skeleton w-4 h-4 rounded-full mr-2"></div>
+                                <div class="skeleton skeleton-text flex-1"></div>
+                            </div>
+                        `).join('')}
+                        <div class="flex space-x-4 mt-6">
+                            <div class="skeleton skeleton-button flex-1"></div>
+                            <div class="skeleton skeleton-button flex-1"></div>
+                        </div>
                     </div>
-
+                </div>
+            `;
+            
+            // Show skeleton for related products
+            relatedProducts.innerHTML = '';
+            for (let i = 0; i < 5; i++) {
+                const skeletonCard = document.createElement('div');
+                skeletonCard.className = 'skeleton-card';
+                skeletonCard.innerHTML = `
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="skeleton skeleton-image mr-3"></div>
+                            <div class="flex-1">
+                                <div class="skeleton skeleton-title mb-1"></div>
+                                <div class="skeleton skeleton-text w-32"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="skeleton skeleton-price"></div>
+                            <div class="skeleton skeleton-text w-8"></div>
+                        </div>
+                        <div class="skeleton skeleton-button"></div>
+                    </div>
                 `;
-
-                break;
+                relatedProducts.appendChild(skeletonCard);
             }
-
         }
-
-
-        setTimeout(() => {
-
-            if (
-                typeof AOS !== "undefined"
-            ) {
-
+        
+        // Load cart from localStorage
+        function loadCart() {
+            const savedCart = localStorage.getItem('streamHubCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            updateCartCount();
+        }
+        
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('streamHubCart', JSON.stringify(cart));
+        }
+        
+        // Load product details
+        function loadProduct(productName) {
+            // Find the product
+            const productIndex = products.findIndex(p => p.name === productName);
+            
+            if (productIndex === -1) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Create a deep copy of the product to avoid modifying the original
+            currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+            
+            // Ensure required arrays exist
+            if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
+                currentProduct.customerReviews = [];
+            }
+            
+            if (!currentProduct.faq || !Array.isArray(currentProduct.faq)) {
+                currentProduct.faq = [];
+            }
+            
+            // Update breadcrumb
+            breadcrumbProduct.textContent = currentProduct.name;
+            
+            // Reset current slide
+            currentSlide = 0;
+            
+            // Render product details
+            renderProductDetails();
+            
+            // Load default tab content
+            switchTab('description');
+            
+            // Load related products
+            loadRelatedProducts();
+            
+            // Refresh AOS after dynamically adding content
+            setTimeout(() => {
                 AOS.refresh();
-            }
-
-        }, 100);
-
-
-    } catch (error) {
-
-        console.error(
-            "Error in switchTab:",
-            error
-        );
-
-        tabContent.innerHTML = `
-
-            <p class="text-gray-600">
-
-                Error loading content.
-                Please try again.
-
-            </p>
-
-        `;
-    }
-}
-
-
-// ============================================================
-// FORMAT DATE
-// ============================================================
-
-function formatDate(dateString) {
-
-    const date =
-        new Date(dateString);
-
-    const now =
-        new Date();
-
-    const diffTime =
-        Math.abs(now - date);
-
-    const diffDays =
-        Math.ceil(
-            diffTime /
-            (1000 * 60 * 60 * 24)
-        );
-
-
-    if (diffDays === 1) {
-        return "1 day ago";
-    }
-
-    if (diffDays < 7) {
-        return `${diffDays} days ago`;
-    }
-
-    if (diffDays < 30) {
-        return `${Math.floor(diffDays / 7)} weeks ago`;
-    }
-
-    if (diffDays < 365) {
-        return `${Math.floor(diffDays / 30)} months ago`;
-    }
-
-    return `${Math.floor(diffDays / 365)} years ago`;
-}
-
-
-// ============================================================
-// FAQ
-// ============================================================
-
-function toggleFAQ(button) {
-
-    const content =
-        button.nextElementSibling;
-
-    const icon =
-        button.querySelector("i");
-
-
-    if (
-        content.classList.contains("hidden")
-    ) {
-
-        content.classList.remove("hidden");
-
-        icon.style.transform =
-            "rotate(180deg)";
-
-    } else {
-
-        content.classList.add("hidden");
-
-        icon.style.transform =
-            "rotate(0deg)";
-    }
-}
-
-
-// ============================================================
-// RELATED PRODUCTS
-// ============================================================
-//
-// IMPORTANT:
-//
-// These links now point directly to:
-//
-// /products/netflix-premium
-//
-// NOT:
-//
-// details.html?name=Netflix Premium
-//
-// NOT:
-//
-// details.html?slug=netflix-premium
-//
-// ============================================================
-
-function loadRelatedProducts() {
-
-    if (!relatedProducts) {
-        return;
-    }
-
-
-    const relatedCategories =
-        currentProduct.categories || [];
-
-
-    let related =
-        products
-            .filter(product =>
-
-                product.name !==
-                currentProduct.name &&
-
-                Array.isArray(product.categories) &&
-
-                product.categories.some(
-                    category =>
-                        relatedCategories.includes(
-                            category
-                        )
-                )
-
-            )
-            .slice(0, 5);
-
-
-    // Fill remaining products
-
-    if (related.length < 5) {
-
-        const additional =
-            products
-                .filter(product =>
-
-                    product.name !==
-                    currentProduct.name &&
-
-                    !related.some(
-                        item =>
-                            item.name ===
-                            product.name
-                    )
-
-                )
-                .slice(
-                    0,
-                    5 - related.length
-                );
-
-
-        related.push(
-            ...additional
-        );
-    }
-
-
-    relatedProducts.innerHTML =
-        related
-            .map(
-                (product, index) => {
-
-                    const slug =
-                        productSlug(
-                            product.name
-                        );
-
-
-                    return `
-
-                        <div
-                            class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1"
-                            data-aos="fade-up"
-                            data-aos-delay="${index * 100}"
-                        >
-
-                            <a
-                                href="/products/${encodeURIComponent(slug)}"
-                                class="card-link"
-                            >
-
-                                <div
-                                    class="product-image-container"
-                                >
-
-                                    <img
-                                        src="${product.image}"
-                                        alt="${product.name}"
-                                        class="product-image"
-                                    >
-
-                                </div>
-
-
-                                <div
-                                    class="p-4 sm:p-5 md:p-6"
-                                >
-
-                                    <div class="mb-4">
-
-                                        <h3
-                                            class="font-bold text-lg"
-                                        >
-
-                                            ${product.name}
-
-                                        </h3>
-
-                                        <p
-                                            class="text-sm text-gray-500"
-                                        >
-
-                                            ${product.description}
-
-                                        </p>
-
-                                    </div>
-
-
-                                    <div
-                                        class="flex justify-between items-center mb-4"
-                                    >
-
-                                        <div>
-
-                                            <span
-                                                class="text-2xl font-bold"
-                                            >
-
-                                                BDT
-                                                ${product.pricing[2].price}
-
-                                            </span>
-
-                                            <span
-                                                class="text-gray-500"
-                                            >
-
-                                                /
-                                                ${product.pricing[2].duration}
-
-                                            </span>
-
-                                        </div>
-
-
-                                        <div
-                                            class="flex items-center"
-                                        >
-
-                                            <i
-                                                class="fas fa-star text-yellow-400"
-                                            ></i>
-
-                                            <span
-                                                class="ml-1 text-gray-600"
-                                            >
-
-                                                ${product.rating}
-
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <button
-                                        type="button"
-                                        class="w-full py-2 rounded-lg font-medium text-white btn-primary"
-                                    >
-
-                                        View Details
-
-                                    </button>
-
-                                </div>
-
-                            </a>
-
-                        </div>
-
-                    `;
-                }
-            )
-            .join("");
-
-
-    setTimeout(() => {
-
-        if (
-            typeof AOS !== "undefined"
-        ) {
-
-            AOS.refresh();
+            }, 100);
         }
-
-    }, 100);
-}
-
-
-// ============================================================
-// ADD TO CART
-// ============================================================
-
-function addToCart() {
-
-    if (!currentProduct) {
-        return;
-    }
-
-
-    const selectedPlanData =
-        currentProduct.pricing[
-            selectedPlan
-        ];
-
-
-    const cartItem = {
-
-        ...currentProduct,
-
-        selectedPlan:
-            selectedPlanData,
-
-        quantity: 1
-
-    };
-
-
-    const existingItemIndex =
-        cart.findIndex(
-            item =>
-                item.name ===
-                currentProduct.name
-        );
-
-
-    if (existingItemIndex !== -1) {
-
-        cart[existingItemIndex] =
-            cartItem;
-
-    } else {
-
-        cart.push(
-            cartItem
-        );
-    }
-
-
-    saveCart();
-
-    updateCartCount();
-
-
-    if (successModal) {
-
-        successModal.classList.remove(
-            "hidden"
-        );
-    }
-}
-
-
-// ============================================================
-// BUY NOW
-// ============================================================
-
-function buyNow() {
-
-    if (!currentProduct) {
-        return;
-    }
-
-
-    const selectedPlanData =
-        currentProduct.pricing[
-            selectedPlan
-        ];
-
-
-    const cartItem = {
-
-        ...currentProduct,
-
-        selectedPlan:
-            selectedPlanData,
-
-        quantity: 1
-
-    };
-
-
-    const existingItemIndex =
-        cart.findIndex(
-            item =>
-                item.name ===
-                currentProduct.name
-        );
-
-
-    if (existingItemIndex !== -1) {
-
-        cart[existingItemIndex] =
-            cartItem;
-
-    } else {
-
-        cart.push(
-            cartItem
-        );
-    }
-
-
-    saveCart();
-
-    updateCartCount();
-
-
-    window.location.href =
-        "checkout.html";
-}
-
-
-// ============================================================
-// WHATSAPP
-// ============================================================
-
-function sendToWhatsApp() {
-
-    if (!currentProduct) {
-        return;
-    }
-
-
-    const selectedPlanData =
-        currentProduct.pricing[
-            selectedPlan
-        ];
-
-
-    const message =
-
-        `Hello! I'm interested in purchasing the following subscription:\n\n` +
-
-        `*Product:* ${currentProduct.name}\n` +
-
-        `*Plan:* ${selectedPlanData.duration}\n` +
-
-        `*Price:* ${selectedPlanData.currency} ${selectedPlanData.price}\n` +
-
-        `${
-            selectedPlanData.discount
-                ? `*Discount:* ${selectedPlanData.discount}\n`
-                : ""
-        }` +
-
-        `\nPlease provide me with the payment details and activation instructions.\n\n` +
-
-        `Thank you!`;
-
-
-    const encodedMessage =
-        encodeURIComponent(
-            message
-        );
-
-
-    const whatsappURL =
-        `https://wa.me/8801644490566?text=${encodedMessage}`;
-
-
-    window.open(
-        whatsappURL,
-        "_blank"
-    );
-}
-
-
-// ============================================================
-// CART COUNT
-// ============================================================
-
-function updateCartCount() {
-
-    if (!cartCount) {
-        return;
-    }
-
-
-    const totalItems =
-        cart.reduce(
-            (sum, item) =>
-                sum +
-                (Number(item.quantity) || 0),
-            0
-        );
-
-
-    cartCount.textContent =
-        totalItems;
-
-
-    cartCount.classList.add(
-        "pulse"
-    );
-
-
-    setTimeout(() => {
-
-        cartCount.classList.remove(
-            "pulse"
-        );
-
-    }, 500);
-}
-
-
-// ============================================================
-// CLOSE SUCCESS MODAL
-// ============================================================
-
-function closeSuccessModal() {
-
-    if (successModal) {
-
-        successModal.classList.add(
-            "hidden"
-        );
-    }
-}
-
-
-// ============================================================
-// SCROLL TO TOP
-// ============================================================
-
-function scrollToTop() {
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
-}
-
-
-// ============================================================
-// START
-// ============================================================
-
-init();
+        
+        // Render product details
+        function renderProductDetails() {
+            productDetails.innerHTML = `
+                <!-- Product Images -->
+                <div class="animate-slide-in-left" data-aos="fade-right">
+                    <div class="gallery-container">
+                        <div class="gallery-slider" id="gallerySlider">
+                            ${currentProduct.images.map((img, index) => `
+                                <div class="gallery-slide">
+                                    <img src="${img}" alt="${currentProduct.name} ${index + 1}">
+                                    <div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer" onclick="toggleFavorite()">
+                                        <i id="favoriteIcon" class="far fa-heart text-xl"></i>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Navigation Arrows -->
+                        <div class="gallery-nav gallery-prev" onclick="prevSlide()">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="gallery-nav gallery-next" onclick="nextSlide()">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Image Dots -->
+                    <div class="gallery-dots">
+                        ${currentProduct.images.map((_, index) => `
+                            <div class="gallery-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>
+                        `).join('')}
+                    </div>
+                    
+                    <!-- Image Thumbnails -->
+                    <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
+                        ${currentProduct.images.map((img, index) => `
+                            <img src="${img}" alt="${currentProduct.name} ${index + 1}" 
+                                 class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${index === 0 ? 'active' : ''}"
+                                 onclick="goToSlide(${index})">
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="animate-slide-in-right" data-aos="fade-left">
+                    <div class="flex items-center mb-4">
+                        <img src="${currentProduct.image}" alt="${currentProduct.name}" class="w-16 h-16 rounded-lg mr-4 object-contain">
+                        <div>
+                            <h1 class="text-3xl font-bold">${currentProduct.name}</h1>
+                            <div class="flex items-center mt-1">
+                                <div class="flex text-yellow-400">
+                                    ${generateStars(currentProduct.rating)}
+                                </div>
+                                <span class="ml-2 text-gray-600">${currentProduct.rating} (${currentProduct.reviews.toLocaleString()} reviews)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6">${currentProduct.description}</p>
+                    
+                    <!-- Pricing Options -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            ${currentProduct.pricing.map((plan, index) => `
+                                <div class="plan-card p-4 rounded-lg border border-gray-200 text-center ${plan.popular ? 'relative' : ''} ${index === selectedPlan ? 'selected' : ''}" 
+                                     onclick="selectPlan(${index})">
+                                    ${plan.popular ? '<span class="popular-badge">Most Popular</span>' : ''}
+                                    <div class="font-medium mt-3">${plan.duration}</div>
+                                    <div class="text-2xl font-bold mt-1">${plan.currency} ${plan.price}</div>
+                                    ${plan.discount ? `<div class="text-xs text-green-500 mt-1">${plan.discount}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Features Preview -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3">Key Features:</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            ${currentProduct.features.map((feature, index) => `
+                                <div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" 
+                                     style="animation-delay: ${index * 0.1}s;" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="text-gray-700">${feature}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-4">
+                        <button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary">
+                            <i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart
+                        </button>
+                        <button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp">
+                            <i class="fab fa-whatsapp mr-2"></i>Buy Now
+                        </button>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2">
+                            <div class="flex items-center">
+                                <i class="fas fa-shield-alt mr-2"></i>
+                                <span>30-Day Money Back Guarantee</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-lock mr-2"></i>
+                                <span>Secure Payment</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-headset mr-2"></i>
+                                <span>24/7 Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Animate feature items
+            setTimeout(() => {
+                document.querySelectorAll('.feature-item').forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.add('show');
+                    }, index * 100);
+                });
+            }, 500);
+        }
+        
+        // Gallery navigation functions
+        function updateGallery() {
+            const slider = document.getElementById('gallerySlider');
+            const dots = document.querySelectorAll('.gallery-dot');
+            const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+            
+            // Update slider position
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update dots
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Update thumbnails
+            thumbnails.forEach((thumb, index) => {
+                if (index === currentSlide) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % currentProduct.images.length;
+            updateGallery();
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + currentProduct.images.length) % currentProduct.images.length;
+            updateGallery();
+        }
+        
+        function goToSlide(index) {
+            currentSlide = index;
+            updateGallery();
+        }
+        
+        // Generate star rating
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+        
+        // Toggle favorite
+        function toggleFavorite() {
+            const favoriteIcon = document.getElementById('favoriteIcon');
+            if (favoriteIcon.classList.contains('far')) {
+                favoriteIcon.classList.remove('far');
+                favoriteIcon.classList.add('fas');
+                favoriteIcon.classList.add('text-red-500');
+            } else {
+                favoriteIcon.classList.remove('fas');
+                favoriteIcon.classList.add('far');
+                favoriteIcon.classList.remove('text-red-500');
+            }
+        }
+        
+        // Select pricing plan
+        function selectPlan(index) {
+            selectedPlan = index;
+            
+            // Update UI
+            document.querySelectorAll('.plan-card').forEach((card, i) => {
+                if (i === index) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+        
+        // Switch tab
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(tabName)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update tab content
+            try {
+                switch(tabName) {
+                    case 'description':
+                        tabContent.innerHTML = `
+                            <div class="prose max-w-none">
+                                <p class="text-gray-700 mb-4">${currentProduct.description}</p>
+                                <h3 class="text-xl font-semibold mb-3">Why Choose ${currentProduct.name}?</h3>
+                                <p class="text-gray-700 mb-4">
+                                    ${currentProduct.name} offers an unparalleled experience with a vast library of content. 
+                                    From premium features to exclusive benefits, there's something for everyone.
+                                </p>
+                                <p class="text-gray-700 mb-4">
+                                    With our subscription, you get unlimited access to all features without any ads or interruptions. 
+                                    Experience the best quality service with our premium offerings.
+                                </p>
+                                <h3 class="text-xl font-semibold mb-3">What's Included?</h3>
+                                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                    <li>Full access to all features</li>
+                                    <li>Premium quality service</li>
+                                    <li>Download for offline use (where applicable)</li>
+                                    <li>Multiple device access</li>
+                                    <li>Personalized experience</li>
+                                    <li>24/7 customer support</li>
+                                </ul>
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'features':
+                        tabContent.innerHTML = `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                ${currentProduct.features.map((feature, index) => `
+                                    <div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" 
+                                         data-aos="fade-up" data-aos-delay="${index * 100}">
+                                        <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                        <span class="text-gray-700">${feature}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'reviews':
+                        // Create reviews HTML
+                        let reviewsHTML = '';
+                        
+                        if (currentProduct.customerReviews && currentProduct.customerReviews.length > 0) {
+                            reviewsHTML = `
+                                <div class="space-y-4">
+                                    ${currentProduct.customerReviews.map((review, index) => `
+                                        <div class="border-b border-gray-200 pb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <span class="font-semibold text-gray-700">${review.name.charAt(0)}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-medium">${review.name}</h4>
+                                                        <div class="flex text-yellow-400 text-sm">
+                                                            ${generateStars(review.rating)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="text-sm text-gray-500">${formatDate(review.date)}</span>
+                                            </div>
+                                            <p class="text-gray-700">${review.comment}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        } else {
+                            reviewsHTML = `
+                                <div class="text-center py-8">
+                                    <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600">No reviews yet. Be the first to review this product!</p>
+                                </div>
+                            `;
+                        }
+                        
+                        tabContent.innerHTML = `
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-xl font-semibold">Customer Reviews</h3>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xl">
+                                                ${generateStars(currentProduct.rating)}
+                                            </div>
+                                            <span class="ml-2 text-gray-600">${currentProduct.rating} out of 5</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn-primary px-4 py-2 rounded-lg">
+                                        Write a Review
+                                    </button>
+                                </div>
+                                ${reviewsHTML}
+                            </div>
+                        `;
+                        break;
+                        
+                    case 'faq':
+                        // Create FAQ HTML
+                        let faqHTML = '';
+                        
+                        if (currentProduct.faq && currentProduct.faq.length > 0) {
+                            faqHTML = `
+                                ${currentProduct.faq.map((item, index) => `
+                                    <div class="border border-gray-200 rounded-lg" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                        <button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)">
+                                            <span class="font-medium">${item.question}</span>
+                                            <i class="fas fa-chevron-down transition-transform"></i>
+                                        </button>
+                                        <div class="hidden px-4 pb-3 text-gray-700">
+                                            ${item.answer}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            `;
+                        } else {
+                            faqHTML = `
+                                <div class="text-center py-8">
+                                    <i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600">No FAQs available for this product.</p>
+                                </div>
+                            `;
+                        }
+                        
+                        tabContent.innerHTML = `
+                            <div class="space-y-4">
+                                ${faqHTML}
+                            </div>
+                        `;
+                        break;
+                }
+                
+                // Refresh AOS after updating tab content
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 100);
+            } catch (error) {
+                console.error('Error in switchTab:', error);
+                tabContent.innerHTML = '<p class="text-gray-600">Error loading content. Please try again.</p>';
+            }
+        }
+        
+        // Format date for reviews
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return '1 day ago';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+            return `${Math.floor(diffDays / 365)} years ago`;
+        }
+        
+        // Toggle FAQ item
+        function toggleFAQ(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Load related products
+        function loadRelatedProducts() {
+            // Get related products based on category
+            const relatedCategories = currentProduct.categories || [];
+            const related = products
+                .filter(p => p.name !== currentProduct.name && 
+                          p.categories.some(cat => relatedCategories.includes(cat)))
+                .slice(0, 5);
+            
+            // If not enough related products by category, fill with random products
+            if (related.length < 5) {
+                const additional = products
+                    .filter(p => p.name !== currentProduct.name && !related.includes(p))
+                    .slice(0, 5 - related.length);
+                related.push(...additional);
+            }
+            
+            relatedProducts.innerHTML = related.map((product, index) => `
+                <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
+                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
+                        <div class="product-image-container">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                        </div>
+                        <div class="p-4 sm:p-5 md:p-6">
+                            <div class="mb-4">
+                                <h3 class="font-bold text-lg">${product.name}</h3>
+                                <p class="text-sm text-gray-500">${product.description}</p>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <span class="text-2xl font-bold">BDT ${product.pricing[2].price}</span>
+                                    <span class="text-gray-500">/${product.pricing[2].duration}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <span class="ml-1 text-gray-600">${product.rating}</span>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full py-2 rounded-lg font-medium text-white btn-primary">
+                                View Details
+                            </button>
+                        </div>
+                    </a>
+                </div>
+            `).join('');
+        }
+        
+        // Add to cart
+        function addToCart() {
+            const selectedPlanData = currentProduct.pricing[selectedPlan];
+            
+            const cartItem = {
+                ...currentProduct,
+                selectedPlan: selectedPlanData,
+                quantity: 1
+            };
+            
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(item => item.name === currentProduct.name);
+            
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex] = cartItem;
+            } else {
+                cart.push(cartItem);
+            }
+            
+            // Save to localStorage
+            saveCart();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Show success modal
+            successModal.classList.remove('hidden');
+        }
+        
+        // Buy now - Redirect to checkout page
+        function buyNow() {
+            const selectedPlanData = currentProduct.pricing[selectedPlan];
+            
+            const cartItem = {
+                ...currentProduct,
+                selectedPlan: selectedPlanData,
+                quantity: 1
+            };
+            
+            // Check if item already exists in cart
+            const existingItemIndex = cart.findIndex(item => item.name === currentProduct.name);
+            
+            if (existingItemIndex !== -1) {
+                cart[existingItemIndex] = cartItem;
+            } else {
+                cart.push(cartItem);
+            }
+            
+            // Save to localStorage
+            saveCart();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Redirect to checkout page
+            window.location.href = 'checkout.html';
+        }
+        
+        // Send to WhatsApp from floating button
+        function sendToWhatsApp() {
+            const selectedPlanData = currentProduct.pricing[selectedPlan];
+            
+            // Create WhatsApp message
+            const message = `Hello! I'm interested in purchasing the following subscription:\n\n` +
+                   `*Product:* ${currentProduct.name}\n` +
+                   `*Plan:* ${selectedPlanData.duration}\n` +
+                   `*Price:* ${selectedPlanData.currency} ${selectedPlanData.price}\n` +
+                   `${selectedPlanData.discount ? `*Discount:* ${selectedPlanData.discount}\n` : ''}` +
+                   `\nPlease provide me with the payment details and activation instructions.\n\n` +
+                   `Thank you!`;
+    
+            // Encode message for URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Create WhatsApp URL
+            const whatsappURL = `https://wa.me/8801644490566?text=${encodedMessage}`;
+            
+            // Open WhatsApp
+            window.open(whatsappURL, '_blank');
+        }
+        
+        // Update cart count
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Add animation to cart button
+            cartCount.classList.add('pulse');
+            setTimeout(() => cartCount.classList.remove('pulse'), 500);
+        }
+        
+        // Close success modal
+        function closeSuccessModal() {
+            successModal.classList.add('hidden');
+        }
+        
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Initialize the app
+        init();
     </script>
 
 </body>
