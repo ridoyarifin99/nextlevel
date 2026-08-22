@@ -591,8 +591,7 @@ function getProductSlug(req) {
     const rawURL = req.url || "";
     const pathname = rawURL.split("?")[0];
 
-    // Updated to match singular /product/ and plural /products/ interchangeably
-    let match = pathname.match(/^\/product[s]?\/([^/]+)\/?$/i);
+    const match = pathname.match(/^\/product[s]?\/([^/]+)\/?$/i);
     if (match && match[1]) {
         const resolved = resolveProductKey(match[1]);
         if (resolved) return resolved;
@@ -646,7 +645,7 @@ module.exports = function handler(req, res) {
     }
 
     const product = products[slug];
-    const productURL = `${SITE.domain}/product/${encodeURIComponent(slug)}`;
+    const productURL = `${SITE.domain}/products/${encodeURIComponent(slug)}`;
     const socialImg = getSocialImage(product);
     const imageURL = absoluteURL(socialImg);
     const mimeType = getMimeType(socialImg);
@@ -768,7 +767,6 @@ module.exports = function handler(req, res) {
 
         const SITE_HOME = "${escapeHTML(SITE.domain)}/";
         const CURRENT_SLUG = "${escapeHTML(slug)}";
-        const CURRENT_PRODUCT_NAME = "${escapeHTML(product.name)}";
         const frame = document.getElementById("productFrame");
 
         if (!frame) return;
@@ -781,14 +779,14 @@ module.exports = function handler(req, res) {
         )};
 
         function goHome() {
-            window.top.location.href = SITE_HOME;
+            window.top.location.assign(SITE_HOME);
         }
 
         function goToProduct(targetSlug) {
             if (!targetSlug) return;
-            const cleanSlug = String(targetSlug).trim().toLowerCase().replace(/^\\/+|\\/+$/g, "");
+            var cleanSlug = String(targetSlug).trim().toLowerCase().replace(/^\\/+|\\/+$/g, "");
             if (!cleanSlug || cleanSlug === CURRENT_SLUG) return;
-            window.top.location.href = SITE_HOME + "product/" + encodeURIComponent(cleanSlug);
+            window.top.location.assign(SITE_HOME + "products/" + encodeURIComponent(cleanSlug));
         }
 
         function makeSlug(value) {
@@ -797,37 +795,37 @@ module.exports = function handler(req, res) {
 
         function findProductFromName(name) {
             if (!name) return "";
-            let decoded = String(name);
+            var decoded = String(name);
             try { decoded = decodeURIComponent(decoded); } catch (_) {}
             decoded = decoded.trim().toLowerCase();
 
-            for (const s of Object.keys(PRODUCT_MAP)) {
+            for (var s in PRODUCT_MAP) {
                 if (PRODUCT_MAP[s].name.trim().toLowerCase() === decoded) return s;
             }
 
-            const generated = makeSlug(decoded);
+            var generated = makeSlug(decoded);
             return PRODUCT_MAP[generated] ? generated : "";
         }
 
         function getProductFromHref(href) {
             if (!href) return "";
-            let url;
+            var url;
             try {
                 url = new URL(href, frame.contentWindow.location.href);
             } catch (_) {
                 return "";
             }
 
-            const path = decodeURIComponent(url.pathname);
+            var path = decodeURIComponent(url.pathname);
             
-            const match = path.match(/^\\/product[s]?\\/([^/]+)\\/?$/i);
+            var match = path.match(/^\\/product[s]?\\/([^/]+)\\/?$/i);
             if (match && match[1]) {
-                const s = match[1].toLowerCase();
+                var s = match[1].toLowerCase();
                 if (PRODUCT_MAP[s]) return s;
             }
 
-            if (path.toLowerCase().endsWith("/details.html")) {
-                const name = url.searchParams.get("name");
+            if (path.toLowerCase().indexOf("details.html") !== -1) {
+                var name = url.searchParams.get("name");
                 if (name) return findProductFromName(name);
             }
 
@@ -837,7 +835,7 @@ module.exports = function handler(req, res) {
         function isHomeLink(href) {
             if (!href) return false;
             try {
-                const url = new URL(href, frame.contentWindow.location.href);
+                var url = new URL(href, frame.contentWindow.location.href);
                 return (url.origin === window.location.origin) && 
                        (url.pathname === "/" || url.pathname.toLowerCase() === "/index.html");
             } catch (_) {
@@ -847,8 +845,8 @@ module.exports = function handler(req, res) {
 
         frame.addEventListener("load", function () {
             try {
-                const frameWindow = frame.contentWindow;
-                const frameDocument = frameWindow.document;
+                var frameWindow = frame.contentWindow;
+                var frameDocument = frameWindow.document;
 
                 try { frameWindow.history.back = function () { goHome(); }; } catch (_) {}
                 try {
@@ -858,9 +856,9 @@ module.exports = function handler(req, res) {
                 } catch (_) {}
 
                 frameDocument.addEventListener("click", function (event) {
-                    const link = event.target.closest("a");
+                    var link = event.target.closest("a");
                     if (link) {
-                        const href = link.getAttribute("href");
+                        var href = link.getAttribute("href");
                         if (!href) return;
 
                         if (isHomeLink(href)) {
@@ -870,7 +868,7 @@ module.exports = function handler(req, res) {
                             return;
                         }
 
-                        const relatedSlug = getProductFromHref(href);
+                        var relatedSlug = getProductFromHref(href);
                         if (relatedSlug) {
                             event.preventDefault();
                             event.stopPropagation();
@@ -878,10 +876,10 @@ module.exports = function handler(req, res) {
                             return;
                         }
 
-                        const lowerHref = href.toLowerCase();
-                        if (lowerHref.startsWith("#") || lowerHref.startsWith("javascript:")) return;
+                        var lowerHref = href.toLowerCase();
+                        if (lowerHref.indexOf("#") === 0 || lowerHref.indexOf("javascript:") === 0) return;
 
-                        if (lowerHref.includes("history.back") || lowerHref.includes("history.go(-1)")) {
+                        if (lowerHref.indexOf("history.back") !== -1 || lowerHref.indexOf("history.go(-1)") !== -1) {
                             event.preventDefault();
                             event.stopPropagation();
                             goHome();
@@ -889,7 +887,7 @@ module.exports = function handler(req, res) {
                         }
                     }
 
-                    const btn = event.target.closest("button, [role='button']");
+                    var btn = event.target.closest("button, [role='button']");
                     if (btn) {
                         if (btn.getAttribute("data-nav") === "home") {
                             event.preventDefault();
@@ -898,8 +896,8 @@ module.exports = function handler(req, res) {
                             return;
                         }
 
-                        const text = (btn.innerText || btn.textContent || "").trim().toLowerCase();
-                        if (text === "home" || text === "return home" || text === "go home") {
+                        var text = (btn.innerText || btn.textContent || "").trim().toLowerCase();
+                        if (text === "home" || text === "return home" || text === "go home" || text === "back") {
                             event.preventDefault();
                             event.stopPropagation();
                             goHome();
