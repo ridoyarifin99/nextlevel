@@ -719,11 +719,11 @@
  
     <script>
         // Initialize AOS
-        // AOS.init({
-        //     duration: 800,
-        //     once: true,
-        //     offset: 100
-        // });
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
         
         // Product data with individual pricing and features for each item
         const products = [
@@ -5063,966 +5063,2960 @@
             }
         ];
         
-   function productSlug(name) {
-    return String(name || "")
+        // ============================================================
+// NEXT LEVEL SUBS
+// PRODUCT DETAILS PAGE ENGINE
+// ============================================================
+//
+// Supports BOTH:
+//
+// 1. Clean product URL:
+//
+//    https://www.nextlevelsubs.com/product/netflix-premium
+//
+// 2. Existing details.html URL:
+//
+//    https://www.nextlevelsubs.com/details.html?name=Netflix%20Premium
+//
+// This allows the clean /product/slug URL to load the existing
+// details.html product interface without redirecting to home.
+//
+// ============================================================
+
+
+// ============================================================
+// PRODUCT SLUG HELPER
+// ============================================================
+
+// PRODUCT URL / SLUG HANDLER
+function productSlug(name) {
+    return String(name)
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 }
 
+// Get product slug from the CURRENT browser URL
+function getCurrentProductSlug() {
+
+    const pathname = window.location.pathname;
+
+    // Clean URL:
+    // /product/netflix-premium
+    const match = pathname.match(/^\/product\/([^/]+)\/?$/i);
+
+    if (match && match[1]) {
+        try {
+            return decodeURIComponent(match[1])
+                .trim()
+                .toLowerCase();
+        } catch (error) {
+            return match[1]
+                .trim()
+                .toLowerCase();
+        }
+    }
+
 // ============================================================
 // CART STATE
 // ============================================================
 
-let cart = JSON.parse(
-    localStorage.getItem("streamHubCart")
-) || [];
+let cart = JSON.parse(localStorage.getItem("streamHubCart")) || [];
 
 let currentProduct = null;
+
 let selectedPlan = 2;
+
 let currentSlide = 0;
+
 
 // ============================================================
 // DOM ELEMENTS
 // ============================================================
 
-const loadingOverlay = document.getElementById("loadingOverlay");
-const productDetails = document.getElementById("productDetails");
-const breadcrumbProduct = document.getElementById("breadcrumbProduct");
-const tabContent = document.getElementById("tabContent");
-const relatedProducts = document.getElementById("relatedProducts");
-const cartCount = document.getElementById("cartCount");
-const successModal = document.getElementById("successModal");
-const fab = document.getElementById("fab");
-const whatsappFab = document.getElementById("whatsappFab");
+const loadingOverlay =
+    document.getElementById("loadingOverlay");
+
+const productDetails =
+    document.getElementById("productDetails");
+
+const breadcrumbProduct =
+    document.getElementById("breadcrumbProduct");
+
+const tabContent =
+    document.getElementById("tabContent");
+
+const relatedProducts =
+    document.getElementById("relatedProducts");
+
+const cartCount =
+    document.getElementById("cartCount");
+
+const successModal =
+    document.getElementById("successModal");
+
+const fab =
+    document.getElementById("fab");
+
+const whatsappFab =
+    document.getElementById("whatsappFab");
+
 
 // ============================================================
-// URL PARAMETERS
+// READ URL
 // ============================================================
 
-const urlParams = new URLSearchParams(window.location.search);
-const productNameFromURL = urlParams.get("name") || "";
-const productSlugFromURL = urlParams.get("slug") || "";
+    // OLD URL SUPPORT
+    // /details.html?name=Netflix%20Premium
+    // --------------------------------------------------------
 
-// ============================================================
-// GET CLEAN PRODUCT SLUG
-// ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const oldProductName = urlParams.get("name");
 
-function getCleanProductSlug() {
-    const pathname = window.location.pathname.replace(/\/+$/, "");
-    const match = pathname.match(/^\/product\/([^/]+)$/i);
-
-    if (!match || !match[1]) {
-        return "";
+    if (oldProductName) {
+        return productSlug(oldProductName);
     }
 
-    try {
-        return decodeURIComponent(match[1]).trim().toLowerCase();
-    } catch (error) {
-        return match[1].trim().toLowerCase();
-    }
-}
+    // Also support:
+    // /details.html?slug=netflix-premium
 
-// ============================================================
-// GET PRODUCT SLUG FROM URL
-// ============================================================
+    const oldSlug = urlParams.get("slug");
 
-function getRequestedProductSlug() {
-    // 1. CLEAN URL
-    const cleanSlug = getCleanProductSlug();
-    if (cleanSlug) {
-        return cleanSlug;
-    }
-
-    // 2. ?slug=netflix-premium
-    if (productSlugFromURL && productSlugFromURL.trim()) {
-        return productSlug(productSlugFromURL);
-    }
-
-    // 3. ?name=Netflix Premium
-    if (productNameFromURL && productNameFromURL.trim()) {
-        return productSlug(productNameFromURL);
+    if (oldSlug) {
+        return productSlug(oldSlug);
     }
 
     return "";
 }
 
+
+// Existing details.html?name=...
+const productNameFromURL =
+    urlParams.get("name") || "";
+
+
+// Optional details.html?slug=...
+const productSlugFromURL =
+    urlParams.get("slug") || "";
+
+
 // ============================================================
-// FIND PRODUCT BY SLUG (Auto-derived from product name)
+// DETECT CLEAN /product/slug URL
 // ============================================================
 
-function findProductBySlug(slug) {
-    if (!slug || !Array.isArray(products)) {
-        return null;
+function getCleanProductSlug() {
+
+    const pathParts =
+        window.location.pathname
+            .split("/")
+            .filter(Boolean);
+
+    // Example:
+    //
+    // /product/netflix-premium
+    //
+    // pathParts =
+    // ["product", "netflix-premium"]
+
+    if (
+        pathParts.length >= 2 &&
+        pathParts[0].toLowerCase() === "product"
+    ) {
+        return decodeURIComponent(pathParts[1])
+            .trim()
+            .toLowerCase();
     }
 
-    const normalizedSlug = productSlug(slug);
-
-    return products.find(product => {
-        // Dynamically compute slug from product.name on the fly
-        const autoSlug = productSlug(product.name);
-        return autoSlug === normalizedSlug;
-    }) || null;
+    return "";
 }
 
+
 // ============================================================
-// FIND PRODUCT BY NAME
+// DETECT PRODUCT SLUG FROM ALL POSSIBLE SOURCES
 // ============================================================
 
-function findProductByName(name) {
-    if (!name || !Array.isArray(products)) {
-        return null;
+function getRequestedProductSlug() {
+
+    // --------------------------------------------------------
+    // Priority 1:
+    // /product/netflix-premium
+    // --------------------------------------------------------
+
+    const cleanSlug =
+        getCleanProductSlug();
+
+    if (cleanSlug) {
+        return cleanSlug;
     }
 
-    let decodedName = name;
-    try {
-        decodedName = decodeURIComponent(name);
-    } catch (error) {
-        // Keep original value
+
+    // --------------------------------------------------------
+    // Priority 2:
+    // details.html?slug=netflix-premium
+    // --------------------------------------------------------
+
+    if (
+        productSlugFromURL &&
+        productSlugFromURL.trim()
+    ) {
+        return productSlugFromURL
+            .trim()
+            .toLowerCase();
     }
 
-    const normalizedName = decodedName.trim().toLowerCase();
 
-    return products.find(product => {
-        return String(product.name || "").trim().toLowerCase() === normalizedName;
-    }) || null;
+    // --------------------------------------------------------
+    // Priority 3:
+    // details.html?name=Netflix Premium
+    // --------------------------------------------------------
+
+    if (
+        productNameFromURL &&
+        productNameFromURL.trim()
+    ) {
+        return productSlug(
+            productNameFromURL
+        );
+    }
+
+
+    return "";
 }
+
+
+// ============================================================
+// REQUESTED PRODUCT
+// ============================================================
+
+const requestedProductSlug =
+    getRequestedProductSlug();
+
 
 // ============================================================
 // SHOW SKELETON LOADERS
 // ============================================================
 
 function showSkeletonLoaders() {
+
     if (loadingOverlay) {
         loadingOverlay.classList.add("active");
     }
 
+
+    // --------------------------------------------------------
+    // Product skeleton
+    // --------------------------------------------------------
+
     if (productDetails) {
+
         productDetails.innerHTML = `
-            <div class="animate-slide-in-left" data-aos="fade-right">
+
+            <div
+                class="animate-slide-in-left"
+                data-aos="fade-right"
+            >
+
                 <div class="skeleton-card">
-                    <div class="skeleton skeleton-image" style="aspect-ratio:16/9;"></div>
+
+                    <div
+                        class="skeleton skeleton-image"
+                        style="aspect-ratio:16/9;"
+                    ></div>
+
                 </div>
-                <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
-                    ${[1, 2, 3].map(() => `<div class="skeleton w-20 h-20 rounded-lg"></div>`).join("")}
+
+                <div
+                    class="flex mt-4 space-x-2 overflow-x-auto pb-2"
+                >
+
+                    ${[1, 2, 3]
+                        .map(() => `
+                            <div
+                                class="skeleton w-20 h-20 rounded-lg"
+                            ></div>
+                        `)
+                        .join("")}
+
                 </div>
+
             </div>
 
-            <div class="animate-slide-in-right" data-aos="fade-left">
-                <div class="skeleton-card p-6" style="height:500px;">
-                    <div class="flex items-center mb-4">
-                        <div class="skeleton skeleton-image mr-4"></div>
+
+            <div
+                class="animate-slide-in-right"
+                data-aos="fade-left"
+            >
+
+                <div
+                    class="skeleton-card p-6"
+                    style="height:500px;"
+                >
+
+                    <div
+                        class="flex items-center mb-4"
+                    >
+
+                        <div
+                            class="skeleton skeleton-image mr-4"
+                        ></div>
+
                         <div class="flex-1">
-                            <div class="skeleton skeleton-title mb-2"></div>
-                            <div class="skeleton skeleton-text w-32"></div>
+
+                            <div
+                                class="skeleton skeleton-title mb-2"
+                            ></div>
+
+                            <div
+                                class="skeleton skeleton-text w-32"
+                            ></div>
+
                         </div>
+
                     </div>
-                    <div class="skeleton skeleton-text mb-6"></div>
-                    <div class="skeleton skeleton-title mb-3"></div>
-                    <div class="grid grid-cols-2 gap-3 mb-6">
-                        ${[1, 2, 3, 4].map(() => `
-                            <div class="skeleton-card p-4">
-                                <div class="skeleton skeleton-title mb-2"></div>
-                                <div class="skeleton skeleton-price"></div>
+
+
+                    <div
+                        class="skeleton skeleton-text mb-6"
+                    ></div>
+
+
+                    <div
+                        class="skeleton skeleton-title mb-3"
+                    ></div>
+
+
+                    <div
+                        class="grid grid-cols-2 gap-3 mb-6"
+                    >
+
+                        ${[1, 2, 3, 4]
+                            .map(() => `
+                                <div class="skeleton-card p-4">
+
+                                    <div
+                                        class="skeleton skeleton-title mb-2"
+                                    ></div>
+
+                                    <div
+                                        class="skeleton skeleton-price"
+                                    ></div>
+
+                                </div>
+                            `)
+                            .join("")}
+
+                    </div>
+
+
+                    <div
+                        class="skeleton skeleton-title mb-3"
+                    ></div>
+
+
+                    ${[1, 2, 3, 4]
+                        .map(() => `
+                            <div
+                                class="flex items-center mb-2"
+                            >
+
+                                <div
+                                    class="skeleton w-4 h-4 rounded-full mr-2"
+                                ></div>
+
+                                <div
+                                    class="skeleton skeleton-text flex-1"
+                                ></div>
+
                             </div>
-                        `).join("")}
+                        `)
+                        .join("")}
+
+
+                    <div
+                        class="flex space-x-4 mt-6"
+                    >
+
+                        <div
+                            class="skeleton skeleton-button flex-1"
+                        ></div>
+
+                        <div
+                            class="skeleton skeleton-button flex-1"
+                        ></div>
+
                     </div>
-                    <div class="skeleton skeleton-title mb-3"></div>
-                    ${[1, 2, 3, 4].map(() => `
-                        <div class="flex items-center mb-2">
-                            <div class="skeleton w-4 h-4 rounded-full mr-2"></div>
-                            <div class="skeleton skeleton-text flex-1"></div>
-                        </div>
-                    `).join("")}
+
                 </div>
+
             </div>
         `;
     }
 
+
+    // --------------------------------------------------------
+    // Related products skeleton
+    // --------------------------------------------------------
+
     if (relatedProducts) {
+
         relatedProducts.innerHTML = "";
+
         for (let i = 0; i < 5; i++) {
-            const skeletonCard = document.createElement("div");
-            skeletonCard.className = "skeleton-card";
+
+            const skeletonCard =
+                document.createElement("div");
+
+            skeletonCard.className =
+                "skeleton-card";
+
             skeletonCard.innerHTML = `
+
                 <div class="p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="skeleton skeleton-image mr-3"></div>
+
+                    <div
+                        class="flex items-center mb-4"
+                    >
+
+                        <div
+                            class="skeleton skeleton-image mr-3"
+                        ></div>
+
                         <div class="flex-1">
-                            <div class="skeleton skeleton-title mb-1"></div>
-                            <div class="skeleton skeleton-text w-32"></div>
+
+                            <div
+                                class="skeleton skeleton-title mb-1"
+                            ></div>
+
+                            <div
+                                class="skeleton skeleton-text w-32"
+                            ></div>
+
                         </div>
+
                     </div>
-                    <div class="skeleton skeleton-price mb-4"></div>
-                    <div class="skeleton skeleton-button"></div>
+
+
+                    <div
+                        class="flex justify-between items-center mb-4"
+                    >
+
+                        <div
+                            class="skeleton skeleton-price"
+                        ></div>
+
+                        <div
+                            class="skeleton skeleton-text w-8"
+                        ></div>
+
+                    </div>
+
+
+                    <div
+                        class="skeleton skeleton-button"
+                    ></div>
+
                 </div>
             `;
-            relatedProducts.appendChild(skeletonCard);
+
+            relatedProducts.appendChild(
+                skeletonCard
+            );
         }
     }
 }
 
+
 // ============================================================
-// CART
+// LOAD CART
 // ============================================================
 
 function loadCart() {
+
     try {
-        const savedCart = localStorage.getItem("streamHubCart");
+
+        const savedCart =
+            localStorage.getItem(
+                "streamHubCart"
+            );
+
         if (savedCart) {
-            const parsedCart = JSON.parse(savedCart);
+
+            const parsedCart =
+                JSON.parse(savedCart);
+
             if (Array.isArray(parsedCart)) {
                 cart = parsedCart;
             }
+
         }
+
     } catch (error) {
-        console.error("Unable to load cart:", error);
+
+        console.error(
+            "Unable to load cart:",
+            error
+        );
+
         cart = [];
     }
+
+
     updateCartCount();
 }
 
+
+// ============================================================
+// SAVE CART
+// ============================================================
+
 function saveCart() {
+
     try {
-        localStorage.setItem("streamHubCart", JSON.stringify(cart));
+
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(cart)
+        );
+
     } catch (error) {
-        console.error("Unable to save cart:", error);
+
+        console.error(
+            "Unable to save cart:",
+            error
+        );
     }
 }
+
+
+// ============================================================
+// FIND PRODUCT
+// ============================================================
+
+function findProductBySlug(slug) {
+
+    if (!slug) {
+        return null;
+    }
+
+
+    const normalizedSlug =
+        String(slug)
+            .trim()
+            .toLowerCase();
+
+
+    return subscriptions.find(product => {
+
+        const existingSlug =
+            product.slug
+                ? product.slug
+                : productSlug(product.name);
+
+        return (
+            existingSlug
+                .trim()
+                .toLowerCase()
+            ===
+            normalizedSlug
+        );
+
+    }) || null;
+}
+
+
+// ============================================================
+// FIND PRODUCT BY NAME
+// ============================================================
+
+function findProductByName(name) {
+
+    if (!name) {
+        return null;
+    }
+
+
+    const normalizedName =
+        decodeURIComponent(name)
+            .trim()
+            .toLowerCase();
+
+
+    return subscriptions.find(product => {
+
+        return (
+            product.name
+                .trim()
+                .toLowerCase()
+            ===
+            normalizedName
+        );
+
+    }) || null;
+}
+
 
 // ============================================================
 // LOAD PRODUCT
 // ============================================================
 
 function loadProduct(slug) {
+
     let product = null;
 
-    // FIND BY SLUG
+
+    // --------------------------------------------------------
+    // First try slug
+    // --------------------------------------------------------
+
     if (slug) {
-        product = findProductBySlug(slug);
+        product =
+            findProductBySlug(slug);
     }
 
-    // FALLBACK TO NAME
-    if (!product && productNameFromURL) {
-        product = findProductByName(productNameFromURL);
+
+    // --------------------------------------------------------
+    // If slug failed, try name
+    // --------------------------------------------------------
+
+    if (
+        !product &&
+        productNameFromURL
+    ) {
+        product =
+            findProductByName(
+                productNameFromURL
+            );
     }
 
-    // NOT FOUND
+
+    // --------------------------------------------------------
+    // Product not found
+    // --------------------------------------------------------
+
     if (!product) {
-        console.error("Product not found:", slug);
+
+        console.error(
+            "Product not found:",
+            slug
+        );
+
+        // IMPORTANT:
+        // Do NOT redirect automatically to home.
+        //
+        // This prevents the clean URL from unexpectedly
+        // sending the user to "/".
 
         if (loadingOverlay) {
-            loadingOverlay.classList.remove("active");
+            loadingOverlay.classList.remove(
+                "active"
+            );
         }
 
         if (productDetails) {
+
             productDetails.innerHTML = `
+
                 <div class="col-span-full text-center py-20">
-                    <i class="fas fa-box-open text-5xl text-gray-300 mb-5"></i>
-                    <h2 class="text-2xl font-bold text-gray-800 mb-3">Product Not Found</h2>
-                    <p class="text-gray-500 mb-6">We couldn't find the requested product.</p>
-                    <a href="/" class="inline-block px-6 py-3 rounded-lg text-white btn-primary">Back to Home</a>
+
+                    <i
+                        class="fas fa-box-open text-5xl text-gray-300 mb-5"
+                    ></i>
+
+                    <h2
+                        class="text-2xl font-bold text-gray-800 mb-3"
+                    >
+                        Product Not Found
+                    </h2>
+
+                    <p
+                        class="text-gray-500 mb-6"
+                    >
+                        We couldn't find the requested product.
+                    </p>
+
+                    <a
+                        href="/"
+                        class="inline-block px-6 py-3 rounded-lg text-white btn-primary"
+                    >
+                        Back to Home
+                    </a>
+
                 </div>
             `;
         }
+
         return;
     }
 
-    // CLONE PRODUCT
-    currentProduct = JSON.parse(JSON.stringify(product));
 
-    // NORMALIZE PRODUCT DATA & AUTO-GENERATE SLUG FROM NAME
-    currentProduct.slug = productSlug(currentProduct.name);
-    currentProduct.images = Array.isArray(currentProduct.images) ? currentProduct.images : [currentProduct.image];
-    currentProduct.customerReviews = Array.isArray(currentProduct.customerReviews) ? currentProduct.customerReviews : [];
-    currentProduct.faq = Array.isArray(currentProduct.faq) ? currentProduct.faq : [];
-    currentProduct.features = Array.isArray(currentProduct.features) ? currentProduct.features : [];
-    currentProduct.pricing = Array.isArray(currentProduct.pricing) ? currentProduct.pricing : [];
-    currentProduct.categories = Array.isArray(currentProduct.categories) ? currentProduct.categories : [];
+    // --------------------------------------------------------
+    // Clone product
+    // --------------------------------------------------------
 
-    // PLAN
-    selectedPlan = 2;
-    if (!currentProduct.pricing[selectedPlan]) {
-        selectedPlan = 0;
+    currentProduct =
+        JSON.parse(
+            JSON.stringify(product)
+        );
+
+
+    // --------------------------------------------------------
+    // Ensure arrays exist
+    // --------------------------------------------------------
+
+    if (
+        !Array.isArray(
+            currentProduct.images
+        )
+    ) {
+
+        currentProduct.images = [
+            currentProduct.image
+        ];
+
     }
 
-    // GALLERY
+
+    if (
+        !Array.isArray(
+            currentProduct.customerReviews
+        )
+    ) {
+
+        currentProduct.customerReviews = [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            currentProduct.faq
+        )
+    ) {
+
+        currentProduct.faq = [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            currentProduct.features
+        )
+    ) {
+
+        currentProduct.features = [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            currentProduct.pricing
+        )
+    ) {
+
+        currentProduct.pricing = [];
+
+    }
+
+
+    if (
+        !Array.isArray(
+            currentProduct.categories
+        )
+    ) {
+
+        currentProduct.categories = [];
+
+    }
+
+
+    // --------------------------------------------------------
+    // Make sure slug exists
+    // --------------------------------------------------------
+
+    currentProduct.slug =
+        currentProduct.slug ||
+        productSlug(
+            currentProduct.name
+        );
+
+
+    // --------------------------------------------------------
+    // Reset selected plan
+    // --------------------------------------------------------
+
+    selectedPlan = 2;
+
+    if (
+        !currentProduct.pricing[selectedPlan]
+    ) {
+
+        selectedPlan = 0;
+
+    }
+
+
+    // --------------------------------------------------------
+    // Reset gallery
+    // --------------------------------------------------------
+
     currentSlide = 0;
 
-    // BREADCRUMB
+
+    // --------------------------------------------------------
+    // Breadcrumb
+    // --------------------------------------------------------
+
     if (breadcrumbProduct) {
-        breadcrumbProduct.textContent = currentProduct.name;
+
+        breadcrumbProduct.textContent =
+            currentProduct.name;
+
     }
 
-    // CLEAN URL
-    const cleanURL = `/product/${encodeURIComponent(currentProduct.slug)}`;
-    const currentCleanSlug = getCleanProductSlug();
 
-    if (window.location.pathname.toLowerCase().includes("details.html") && currentCleanSlug !== currentProduct.slug) {
-        window.history.replaceState({}, "", cleanURL);
-    }
+    // --------------------------------------------------------
+    // Render
+    // --------------------------------------------------------
 
-    // RENDER
     renderProductDetails();
+
+
+    // --------------------------------------------------------
+    // Default tab
+    // --------------------------------------------------------
+
     switchTab("description");
+
+
+    // --------------------------------------------------------
+    // Related products
+    // --------------------------------------------------------
+
     loadRelatedProducts();
 
+
+    // --------------------------------------------------------
+    // Refresh AOS
+    // --------------------------------------------------------
+
     setTimeout(() => {
-        if (typeof AOS !== "undefined") {
+
+        if (
+            typeof AOS !== "undefined"
+        ) {
+
             AOS.refresh();
+
         }
+
     }, 100);
 }
 
-// ============================================================
-// GALLERY
-// ============================================================
-
-function updateGallery() {
-    const slider = document.getElementById("gallerySlider");
-    if (!slider) return;
-
-    const dots = document.querySelectorAll(".gallery-dot");
-    const thumbnails = document.querySelectorAll(".gallery-thumbnail");
-
-    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-
-    dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === currentSlide);
-    });
-
-    thumbnails.forEach((thumb, index) => {
-        thumb.classList.toggle("active", index === currentSlide);
-    });
-}
-
-function nextSlide() {
-    if (!currentProduct || !currentProduct.images.length) return;
-    currentSlide = (currentSlide + 1) % currentProduct.images.length;
-    updateGallery();
-}
-
-function prevSlide() {
-    if (!currentProduct || !currentProduct.images.length) return;
-    currentSlide = (currentSlide - 1 + currentProduct.images.length) % currentProduct.images.length;
-    updateGallery();
-}
-
-function goToSlide(index) {
-    if (!currentProduct || !currentProduct.images[index]) return;
-    currentSlide = index;
-    updateGallery();
-}
 
 // ============================================================
-// STAR RATING
+// INITIALIZE
 // ============================================================
 
-function generateStars(rating) {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    let stars = "";
+function init() {
 
-    for (let i = 0; i < fullStars; i++) {
-        stars += '<i class="fas fa-star"></i>';
+    // --------------------------------------------------------
+    // Show loading skeleton
+    // --------------------------------------------------------
+
+    showSkeletonLoaders();
+
+
+    // --------------------------------------------------------
+    // Load cart
+    // --------------------------------------------------------
+
+    loadCart();
+
+
+    // --------------------------------------------------------
+    // IMPORTANT ROUTING FIX
+    // --------------------------------------------------------
+    //
+    // We do NOT require /product/slug anymore.
+    //
+    // The page can be:
+    //
+    // /product/netflix-premium
+    //
+    // OR:
+    //
+    // /details.html?name=Netflix%20Premium
+    //
+    // OR:
+    //
+    // /details.html?slug=netflix-premium
+    //
+    // --------------------------------------------------------
+
+    const requestedSlug =
+        getRequestedProductSlug();
+
+
+    // --------------------------------------------------------
+    // If there is no product identifier
+    // --------------------------------------------------------
+
+    if (!requestedSlug) {
+
+        console.warn(
+            "No product specified."
+        );
+
+
+        // Only redirect when details.html was opened
+        // without ANY product information.
+        //
+        // Do not redirect /product/... because that
+        // route has already been handled above.
+
+        if (
+            window.location.pathname
+                .toLowerCase()
+                .includes("details.html")
+        ) {
+
+            window.location.href = "/";
+
+            return;
+        }
+
+
+        // For an unexpected page state, show an error
+        // instead of blindly redirecting.
+
+        if (loadingOverlay) {
+
+            loadingOverlay.classList.remove(
+                "active"
+            );
+
+        }
+
+        return;
     }
 
-    if (hasHalfStar) {
-        stars += '<i class="fas fa-star-half-alt"></i>';
-    }
 
-    const emptyStars = 5 - Math.ceil(rating);
+    // --------------------------------------------------------
+    // Load product
+    // --------------------------------------------------------
 
-    for (let i = 0; i < emptyStars; i++) {
-        stars += '<i class="far fa-star"></i>';
-    }
+    setTimeout(() => {
 
-    return stars;
+        loadProduct(
+            requestedSlug
+        );
+
+
+        if (loadingOverlay) {
+
+            loadingOverlay.classList.remove(
+                "active"
+            );
+
+        }
+
+    }, 500);
+
+
+    // --------------------------------------------------------
+    // Scroll buttons
+    // --------------------------------------------------------
+
+    window.addEventListener(
+        "scroll",
+        () => {
+
+            if (
+                window.pageYOffset > 300
+            ) {
+
+                if (fab) {
+
+                    fab.style.opacity = "1";
+
+                    fab.style.visibility =
+                        "visible";
+                }
+
+
+                if (whatsappFab) {
+
+                    whatsappFab.style.opacity =
+                        "1";
+
+                    whatsappFab.style.visibility =
+                        "visible";
+                }
+
+            } else {
+
+                if (fab) {
+
+                    fab.style.opacity = "0";
+
+                    fab.style.visibility =
+                        "hidden";
+                }
+
+
+                if (whatsappFab) {
+
+                    whatsappFab.style.opacity =
+                        "0";
+
+                    whatsappFab.style.visibility =
+                        "hidden";
+                }
+
+            }
+
+        }
+    );
 }
 
-// ============================================================
-// FAVORITE
-// ============================================================
-
-function toggleFavorite() {
-    const favoriteIcon = document.getElementById("favoriteIcon");
-    if (!favoriteIcon) return;
-
-    if (favoriteIcon.classList.contains("far")) {
-        favoriteIcon.classList.remove("far");
-        favoriteIcon.classList.add("fas", "text-red-500");
-    } else {
-        favoriteIcon.classList.remove("fas", "text-red-500");
-        favoriteIcon.classList.add("far");
-    }
-}
-
-// ============================================================
-// SELECT PLAN
-// ============================================================
-
-function selectPlan(index) {
-    if (!currentProduct || !currentProduct.pricing[index]) return;
-
-    selectedPlan = index;
-
-    document.querySelectorAll(".plan-card").forEach((card, i) => {
-        card.classList.toggle("selected", i === index);
-    });
-}
 
 // ============================================================
 // RENDER PRODUCT DETAILS
 // ============================================================
 
 function renderProductDetails() {
-    if (!productDetails) return;
+
+    if (!productDetails) {
+        return;
+    }
+
 
     productDetails.innerHTML = `
-        <!-- PRODUCT GALLERY -->
-        <div class="animate-slide-in-left" data-aos="fade-right">
+
+        <!-- =================================================
+             PRODUCT IMAGES
+             ================================================= -->
+
+        <div
+            class="animate-slide-in-left"
+            data-aos="fade-right"
+        >
+
             <div class="gallery-container">
-                <div class="gallery-slider" id="gallerySlider">
-                    ${currentProduct.images.map((img, index) => `
-                        <div class="gallery-slide">
-                            <img src="${img}" alt="${currentProduct.name} ${index + 1}">
-                            <div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer" onclick="toggleFavorite()">
-                                <i id="favoriteIcon" class="far fa-heart text-xl"></i>
+
+                <div
+                    class="gallery-slider"
+                    id="gallerySlider"
+                >
+
+                    ${currentProduct.images
+                        .map(
+                            (img, index) => `
+
+                            <div class="gallery-slide">
+
+                                <img
+                                    src="${img}"
+                                    alt="${currentProduct.name} ${index + 1}"
+                                >
+
+                                <div
+                                    class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer"
+                                    onclick="toggleFavorite()"
+                                >
+
+                                    <i
+                                        id="favoriteIcon"
+                                        class="far fa-heart text-xl"
+                                    ></i>
+
+                                </div>
+
                             </div>
-                        </div>
-                    `).join("")}
+
+                        `
+                        )
+                        .join("")}
+
                 </div>
 
-                <div class="gallery-nav gallery-prev" onclick="prevSlide()">
+
+                <!-- Navigation -->
+
+                <div
+                    class="gallery-nav gallery-prev"
+                    onclick="prevSlide()"
+                >
                     <i class="fas fa-chevron-left"></i>
                 </div>
 
-                <div class="gallery-nav gallery-next" onclick="nextSlide()">
+
+                <div
+                    class="gallery-nav gallery-next"
+                    onclick="nextSlide()"
+                >
                     <i class="fas fa-chevron-right"></i>
                 </div>
+
             </div>
+
+
+            <!-- Dots -->
 
             <div class="gallery-dots">
-                ${currentProduct.images.map((_, index) => `
-                    <div class="gallery-dot ${index === 0 ? "active" : ""}" onclick="goToSlide(${index})"></div>
-                `).join("")}
+
+                ${currentProduct.images
+                    .map(
+                        (_, index) => `
+
+                        <div
+                            class="gallery-dot ${
+                                index === 0
+                                    ? "active"
+                                    : ""
+                            }"
+                            onclick="goToSlide(${index})"
+                        ></div>
+
+                    `
+                    )
+                    .join("")}
+
             </div>
 
-            <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
-                ${currentProduct.images.map((img, index) => `
-                    <img src="${img}" alt="${currentProduct.name} ${index + 1}" class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${index === 0 ? "active" : ""}" onclick="goToSlide(${index})">
-                `).join("")}
+
+            <!-- Thumbnails -->
+
+            <div
+                class="flex mt-4 space-x-2 overflow-x-auto pb-2"
+            >
+
+                ${currentProduct.images
+                    .map(
+                        (img, index) => `
+
+                        <img
+                            src="${img}"
+                            alt="${currentProduct.name} ${index + 1}"
+                            class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${
+                                index === 0
+                                    ? "active"
+                                    : ""
+                            }"
+                            onclick="goToSlide(${index})"
+                        >
+
+                    `
+                    )
+                    .join("")}
+
             </div>
+
         </div>
 
-        <!-- PRODUCT INFORMATION -->
-        <div class="animate-slide-in-right" data-aos="fade-left">
+
+        <!-- =================================================
+             PRODUCT INFORMATION
+             ================================================= -->
+
+        <div
+            class="animate-slide-in-right"
+            data-aos="fade-left"
+        >
+
             <div class="flex items-center mb-4">
-                <img src="${currentProduct.image}" alt="${currentProduct.name}" class="w-16 h-16 rounded-lg mr-4 object-contain">
+
+                <img
+                    src="${currentProduct.image}"
+                    alt="${currentProduct.name}"
+                    class="w-16 h-16 rounded-lg mr-4 object-contain"
+                >
+
                 <div>
-                    <h1 class="text-3xl font-bold">${currentProduct.name}</h1>
-                    <div class="flex items-center mt-1">
-                        <div class="flex text-yellow-400">
-                            ${generateStars(currentProduct.rating || 0)}
+
+                    <h1 class="text-3xl font-bold">
+                        ${currentProduct.name}
+                    </h1>
+
+                    <div
+                        class="flex items-center mt-1"
+                    >
+
+                        <div
+                            class="flex text-yellow-400"
+                        >
+                            ${generateStars(
+                                currentProduct.rating || 0
+                            )}
                         </div>
-                        <span class="ml-2 text-gray-600">
-                            ${currentProduct.rating || 0} (${(currentProduct.reviews || 0).toLocaleString()} reviews)
+
+                        <span
+                            class="ml-2 text-gray-600"
+                        >
+                            ${currentProduct.rating || 0}
+                            (${(
+                                currentProduct.reviews || 0
+                            ).toLocaleString()} reviews)
                         </span>
+
                     </div>
+
                 </div>
+
             </div>
+
 
             <p class="text-gray-600 mb-6">
                 ${currentProduct.description || ""}
             </p>
 
-            <!-- PRICING -->
+
+            <!-- =================================================
+                 PRICING
+                 ================================================= -->
+
             <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    ${currentProduct.pricing.map((plan, index) => `
-                        <div class="plan-card p-4 rounded-lg border border-gray-200 text-center ${plan.popular ? "relative" : ""} ${index === selectedPlan ? "selected" : ""}" onclick="selectPlan(${index})">
-                            ${plan.popular ? `<span class="popular-badge">Most Popular</span>` : ""}
-                            <div class="font-medium mt-3">${plan.duration}</div>
-                            <div class="text-2xl font-bold mt-1">${plan.currency} ${plan.price}</div>
-                            ${plan.discount ? `<div class="text-xs text-green-500 mt-1">${plan.discount}</div>` : ""}
-                        </div>
-                    `).join("")}
+
+                <h3
+                    class="text-lg font-semibold mb-3"
+                >
+                    Select Subscription Plan:
+                </h3>
+
+                <div
+                    class="grid grid-cols-2 gap-3"
+                >
+
+                    ${currentProduct.pricing
+                        .map(
+                            (plan, index) => `
+
+                            <div
+                                class="
+                                    plan-card
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                    ${
+                                        plan.popular
+                                            ? "relative"
+                                            : ""
+                                    }
+                                    ${
+                                        index === selectedPlan
+                                            ? "selected"
+                                            : ""
+                                    }
+                                "
+                                onclick="selectPlan(${index})"
+                            >
+
+                                ${
+                                    plan.popular
+                                        ? `
+                                            <span
+                                                class="popular-badge"
+                                            >
+                                                Most Popular
+                                            </span>
+                                        `
+                                        : ""
+                                }
+
+                                <div
+                                    class="font-medium mt-3"
+                                >
+                                    ${plan.duration}
+                                </div>
+
+                                <div
+                                    class="text-2xl font-bold mt-1"
+                                >
+                                    ${plan.currency}
+                                    ${plan.price}
+                                </div>
+
+                                ${
+                                    plan.discount
+                                        ? `
+                                            <div
+                                                class="text-xs text-green-500 mt-1"
+                                            >
+                                                ${plan.discount}
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+                        `
+                        )
+                        .join("")}
+
                 </div>
+
             </div>
 
-            <!-- FEATURES -->
+
+            <!-- =================================================
+                 FEATURES
+                 ================================================= -->
+
             <div class="mb-6">
-                <h3 class="text-lg font-semibold mb-3">Key Features:</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    ${currentProduct.features.map((feature, index) => `
-                        <div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" style="animation-delay: ${index * 0.1}s;" data-aos="fade-up" data-aos-delay="${index * 100}">
-                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                            <span class="text-gray-700">${feature}</span>
-                        </div>
-                    `).join("")}
+
+                <h3
+                    class="text-lg font-semibold mb-3"
+                >
+                    Key Features:
+                </h3>
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2 gap-2"
+                >
+
+                    ${currentProduct.features
+                        .map(
+                            (feature, index) => `
+
+                            <div
+                                class="
+                                    feature-item
+                                    flex
+                                    items-center
+                                    p-2
+                                    bg-gray-50
+                                    rounded-lg
+                                    hover:bg-gray-100
+                                    transition-colors
+                                "
+                                style="
+                                    animation-delay:
+                                    ${index * 0.1}s;
+                                "
+                                data-aos="fade-up"
+                                data-aos-delay="${
+                                    index * 100
+                                }"
+                            >
+
+                                <i
+                                    class="fas fa-check-circle text-green-500 mr-2"
+                                ></i>
+
+                                <span
+                                    class="text-gray-700"
+                                >
+                                    ${feature}
+                                </span>
+
+                            </div>
+
+                        `
+                        )
+                        .join("")}
+
                 </div>
+
             </div>
 
-            <!-- BUTTONS -->
+
+            <!-- =================================================
+                 ACTION BUTTONS
+                 ================================================= -->
+
             <div class="flex space-x-4">
-                <button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary">
-                    <i class="fa-regular fa-cart-circle-plus mr-2"></i>
+
+                <button
+                    onclick="addToCart()"
+                    class="
+                        flex-1
+                        py-3
+                        rounded-lg
+                        font-semibold
+                        text-white
+                        btn-primary
+                    "
+                >
+
+                    <i
+                        class="fa-regular fa-cart-circle-plus mr-2"
+                    ></i>
+
                     Add to Cart
+
                 </button>
-                <button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp">
-                    <i class="fab fa-whatsapp mr-2"></i>
+
+
+                <button
+                    onclick="buyNow()"
+                    class="
+                        flex-1
+                        py-3
+                        rounded-lg
+                        font-semibold
+                        text-white
+                        btn-whatsapp
+                    "
+                >
+
+                    <i
+                        class="fab fa-whatsapp mr-2"
+                    ></i>
+
                     Buy Now
+
                 </button>
+
             </div>
 
-            <!-- ADDITIONAL INFORMATION -->
-            <div class="mt-6 pt-6 border-t border-gray-200">
-                <div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2">
+
+            <!-- =================================================
+                 ADDITIONAL INFO
+                 ================================================= -->
+
+            <div
+                class="
+                    mt-6
+                    pt-6
+                    border-t
+                    border-gray-200
+                "
+            >
+
+                <div
+                    class="
+                        flex
+                        flex-wrap
+                        items-center
+                        justify-between
+                        text-sm
+                        text-gray-600
+                        gap-2
+                    "
+                >
+
                     <div class="flex items-center">
-                        <i class="fas fa-shield-alt mr-2"></i>
-                        <span>30-Day Money Back Guarantee</span>
+
+                        <i
+                            class="fas fa-shield-alt mr-2"
+                        ></i>
+
+                        <span>
+                            30-Day Money Back Guarantee
+                        </span>
+
                     </div>
+
+
                     <div class="flex items-center">
-                        <i class="fas fa-lock mr-2"></i>
-                        <span>Secure Payment</span>
+
+                        <i
+                            class="fas fa-lock mr-2"
+                        ></i>
+
+                        <span>
+                            Secure Payment
+                        </span>
+
                     </div>
+
+
                     <div class="flex items-center">
-                        <i class="fas fa-headset mr-2"></i>
-                        <span>24/7 Support</span>
+
+                        <i
+                            class="fas fa-headset mr-2"
+                        ></i>
+
+                        <span>
+                            24/7 Support
+                        </span>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
     `;
 
+
+    // Animate features
+
     setTimeout(() => {
-        document.querySelectorAll(".feature-item").forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add("show");
-            }, index * 100);
-        });
+
+        document
+            .querySelectorAll(".feature-item")
+            .forEach((item, index) => {
+
+                setTimeout(() => {
+
+                    item.classList.add("show");
+
+                }, index * 100);
+
+            });
+
     }, 500);
 }
+
+
+// ============================================================
+// GALLERY
+// ============================================================
+
+function updateGallery() {
+
+    const slider =
+        document.getElementById(
+            "gallerySlider"
+        );
+
+    if (!slider) {
+        return;
+    }
+
+
+    const dots =
+        document.querySelectorAll(
+            ".gallery-dot"
+        );
+
+    const thumbnails =
+        document.querySelectorAll(
+            ".gallery-thumbnail"
+        );
+
+
+    slider.style.transform =
+        `translateX(-${currentSlide * 100}%)`;
+
+
+    dots.forEach((dot, index) => {
+
+        dot.classList.toggle(
+            "active",
+            index === currentSlide
+        );
+
+    });
+
+
+    thumbnails.forEach((thumb, index) => {
+
+        thumb.classList.toggle(
+            "active",
+            index === currentSlide
+        );
+
+    });
+}
+
+
+function nextSlide() {
+
+    if (
+        !currentProduct ||
+        !currentProduct.images.length
+    ) {
+        return;
+    }
+
+    currentSlide =
+        (
+            currentSlide + 1
+        ) %
+        currentProduct.images.length;
+
+    updateGallery();
+}
+
+
+function prevSlide() {
+
+    if (
+        !currentProduct ||
+        !currentProduct.images.length
+    ) {
+        return;
+    }
+
+    currentSlide =
+        (
+            currentSlide -
+            1 +
+            currentProduct.images.length
+        ) %
+        currentProduct.images.length;
+
+    updateGallery();
+}
+
+
+function goToSlide(index) {
+
+    if (
+        !currentProduct ||
+        !currentProduct.images[index]
+    ) {
+        return;
+    }
+
+    currentSlide = index;
+
+    updateGallery();
+}
+
+
+// ============================================================
+// STAR RATING
+// ============================================================
+
+function generateStars(rating) {
+
+    const fullStars =
+        Math.floor(rating);
+
+    const hasHalfStar =
+        rating % 1 !== 0;
+
+    let stars = "";
+
+
+    for (
+        let i = 0;
+        i < fullStars;
+        i++
+    ) {
+
+        stars +=
+            '<i class="fas fa-star"></i>';
+
+    }
+
+
+    if (hasHalfStar) {
+
+        stars +=
+            '<i class="fas fa-star-half-alt"></i>';
+
+    }
+
+
+    const emptyStars =
+        5 - Math.ceil(rating);
+
+
+    for (
+        let i = 0;
+        i < emptyStars;
+        i++
+    ) {
+
+        stars +=
+            '<i class="far fa-star"></i>';
+
+    }
+
+
+    return stars;
+}
+
+
+// ============================================================
+// FAVORITE
+// ============================================================
+
+function toggleFavorite() {
+
+    const favoriteIcon =
+        document.getElementById(
+            "favoriteIcon"
+        );
+
+    if (!favoriteIcon) {
+        return;
+    }
+
+
+    if (
+        favoriteIcon.classList.contains("far")
+    ) {
+
+        favoriteIcon.classList.remove(
+            "far"
+        );
+
+        favoriteIcon.classList.add(
+            "fas"
+        );
+
+        favoriteIcon.classList.add(
+            "text-red-500"
+        );
+
+    } else {
+
+        favoriteIcon.classList.remove(
+            "fas"
+        );
+
+        favoriteIcon.classList.add(
+            "far"
+        );
+
+        favoriteIcon.classList.remove(
+            "text-red-500"
+        );
+
+    }
+}
+
+
+// ============================================================
+// SELECT PLAN
+// ============================================================
+
+function selectPlan(index) {
+
+    if (
+        !currentProduct ||
+        !currentProduct.pricing[index]
+    ) {
+        return;
+    }
+
+
+    selectedPlan = index;
+
+
+    document
+        .querySelectorAll(".plan-card")
+        .forEach((card, i) => {
+
+            card.classList.toggle(
+                "selected",
+                i === index
+            );
+
+        });
+}
+
 
 // ============================================================
 // SWITCH TAB
 // ============================================================
 
 function switchTab(tabName) {
-    if (!currentProduct || !tabContent) return;
 
-    document.querySelectorAll(".tab-button").forEach(btn => {
-        btn.classList.remove("active");
-        if (btn.textContent.toLowerCase().includes(tabName)) {
-            btn.classList.add("active");
-        }
-    });
+    if (
+        !currentProduct ||
+        !tabContent
+    ) {
+        return;
+    }
+
+
+    document
+        .querySelectorAll(".tab-button")
+        .forEach(btn => {
+
+            btn.classList.remove(
+                "active"
+            );
+
+            if (
+                btn.textContent
+                    .toLowerCase()
+                    .includes(tabName)
+            ) {
+
+                btn.classList.add(
+                    "active"
+                );
+
+            }
+
+        });
+
 
     try {
+
         switch (tabName) {
+
+            // ------------------------------------------------
+            // DESCRIPTION
+            // ------------------------------------------------
+
             case "description":
+
                 tabContent.innerHTML = `
-                    <div class="prose max-w-none">
-                        <p class="text-gray-700 mb-4">${currentProduct.description || ""}</p>
-                        <h3 class="text-xl font-semibold mb-3">Why Choose ${currentProduct.name}?</h3>
-                        <p class="text-gray-700 mb-4">${currentProduct.name} offers a premium subscription experience with access to quality content and features.</p>
-                        <h3 class="text-xl font-semibold mb-3">What's Included?</h3>
-                        <ul class="list-disc list-inside text-gray-700 space-y-2">
-                            <li>Full access to included features</li>
-                            <li>Premium quality service</li>
-                            <li>Multiple device access</li>
-                            <li>24/7 customer support</li>
+
+                    <div
+                        class="prose max-w-none"
+                    >
+
+                        <p
+                            class="text-gray-700 mb-4"
+                        >
+                            ${currentProduct.description}
+                        </p>
+
+
+                        <h3
+                            class="text-xl font-semibold mb-3"
+                        >
+                            Why Choose
+                            ${currentProduct.name}?
+                        </h3>
+
+
+                        <p
+                            class="text-gray-700 mb-4"
+                        >
+                            ${currentProduct.name}
+                            offers an unparalleled
+                            experience with a vast
+                            library of content.
+                            From premium features to
+                            exclusive benefits,
+                            there's something for everyone.
+                        </p>
+
+
+                        <p
+                            class="text-gray-700 mb-4"
+                        >
+                            With our subscription,
+                            you get unlimited access
+                            to all features without
+                            unnecessary interruptions.
+                            Experience the best quality
+                            service with our premium
+                            offerings.
+                        </p>
+
+
+                        <h3
+                            class="text-xl font-semibold mb-3"
+                        >
+                            What's Included?
+                        </h3>
+
+
+                        <ul
+                            class="
+                                list-disc
+                                list-inside
+                                text-gray-700
+                                space-y-2
+                            "
+                        >
+
+                            <li>
+                                Full access to all features
+                            </li>
+
+                            <li>
+                                Premium quality service
+                            </li>
+
+                            <li>
+                                Download for offline use
+                                where applicable
+                            </li>
+
+                            <li>
+                                Multiple device access
+                            </li>
+
+                            <li>
+                                Personalized experience
+                            </li>
+
+                            <li>
+                                24/7 customer support
+                            </li>
+
                         </ul>
+
                     </div>
                 `;
+
                 break;
+
+
+            // ------------------------------------------------
+            // FEATURES
+            // ------------------------------------------------
 
             case "features":
+
                 tabContent.innerHTML = `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        ${currentProduct.features.map((feature, index) => `
-                            <div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" data-aos="fade-up" data-aos-delay="${index * 100}">
-                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
-                                <span class="text-gray-700">${feature}</span>
-                            </div>
-                        `).join("")}
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-1
+                            md:grid-cols-2
+                            gap-4
+                        "
+                    >
+
+                        ${currentProduct.features
+                            .map(
+                                (feature, index) => `
+
+                                <div
+                                    class="
+                                        flex
+                                        items-start
+                                        p-4
+                                        bg-gray-50
+                                        rounded-lg
+                                        hover:bg-gray-100
+                                        transition-colors
+                                    "
+                                    data-aos="fade-up"
+                                    data-aos-delay="${
+                                        index * 100
+                                    }"
+                                >
+
+                                    <i
+                                        class="
+                                            fas
+                                            fa-check-circle
+                                            text-green-500
+                                            mt-1
+                                            mr-3
+                                        "
+                                    ></i>
+
+                                    <span
+                                        class="text-gray-700"
+                                    >
+                                        ${feature}
+                                    </span>
+
+                                </div>
+
+                            `
+                            )
+                            .join("")}
+
                     </div>
                 `;
+
                 break;
+
+
+            // ------------------------------------------------
+            // REVIEWS
+            // ------------------------------------------------
 
             case "reviews": {
-                const reviews = currentProduct.customerReviews || [];
+
                 let reviewsHTML = "";
 
-                if (reviews.length) {
+
+                if (
+                    currentProduct.customerReviews &&
+                    currentProduct.customerReviews.length
+                ) {
+
                     reviewsHTML = `
+
                         <div class="space-y-4">
-                            ${reviews.map(review => `
-                                <div class="border-b border-gray-200 pb-4">
-                                    <div class="flex items-center justify-between mb-2">
-                                        <div class="flex items-center">
-                                            <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                                                <span class="font-semibold text-gray-700">${String(review.name || "U").charAt(0)}</span>
+
+                            ${currentProduct.customerReviews
+                                .map(
+                                    (review, index) => `
+
+                                    <div
+                                        class="
+                                            border-b
+                                            border-gray-200
+                                            pb-4
+                                        "
+                                        data-aos="fade-up"
+                                        data-aos-delay="${
+                                            index * 100
+                                        }"
+                                    >
+
+                                        <div
+                                            class="
+                                                flex
+                                                items-center
+                                                justify-between
+                                                mb-2
+                                            "
+                                        >
+
+                                            <div
+                                                class="flex items-center"
+                                            >
+
+                                                <div
+                                                    class="
+                                                        w-10
+                                                        h-10
+                                                        rounded-full
+                                                        bg-gray-200
+                                                        flex
+                                                        items-center
+                                                        justify-center
+                                                        mr-3
+                                                    "
+                                                >
+
+                                                    <span
+                                                        class="
+                                                            font-semibold
+                                                            text-gray-700
+                                                        "
+                                                    >
+                                                        ${review.name.charAt(0)}
+                                                    </span>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <h4
+                                                        class="font-medium"
+                                                    >
+                                                        ${review.name}
+                                                    </h4>
+
+                                                    <div
+                                                        class="
+                                                            flex
+                                                            text-yellow-400
+                                                            text-sm
+                                                        "
+                                                    >
+                                                        ${generateStars(
+                                                            review.rating
+                                                        )}
+                                                    </div>
+
+                                                </div>
+
                                             </div>
-                                            <div>
-                                                <h4 class="font-medium">${review.name || "Customer"}</h4>
-                                                <div class="flex text-yellow-400 text-sm">${generateStars(review.rating || 0)}</div>
-                                            </div>
+
+
+                                            <span
+                                                class="
+                                                    text-sm
+                                                    text-gray-500
+                                                "
+                                            >
+                                                ${formatDate(
+                                                    review.date
+                                                )}
+                                            </span>
+
                                         </div>
-                                        <span class="text-sm text-gray-500">${formatDate(review.date)}</span>
+
+
+                                        <p
+                                            class="text-gray-700"
+                                        >
+                                            ${review.comment}
+                                        </p>
+
                                     </div>
-                                    <p class="text-gray-700">${review.comment || ""}</p>
-                                </div>
-                            `).join("")}
+                                `
+                                )
+                                .join("")}
+
                         </div>
                     `;
+
                 } else {
+
                     reviewsHTML = `
-                        <div class="text-center py-8">
-                            <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-600">No reviews yet.</p>
+
+                        <div
+                            class="
+                                text-center
+                                py-8
+                            "
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-comments
+                                    text-4xl
+                                    text-gray-300
+                                    mb-4
+                                "
+                            ></i>
+
+                            <p
+                                class="text-gray-600"
+                            >
+                                No reviews yet.
+                                Be the first to review
+                                this product!
+                            </p>
+
                         </div>
                     `;
                 }
 
+
                 tabContent.innerHTML = `
+
                     <div class="space-y-6">
-                        <div>
-                            <h3 class="text-xl font-semibold">Customer Reviews</h3>
-                            <div class="flex items-center mt-1">
-                                <div class="flex text-yellow-400">${generateStars(currentProduct.rating || 0)}</div>
-                                <span class="ml-2 text-gray-600">${currentProduct.rating || 0} out of 5</span>
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                justify-between
+                            "
+                        >
+
+                            <div>
+
+                                <h3
+                                    class="text-xl font-semibold"
+                                >
+                                    Customer Reviews
+                                </h3>
+
+                                <div
+                                    class="
+                                        flex
+                                        items-center
+                                        mt-1
+                                    "
+                                >
+
+                                    <div
+                                        class="
+                                            flex
+                                            text-yellow-400
+                                            text-xl
+                                        "
+                                    >
+                                        ${generateStars(
+                                            currentProduct.rating || 0
+                                        )}
+                                    </div>
+
+                                    <span
+                                        class="
+                                            ml-2
+                                            text-gray-600
+                                        "
+                                    >
+                                        ${currentProduct.rating || 0}
+                                        out of 5
+                                    </span>
+
+                                </div>
+
                             </div>
+
+
+                            <button
+                                class="
+                                    btn-primary
+                                    px-4
+                                    py-2
+                                    rounded-lg
+                                "
+                            >
+                                Write a Review
+                            </button>
+
                         </div>
+
+
                         ${reviewsHTML}
+
                     </div>
                 `;
+
                 break;
             }
+
+
+            // ------------------------------------------------
+            // FAQ
+            // ------------------------------------------------
 
             case "faq": {
-                const faq = currentProduct.faq || [];
+
                 let faqHTML = "";
 
-                if (faq.length) {
-                    faqHTML = faq.map(item => `
-                        <div class="border border-gray-200 rounded-lg">
-                            <button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50" onclick="toggleFAQ(this)">
-                                <span class="font-medium">${item.question}</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="hidden px-4 pb-3 text-gray-700">${item.answer}</div>
-                        </div>
-                    `).join("");
+
+                if (
+                    currentProduct.faq &&
+                    currentProduct.faq.length
+                ) {
+
+                    faqHTML =
+                        currentProduct.faq
+                            .map(
+                                (item, index) => `
+
+                                <div
+                                    class="
+                                        border
+                                        border-gray-200
+                                        rounded-lg
+                                    "
+                                    data-aos="fade-up"
+                                    data-aos-delay="${
+                                        index * 100
+                                    }"
+                                >
+
+                                    <button
+                                        class="
+                                            w-full
+                                            px-4
+                                            py-3
+                                            text-left
+                                            flex
+                                            items-center
+                                            justify-between
+                                            hover:bg-gray-50
+                                            transition-colors
+                                        "
+                                        onclick="toggleFAQ(this)"
+                                    >
+
+                                        <span
+                                            class="font-medium"
+                                        >
+                                            ${item.question}
+                                        </span>
+
+                                        <i
+                                            class="
+                                                fas
+                                                fa-chevron-down
+                                                transition-transform
+                                            "
+                                        ></i>
+
+                                    </button>
+
+
+                                    <div
+                                        class="
+                                            hidden
+                                            px-4
+                                            pb-3
+                                            text-gray-700
+                                        "
+                                    >
+                                        ${item.answer}
+                                    </div>
+
+                                </div>
+                            `
+                            )
+                            .join("");
+
                 } else {
+
                     faqHTML = `
-                        <div class="text-center py-8">
-                            <i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-600">No FAQs available for this product.</p>
+
+                        <div
+                            class="
+                                text-center
+                                py-8
+                            "
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-question-circle
+                                    text-4xl
+                                    text-gray-300
+                                    mb-4
+                                "
+                            ></i>
+
+                            <p
+                                class="text-gray-600"
+                            >
+                                No FAQs available
+                                for this product.
+                            </p>
+
                         </div>
                     `;
                 }
 
+
                 tabContent.innerHTML = `
+
                     <div class="space-y-4">
+
                         ${faqHTML}
+
                     </div>
                 `;
+
                 break;
             }
+
         }
 
-        if (typeof AOS !== "undefined") {
-            setTimeout(() => {
+
+        setTimeout(() => {
+
+            if (
+                typeof AOS !== "undefined"
+            ) {
+
                 AOS.refresh();
-            }, 100);
-        }
+
+            }
+
+        }, 100);
+
+
     } catch (error) {
-        console.error("Error in switchTab:", error);
-        tabContent.innerHTML = `<p class="text-gray-600">Error loading content.</p>`;
+
+        console.error(
+            "Error in switchTab:",
+            error
+        );
+
+        tabContent.innerHTML = `
+            <p class="text-gray-600">
+                Error loading content.
+                Please try again.
+            </p>
+        `;
     }
 }
 
+
 // ============================================================
-// DATE FORMAT
+// FORMAT REVIEW DATE
 // ============================================================
 
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "";
 
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const date =
+        new Date(dateString);
 
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
+    const now =
+        new Date();
+
+    const diffTime =
+        Math.abs(
+            now - date
+        );
+
+    const diffDays =
+        Math.ceil(
+            diffTime /
+            (1000 * 60 * 60 * 24)
+        );
+
+
+    if (diffDays === 1) {
+        return "1 day ago";
+    }
+
+    if (diffDays < 7) {
+        return `${diffDays} days ago`;
+    }
+
+    if (diffDays < 30) {
+        return `${Math.floor(
+            diffDays / 7
+        )} weeks ago`;
+    }
+
+    if (diffDays < 365) {
+        return `${Math.floor(
+            diffDays / 30
+        )} months ago`;
+    }
+
+    return `${Math.floor(
+        diffDays / 365
+    )} years ago`;
 }
 
+
 // ============================================================
-// FAQ TOGGLE
+// FAQ
 // ============================================================
 
 function toggleFAQ(button) {
-    const content = button.nextElementSibling;
-    const icon = button.querySelector("i");
-    if (!content) return;
 
-    if (content.classList.contains("hidden")) {
-        content.classList.remove("hidden");
-        if (icon) icon.style.transform = "rotate(180deg)";
+    const content =
+        button.nextElementSibling;
+
+    const icon =
+        button.querySelector("i");
+
+
+    if (
+        content.classList.contains("hidden")
+    ) {
+
+        content.classList.remove(
+            "hidden"
+        );
+
+        icon.style.transform =
+            "rotate(180deg)";
+
     } else {
-        content.classList.add("hidden");
-        if (icon) icon.style.transform = "rotate(0deg)";
+
+        content.classList.add(
+            "hidden"
+        );
+
+        icon.style.transform =
+            "rotate(0deg)";
     }
 }
+
 
 // ============================================================
 // RELATED PRODUCTS
 // ============================================================
 
 function loadRelatedProducts() {
-    if (!relatedProducts || !currentProduct || !Array.isArray(products)) return;
 
-    const currentCategories = currentProduct.categories || [];
-
-    let related = products.filter(product => {
-        if (product.name === currentProduct.name) return false;
-        const categories = product.categories || [];
-        return categories.some(category => currentCategories.includes(category));
-    }).slice(0, 5);
-
-    if (related.length < 5) {
-        const additional = products.filter(product => {
-            return product.name !== currentProduct.name && !related.includes(product);
-        }).slice(0, 5 - related.length);
-
-        related.push(...additional);
+    if (
+        !relatedProducts ||
+        !currentProduct
+    ) {
+        return;
     }
 
-    relatedProducts.innerHTML = related.map((product, index) => {
-        // Automatically derive slug from product.name on the fly
-        const slug = productSlug(product.name);
-        const pricing = product.pricing || [];
-        const plan = pricing[2] || pricing[0] || { price: 0, duration: "month", currency: "BDT" };
 
-        return `
-            <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                <a href="/product/${encodeURIComponent(slug)}" class="card-link">
-                    <div class="product-image-container">
-                        <img src="${product.image}" alt="${product.name}" class="product-image">
-                    </div>
-                    <div class="p-4 sm:p-5 md:p-6">
-                        <div class="mb-4">
-                            <h3 class="font-bold text-lg">${product.name}</h3>
-                            <p class="text-sm text-gray-500">${product.description || ""}</p>
+    const currentCategories =
+        currentProduct.categories || [];
+
+
+    const related =
+        subscriptions
+            .filter(product => {
+
+                if (
+                    product.name ===
+                    currentProduct.name
+                ) {
+                    return false;
+                }
+
+
+                const categories =
+                    product.categories || [];
+
+
+                return categories.some(
+                    category =>
+                        currentCategories.includes(
+                            category
+                        )
+                );
+
+            })
+            .slice(0, 5);
+
+
+    // --------------------------------------------------------
+    // Fill remaining slots
+    // --------------------------------------------------------
+
+    if (related.length < 5) {
+
+        const additional =
+            subscriptions
+                .filter(product => {
+
+                    return (
+                        product.name !==
+                            currentProduct.name &&
+                        !related.includes(
+                            product
+                        )
+                    );
+
+                })
+                .slice(
+                    0,
+                    5 - related.length
+                );
+
+
+        related.push(
+            ...additional
+        );
+    }
+
+
+    relatedProducts.innerHTML =
+        related
+            .map(
+                (product, index) => {
+
+                    const slug =
+                        product.slug ||
+                        productSlug(
+                            product.name
+                        );
+
+
+                    const pricing =
+                        product.pricing || [];
+
+
+                    const plan =
+                        pricing[2] ||
+                        pricing[0] ||
+                        {
+                            price: 0,
+                            duration: "month"
+                        };
+
+
+                    return `
+
+                        <div
+                            class="
+                                subscription-card
+                                bg-white
+                                rounded-xl
+                                shadow-md
+                                overflow-hidden
+                                transition-transform
+                                duration-300
+                                hover:shadow-lg
+                                hover:-translate-y-1
+                            "
+                            data-aos="fade-up"
+                            data-aos-delay="${
+                                index * 100
+                            }"
+                        >
+
+                            <a
+                                href="/product/${encodeURIComponent(slug)}"
+                                class="card-link"
+                            >
+
+                                <div
+                                    class="
+                                        product-image-container
+                                    "
+                                >
+
+                                    <img
+                                        src="${product.image}"
+                                        alt="${product.name}"
+                                        class="product-image"
+                                    >
+
+                                </div>
+
+
+                                <div
+                                    class="
+                                        p-4
+                                        sm:p-5
+                                        md:p-6
+                                    "
+                                >
+
+                                    <div class="mb-4">
+
+                                        <h3
+                                            class="font-bold text-lg"
+                                        >
+                                            ${product.name}
+                                        </h3>
+
+                                        <p
+                                            class="
+                                                text-sm
+                                                text-gray-500
+                                            "
+                                        >
+                                            ${product.description}
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        class="
+                                            flex
+                                            justify-between
+                                            items-center
+                                            mb-4
+                                        "
+                                    >
+
+                                        <div>
+
+                                            <span
+                                                class="
+                                                    text-2xl
+                                                    font-bold
+                                                "
+                                            >
+                                                BDT
+                                                ${plan.price}
+                                            </span>
+
+                                            <span
+                                                class="text-gray-500"
+                                            >
+                                                /
+                                                ${plan.duration}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div
+                                            class="flex items-center"
+                                        >
+
+                                            <i
+                                                class="
+                                                    fas
+                                                    fa-star
+                                                    text-yellow-400
+                                                "
+                                            ></i>
+
+                                            <span
+                                                class="
+                                                    ml-1
+                                                    text-gray-600
+                                                "
+                                            >
+                                                ${
+                                                    product.rating ||
+                                                    0
+                                                }
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="
+                                            w-full
+                                            py-2
+                                            rounded-lg
+                                            font-medium
+                                            text-white
+                                            btn-primary
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+
+                                </div>
+
+                            </a>
+
                         </div>
-                        <div class="flex justify-between items-center mb-4">
-                            <div>
-                                <span class="text-2xl font-bold">${plan.currency || "BDT"} ${plan.price}</span>
-                                <span class="text-gray-500">/${plan.duration}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <span class="ml-1 text-gray-600">${product.rating || 0}</span>
-                            </div>
-                        </div>
-                        <button type="button" class="w-full py-2 rounded-lg font-medium text-white btn-primary">
-                            View Details
-                        </button>
-                    </div>
-                </a>
-            </div>
-        `;
-    }).join("");
+                    `;
+                }
+            )
+            .join("");
 }
+
 
 // ============================================================
 // ADD TO CART
 // ============================================================
 
 function addToCart() {
-    if (!currentProduct || !currentProduct.pricing[selectedPlan]) return;
 
-    const selectedPlanData = currentProduct.pricing[selectedPlan];
+    if (
+        !currentProduct ||
+        !currentProduct.pricing[selectedPlan]
+    ) {
+        return;
+    }
+
+
+    const selectedPlanData =
+        currentProduct.pricing[
+            selectedPlan
+        ];
+
+
     const cartItem = {
+
         ...currentProduct,
-        selectedPlan: selectedPlanData,
+
+        selectedPlan:
+            selectedPlanData,
+
         quantity: 1
+
     };
 
-    const existingItemIndex = cart.findIndex(item => item.name === currentProduct.name);
 
-    if (existingItemIndex !== -1) {
-        cart[existingItemIndex] = cartItem;
+    const existingItemIndex =
+        cart.findIndex(
+            item =>
+                item.name ===
+                currentProduct.name
+        );
+
+
+    if (
+        existingItemIndex !== -1
+    ) {
+
+        cart[
+            existingItemIndex
+        ] = cartItem;
+
     } else {
-        cart.push(cartItem);
+
+        cart.push(
+            cartItem
+        );
+
     }
+
 
     saveCart();
+
     updateCartCount();
 
+
     if (successModal) {
-        successModal.classList.remove("hidden");
+
+        successModal.classList.remove(
+            "hidden"
+        );
+
     }
 }
+
 
 // ============================================================
 // BUY NOW
 // ============================================================
 
 function buyNow() {
-    if (!currentProduct || !currentProduct.pricing[selectedPlan]) return;
 
-    const selectedPlanData = currentProduct.pricing[selectedPlan];
-    const cartItem = {
-        ...currentProduct,
-        selectedPlan: selectedPlanData,
-        quantity: 1
-    };
-
-    const existingItemIndex = cart.findIndex(item => item.name === currentProduct.name);
-
-    if (existingItemIndex !== -1) {
-        cart[existingItemIndex] = cartItem;
-    } else {
-        cart.push(cartItem);
+    if (
+        !currentProduct ||
+        !currentProduct.pricing[selectedPlan]
+    ) {
+        return;
     }
 
+
+    const selectedPlanData =
+        currentProduct.pricing[
+            selectedPlan
+        ];
+
+
+    const cartItem = {
+
+        ...currentProduct,
+
+        selectedPlan:
+            selectedPlanData,
+
+        quantity: 1
+
+    };
+
+
+    const existingItemIndex =
+        cart.findIndex(
+            item =>
+                item.name ===
+                currentProduct.name
+        );
+
+
+    if (
+        existingItemIndex !== -1
+    ) {
+
+        cart[
+            existingItemIndex
+        ] = cartItem;
+
+    } else {
+
+        cart.push(
+            cartItem
+        );
+
+    }
+
+
     saveCart();
+
     updateCartCount();
 
-    window.location.href = "checkout.html";
+
+    window.location.href =
+        "checkout.html";
 }
+
 
 // ============================================================
 // WHATSAPP
 // ============================================================
 
 function sendToWhatsApp() {
-    if (!currentProduct || !currentProduct.pricing[selectedPlan]) return;
 
-    const selectedPlanData = currentProduct.pricing[selectedPlan];
+    if (
+        !currentProduct ||
+        !currentProduct.pricing[selectedPlan]
+    ) {
+        return;
+    }
+
+
+    const selectedPlanData =
+        currentProduct.pricing[
+            selectedPlan
+        ];
+
 
     const message =
         `Hello! I'm interested in purchasing the following subscription:\n\n` +
         `*Product:* ${currentProduct.name}\n` +
         `*Plan:* ${selectedPlanData.duration}\n` +
         `*Price:* ${selectedPlanData.currency} ${selectedPlanData.price}\n` +
-        (selectedPlanData.discount ? `*Discount:* ${selectedPlanData.discount}\n` : "") +
+        `${
+            selectedPlanData.discount
+                ? `*Discount:* ${selectedPlanData.discount}\n`
+                : ""
+        }` +
         `\nPlease provide me with the payment details and activation instructions.\n\n` +
         `Thank you!`;
 
-    const whatsappURL = `https://wa.me/8801644490566?text=${encodeURIComponent(message)}`;
-    window.open(whatsappURL, "_blank");
+
+    const encodedMessage =
+        encodeURIComponent(
+            message
+        );
+
+
+    const whatsappURL =
+        `https://wa.me/8801644490566?text=${encodedMessage}`;
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
 }
 
+
 // ============================================================
-// CART COUNT
+// UPDATE CART COUNT
 // ============================================================
 
 function updateCartCount() {
-    if (!cartCount) return;
 
-    const totalItems = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+    if (!cartCount) {
+        return;
+    }
 
-    cartCount.textContent = totalItems;
-    cartCount.classList.add("pulse");
+
+    const totalItems =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.quantity || 0
+                ),
+            0
+        );
+
+
+    cartCount.textContent =
+        totalItems;
+
+
+    cartCount.classList.add(
+        "pulse"
+    );
+
 
     setTimeout(() => {
-        cartCount.classList.remove("pulse");
+
+        cartCount.classList.remove(
+            "pulse"
+        );
+
     }, 500);
 }
 
+
 // ============================================================
-// SUCCESS MODAL
+// CLOSE SUCCESS MODAL
 // ============================================================
 
 function closeSuccessModal() {
+
     if (successModal) {
-        successModal.classList.add("hidden");
+
+        successModal.classList.add(
+            "hidden"
+        );
+
     }
 }
 
+
 // ============================================================
-// SCROLL TOP
+// SCROLL TO TOP
 // ============================================================
 
 function scrollToTop() {
+
     window.scrollTo({
+
         top: 0,
+
         behavior: "smooth"
+
     });
 }
 
-// ============================================================
-// INIT
-// ============================================================
-
-function init() {
-    showSkeletonLoaders();
-    loadCart();
-
-    if (!Array.isArray(products)) {
-        console.error("Product data is missing.");
-        return;
-    }
-
-    const requestedSlug = getRequestedProductSlug();
-
-    if (!requestedSlug) {
-        console.warn("No product specified.");
-
-        if (window.location.pathname.toLowerCase().includes("details.html")) {
-            window.location.href = "/";
-            return;
-        }
-        return;
-    }
-
-    setTimeout(() => {
-        loadProduct(requestedSlug);
-
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove("active");
-        }
-    }, 500);
-
-    // FLOATING BUTTONS
-    window.addEventListener("scroll", () => {
-        const visible = window.pageYOffset > 300;
-
-        if (fab) {
-            fab.style.opacity = visible ? "1" : "0";
-            fab.style.visibility = visible ? "visible" : "hidden";
-        }
-
-        if (whatsappFab) {
-            whatsappFab.style.opacity = visible ? "1" : "0";
-            whatsappFab.style.visibility = visible ? "visible" : "hidden";
-        }
-    });
-}
 
 // ============================================================
-// AOS
-// ============================================================
-
-if (typeof AOS !== "undefined") {
-    AOS.init({
-        duration: 800,
-        once: true,
-        offset: 100
-    });
-}
-
-// ============================================================
-// START
+// START APPLICATION
 // ============================================================
 
 init();
