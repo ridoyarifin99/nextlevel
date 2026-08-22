@@ -293,7 +293,7 @@ const products = {
         description: "Premium caller identification and protection",
         image: "/assets/cards/truecaller.avif",
         page: "/details.html?name=True%20Caller%20Gold",
-        category: "best-selling"
+        category: "best selling"
     },
 
     "dropbox-plus": {
