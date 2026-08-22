@@ -5079,13 +5079,20 @@
         const successModal = document.getElementById('successModal');
         const fab = document.getElementById('fab');
         const whatsappFab = document.getElementById('whatsappFab');
-        function productSlug(name) {
-    return name
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+const productNameFromURL = urlParams.get("name") || "";
+const productSlugFromURL = urlParams.get("slug") || "";
+
+const productSlugValue = productSlugFromURL ||
+    productNameFromURL
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
-}
+
+        
         
 function init() {
     // Show skeleton loaders first
@@ -5098,7 +5105,24 @@ const productSlug = pathParts[0] === 'product' ? pathParts[1] : null;
 
     // Load cart from localStorage
     loadCart();
+let currentProduct = null;
 
+// 1. Try exact product name
+if (productNameFromURL) {
+    currentProduct = subscriptions.find(
+        product =>
+            product.name.toLowerCase().trim() ===
+            productNameFromURL.toLowerCase().trim()
+    );
+}
+
+// 2. If not found, try slug
+if (!currentProduct && productSlugValue) {
+    currentProduct = subscriptions.find(product => {
+        const slug = product.slug || productSlug(product.name);
+        return slug === productSlugValue;
+    });
+}
     // Simulate loading delay
     setTimeout(() => {
 if (productSlug) {
