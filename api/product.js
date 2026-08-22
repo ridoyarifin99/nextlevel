@@ -749,13 +749,13 @@ module.exports = function handler(req, res) {
     (function () {
         "use strict";
 
-        const SITE_HOME = "${escapeHTML(SITE.domain)}/";
-        const CURRENT_SLUG = "${escapeHTML(slug)}";
-        const frame = document.getElementById("productFrame");
+        var SITE_HOME = "${escapeHTML(SITE.domain)}/";
+        var CURRENT_SLUG = "${escapeHTML(slug)}";
+        var frame = document.getElementById("productFrame");
 
         if (!frame) return;
 
-        const PRODUCT_MAP = ${safeJSON(
+        var PRODUCT_MAP = ${safeJSON(
             Object.keys(products).reduce((map, key) => {
                 map[key] = { name: products[key].name };
                 return map;
@@ -791,40 +791,38 @@ module.exports = function handler(req, res) {
             return PRODUCT_MAP[generated] ? generated : "";
         }
 
-        function getProductFromHref(href) {
-            if (!href) return "";
-            var url;
+        function checkFrameURL() {
             try {
-                url = new URL(href, frame.contentWindow.location.href);
-            } catch (_) {
-                return "";
-            }
+                var frameWin = frame.contentWindow;
+                if (!frameWin || !frameWin.location) return;
 
-            var path = decodeURIComponent(url.pathname);
-            
-            var match = path.match(/^\/product[s]?\/([^/]+)\/?$/i);
-            if (match && match[1]) {
-                var s = match[1].toLowerCase();
-                if (PRODUCT_MAP[s]) return s;
-            }
+                var href = frameWin.location.href;
+                if (!href) return;
 
-            if (path.toLowerCase().indexOf("details.html") !== -1) {
-                var name = url.searchParams.get("name");
-                if (name) return findProductFromName(name);
-            }
+                var url = new URL(href);
+                var path = decodeURIComponent(url.pathname);
 
-            return "";
-        }
+                // Check details.html query parameter
+                if (path.toLowerCase().indexOf("details.html") !== -1) {
+                    var nameParam = url.searchParams.get("name");
+                    if (nameParam) {
+                        var targetSlug = findProductFromName(nameParam);
+                        if (targetSlug && targetSlug !== CURRENT_SLUG) {
+                            goToProduct(targetSlug);
+                            return;
+                        }
+                    }
+                }
 
-        function isHomeLink(href) {
-            if (!href) return false;
-            try {
-                var url = new URL(href, frame.contentWindow.location.href);
-                return (url.origin === window.location.origin) && 
-                       (url.pathname === "/" || url.pathname.toLowerCase() === "/index.html");
-            } catch (_) {
-                return href === "/" || href === "/index.html";
-            }
+                // Check direct /products/ or /product/ paths inside frame
+                var match = path.match(/^\/product[s]?\/([^/]+)\/?$/i);
+                if (match && match[1]) {
+                    var slugFromPath = match[1].toLowerCase();
+                    if (PRODUCT_MAP[slugFromPath] && slugFromPath !== CURRENT_SLUG) {
+                        goToProduct(slugFromPath);
+                    }
+                }
+            } catch (_) {}
         }
 
         frame.addEventListener("load", function () {
@@ -832,67 +830,55 @@ module.exports = function handler(req, res) {
                 var frameWindow = frame.contentWindow;
                 var frameDocument = frameWindow.document;
 
-                try { frameWindow.history.back = function () { goHome(); }; } catch (_) {}
-                try {
-                    frameWindow.history.go = function (delta) {
-                        if (typeof delta === "number" && delta < 0) goHome();
-                    };
-                } catch (_) {}
+                // Sync immediately on frame load
+                checkFrameURL();
 
+                // Poll frame URL every 300ms to catch SPA transitions / dynamic JS navigation
+                setInterval(checkFrameURL, 300);
+
+                // Observe internal DOM mutations for dynamic links
+                if (window.MutationObserver && frameDocument.body) {
+                    var observer = new MutationObserver(function () {
+                        checkFrameURL();
+                    });
+                    observer.observe(frameDocument.body, { childList: true, subtree: true });
+                }
+
+                // Intercept direct user clicks
                 frameDocument.addEventListener("click", function (event) {
                     var link = event.target.closest("a");
                     if (link) {
                         var href = link.getAttribute("href");
                         if (!href) return;
 
-                        if (isHomeLink(href)) {
+                        if (href === "/" || href === "/index.html") {
                             event.preventDefault();
                             event.stopPropagation();
                             goHome();
                             return;
                         }
 
-                        var relatedSlug = getProductFromHref(href);
-                        if (relatedSlug) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            goToProduct(relatedSlug);
-                            return;
-                        }
-
-                        var lowerHref = href.toLowerCase();
-                        if (lowerHref.indexOf("#") === 0 || lowerHref.indexOf("javascript:") === 0) return;
-
-                        if (lowerHref.indexOf("history.back") !== -1 || lowerHref.indexOf("history.go(-1)") !== -1) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            goHome();
-                            return;
-                        }
-                    }
-
-                    var btn = event.target.closest("button, [role='button']");
-                    if (btn) {
-                        if (btn.getAttribute("data-nav") === "home") {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            goHome();
-                            return;
-                        }
-
-                        var text = (btn.innerText || btn.textContent || "").trim().toLowerCase();
-                        if (text === "home" || text === "return home" || text === "go home" || text === "back") {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            goHome();
-                        }
+                        // Check name parameter
+                        try {
+                            var resolvedURL = new URL(href, frameWindow.location.href);
+                            if (resolvedURL.pathname.toLowerCase().indexOf("details.html") !== -1) {
+                                var name = resolvedURL.searchParams.get("name");
+                                if (name) {
+                                    var matchedSlug = findProductFromName(name);
+                                    if (matchedSlug) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        goToProduct(matchedSlug);
+                                        return;
+                                    }
+                                }
+                            }
+                        } catch (_) {}
                     }
                 }, true);
 
-                frameWindow.addEventListener("popstate", function () { goHome(); });
-
             } catch (error) {
-                console.warn("NEXT LEVEL SUBS product frame controller access restricted:", error);
+                console.warn("NEXT LEVEL SUBS frame monitor restricted:", error);
             }
         });
 
