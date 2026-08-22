@@ -1286,11 +1286,53 @@ ${safeJSON(breadcrumbSchema)}
         /product/product-slug
     -->
 
-    <iframe
-        src="${escapeHTML(destinationURL)}"
-        title="${escapeHTML(product.name)}"
-        loading="eager"
-    ></iframe>
+<iframe
+    id="productFrame"
+    src="${escapeHTML(destinationURL)}"
+    title="${escapeHTML(product.name)}"
+    loading="eager"
+></iframe>
+
+<script>
+(function () {
+    const frame = document.getElementById("productFrame");
+
+    if (!frame) return;
+
+    // Prevent the iframe page from creating an unwanted
+    // navigation state in the parent page.
+    frame.addEventListener("load", function () {
+        try {
+            const frameDoc = frame.contentDocument;
+
+            if (!frameDoc) return;
+
+            frameDoc.addEventListener("click", function (event) {
+                const link = event.target.closest("a");
+
+                if (!link) return;
+
+                const href = link.getAttribute("href");
+
+                if (!href) return;
+
+                // If the user clicks the homepage/return link
+                // inside details.html, navigate the parent window.
+                if (
+                    href === "/" ||
+                    href === "/index.html" ||
+                    href === "index.html"
+                ) {
+                    event.preventDefault();
+                    window.location.href = "/";
+                }
+            });
+        } catch (error) {
+            console.warn("Product navigation bridge unavailable.");
+        }
+    });
+})();
+</script>
 
 
     <noscript>
