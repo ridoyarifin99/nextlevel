@@ -5065,10 +5065,6 @@
         
         // Cart state
         let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
-        function loadCart() {
-    cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
-    updateCartUI();
-}
         let currentProduct = null;
         let selectedPlan = 2; // Default to 6 months (index 2)
         let currentSlide = 0; // Current slide index for image gallery
@@ -5105,6 +5101,7 @@ function init() {
     showSkeletonLoaders();
 
     // Load cart first
+    loadCart();
 
     // Get product information from URL
     const productURL = getProductFromURL();
