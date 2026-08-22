@@ -283,7 +283,7 @@ const products = {
     "microsoft-onedrive": {
         name: "Microsoft OneDrive",
         description: "1TB cloud storage with Office apps",
-        image: "/assets/cards/onedrive.svg",
+        image: "/assets/details/onedrive/1.webp",
         page: "/details.html?name=Microsoft%20OneDrive",
         category: "Cloud Storage"
     },
