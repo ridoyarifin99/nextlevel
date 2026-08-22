@@ -287,6 +287,14 @@ const products = {
         page: "/details.html?name=Microsoft%20OneDrive",
         category: "Cloud Storage"
     },
+    
+    "truecaller-gold": {
+        name: "True Caller Gold",
+        description: "Premium caller identification and protection",
+        image: "/assets/cards/truecaller.avif",
+        page: "/details.html?name=True%20Caller%20Gold",
+        category: "Productivity"
+    },
 
     "dropbox-plus": {
         name: "Dropbox Plus",
@@ -657,18 +665,6 @@ const products = {
         category: "Adult"
     },
 
-
-    // =========================================================
-    // OTHER
-    // =========================================================
-
-    "truecaller-gold": {
-        name: "True Caller Gold",
-        description: "Premium caller identification and protection",
-        image: "/assets/cards/truecaller.avif",
-        page: "/details.html?name=True%20Caller%20Gold",
-        category: "Productivity"
-    }
 };
 
 
