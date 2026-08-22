@@ -5,10 +5,6 @@
 
 "use strict";
 
-// ============================================================
-// SITE CONFIGURATION
-// ============================================================
-
 const SITE = {
     name: "NEXT LEVEL SUBS",
     domain: "https://www.nextlevelsubs.com",
@@ -16,10 +12,6 @@ const SITE = {
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
     locale: "en_US"
 };
-
-// ============================================================
-// PRODUCT DATABASE
-// ============================================================
 
 const products = {
     // STREAMING
@@ -491,10 +483,6 @@ const slugAliases = {
     "youtube-premium-nonrenewable": "youtube-premium-non-renewable"
 };
 
-// ============================================================
-// HELPERS
-// ============================================================
-
 function escapeHTML(value) {
     return String(value == null ? "" : value)
         .replace(/&/g, "&amp;")
@@ -627,10 +615,6 @@ function send404(res) {
 </body>
 </html>`);
 }
-
-// ============================================================
-// MAIN HANDLER
-// ============================================================
 
 module.exports = function handler(req, res) {
     if (req.method !== "GET" && req.method !== "HEAD") {
@@ -779,14 +763,14 @@ module.exports = function handler(req, res) {
         )};
 
         function goHome() {
-            window.top.location.assign(SITE_HOME);
+            window.top.location.href = SITE_HOME;
         }
 
         function goToProduct(targetSlug) {
             if (!targetSlug) return;
-            var cleanSlug = String(targetSlug).trim().toLowerCase().replace(/^\\/+|\\/+$/g, "");
+            var cleanSlug = String(targetSlug).trim().toLowerCase().replace(/^\/+|\/+$/g, "");
             if (!cleanSlug || cleanSlug === CURRENT_SLUG) return;
-            window.top.location.assign(SITE_HOME + "products/" + encodeURIComponent(cleanSlug));
+            window.top.location.href = SITE_HOME + "products/" + encodeURIComponent(cleanSlug);
         }
 
         function makeSlug(value) {
@@ -818,7 +802,7 @@ module.exports = function handler(req, res) {
 
             var path = decodeURIComponent(url.pathname);
             
-            var match = path.match(/^\\/product[s]?\\/([^/]+)\\/?$/i);
+            var match = path.match(/^\/product[s]?\/([^/]+)\/?$/i);
             if (match && match[1]) {
                 var s = match[1].toLowerCase();
                 if (PRODUCT_MAP[s]) return s;
