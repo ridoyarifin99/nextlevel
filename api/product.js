@@ -3,32 +3,55 @@
 // PRODUCT SEO / OPEN GRAPH / SOCIAL PREVIEW HANDLER
 // ============================================================
 //
-// FINAL CLEAN URL:
+// CLEAN PRODUCT URL:
 //
 // https://nextlevelsubs.com/product/netflix-premium
 // https://nextlevelsubs.com/product/hbo-max
 // https://nextlevelsubs.com/product/spotify-premium
 //
 // IMPORTANT:
-// - Singular /product/ is used everywhere.
-// - Existing details.html remains the actual product UI.
-// - Social crawlers receive SEO + OG metadata.
-// - Normal visitors see details.html inside an iframe.
-// - Related products navigate the TOP browser window.
-// - Browser Back returns to the previous top-level page.
+// Use /product/ everywhere.
+// NEVER use /products/.
+//
+// The actual existing product UI remains:
+//
+// /details.html?name=Netflix%20Premium
+//
+// But visitors/crawlers see:
+//
+// /product/netflix-premium
+//
+// Related products inside details.html are automatically
+// converted to /product/{slug} at the TOP browser level.
+//
 // ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
-    domain: "https://nextlevelsubs.com",
+    domain: "https://www.nextlevelsubs.com",
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
     locale: "en_US"
 };
 
-
 // ============================================================
 // PRODUCT DATABASE
+// ============================================================
+//
+// IMPORTANT:
+// The slug is the public URL slug.
+//
+// Example:
+//
+// "netflix-premium":
+//     name: "Netflix Premium"
+//
+// Public URL:
+// /product/netflix-premium
+//
+// Existing details page:
+// /details.html?name=Netflix%20Premium
+//
 // ============================================================
 
 const products = {
@@ -41,7 +64,6 @@ const products = {
         name: "Netflix Premium",
         description: "Watch unlimited movies and TV shows",
         image: "/assets/cards/netflix.webp",
-        page: "/details.html?name=Netflix%20Premium",
         category: "Streaming"
     },
 
@@ -49,7 +71,6 @@ const products = {
         name: "Amazon Prime Video",
         description: "Thousands of movies and TV shows",
         image: "/assets/cards/prime_video.svg",
-        page: "/details.html?name=Amazon%20Prime%20Video",
         category: "Streaming"
     },
 
@@ -57,7 +78,6 @@ const products = {
         name: "HBO Max",
         description: "HBO, Warner Bros., DC, Max Originals",
         image: "/assets/cards/max.png",
-        page: "/details.html?name=HBO%20Max",
         category: "Streaming"
     },
 
@@ -65,7 +85,6 @@ const products = {
         name: "Crunchy Roll Mega",
         description: "Anime. Streaming. Community",
         image: "/assets/cards/crunchy.png",
-        page: "/details.html?name=Crunchy%20Roll%20Mega",
         category: "Streaming"
     },
 
@@ -73,7 +92,6 @@ const products = {
         name: "Netflix For TV",
         description: "Watch unlimited movies and TV shows",
         image: "/assets/cards/netflixfortv.webp",
-        page: "/details.html?name=Netflix%20For%20TV",
         category: "Streaming"
     },
 
@@ -81,7 +99,6 @@ const products = {
         name: "Chorki Premium",
         description: "Bengali. Bold. Streaming",
         image: "/assets/cards/chorki.webp",
-        page: "/details.html?name=Chorki%20Premium",
         category: "Streaming"
     },
 
@@ -89,7 +106,6 @@ const products = {
         name: "Hoichoi Premium",
         description: "Unlimited Bangla Entertainment",
         image: "/assets/cards/hoichoi.png",
-        page: "/details.html?name=Hoichoi%20Premium",
         category: "Streaming"
     },
 
@@ -97,16 +113,13 @@ const products = {
         name: "Bongo",
         description: "Unlimited Bangla Entertainment",
         image: "/assets/cards/bongo.png",
-        page: "/details.html?name=Bongo",
         category: "Streaming"
     },
 
     "disney-plus": {
         name: "Disney+",
-        description:
-            "Premium movies, series and exclusive Disney content",
+        description: "Premium movies, series and exclusive Disney content",
         image: "/assets/cards/disney.jpg",
-        page: "/details.html?name=Disney%2B",
         category: "Streaming"
     },
 
@@ -114,7 +127,6 @@ const products = {
         name: "Hulu",
         description: "Next-day TV and original content",
         image: "/assets/cards/hulu.svg",
-        page: "/details.html?name=Hulu",
         category: "Streaming"
     },
 
@@ -122,107 +134,83 @@ const products = {
         name: "Apple TV+",
         description: "Original shows and movies",
         image: "/assets/cards/apple_tv.jpg",
-        page: "/details.html?name=Apple%20TV%2B",
         category: "Streaming"
     },
 
     "paramount-plus": {
         name: "Paramount+",
-        description:
-            "Movies, live sports, and exclusive originals",
+        description: "Movies, live sports, and exclusive originals",
         image: "/assets/cards/paramount.webp",
-        page: "/details.html?name=Paramount%2B",
         category: "Streaming"
     },
 
     "peacock": {
         name: "Peacock",
-        description:
-            "NBCUniversal content and live sports",
+        description: "NBCUniversal content and live sports",
         image: "/assets/cards/Peacock.avif",
-        page: "/details.html?name=Peacock",
         category: "Streaming"
     },
 
     "youtube-premium": {
         name: "YouTube Premium",
-        description:
-            "Ad-free videos and YouTube Music",
+        description: "Ad-free videos and YouTube Music",
         image: "/assets/cards/youtube.webp",
-        page: "/details.html?name=YouTube%20Premium",
         category: "Streaming"
     },
 
     "youtube-premium-non-renewable": {
         name: "Youtube Premium Non-Renewable",
-        description:
-            "Ad-free videos and music",
+        description: "Ad-free videos and music",
         image: "/assets/cards/youtube.webp",
-        page:
-            "/details.html?name=Youtube%20Premium%20Non-Renewable",
         category: "Streaming"
     },
 
     "discovery-plus": {
         name: "Discovery+",
-        description:
-            "Documentaries, Reality, Entertainment",
+        description: "Documentaries, Reality, Entertainment",
         image: "/assets/cards/discovery.webp",
-        page: "/details.html?name=Discovery%2B",
         category: "Streaming"
     },
 
     "shudder-premium": {
         name: "Shudder Premium",
-        description:
-            "Horror, Thriller, Suspense",
+        description: "Horror, Thriller, Suspense",
         image: "/assets/cards/shudder.jpg",
-        page: "/details.html?name=Shudder%20Premium",
         category: "Streaming"
     },
 
     "prime-video-full": {
         name: "Prime Video Full",
-        description:
-            "Movies, Series, Originals",
+        description: "Movies, Series, Originals",
         image: "/assets/cards/primefull.webp",
-        page: "/details.html?name=Prime%20Video%20Full",
         category: "Streaming"
     },
 
     "amc-plus": {
         name: "AMC+",
-        description:
-            "Horror, Thriller, Suspense",
+        description: "Horror, Thriller, Suspense",
         image: "/assets/cards/amc+.webp",
-        page: "/details.html?name=AMC%2B",
         category: "Streaming"
     },
 
     "fubo-tv": {
         name: "Fubo TV",
-        description:
-            "Sports, Live, Entertainment",
+        description: "Sports, Live, Entertainment",
         image: "/assets/cards/fuboTV.webp",
-        page: "/details.html?name=Fubo%20TV",
         category: "Streaming"
     },
 
     "ullu-pro": {
         name: "Ullu Pro",
-        description:
-            "Adult, Web, Series",
+        description: "Adult, Web, Series",
         image: "/assets/cards/ullu.png",
-        page: "/details.html?name=Ullu%20Pro",
         category: "Streaming"
     },
 
     "sling-tv": {
         name: "Sling TV",
-        description:
-            "Live, Channels, Streaming",
+        description: "Live, Channels, Streaming",
         image: "/assets/cards/slingtv.png",
-        page: "/details.html?name=Sling%20TV",
         category: "Streaming"
     },
 
@@ -233,68 +221,50 @@ const products = {
 
     "spotify-premium": {
         name: "Spotify Premium",
-        description:
-            "Ad-free music and podcasts",
+        description: "Ad-free music and podcasts",
         image: "/assets/cards/spotify.jpg",
-        page: "/details.html?name=Spotify%20Premium",
         category: "Music"
     },
 
     "amazon-music-unlimited": {
         name: "Amazon Music Unlimited",
-        description:
-            "High-quality music and podcasts",
+        description: "High-quality music and podcasts",
         image: "/assets/cards/amazon-music-unlimited.jpeg",
-        page:
-            "/details.html?name=Amazon%20Music%20Unlimited",
         category: "Music"
     },
 
     "apple-music": {
         name: "Apple Music",
-        description:
-            "Stream over 75 million songs",
+        description: "Stream over 75 million songs",
         image: "/assets/cards/apple_music.jpg",
-        page: "/details.html?name=Apple%20Music",
         category: "Music"
     },
 
     "tidal": {
         name: "Tidal",
-        description:
-            "High-fidelity music streaming",
+        description: "High-fidelity music streaming",
         image: "/assets/cards/tidal.svg",
-        page: "/details.html?name=Tidal",
         category: "Music"
     },
 
     "pandora-premium": {
         name: "Pandora Premium",
-        description:
-            "Personalized music and podcasts",
+        description: "Personalized music and podcasts",
         image: "/assets/cards/pandora.svg",
-        page:
-            "/details.html?name=Pandora%20Premium",
         category: "Music"
     },
 
     "soundcloud-go-plus": {
         name: "SoundCloud Go+",
-        description:
-            "Ad-free music and offline listening",
+        description: "Ad-free music and offline listening",
         image: "/assets/cards/sound_cloud.svg",
-        page:
-            "/details.html?name=SoundCloud%20Go%2B",
         category: "Music"
     },
 
     "deezer-hifi": {
         name: "Deezer HiFi",
-        description:
-            "High-quality audio streaming",
+        description: "High-quality audio streaming",
         image: "/assets/cards/deezer.svg",
-        page:
-            "/details.html?name=Deezer%20HiFi",
         category: "Music"
     },
 
@@ -305,55 +275,36 @@ const products = {
 
     "microsoft-onedrive": {
         name: "Microsoft OneDrive",
-        description:
-            "1TB cloud storage with Office apps",
+        description: "1TB cloud storage with Office apps",
         image: "/assets/cards/onedrive.svg",
-        page:
-            "/details.html?name=Microsoft%20OneDrive",
         category: "Cloud Storage"
     },
 
     "dropbox-plus": {
         name: "Dropbox Plus",
-        description:
-            "2TB secure cloud storage",
-        image:
-            "/assets/cards/Dropbox_(service)-Logo.wine.svg",
-        page:
-            "/details.html?name=Dropbox%20Plus",
+        description: "2TB secure cloud storage",
+        image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
         category: "Cloud Storage"
     },
 
     "google-drive": {
         name: "Google Drive",
-        description:
-            "1TB cloud storage",
-        image:
-            "/assets/cards/Google_Drive-Logo.wine.svg",
-        page:
-            "/details.html?name=Google%20Drive",
+        description: "1TB cloud storage",
+        image: "/assets/cards/Google_Drive-Logo.wine.svg",
         category: "Cloud Storage"
     },
 
     "icloud-plus": {
         name: "iCloud+",
-        description:
-            "50GB cloud storage for Apple users",
-        image:
-            "/assets/cards/icloud+webp.webp",
-        page:
-            "/details.html?name=iCloud%2B",
+        description: "50GB cloud storage for Apple users",
+        image: "/assets/cards/icloud+webp.webp",
         category: "Cloud Storage"
     },
 
     "amazon-drive": {
         name: "Amazon Drive",
-        description:
-            "100GB cloud storage",
-        image:
-            "/assets/cards/amazon_drive.png",
-        page:
-            "/details.html?name=Amazon%20Drive",
+        description: "100GB cloud storage",
+        image: "/assets/cards/amazon_drive.png",
         category: "Cloud Storage"
     },
 
@@ -364,89 +315,57 @@ const products = {
 
     "expressvpn": {
         name: "ExpressVPN",
-        description:
-            "High-speed, secure VPN service",
-        image:
-            "/assets/cards/expressVPN.png",
-        page:
-            "/details.html?name=ExpressVPN",
+        description: "High-speed, secure VPN service",
+        image: "/assets/cards/expressVPN.png",
         category: "VPN"
     },
 
     "nordvpn": {
         name: "NordVPN",
-        description:
-            "Advanced security with double VPN",
-        image:
-            "/assets/cards/nordvpn.webp",
-        page:
-            "/details.html?name=NordVPN",
+        description: "Advanced security with double VPN",
+        image: "/assets/cards/nordvpn.webp",
         category: "VPN"
     },
 
     "surfshark": {
         name: "Surfshark",
-        description:
-            "Unlimited devices and connections",
-        image:
-            "/assets/cards/surfsharkvpn.webp",
-        page:
-            "/details.html?name=Surfshark",
+        description: "Unlimited devices and connections",
+        image: "/assets/cards/surfsharkvpn.webp",
         category: "VPN"
     },
 
     "cyberghost": {
         name: "CyberGhost",
-        description:
-            "User-friendly VPN with 45-day guarantee",
-        image:
-            "/assets/cards/cyberghost.png",
-        page:
-            "/details.html?name=CyberGhost",
+        description: "User-friendly VPN with 45-day guarantee",
+        image: "/assets/cards/cyberghost.png",
         category: "VPN"
     },
 
     "ipvanish": {
         name: "IPVanish",
-        description:
-            "Fast connections with no logs",
-        image:
-            "/assets/cards/ipvanish.webp",
-        page:
-            "/details.html?name=IPVanish",
+        description: "Fast connections with no logs",
+        image: "/assets/cards/ipvanish.webp",
         category: "VPN"
     },
 
     "private-internet-access": {
         name: "Private Internet Access",
-        description:
-            "Highly customizable VPN",
-        image:
-            "/assets/cards/pia.png",
-        page:
-            "/details.html?name=Private%20Internet%20Access",
+        description: "Highly customizable VPN",
+        image: "/assets/cards/pia.png",
         category: "VPN"
     },
 
     "hotspot-shield": {
         name: "Hotspot Shield",
-        description:
-            "Patented VPN technology",
-        image:
-            "/assets/cards/Hotspot-Shield-vpn.webp",
-        page:
-            "/details.html?name=Hotspot%20Shield",
+        description: "Patented VPN technology",
+        image: "/assets/cards/Hotspot-Shield-vpn.webp",
         category: "VPN"
     },
 
     "vypr-vpn": {
         name: "Vypr VPN",
-        description:
-            "Secure and private VPN service",
-        image:
-            "/assets/cards/vyprvpn.webp",
-        page:
-            "/details.html?name=Vypr%20VPN",
+        description: "Secure and private VPN service",
+        image: "/assets/cards/vyprvpn.webp",
         category: "VPN"
     },
 
@@ -457,100 +376,64 @@ const products = {
 
     "canva-pro": {
         name: "Canva Pro",
-        description:
-            "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
-        image:
-            "/assets/cards/canva.png",
-        page:
-            "/details.html?name=Canva%20Pro",
+        description: "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
+        image: "/assets/cards/canva.png",
         category: "AI & Design"
     },
 
     "photoroom-pro": {
         name: "Photoroom Pro",
-        description:
-            "Professional AI-powered photo editing and design tools",
-        image:
-            "/assets/cards/photoroom.jpg",
-        page:
-            "/details.html?name=Photoroom%20Pro",
+        description: "Professional AI-powered photo editing and design tools",
+        image: "/assets/cards/photoroom.jpg",
         category: "AI & Design"
     },
 
     "picsart-premium": {
         name: "Picsart Premium",
-        description:
-            "Creative photo and video editing tools",
-        image:
-            "/assets/cards/picsart.png",
-        page:
-            "/details.html?name=Picsart%20Premium",
+        description: "Creative photo and video editing tools",
+        image: "/assets/cards/picsart.png",
         category: "AI & Design"
     },
 
     "photoroom-max": {
         name: "Photoroom Max",
-        description:
-            "Advanced AI photo editing and creative tools",
-        image:
-            "/assets/cards/photoroom.jpg",
-        page:
-            "/details.html?name=Photoroom%20Max",
+        description: "Advanced AI photo editing and creative tools",
+        image: "/assets/cards/photoroom.jpg",
         category: "AI & Design"
     },
 
     "blackbox-ai-chatgpt5": {
         name: "Black Box Ai (CHAT-GPT5)",
-        description:
-            "AI-powered coding and development assistant",
-        image:
-            "/assets/cards/blackboxai.jpg",
-        page:
-            "/details.html?name=Black%20Box%20Ai%28CHAT-GPT5%29",
+        description: "AI-powered coding and development assistant",
+        image: "/assets/cards/blackboxai.jpg",
         category: "AI & Design"
     },
 
     "gemini-ai": {
         name: "Gemini Ai",
-        description:
-            "Google's advanced AI assistant",
-        image:
-            "/assets/cards/gemini.png",
-        page:
-            "/details.html?name=Gemini%20Ai",
+        description: "Google's advanced AI assistant",
+        image: "/assets/cards/gemini.png",
         category: "AI & Design"
     },
 
     "chat-gpt": {
         name: "Chat GPT",
-        description:
-            "Advanced AI assistant for writing, research and productivity",
-        image:
-            "/assets/cards/chatgpt.jpg",
-        page:
-            "/details.html?name=Chat%20GPT",
+        description: "Advanced AI assistant for writing, research and productivity",
+        image: "/assets/cards/chatgpt.jpg",
         category: "AI & Design"
     },
 
     "perplexity-chatgpt5": {
         name: "Perplexity (ChatGPT-5)",
-        description:
-            "AI-powered search and research assistant",
-        image:
-            "/assets/cards/Perplexity.svg",
-        page:
-            "/details.html?name=perplexity%20%28ChatGPT-5%29",
+        description: "AI-powered search and research assistant",
+        image: "/assets/cards/Perplexity.svg",
         category: "AI & Design"
     },
 
     "remini-ai": {
         name: "Remini Ai",
-        description:
-            "AI-powered photo enhancement and restoration",
-        image:
-            "/assets/cards/remini.avif",
-        page:
-            "/details.html?name=Remini%20Ai",
+        description: "AI-powered photo enhancement and restoration",
+        image: "/assets/cards/remini.avif",
         category: "AI & Design"
     },
 
@@ -561,111 +444,71 @@ const products = {
 
     "netflix-prime-video": {
         name: "Netflix + Prime Video",
-        description:
-            "Get both streaming services at a discount",
-        image:
-            "/assets/cards/Netflix-vs-Amazon.jpg",
-        page:
-            "/details.html?name=Netflix%20%2B%20Prime%20Video",
+        description: "Get both streaming services at a discount",
+        image: "/assets/cards/Netflix-vs-Amazon.jpg",
         category: "Combo"
     },
 
     "netflix-hbo-max": {
         name: "Netflix + HBO Max",
-        description:
-            "Premium content from both platforms",
-        image:
-            "/assets/cards/netflix+hbomax.webp",
-        page:
-            "/details.html?name=Netflix%20%2B%20HBO%20Max",
+        description: "Premium content from both platforms",
+        image: "/assets/cards/netflix+hbomax.webp",
         category: "Combo"
     },
 
     "prime-video-hbo-max": {
         name: "Prime Video + HBO Max",
-        description:
-            "Premium content from both platforms",
-        image:
-            "/assets/cards/prime+hbo.webp",
-        page:
-            "/details.html?name=Prime%20Video%20%2B%20HBO%20Max",
+        description: "Premium content from both platforms",
+        image: "/assets/cards/prime+hbo.webp",
         category: "Combo"
     },
 
     "hbo-max-surfshark-vpn": {
         name: "HBO Max + Surfshark VPN",
-        description:
-            "Stream securely with VPN protection",
-        image:
-            "/assets/cards/hbo+surfshark.webp",
-        page:
-            "/details.html?name=HBO%20Max%20%2B%20Surfshark%20VPN",
+        description: "Stream securely with VPN protection",
+        image: "/assets/cards/hbo+surfshark.webp",
         category: "Combo"
     },
 
     "spotify-youtube-premium": {
         name: "Spotify + YouTube Premium",
-        description:
-            "Ad-free music and videos",
-        image:
-            "/assets/cards/spotify+youtube.webp",
-        page:
-            "/details.html?name=Spotify%20%2B%20YouTube%20Premium",
+        description: "Ad-free music and videos",
+        image: "/assets/cards/spotify+youtube.webp",
         category: "Combo"
     },
 
     "disney-hbo-max": {
         name: "Disney + HBO Max",
-        description:
-            "Disney+ and HBO Max premium entertainment",
-        image:
-            "/assets/cards/disney+nordVPN.webp",
-        page:
-            "/details.html?name=Disney%20%2B%20HBO%20Max",
+        description: "Disney+ and HBO Max premium entertainment",
+        image: "/assets/cards/disney+nordVPN.webp",
         category: "Combo"
     },
 
     "disney-nord-vpn": {
         name: "Disney + Nord VPN",
-        description:
-            "Disney+ entertainment with NordVPN protection",
-        image:
-            "/assets/cards/disney+nordVPN.webp",
-        page:
-            "/details.html?name=Disney%20%2B%20Nord%20VPN",
+        description: "Disney+ entertainment with NordVPN protection",
+        image: "/assets/cards/disney+nordVPN.webp",
         category: "Combo"
     },
 
     "music-storage": {
         name: "Music & Storage",
-        description:
-            "Amazon Music HD and 1TB OneDrive storage",
-        image:
-            "/assets/cards/amazon+onedrive.png",
-        page:
-            "/details.html?name=Music%20%26%20Storage",
+        description: "Amazon Music HD and 1TB OneDrive storage",
+        image: "/assets/cards/amazon+onedrive.png",
         category: "Combo"
     },
 
     "security-bundle": {
         name: "Security Bundle",
-        description:
-            "ExpressVPN and 1TB OneDrive cloud storage",
-        image:
-            "/assets/cards/expressvpn+onedrive.webp",
-        page:
-            "/details.html?name=Security%20Bundle",
+        description: "ExpressVPN and 1TB OneDrive cloud storage",
+        image: "/assets/cards/expressvpn+onedrive.webp",
         category: "Combo"
     },
 
     "ultimate-entertainment": {
         name: "Ultimate Entertainment",
-        description:
-            "Netflix, HBO Max, and ExpressVPN",
-        image:
-            "/assets/cards/netflix_expressvpn_hbomax.webp",
-        page:
-            "/details.html?name=Ultimate%20Entertainment",
+        description: "Netflix, HBO Max, and ExpressVPN",
+        image: "/assets/cards/netflix_expressvpn_hbomax.webp",
         category: "Combo"
     },
 
@@ -676,56 +519,36 @@ const products = {
 
     "doulingo": {
         name: "Doulingo",
-        description:
-            "Learn languages with interactive lessons",
-        image:
-            "/assets/cards/doulingo.png",
-        page:
-            "/details.html?name=Doulingo",
+        description: "Learn languages with interactive lessons",
+        image: "/assets/cards/doulingo.png",
         category: "Education"
     },
 
     "skillshare": {
         name: "Skillshare",
-        description:
-            "Access thousands of online creative courses",
-        image:
-            "/assets/cards/skill_share.png",
-        page:
-            "/details.html?name=Skillshare",
+        description: "Access thousands of online creative courses",
+        image: "/assets/cards/skill_share.png",
         category: "Education"
     },
 
     "linkedin-premium": {
         name: "LinkedIn Premium",
-        description:
-            "Professional development and career tools",
-        image:
-            "/assets/cards/LinkedIn.png",
-        page:
-            "/details.html?name=LinkedIn%20Premium",
+        description: "Professional development and career tools",
+        image: "/assets/cards/LinkedIn.png",
         category: "Education"
     },
 
     "numerade": {
         name: "Numerade",
-        description:
-            "Learn with step-by-step educational video solutions",
-        image:
-            "/assets/cards/Numerade.jpg",
-        page:
-            "/details.html?name=Numerade",
+        description: "Learn with step-by-step educational video solutions",
+        image: "/assets/cards/Numerade.jpg",
         category: "Education"
     },
 
     "grammarly-pro": {
         name: "Grammarly Pro",
-        description:
-            "Advanced writing, grammar and productivity tools",
-        image:
-            "/assets/cards/grammarly.png",
-        page:
-            "/details.html?name=Grammarly%20Pro",
+        description: "Advanced writing, grammar and productivity tools",
+        image: "/assets/cards/grammarly.png",
         category: "Education"
     },
 
@@ -736,78 +559,50 @@ const products = {
 
     "digital-playground": {
         name: "Digital Playground",
-        description:
-            "Exclusive premium content from creators",
-        image:
-            "/assets/cards/DigitalPlayground-logo.png",
-        page:
-            "/details.html?name=Digital%20Playground",
+        description: "Exclusive premium content from creators",
+        image: "/assets/cards/DigitalPlayground-logo.png",
         category: "Adult"
     },
 
     "pornhub-premium": {
         name: "Pornhub Premium",
-        description:
-            "Ad-free premium adult entertainment",
-        image:
-            "/assets/cards/pornhub.webp",
-        page:
-            "/details.html?name=Pornhub%20Premium",
+        description: "Ad-free premium adult entertainment",
+        image: "/assets/cards/pornhub.webp",
         category: "Adult"
     },
 
     "brazzers": {
         name: "Brazzers",
-        description:
-            "Premium adult content",
-        image:
-            "/assets/cards/brazzers.webp",
-        page:
-            "/details.html?name=Brazzers",
+        description: "Premium adult content",
+        image: "/assets/cards/brazzers.webp",
         category: "Adult"
     },
 
     "spice-vids": {
         name: "Spice Vids",
-        description:
-            "Premium adult streaming platform",
-        image:
-            "/assets/cards/spicevids.webp",
-        page:
-            "/details.html?name=Spice%20Vids",
+        description: "Premium adult streaming platform",
+        image: "/assets/cards/spicevids.webp",
         category: "Adult"
     },
 
     "reality-kings": {
         name: "Reality Kings",
-        description:
-            "Premium reality adult content",
-        image:
-            "/assets/cards/realitykings.webp",
-        page:
-            "/details.html?name=Reality%20Kings",
+        description: "Premium reality adult content",
+        image: "/assets/cards/realitykings.webp",
         category: "Adult"
     },
 
     "bang-bros": {
         name: "Bang Bros",
-        description:
-            "High-quality, exclusive adult entertainment",
-        image:
-            "/assets/cards/bangbros.webp",
-        page:
-            "/details.html?name=Bang%20Bros",
+        description: "High-quality, exclusive adult entertainment",
+        image: "/assets/cards/bangbros.webp",
         category: "Adult"
     },
 
     "babes-com": {
         name: "Babes.com",
-        description:
-            "High-quality, exclusive adult video content",
-        image:
-            "/assets/cards/babes.webp",
-        page:
-            "/details.html?name=Babes.com",
+        description: "High-quality, exclusive adult video content",
+        image: "/assets/cards/babes.webp",
         category: "Adult"
     },
 
@@ -818,15 +613,33 @@ const products = {
 
     "truecaller-gold": {
         name: "True Caller Gold",
-        description:
-            "Premium caller identification and protection",
-        image:
-            "/assets/cards/truecaller.avif",
-        page:
-            "/details.html?name=True%20Caller%20Gold",
+        description: "Premium caller identification and protection",
+        image: "/assets/cards/truecaller.avif",
         category: "Productivity"
     }
 };
+
+
+// ============================================================
+// BUILD INTERNAL DETAILS PAGE URL
+// ============================================================
+//
+// We generate this automatically from the product name.
+//
+// This means you no longer need:
+//
+// page: "/details.html?name=..."
+//
+// for every product.
+//
+// ============================================================
+
+function getDetailsURL(product) {
+
+    return "/details.html?name=" +
+        encodeURIComponent(product.name);
+
+}
 
 
 // ============================================================
@@ -834,24 +647,29 @@ const products = {
 // ============================================================
 
 function escapeHTML(value) {
+
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+
 }
 
 
 function safeJSON(value) {
+
     return JSON.stringify(value)
         .replace(/</g, "\\u003c")
         .replace(/>/g, "\\u003e")
         .replace(/&/g, "\\u0026");
+
 }
 
 
 function absoluteURL(path) {
+
     if (!path) {
         return SITE.domain;
     }
@@ -861,6 +679,7 @@ function absoluteURL(path) {
     }
 
     return `${SITE.domain}${path.startsWith("/") ? "" : "/"}${path}`;
+
 }
 
 
@@ -869,39 +688,85 @@ function absoluteURL(path) {
 // ============================================================
 
 function getSocialImage(product) {
+
     const image = product.image || "";
 
-    // SVG images are not reliable for every crawler.
-    // Use logo.png as fallback.
+    // SVG is not reliable for every social crawler.
     if (/\.svg(\?|#|$)/i.test(image)) {
         return "/assets/logo.png";
     }
 
     return image;
+
 }
 
 
 // ============================================================
-// NORMALIZE SLUG
+// NORMALIZE PRODUCT NAME
+// ============================================================
+//
+// Used when details.html contains:
+//
+// /details.html?name=Netflix%20Premium
+//
+// or:
+//
+// /details.html?name=Netflix+Premium
+//
+// or encoded variations.
+//
 // ============================================================
 
-function normalizeSlug(value) {
-    if (typeof value !== "string") {
+function normalizeProductName(value) {
+
+    if (!value) {
         return "";
     }
 
-    let slug = value.trim();
+    let result = String(value).trim();
 
     try {
-        slug = decodeURIComponent(slug);
-    } catch {
-        // Keep original value if decoding fails.
+        result = decodeURIComponent(result);
+    } catch (_) {}
+
+    // URLSearchParams converts "+" to space already,
+    // but this also handles raw values safely.
+    result = result.replace(/\+/g, " ");
+
+    return result
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+
+}
+
+
+// ============================================================
+// GET SLUG FROM PRODUCT NAME
+// ============================================================
+
+function findSlugByProductName(name) {
+
+    const normalized = normalizeProductName(name);
+
+    if (!normalized) {
+        return "";
     }
 
-    return slug
-        .trim()
-        .toLowerCase()
-        .replace(/^\/+|\/+$/g, "");
+    for (const slug of Object.keys(products)) {
+
+        const product = products[slug];
+
+        if (
+            normalizeProductName(product.name) === normalized
+        ) {
+            return slug;
+        }
+
+    }
+
+    return "";
+
 }
 
 
@@ -912,7 +777,7 @@ function normalizeSlug(value) {
 function getProductSlug(req) {
 
     // --------------------------------------------------------
-    // API REQUEST
+    // API QUERY
     //
     // /api/product?slug=netflix-premium
     // --------------------------------------------------------
@@ -922,7 +787,21 @@ function getProductSlug(req) {
         typeof req.query.slug === "string" &&
         req.query.slug.trim()
     ) {
-        return normalizeSlug(req.query.slug);
+
+        try {
+
+            return decodeURIComponent(req.query.slug)
+                .trim()
+                .toLowerCase();
+
+        } catch (_) {
+
+            return req.query.slug
+                .trim()
+                .toLowerCase();
+
+        }
+
     }
 
 
@@ -930,6 +809,9 @@ function getProductSlug(req) {
     // CLEAN URL
     //
     // /product/netflix-premium
+    //
+    // IMPORTANT:
+    // Singular "product" only.
     // --------------------------------------------------------
 
     const rawURL = req.url || "";
@@ -944,16 +826,20 @@ function getProductSlug(req) {
         return "";
     }
 
-    return normalizeSlug(match[1]);
-}
+    try {
 
+        return decodeURIComponent(match[1])
+            .trim()
+            .toLowerCase();
 
-// ============================================================
-// PRODUCT URL
-// ============================================================
+    } catch (_) {
 
-function productURL(slug) {
-    return `${SITE.domain}/product/${encodeURIComponent(slug)}`;
+        return match[1]
+            .trim()
+            .toLowerCase();
+
+    }
+
 }
 
 
@@ -980,6 +866,7 @@ function send404(res) {
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -987,12 +874,17 @@ function send404(res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Product Not Found | NEXT LEVEL SUBS</title>
+    <title>
+        Product Not Found | NEXT LEVEL SUBS
+    </title>
+
 </head>
 
 <body>
 
-    <h1>Product Not Found</h1>
+    <h1>
+        Product Not Found
+    </h1>
 
     <p>
         The requested product could not be found.
@@ -1008,6 +900,7 @@ function send404(res) {
 
 </html>
 `);
+
 }
 
 
@@ -1034,6 +927,7 @@ module.exports = function handler(req, res) {
         );
 
         return res.end("Method Not Allowed");
+
     }
 
 
@@ -1054,13 +948,14 @@ module.exports = function handler(req, res) {
     // URLS
     // ========================================================
 
-    const cleanProductURL = productURL(slug);
+    const productURL =
+        `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
     const imageURL =
         absoluteURL(getSocialImage(product));
 
-    const destinationURL =
-        absoluteURL(product.page);
+    const detailsURL =
+        absoluteURL(getDetailsURL(product));
 
 
     // ========================================================
@@ -1095,7 +990,7 @@ module.exports = function handler(req, res) {
             imageURL
         ],
 
-        "url": cleanProductURL,
+        "url": productURL,
 
         "category": product.category,
 
@@ -1109,6 +1004,7 @@ module.exports = function handler(req, res) {
             "name": SITE.name,
             "url": SITE.domain
         }
+
     };
 
 
@@ -1134,18 +1030,18 @@ module.exports = function handler(req, res) {
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": product.category,
-                "item": `${SITE.domain}/`
+                "name": product.category
             },
 
             {
                 "@type": "ListItem",
                 "position": 3,
                 "name": product.name,
-                "item": cleanProductURL
+                "item": productURL
             }
 
         ]
+
     };
 
 
@@ -1194,8 +1090,7 @@ module.exports = function handler(req, res) {
     // HTML
     // ========================================================
 
-    const html = `
-<!DOCTYPE html>
+    const html = `<!DOCTYPE html>
 
 <html lang="en">
 
@@ -1224,7 +1119,7 @@ module.exports = function handler(req, res) {
 
     <link
         rel="canonical"
-        href="${escapeHTML(cleanProductURL)}"
+        href="${escapeHTML(productURL)}"
     >
 
 
@@ -1259,7 +1154,7 @@ module.exports = function handler(req, res) {
 
     <meta
         property="og:url"
-        content="${escapeHTML(cleanProductURL)}"
+        content="${escapeHTML(productURL)}"
     >
 
     <meta
@@ -1354,7 +1249,9 @@ ${safeJSON(breadcrumbSchema)}
             overflow: hidden;
 
             background: #ffffff;
+
         }
+
 
         iframe {
 
@@ -1364,7 +1261,9 @@ ${safeJSON(breadcrumbSchema)}
             height: 100%;
 
             border: 0;
+
         }
+
 
         .fallback {
 
@@ -1375,6 +1274,7 @@ ${safeJSON(breadcrumbSchema)}
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             font-family: Arial, sans-serif;
@@ -1382,13 +1282,16 @@ ${safeJSON(breadcrumbSchema)}
             background: #ffffff;
 
             z-index: 10;
+
         }
+
 
         .fallback a {
 
             color: #111111;
 
             text-decoration: none;
+
         }
 
     </style>
@@ -1405,7 +1308,7 @@ ${safeJSON(breadcrumbSchema)}
 
     <iframe
         id="productFrame"
-        src="${escapeHTML(destinationURL)}"
+        src="${escapeHTML(detailsURL)}"
         title="${escapeHTML(product.name)}"
         loading="eager"
         allow="fullscreen"
@@ -1420,10 +1323,9 @@ ${safeJSON(breadcrumbSchema)}
 
         <div class="fallback">
 
-            <a href="${escapeHTML(destinationURL)}">
+            <a href="${escapeHTML(detailsURL)}">
 
-                Continue to
-                ${escapeHTML(product.name)}
+                Continue to ${escapeHTML(product.name)}
 
             </a>
 
@@ -1444,20 +1346,17 @@ ${safeJSON(breadcrumbSchema)}
 
 
         // ====================================================
-        // CURRENT PRODUCT
+        // CONFIGURATION
         // ====================================================
 
-        const CURRENT_SLUG =
-            ${JSON.stringify(slug)};
-
-
         const SITE_HOME =
-            ${JSON.stringify(SITE.domain + "/")};
-
+            "${escapeHTML(SITE.domain)}/";
 
         const PRODUCT_PREFIX =
             "/product/";
 
+        const CURRENT_SLUG =
+            "${escapeHTML(slug)}";
 
         const frame =
             document.getElementById("productFrame");
@@ -1465,6 +1364,61 @@ ${safeJSON(breadcrumbSchema)}
 
         if (!frame) {
             return;
+        }
+
+
+        // ====================================================
+        // PRODUCT NAME -> SLUG DATABASE
+        // ====================================================
+
+        const PRODUCT_MAP = ${safeJSON(
+            Object.keys(products).reduce((map, key) => {
+
+                map[normalizeProductName(products[key].name)] = key;
+
+                return map;
+
+            }, {})
+        )};
+
+
+        // ====================================================
+        // NORMALIZE NAME
+        // ====================================================
+
+        function normalizeName(value) {
+
+            if (!value) {
+                return "";
+            }
+
+            let result = String(value).trim();
+
+            try {
+                result = decodeURIComponent(result);
+            } catch (_) {}
+
+            result = result.replace(/\\+/g, " ");
+
+            return result
+                .replace(/\\s+/g, " ")
+                .trim()
+                .toLowerCase();
+
+        }
+
+
+        // ====================================================
+        // FIND PRODUCT SLUG
+        // ====================================================
+
+        function slugFromName(name) {
+
+            const normalized =
+                normalizeName(name);
+
+            return PRODUCT_MAP[normalized] || "";
+
         }
 
 
@@ -1480,159 +1434,23 @@ ${safeJSON(breadcrumbSchema)}
 
 
         // ====================================================
-        // CONVERT NAME TO SLUG
-        //
-        // Used only as fallback when details.html creates
-        // related links using a product name.
+        // GO TO PRODUCT
         // ====================================================
 
-        function createSlug(name) {
-
-            if (!name) {
-                return "";
-            }
-
-            return String(name)
-
-                .toLowerCase()
-
-                .trim()
-
-                .replace(/&/g, " and ")
-
-                .replace(/\\+/g, " plus ")
-
-                .replace(/[^a-z0-9]+/g, "-")
-
-                .replace(/^-+|-+$/g, "");
-
-        }
-
-
-        // ====================================================
-        // CHECK CLEAN PRODUCT URL
-        // ====================================================
-
-        function getProductSlugFromURL(href) {
-
-            if (!href) {
-                return "";
-            }
-
-            try {
-
-                const url = new URL(
-                    href,
-                    window.location.origin
-                );
-
-                if (
-                    url.origin !==
-                    window.location.origin
-                ) {
-                    return "";
-                }
-
-                const match =
-                    url.pathname.match(
-                        /^\\/product\\/([^/]+)\\/?$/
-                    );
-
-                if (!match) {
-                    return "";
-                }
-
-                return decodeURIComponent(
-                    match[1]
-                )
-                    .trim()
-                    .toLowerCase();
-
-            } catch {
-
-                return "";
-
-            }
-
-        }
-
-
-        // ====================================================
-        // DETAILS.HTML PRODUCT LINK
-        //
-        // Converts:
-        //
-        // /details.html?name=HBO%20Max
-        //
-        // into:
-        //
-        // /product/hbo-max
-        // ====================================================
-
-        function getSlugFromDetailsURL(href) {
-
-            if (!href) {
-                return "";
-            }
-
-            try {
-
-                const url = new URL(
-                    href,
-                    window.location.href
-                );
-
-                const pathname =
-                    url.pathname.toLowerCase();
-
-                if (
-                    pathname !== "/details.html"
-                ) {
-                    return "";
-                }
-
-                const name =
-                    url.searchParams.get("name");
-
-                if (!name) {
-                    return "";
-                }
-
-                return createSlug(name);
-
-            } catch {
-
-                return "";
-
-            }
-
-        }
-
-
-        // ====================================================
-        // NAVIGATE TO PRODUCT
-        // ====================================================
-
-        function navigateToProduct(slug) {
+        function goToProduct(slug) {
 
             if (!slug) {
-                return;
+                return false;
             }
 
             const target =
                 PRODUCT_PREFIX +
                 encodeURIComponent(slug);
 
-            const current =
-                window.top.location.pathname
-                .replace(/\\/$/, "");
+            // Always navigate the TOP browser window.
+            window.top.location.href = target;
 
-            if (current === target) {
-                return;
-            }
-
-            window.top.location.href =
-                target;
+            return true;
 
         }
 
@@ -1652,25 +1470,18 @@ ${safeJSON(breadcrumbSchema)}
                 const url =
                     new URL(
                         href,
-                        window.location.origin
+                        frame.contentWindow.location.href
                     );
 
                 return (
-
-                    url.origin ===
-                    window.location.origin
-
-                    &&
-
+                    url.origin === window.location.origin &&
                     (
-                        url.pathname === "/"
-                        ||
+                        url.pathname === "/" ||
                         url.pathname === "/index.html"
                     )
-
                 );
 
-            } catch {
+            } catch (_) {
 
                 return (
                     href === "/" ||
@@ -1683,29 +1494,94 @@ ${safeJSON(breadcrumbSchema)}
 
 
         // ====================================================
-        // INTERCEPT RELATED PRODUCT LINKS
+        // EXTRACT PRODUCT NAME FROM URL
+        // ====================================================
+        //
+        // Supports:
+        //
+        // details.html?name=Netflix%20Premium
+        //
+        // details.html?name=Netflix+Premium
+        //
         // ====================================================
 
-        function handleLinkClick(event) {
+        function getProductNameFromURL(href) {
 
-            const link =
-                event.target.closest("a");
+            if (!href) {
+                return "";
+            }
+
+            try {
+
+                const url =
+                    new URL(
+                        href,
+                        frame.contentWindow.location.href
+                    );
+
+                const pathname =
+                    url.pathname.toLowerCase();
+
+                if (
+                    !pathname.endsWith("/details.html") &&
+                    !pathname.endsWith("/details")
+                ) {
+                    return "";
+                }
+
+                const name =
+                    url.searchParams.get("name");
+
+                return name || "";
+
+            } catch (_) {
+
+                return "";
+
+            }
+
+        }
+
+
+        // ====================================================
+        // EXTRACT SLUG FROM DETAILS URL
+        // ====================================================
+
+        function getSlugFromDetailsURL(href) {
+
+            const productName =
+                getProductNameFromURL(href);
+
+            if (!productName) {
+                return "";
+            }
+
+            return slugFromName(productName);
+
+        }
+
+
+        // ====================================================
+        // HANDLE PRODUCT LINK
+        // ====================================================
+
+        function handleProductLink(event, link) {
 
             if (!link) {
-                return;
+                return false;
             }
 
             const href =
                 link.getAttribute("href");
 
             if (!href) {
-                return;
+                return false;
             }
 
 
-            // ------------------------------------------------
+            // -----------------------------------------------
             // HOME
-            // ------------------------------------------------
+            // -----------------------------------------------
 
             if (isHomeLink(href)) {
 
@@ -1714,63 +1590,98 @@ ${safeJSON(breadcrumbSchema)}
 
                 goHome();
 
-                return;
+                return true;
+
             }
 
 
-            // ------------------------------------------------
-            // CLEAN /product/{slug}
-            // ------------------------------------------------
+            // -----------------------------------------------
+            // HASH
+            // -----------------------------------------------
 
-            const cleanSlug =
-                getProductSlugFromURL(href);
-
-            if (cleanSlug) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                navigateToProduct(cleanSlug);
-
-                return;
+            if (
+                href.startsWith("#") ||
+                href.startsWith("javascript:")
+            ) {
+                return false;
             }
 
 
-            // ------------------------------------------------
-            // EXISTING details.html PRODUCT LINK
-            //
-            // This is the important 404 fix.
-            // ------------------------------------------------
+            // -----------------------------------------------
+            // DETAILS PRODUCT URL
+            // -----------------------------------------------
 
-            const detailsSlug =
+            const relatedSlug =
                 getSlugFromDetailsURL(href);
 
-            if (detailsSlug) {
+
+            if (relatedSlug) {
 
                 event.preventDefault();
                 event.stopPropagation();
 
-                navigateToProduct(detailsSlug);
+                goToProduct(relatedSlug);
 
-                return;
+                return true;
+
             }
 
 
-            // ------------------------------------------------
-            // HISTORY BACK REFERENCES
-            // ------------------------------------------------
+            // -----------------------------------------------
+            // ALREADY CLEAN PRODUCT URL
+            // -----------------------------------------------
 
-            const normalized =
+            try {
+
+                const url =
+                    new URL(
+                        href,
+                        frame.contentWindow.location.href
+                    );
+
+                if (
+                    url.origin === window.location.origin &&
+                    /^\/product\/[^/]+\/?$/i.test(
+                        url.pathname
+                    )
+                ) {
+
+                    const targetSlug =
+                        url.pathname
+                            .replace(/^\/product\//i, "")
+                            .replace(/\/$/, "")
+                            .trim()
+                            .toLowerCase();
+
+                    if (
+                        targetSlug &&
+                        products[targetSlug]
+                    ) {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        goToProduct(targetSlug);
+
+                        return true;
+
+                    }
+
+                }
+
+            } catch (_) {}
+
+
+            // -----------------------------------------------
+            // HISTORY BACK IN LINK
+            // -----------------------------------------------
+
+            const normalizedHref =
                 href.toLowerCase();
 
             if (
-                normalized.includes(
-                    "history.back"
-                )
-                ||
-                normalized.includes(
-                    "history.go(-1)"
-                )
+                normalizedHref.includes("history.back") ||
+                normalizedHref.includes("history.go(-1)")
             ) {
 
                 event.preventDefault();
@@ -1778,8 +1689,12 @@ ${safeJSON(breadcrumbSchema)}
 
                 goHome();
 
-                return;
+                return true;
+
             }
+
+
+            return false;
 
         }
 
@@ -1801,9 +1716,14 @@ ${safeJSON(breadcrumbSchema)}
                         frameWindow.document;
 
 
-                    // =================================================
+                    // ==========================================
                     // HISTORY BACK
-                    // =================================================
+                    // ==========================================
+
+                    const originalBack =
+                        frameWindow.history.back.bind(
+                            frameWindow.history
+                        );
 
                     frameWindow.history.back =
                         function () {
@@ -1813,17 +1733,20 @@ ${safeJSON(breadcrumbSchema)}
                         };
 
 
-                    // =================================================
+                    // ==========================================
                     // HISTORY GO
-                    // =================================================
+                    // ==========================================
+
+                    const originalGo =
+                        frameWindow.history.go.bind(
+                            frameWindow.history
+                        );
 
                     frameWindow.history.go =
                         function (delta) {
 
                             if (
-                                typeof delta ===
-                                "number"
-                                &&
+                                typeof delta === "number" &&
                                 delta < 0
                             ) {
 
@@ -1833,25 +1756,66 @@ ${safeJSON(breadcrumbSchema)}
 
                             }
 
-                            return;
+                            return originalGo(delta);
 
                         };
 
 
-                    // =================================================
-                    // LINK HANDLER
-                    // =================================================
+                    // ==========================================
+                    // HISTORY POPSTATE
+                    // ==========================================
+
+                    frameWindow.addEventListener(
+                        "popstate",
+                        function () {
+
+                            goHome();
+
+                        }
+                    );
+
+
+                    // ==========================================
+                    // CAPTURE ALL LINK CLICKS
+                    // ==========================================
+                    //
+                    // This is the IMPORTANT FIX.
+                    //
+                    // Related subscriptions normally use:
+                    //
+                    // details.html?name=HBO%20Max
+                    //
+                    // We intercept that link and instead
+                    // navigate the TOP window to:
+                    //
+                    // /product/hbo-max
+                    //
+                    // ==========================================
 
                     frameDocument.addEventListener(
                         "click",
-                        handleLinkClick,
+                        function (event) {
+
+                            const link =
+                                event.target.closest("a");
+
+                            if (!link) {
+                                return;
+                            }
+
+                            handleProductLink(
+                                event,
+                                link
+                            );
+
+                        },
                         true
                     );
 
 
-                    // =================================================
-                    // BUTTON HANDLER
-                    // =================================================
+                    // ==========================================
+                    // HANDLE BUTTONS
+                    // ==========================================
 
                     frameDocument.addEventListener(
                         "click",
@@ -1873,39 +1837,25 @@ ${safeJSON(breadcrumbSchema)}
                                     element.textContent ||
                                     ""
                                 )
-                                    .trim()
-                                    .toLowerCase();
+                                .trim()
+                                .toLowerCase();
 
+
+                            // ----------------------------------
+                            // BACK / HOME BUTTON
+                            // ----------------------------------
 
                             if (
 
-                                text === "back"
+                                text === "back" ||
 
-                                ||
+                                text.includes("back to") ||
 
-                                text.includes(
-                                    "back to"
-                                )
+                                text.includes("return to") ||
 
-                                ||
+                                text.includes("return home") ||
 
-                                text.includes(
-                                    "return to"
-                                )
-
-                                ||
-
-                                text.includes(
-                                    "return home"
-                                )
-
-                                ||
-
-                                text.includes(
-                                    "go home"
-                                )
-
-                                ||
+                                text.includes("go home") ||
 
                                 text === "home"
 
@@ -1916,6 +1866,71 @@ ${safeJSON(breadcrumbSchema)}
 
                                 goHome();
 
+                                return;
+
+                            }
+
+
+                            // ----------------------------------
+                            // PRODUCT BUTTONS
+                            //
+                            // If a button contains:
+                            //
+                            // data-product-name="HBO Max"
+                            //
+                            // or:
+                            //
+                            // data-product="hbo-max"
+                            //
+                            // it will also work.
+                            // ----------------------------------
+
+                            const dataSlug =
+                                element.getAttribute(
+                                    "data-product"
+                                );
+
+                            const dataName =
+                                element.getAttribute(
+                                    "data-product-name"
+                                );
+
+
+                            if (
+                                dataSlug &&
+                                products[dataSlug]
+                            ) {
+
+                                event.preventDefault();
+                                event.stopPropagation();
+
+                                goToProduct(
+                                    dataSlug
+                                );
+
+                                return;
+
+                            }
+
+
+                            if (dataName) {
+
+                                const slug =
+                                    slugFromName(
+                                        dataName
+                                    );
+
+                                if (slug) {
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+                                    goToProduct(slug);
+
+                                    return;
+
+                                }
+
                             }
 
                         },
@@ -1923,30 +1938,143 @@ ${safeJSON(breadcrumbSchema)}
                     );
 
 
-                    // =================================================
-                    // POPSTATE
-                    // =================================================
+                    // ==========================================
+                    // INTERCEPT WINDOW LOCATION ASSIGNMENT
+                    // ==========================================
+                    //
+                    // We cannot directly override every browser
+                    // navigation API, but we can monitor URL
+                    // changes inside the iframe.
+                    //
+                    // If details.html changes from one product
+                    // to another, update the top URL.
+                    //
+                    // ==========================================
 
-                    frameWindow.addEventListener(
-                        "popstate",
+                    let lastFrameURL =
+                        frameWindow.location.href;
+
+
+                    function checkFrameNavigation() {
+
+                        try {
+
+                            const currentURL =
+                                frameWindow.location.href;
+
+
+                            if (
+                                currentURL === lastFrameURL
+                            ) {
+                                return;
+                            }
+
+
+                            lastFrameURL =
+                                currentURL;
+
+
+                            const nextSlug =
+                                getSlugFromDetailsURL(
+                                    currentURL
+                                );
+
+
+                            if (
+                                nextSlug &&
+                                nextSlug !== CURRENT_SLUG
+                            ) {
+
+                                goToProduct(
+                                    nextSlug
+                                );
+
+                            }
+
+                        } catch (_) {}
+
+                    }
+
+
+                    // Check periodically because some
+                    // product systems use location changes
+                    // instead of normal anchor clicks.
+
+                    const navigationWatcher =
+                        window.setInterval(
+                            checkFrameNavigation,
+                            250
+                        );
+
+
+                    // Stop watcher if this page is unloaded.
+
+                    window.addEventListener(
+                        "beforeunload",
                         function () {
 
-                            goHome();
+                            clearInterval(
+                                navigationWatcher
+                            );
+
+                        }
+                    );
+
+
+                    // ==========================================
+                    // MUTATION OBSERVER
+                    // ==========================================
+                    //
+                    // Related subscriptions may be injected
+                    // dynamically after page load.
+                    //
+                    // Delegated click handling already catches
+                    // them, but this observer helps ensure the
+                    // page remains under our navigation control.
+                    // ==========================================
+
+                    const observer =
+                        new MutationObserver(
+                            function () {
+
+                                // Intentionally empty.
+                                //
+                                // Click delegation works for
+                                // dynamically created elements.
+
+                            }
+                        );
+
+
+                    observer.observe(
+                        frameDocument.documentElement,
+                        {
+                            childList: true,
+                            subtree: true
+                        }
+                    );
+
+
+                    window.addEventListener(
+                        "beforeunload",
+                        function () {
+
+                            observer.disconnect();
 
                         }
                     );
 
 
                     console.log(
-                        "NEXT LEVEL SUBS product controller loaded:",
-                        CURRENT_SLUG
+                        "NEXT LEVEL SUBS product navigation controller loaded:",
+                        "${escapeHTML(product.name)}"
                     );
 
 
                 } catch (error) {
 
                     console.warn(
-                        "Product iframe navigation controller:",
+                        "NEXT LEVEL SUBS product iframe controller:",
                         error
                     );
 
@@ -1957,7 +2085,7 @@ ${safeJSON(breadcrumbSchema)}
 
 
         // ====================================================
-        // TOP LEVEL HISTORY
+        // TOP-LEVEL PRODUCT HISTORY
         // ====================================================
 
         if (
@@ -1967,14 +2095,14 @@ ${safeJSON(breadcrumbSchema)}
 
             window.history.replaceState(
                 {
-                    productSlug:
-                        CURRENT_SLUG
+                    productSlug: CURRENT_SLUG
                 },
                 document.title,
                 window.location.href
             );
 
         }
+
 
     })();
 
@@ -1983,8 +2111,8 @@ ${safeJSON(breadcrumbSchema)}
 
 </body>
 
-</html>
-`;
+</html>`;
 
     return res.end(html);
+
 };
