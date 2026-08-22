@@ -5101,7 +5101,7 @@ const productSlug = pathParts[0] === 'product' ? pathParts[1] : null;
 
     // Simulate loading delay
     setTimeout(() => {
-if (productSlugValue) {
+if (productSlug) {
     loadProduct(productSlugValue);
         } else {
             window.location.href = '/';
