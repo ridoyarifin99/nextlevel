@@ -5064,7 +5064,25 @@
                 ]
             }
         ];
-        
+        // Add this helper function inside details.html
+
+// Call this when user clicks a Home / Back button:
+function goHomeParent() {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'NLS_GO_HOME' }, '*');
+    } else {
+        window.location.href = '/';
+    }
+}
+
+// Call this when user clicks a Related Product:
+function goToProductParent(productName) {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'NLS_NAVIGATE_PRODUCT', productName: productName }, '*');
+    } else {
+        window.location.href = '/details.html?name=' + encodeURIComponent(productName);
+    }
+}
         // Cart state
         let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
         let currentProduct = null;

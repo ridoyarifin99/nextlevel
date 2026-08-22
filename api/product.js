@@ -114,20 +114,14 @@ const slugAliases = {
 
 function escapeHTML(value) {
     return String(value == null ? "" : value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function safeJSON(value) {
     return JSON.stringify(value)
-        .replace(/</g, "\\u003c")
-        .replace(/>/g, "\\u003e")
-        .replace(/&/g, "\\u0026")
-        .replace(/\u2028/g, "\\u2028")
-        .replace(/\u2029/g, "\\u2029");
+        .replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/&/g, "\\u0026")
+        .replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
 }
 
 function buildProductIndex() {
@@ -230,9 +224,8 @@ module.exports = function handler(req, res) {
             window.top.location.href = SITE_HOME;
         }
 
-        function navigateToProduct(targetSlug) {
-            if (!targetSlug) return;
-            if (targetSlug === CURRENT_SLUG) return;
+        function goToProduct(targetSlug) {
+            if (!targetSlug || targetSlug === CURRENT_SLUG) return;
             window.top.location.href = SITE_HOME + "products/" + encodeURIComponent(targetSlug);
         }
 
@@ -249,16 +242,7 @@ module.exports = function handler(req, res) {
             return PRODUCT_MAP[generated] ? generated : "";
         }
 
-        function isHomeHref(href) {
-            if (!href) return false;
-            var lower = href.toLowerCase().trim();
-            return lower === "/" || 
-                   lower === "/index.html" || 
-                   lower === SITE_HOME.toLowerCase() || 
-                   lower.indexOf("index.html") !== -1;
-        }
-
-        // Listen to postMessage from frame
+        // 1. LISTEN TO POSTMESSAGE FROM DETAILS.HTML
         window.addEventListener("message", function (event) {
             if (!event.data) return;
             if (event.data.type === "NLS_GO_HOME") {
@@ -267,17 +251,50 @@ module.exports = function handler(req, res) {
             }
             if (event.data.type === "NLS_NAVIGATE_PRODUCT" && event.data.productName) {
                 var targetSlug = findSlugFromName(event.data.productName);
-                if (targetSlug) navigateToProduct(targetSlug);
+                if (targetSlug) goToProduct(targetSlug);
             }
         });
 
-        // Intercept click events inside iframe
+        // 2. ACTIVE POLLING (Failsafe for dynamic JS navigation)
+        function pollFrameLocation() {
+            try {
+                var frameWin = frame.contentWindow;
+                if (!frameWin || !frameWin.location) return;
+
+                var href = frameWin.location.href || "";
+                if (!href) return;
+
+                var url = new URL(href);
+                var path = url.pathname.toLowerCase();
+
+                // If iframe navigated to home or index.html
+                if (path === "/" || path.indexOf("index.html") !== -1) {
+                    goHome();
+                    return;
+                }
+
+                // If iframe navigated to another details.html page
+                if (path.indexOf("details.html") !== -1) {
+                    var nameParam = url.searchParams.get("name");
+                    if (nameParam) {
+                        var targetSlug = findSlugFromName(nameParam);
+                        if (targetSlug && targetSlug !== CURRENT_SLUG) {
+                            goToProduct(targetSlug);
+                        }
+                    }
+                }
+            } catch (_) {}
+        }
+
+        setInterval(pollFrameLocation, 200);
+
+        // 3. EVENT LISTENERS ON IFRAME DOM
         frame.addEventListener("load", function () {
             try {
                 var frameWin = frame.contentWindow;
                 var frameDoc = frameWin.document;
 
-                // Override internal history back to force full top-page navigation
+                // Override history.back inside the frame
                 try {
                     frameWin.history.back = function () { goHome(); };
                     frameWin.history.go = function (delta) {
@@ -289,8 +306,9 @@ module.exports = function handler(req, res) {
                     var a = e.target.closest("a");
                     if (a) {
                         var href = a.getAttribute("href") || "";
-                        
-                        if (isHomeHref(href)) {
+                        var lower = href.toLowerCase().trim();
+
+                        if (lower === "/" || lower === "/index.html" || lower.indexOf("index.html") !== -1) {
                             e.preventDefault();
                             e.stopPropagation();
                             goHome();
@@ -299,7 +317,7 @@ module.exports = function handler(req, res) {
 
                         try {
                             var url = new URL(href, frameWin.location.href);
-                            if (isHomeHref(url.pathname)) {
+                            if (url.pathname === "/" || url.pathname.toLowerCase().indexOf("index.html") !== -1) {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 goHome();
@@ -312,7 +330,7 @@ module.exports = function handler(req, res) {
                                 if (matchedSlug && matchedSlug !== CURRENT_SLUG) {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    navigateToProduct(matchedSlug);
+                                    goToProduct(matchedSlug);
                                     return;
                                 }
                             }
@@ -331,13 +349,8 @@ module.exports = function handler(req, res) {
                 }, true);
 
             } catch (err) {
-                console.warn("Frame navigation handler warning:", err);
+                console.warn("Frame event listener fallback:", err);
             }
-        });
-
-        // Ensure browser Back button forces top window home navigation
-        window.addEventListener("popstate", function () {
-            goHome();
         });
 
     })();
