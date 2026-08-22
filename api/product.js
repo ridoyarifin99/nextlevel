@@ -5,18 +5,14 @@
 //
 // Supports:
 //
-// 1. API URL:
-//    https://nextlevelsubs.com/api/product?slug=netflix-premium
+// API:
+// https://nextlevelsubs.com/api/product?slug=netflix-premium
 //
-// 2. Clean product URL:
-//    https://nextlevelsubs.com/product/netflix-premium
+// Clean URL:
+// https://nextlevelsubs.com/product/netflix-premium
 //
-// 3. Normal visitor destination:
-//    https://nextlevelsubs.com/details.html?name=Netflix%20Premium
-//
-// IMPORTANT:
-// This function is intended to be used with a Vercel rewrite
-// so /product/:slug can internally resolve to this function.
+// Final visitor page:
+// https://nextlevelsubs.com/details.html?name=Netflix%20Premium
 //
 // ============================================================
 
@@ -26,16 +22,11 @@
 // ============================================================
 
 const SITE = {
-
     name: "NEXT LEVEL SUBS",
-
     domain: "https://nextlevelsubs.com",
-
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
-
     locale: "en_US",
-
     twitterCard: "summary_large_image"
 };
 
@@ -681,16 +672,14 @@ const products = {
         page: "/details.html?name=Babes.com",
         category: "Adult"
     }
-
 };
 
 
 // ============================================================
-// HTML ESCAPING
+// HELPERS
 // ============================================================
 
 function escapeHTML(value) {
-
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -700,12 +689,7 @@ function escapeHTML(value) {
 }
 
 
-// ============================================================
-// SAFE JSON-LD
-// ============================================================
-
 function safeJSON(value) {
-
     return JSON.stringify(value)
         .replace(/</g, "\\u003c")
         .replace(/>/g, "\\u003e")
@@ -713,20 +697,12 @@ function safeJSON(value) {
 }
 
 
-// ============================================================
-// ABSOLUTE URL
-// ============================================================
-
 function absoluteURL(path) {
-
     if (!path) {
         return SITE.domain;
     }
 
-    if (
-        path.startsWith("http://") ||
-        path.startsWith("https://")
-    ) {
+    if (/^https?:\/\//i.test(path)) {
         return path;
     }
 
@@ -734,12 +710,7 @@ function absoluteURL(path) {
 }
 
 
-// ============================================================
-// IMAGE MIME TYPE
-// ============================================================
-
 function getImageMimeType(imageURL) {
-
     const cleanURL = imageURL
         .split("?")[0]
         .split("#")[0]
@@ -776,28 +747,18 @@ function getImageMimeType(imageURL) {
 }
 
 
-// ============================================================
-// SEO TITLE
-// ============================================================
-
 function createSEOTitle(product) {
-
     return `${product.name} Subscription | NEXT LEVEL SUBS`;
 }
 
 
-// ============================================================
-// SEO DESCRIPTION
-// ============================================================
-
 function createSEODescription(product) {
-
     return `${product.description}. Get ${product.name} subscription from NEXT LEVEL SUBS.`;
 }
 
 
 // ============================================================
-// PRODUCT SCHEMA
+// STRUCTURED DATA
 // ============================================================
 
 function createProductSchema(
@@ -806,11 +767,8 @@ function createProductSchema(
     imageURL,
     description
 ) {
-
     return {
-
         "@context": "https://schema.org",
-
         "@type": "Product",
 
         "name": product.name,
@@ -835,28 +793,19 @@ function createProductSchema(
             "name": SITE.name,
             "url": SITE.domain
         }
-
     };
 }
 
-
-// ============================================================
-// BREADCRUMB SCHEMA
-// ============================================================
 
 function createBreadcrumbSchema(
     product,
     productPage
 ) {
-
     return {
-
         "@context": "https://schema.org",
-
         "@type": "BreadcrumbList",
 
         "itemListElement": [
-
             {
                 "@type": "ListItem",
                 "position": 1,
@@ -876,31 +825,19 @@ function createBreadcrumbSchema(
                 "name": product.name,
                 "item": productPage
             }
-
         ]
-
     };
 }
 
 
 // ============================================================
-// GET SLUG
-// ============================================================
-//
-// Supports:
-//
-// /api/product?slug=netflix-premium
-//
-// AND:
-//
-// /product/netflix-premium
-//
+// GET PRODUCT SLUG
 // ============================================================
 
 function getProductSlug(req) {
 
     // --------------------------------------------------------
-    // First priority: query parameter
+    // /api/product?slug=netflix-premium
     // --------------------------------------------------------
 
     if (
@@ -908,48 +845,34 @@ function getProductSlug(req) {
         typeof req.query.slug === "string" &&
         req.query.slug.trim()
     ) {
-
         return req.query.slug
             .trim()
             .toLowerCase();
-
     }
 
 
     // --------------------------------------------------------
-    // Second priority: URL pathname
+    // /product/netflix-premium
     // --------------------------------------------------------
 
-    const originalURL =
-        req.url ||
-        "";
+    const requestURL = req.url || "";
 
-    const pathname =
-        originalURL.split("?")[0];
+    const pathname = requestURL.split("?")[0];
 
-
-    const match =
-        pathname.match(
-            /^\/product\/([^/]+)\/?$/
-        );
-
+    const match = pathname.match(
+        /^\/product\/([^/]+)\/?$/
+    );
 
     if (match && match[1]) {
-
         try {
-
             return decodeURIComponent(match[1])
                 .trim()
                 .toLowerCase();
-
         } catch (error) {
-
             return match[1]
                 .trim()
                 .toLowerCase();
-
         }
-
     }
 
 
@@ -958,7 +881,7 @@ function getProductSlug(req) {
 
 
 // ============================================================
-// 404 RESPONSE
+// 404
 // ============================================================
 
 function send404(res) {
@@ -980,8 +903,8 @@ function send404(res) {
         "public, max-age=60, s-maxage=60"
     );
 
-    return res.end(`<!DOCTYPE html>
-
+    return res.end(`
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -998,9 +921,7 @@ function send404(res) {
         content="noindex, nofollow, noarchive"
     >
 
-    <title>
-        Product Not Found | NEXT LEVEL SUBS
-    </title>
+    <title>Product Not Found | NEXT LEVEL SUBS</title>
 
 </head>
 
@@ -1008,69 +929,61 @@ function send404(res) {
 
     <main>
 
-        <h1>
-            Product Not Found
-        </h1>
+        <h1>Product Not Found</h1>
 
         <p>
             The requested product could not be found.
         </p>
 
         <p>
-
             <a href="${escapeHTML(SITE.domain)}">
                 Return to NEXT LEVEL SUBS
             </a>
-
         </p>
 
     </main>
 
 </body>
 
-</html>`);
+</html>
+`);
 }
 
 
 // ============================================================
-// SERVERLESS HANDLER
+// MAIN SERVERLESS FUNCTION
 // ============================================================
 
 module.exports = (req, res) => {
 
-    // ========================================================
-    // GET PRODUCT SLUG
-    // ========================================================
+    // --------------------------------------------------------
+    // GET SLUG
+    // --------------------------------------------------------
 
-    const slug =
-        getProductSlug(req);
+    const slug = getProductSlug(req);
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // FIND PRODUCT
-    // ========================================================
+    // --------------------------------------------------------
 
-    const product =
-        products[slug];
+    const product = products[slug];
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // PRODUCT NOT FOUND
-    // ========================================================
+    // --------------------------------------------------------
 
     if (!product) {
-
         return send404(res);
-
     }
 
 
-    // ========================================================
-    // BUILD SEO INFORMATION
-    // ========================================================
+    // --------------------------------------------------------
+    // SEO DATA
+    // --------------------------------------------------------
 
-    const title =
-        createSEOTitle(product);
+    const title = createSEOTitle(product);
 
     const description =
         createSEODescription(product);
@@ -1088,9 +1001,9 @@ module.exports = (req, res) => {
         getImageMimeType(imageURL);
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // STRUCTURED DATA
-    // ========================================================
+    // --------------------------------------------------------
 
     const productSchema =
         createProductSchema(
@@ -1107,9 +1020,9 @@ module.exports = (req, res) => {
         );
 
 
-    // ========================================================
-    // HEADERS
-    // ========================================================
+    // --------------------------------------------------------
+    // RESPONSE HEADERS
+    // --------------------------------------------------------
 
     res.statusCode = 200;
 
@@ -1139,21 +1052,17 @@ module.exports = (req, res) => {
     );
 
     res.setHeader(
-        "X-Frame-Options",
-        "SAMEORIGIN"
-    );
-
-    res.setHeader(
         "Cache-Control",
         "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     );
 
 
-    // ========================================================
-    // HTML
-    // ========================================================
+    // --------------------------------------------------------
+    // HTML RESPONSE
+    // --------------------------------------------------------
 
-    return res.end(`<!DOCTYPE html>
+    return res.end(`
+<!DOCTYPE html>
 
 <html
     lang="en"
@@ -1180,12 +1089,12 @@ module.exports = (req, res) => {
 
     <meta
         name="application-name"
-        content="NEXT LEVEL SUBS"
+        content="${escapeHTML(SITE.name)}"
     >
 
     <meta
         name="author"
-        content="NEXT LEVEL SUBS"
+        content="${escapeHTML(SITE.name)}"
     >
 
 
@@ -1193,9 +1102,7 @@ module.exports = (req, res) => {
          SEO
          ===================================================== -->
 
-    <title>
-        ${escapeHTML(title)}
-    </title>
+    <title>${escapeHTML(title)}</title>
 
     <meta
         name="description"
@@ -1225,9 +1132,7 @@ module.exports = (req, res) => {
 
     <!-- =====================================================
          OPEN GRAPH
-         Facebook
-         WhatsApp
-         Messenger
+         Facebook / WhatsApp / Messenger
          ===================================================== -->
 
     <meta
@@ -1276,11 +1181,6 @@ module.exports = (req, res) => {
     >
 
     <meta
-        property="og:image:alt"
-        content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
-    >
-
-    <meta
         property="og:image:width"
         content="1200"
     >
@@ -1288,6 +1188,11 @@ module.exports = (req, res) => {
     <meta
         property="og:image:height"
         content="630"
+    >
+
+    <meta
+        property="og:image:alt"
+        content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
     >
 
 
@@ -1342,7 +1247,7 @@ module.exports = (req, res) => {
 
 
     <!-- =====================================================
-         JSON-LD PRODUCT
+         PRODUCT JSON-LD
          ===================================================== -->
 
     <script type="application/ld+json">
@@ -1351,22 +1256,12 @@ ${safeJSON(productSchema)}
 
 
     <!-- =====================================================
-         JSON-LD BREADCRUMB
+         BREADCRUMB JSON-LD
          ===================================================== -->
 
     <script type="application/ld+json">
 ${safeJSON(breadcrumbSchema)}
     </script>
-
-
-    <!-- =====================================================
-         PRECONNECT
-         ===================================================== -->
-
-    <link
-        rel="preconnect"
-        href="${escapeHTML(SITE.domain)}"
-    >
 
 </head>
 
@@ -1396,9 +1291,7 @@ ${safeJSON(breadcrumbSchema)}
 
             <p>
 
-                <a
-                    href="${escapeHTML(destinationPage)}"
-                >
+                <a href="${escapeHTML(destinationPage)}">
                     Continue to ${escapeHTML(product.name)}
                 </a>
 
@@ -1410,20 +1303,17 @@ ${safeJSON(breadcrumbSchema)}
 
 
     <!-- =====================================================
-         JAVASCRIPT REDIRECT
+         BROWSER REDIRECT
+         
+         Important:
+         WhatsApp/Facebook crawlers do NOT need this.
+         They can read the OG metadata above.
          ===================================================== -->
 
     <script>
-
-        (function () {
-
-            var destination =
-                ${JSON.stringify(destinationPage)};
-
-            window.location.replace(destination);
-
-        })();
-
+        window.location.replace(
+            ${JSON.stringify(destinationPage)}
+        );
     </script>
 
 
@@ -1438,20 +1328,10 @@ ${safeJSON(breadcrumbSchema)}
             content="0;url=${escapeHTML(destinationPage)}"
         >
 
-        <p>
-
-            <a
-                href="${escapeHTML(destinationPage)}"
-            >
-                Continue to ${escapeHTML(product.name)}
-            </a>
-
-        </p>
-
     </noscript>
-
 
 </body>
 
-</html>`);
+</html>
+`);
 };

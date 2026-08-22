@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/product/:slug",
-      "destination": "/details.html"
+      "destination": "/api/product?slug=:slug"
     },
     {
       "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
