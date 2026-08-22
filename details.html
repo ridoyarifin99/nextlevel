@@ -5094,7 +5094,7 @@ function init() {
     // Get product slug from URL
     // Example: /product/netflix-premium
 const pathParts = window.location.pathname.split('/').filter(Boolean);
-const productSlugValue = pathParts[0] === 'product' ? pathParts[1] : null;
+const productSlug = pathParts[0] === 'product' ? pathParts[1] : null;
 
     // Load cart from localStorage
     loadCart();
@@ -5217,7 +5217,6 @@ if (productSlugValue) {
         
         // Load product details
 function loadProduct(slug) {
-
     const productIndex = products.findIndex(
         p => productSlug(p.name) === slug
     );
@@ -5227,10 +5226,7 @@ function loadProduct(slug) {
         return;
     }
 
-    // keep everything below this exactly as it is
-
-            // Create a deep copy of the product to avoid modifying the original
-            currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+    currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
             
             // Ensure required arrays exist
             if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
