@@ -1,6 +1,6 @@
 // ============================================================
 // NEXT LEVEL SUBS
-// PRODUCT SEO / OPEN GRAPH / SOCIAL SHARE HANDLER
+// HYBRID PRODUCT SEO / OPEN GRAPH / WHATSAPP PREVIEW HANDLER
 // ============================================================
 
 const SITE = {
@@ -11,11 +11,16 @@ const SITE = {
     locale: "en_US"
 };
 
+
 // ============================================================
 // PRODUCT DATABASE
 // ============================================================
 
 const products = {
+
+    // =========================================================
+    // STREAMING
+    // =========================================================
 
     "netflix-premium": {
         name: "Netflix Premium",
@@ -28,7 +33,7 @@ const products = {
     "amazon-prime-video": {
         name: "Amazon Prime Video",
         description: "Thousands of movies and TV shows",
-        image: "/assets/cards/prime_video.svg",
+        image: "/assets/cards/prime_video.webp",
         page: "/details.html?name=Amazon%20Prime%20Video",
         category: "Streaming"
     },
@@ -36,7 +41,7 @@ const products = {
     "hbo-max": {
         name: "HBO Max",
         description: "HBO, Warner Bros., DC, Max Originals",
-        image: "/assets/cards/hbo_max.svg",
+        image: "/assets/cards/hbo_max.webp",
         page: "/details.html?name=HBO%20Max",
         category: "Streaming"
     },
@@ -92,7 +97,7 @@ const products = {
     "hulu": {
         name: "Hulu",
         description: "Next-day TV and original content",
-        image: "/assets/cards/hulu.svg",
+        image: "/assets/cards/hulu.webp",
         page: "/details.html?name=Hulu",
         category: "Streaming"
     },
@@ -193,6 +198,11 @@ const products = {
         category: "Streaming"
     },
 
+
+    // =========================================================
+    // MUSIC
+    // =========================================================
+
     "spotify-premium": {
         name: "Spotify Premium",
         description: "Ad-free music and podcasts",
@@ -220,7 +230,7 @@ const products = {
     "tidal": {
         name: "Tidal",
         description: "High-fidelity music streaming",
-        image: "/assets/cards/tidal.svg",
+        image: "/assets/cards/tidal.webp",
         page: "/details.html?name=Tidal",
         category: "Music"
     },
@@ -228,7 +238,7 @@ const products = {
     "pandora-premium": {
         name: "Pandora Premium",
         description: "Personalized music and podcasts",
-        image: "/assets/cards/pandora.svg",
+        image: "/assets/cards/pandora.webp",
         page: "/details.html?name=Pandora%20Premium",
         category: "Music"
     },
@@ -236,7 +246,7 @@ const products = {
     "soundcloud-go-plus": {
         name: "SoundCloud Go+",
         description: "Ad-free music and offline listening",
-        image: "/assets/cards/sound_cloud.svg",
+        image: "/assets/cards/sound_cloud.webp",
         page: "/details.html?name=SoundCloud%20Go%2B",
         category: "Music"
     },
@@ -244,15 +254,20 @@ const products = {
     "deezer-hifi": {
         name: "Deezer HiFi",
         description: "High-quality audio streaming",
-        image: "/assets/cards/deezer.svg",
+        image: "/assets/cards/deezer.webp",
         page: "/details.html?name=Deezer%20HiFi",
         category: "Music"
     },
 
+
+    // =========================================================
+    // CLOUD STORAGE
+    // =========================================================
+
     "microsoft-onedrive": {
         name: "Microsoft OneDrive",
         description: "1TB cloud storage with Office apps",
-        image: "/assets/cards/onedrive.svg",
+        image: "/assets/cards/onedrive.webp",
         page: "/details.html?name=Microsoft%20OneDrive",
         category: "Cloud Storage"
     },
@@ -260,7 +275,7 @@ const products = {
     "dropbox-plus": {
         name: "Dropbox Plus",
         description: "2TB secure cloud storage",
-        image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
+        image: "/assets/cards/Dropbox_(service)-Logo.wine.webp",
         page: "/details.html?name=Dropbox%20Plus",
         category: "Cloud Storage"
     },
@@ -268,7 +283,7 @@ const products = {
     "google-drive": {
         name: "Google Drive",
         description: "1TB cloud storage",
-        image: "/assets/cards/Google_Drive-Logo.wine.svg",
+        image: "/assets/cards/Google_Drive-Logo.wine.webp",
         page: "/details.html?name=Google%20Drive",
         category: "Cloud Storage"
     },
@@ -288,6 +303,11 @@ const products = {
         page: "/details.html?name=Amazon%20Drive",
         category: "Cloud Storage"
     },
+
+
+    // =========================================================
+    // VPN
+    // =========================================================
 
     "expressvpn": {
         name: "ExpressVPN",
@@ -353,6 +373,11 @@ const products = {
         category: "VPN"
     },
 
+
+    // =========================================================
+    // AI & DESIGN
+    // =========================================================
+
     "canva-pro": {
         name: "Canva Pro",
         description: "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
@@ -412,7 +437,7 @@ const products = {
     "perplexity-chatgpt5": {
         name: "Perplexity (ChatGPT-5)",
         description: "AI-powered search and research assistant",
-        image: "/assets/cards/Perplexity.svg",
+        image: "/assets/cards/Perplexity.webp",
         page: "/details.html?name=perplexity%20%28ChatGPT-5%29",
         category: "AI & Design"
     },
@@ -424,6 +449,11 @@ const products = {
         page: "/details.html?name=Remini%20Ai",
         category: "AI & Design"
     },
+
+
+    // =========================================================
+    // COMBOS
+    // =========================================================
 
     "netflix-prime-video": {
         name: "Netflix + Prime Video",
@@ -505,6 +535,11 @@ const products = {
         category: "Combo"
     },
 
+
+    // =========================================================
+    // EDUCATION
+    // =========================================================
+
     "doulingo": {
         name: "Doulingo",
         description: "Learn languages with interactive lessons",
@@ -544,6 +579,11 @@ const products = {
         page: "/details.html?name=Grammarly%20Pro",
         category: "Education"
     },
+
+
+    // =========================================================
+    // ADULT
+    // =========================================================
 
     "digital-playground": {
         name: "Digital Playground",
@@ -601,6 +641,11 @@ const products = {
         category: "Adult"
     },
 
+
+    // =========================================================
+    // OTHER
+    // =========================================================
+
     "truecaller-gold": {
         name: "True Caller Gold",
         description: "Premium caller identification and protection",
@@ -609,6 +654,7 @@ const products = {
         category: "Productivity"
     }
 };
+
 
 // ============================================================
 // HELPERS
@@ -623,8 +669,19 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
+
+function safeJSON(value) {
+    return JSON.stringify(value)
+        .replace(/</g, "\\u003c")
+        .replace(/>/g, "\\u003e")
+        .replace(/&/g, "\\u0026");
+}
+
+
 function absoluteURL(path) {
-    if (!path) return SITE.domain;
+    if (!path) {
+        return SITE.domain;
+    }
 
     if (/^https?:\/\//i.test(path)) {
         return path;
@@ -633,8 +690,12 @@ function absoluteURL(path) {
     return `${SITE.domain}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
+
 function getImageMimeType(url) {
-    const clean = url.split("?")[0].split("#")[0].toLowerCase();
+    const clean = url
+        .split("?")[0]
+        .split("#")[0]
+        .toLowerCase();
 
     if (clean.endsWith(".jpg") || clean.endsWith(".jpeg")) {
         return "image/jpeg";
@@ -652,12 +713,9 @@ function getImageMimeType(url) {
         return "image/avif";
     }
 
-    if (clean.endsWith(".svg")) {
-        return "image/svg+xml";
-    }
-
     return "image/jpeg";
 }
+
 
 // ============================================================
 // GET PRODUCT SLUG
@@ -665,28 +723,71 @@ function getImageMimeType(url) {
 
 function getProductSlug(req) {
 
+    // --------------------------------------------------------
+    // 1. Rewritten URL:
+    //
+    // /product/netflix-premium
+    //
+    // becomes:
+    //
     // /api/product?slug=netflix-premium
+    // --------------------------------------------------------
+
     if (
         req.query &&
         typeof req.query.slug === "string" &&
         req.query.slug.trim()
     ) {
-        return req.query.slug
+        return decodeURIComponent(req.query.slug)
             .trim()
             .toLowerCase();
     }
 
-    // /product/netflix-premium
+
+    // --------------------------------------------------------
+    // 2. Direct API URL fallback:
+    //
+    // /api/product?slug=netflix-premium
+    // --------------------------------------------------------
+
+    try {
+
+        const requestURL = new URL(
+            req.url || "",
+            `https://${req.headers.host || "www.nextlevelsubs.com"}`
+        );
+
+        const slug = requestURL.searchParams.get("slug");
+
+        if (slug && slug.trim()) {
+            return decodeURIComponent(slug)
+                .trim()
+                .toLowerCase();
+        }
+
+    } catch (error) {
+        // Ignore and continue to 404.
+    }
+
+
+    // --------------------------------------------------------
+    // 3. Direct /product/ URL fallback
+    // --------------------------------------------------------
+
     const pathname = (req.url || "").split("?")[0];
 
-    const match = pathname.match(/^\/product\/([^/]+)\/?$/);
+    const match = pathname.match(/^\/product\/([^/]+)\/?$/i);
 
     if (match && match[1]) {
+
         try {
+
             return decodeURIComponent(match[1])
                 .trim()
                 .toLowerCase();
+
         } catch {
+
             return match[1]
                 .trim()
                 .toLowerCase();
@@ -696,11 +797,13 @@ function getProductSlug(req) {
     return "";
 }
 
+
 // ============================================================
 // 404
 // ============================================================
 
 function send404(res) {
+
     res.statusCode = 404;
 
     res.setHeader(
@@ -716,20 +819,33 @@ function send404(res) {
     return res.end(`
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <title>Product Not Found | NEXT LEVEL SUBS</title>
+
 </head>
+
 <body>
+
     <h1>Product Not Found</h1>
-    <p>The requested product could not be found.</p>
+
+    <p>
+        The requested product could not be found.
+    </p>
+
     <a href="${escapeHTML(SITE.domain)}">
         Return to NEXT LEVEL SUBS
     </a>
+
 </body>
+
 </html>
 `);
 }
+
 
 // ============================================================
 // MAIN VERCEL FUNCTION
@@ -737,30 +853,39 @@ function send404(res) {
 
 module.exports = function handler(req, res) {
 
-    // --------------------------------------------------------
-    // GET + HEAD ONLY
-    // --------------------------------------------------------
+    // ========================================================
+    // METHOD
+    // ========================================================
 
     if (req.method !== "GET" && req.method !== "HEAD") {
+
         res.statusCode = 405;
-        res.setHeader("Allow", "GET, HEAD");
+
+        res.setHeader(
+            "Allow",
+            "GET, HEAD"
+        );
+
         return res.end("Method Not Allowed");
     }
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // PRODUCT
-    // --------------------------------------------------------
+    // ========================================================
 
     const slug = getProductSlug(req);
+
     const product = products[slug];
 
     if (!product) {
         return send404(res);
     }
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // URLS
-    // --------------------------------------------------------
+    // ========================================================
 
     const productURL =
         `${SITE.domain}/product/${encodeURIComponent(slug)}`;
@@ -780,22 +905,34 @@ module.exports = function handler(req, res) {
     const imageType =
         getImageMimeType(imageURL);
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // PRODUCT SCHEMA
-    // --------------------------------------------------------
+    // ========================================================
 
     const productSchema = {
+
         "@context": "https://schema.org",
+
         "@type": "Product",
+
         "name": product.name,
+
         "description": description,
-        "image": [imageURL],
+
+        "image": [
+            imageURL
+        ],
+
         "url": productURL,
+
         "category": product.category,
+
         "brand": {
             "@type": "Brand",
             "name": SITE.name
         },
+
         "seller": {
             "@type": "Organization",
             "name": SITE.name,
@@ -803,37 +940,47 @@ module.exports = function handler(req, res) {
         }
     };
 
-    // --------------------------------------------------------
-    // BREADCRUMB
-    // --------------------------------------------------------
+
+    // ========================================================
+    // BREADCRUMB SCHEMA
+    // ========================================================
 
     const breadcrumbSchema = {
+
         "@context": "https://schema.org",
+
         "@type": "BreadcrumbList",
+
         "itemListElement": [
+
             {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
                 "item": SITE.domain
             },
+
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": product.category
+                "name": product.category,
+                "item": SITE.domain
             },
+
             {
                 "@type": "ListItem",
                 "position": 3,
                 "name": product.name,
                 "item": productURL
             }
+
         ]
     };
 
-    // --------------------------------------------------------
-    // HEADERS
-    // --------------------------------------------------------
+
+    // ========================================================
+    // RESPONSE HEADERS
+    // ========================================================
 
     res.statusCode = 200;
 
@@ -862,32 +1009,23 @@ module.exports = function handler(req, res) {
         "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
     );
 
-    // --------------------------------------------------------
+
+    // ========================================================
     // HEAD
-    // --------------------------------------------------------
+    // ========================================================
 
     if (req.method === "HEAD") {
         return res.end();
     }
 
-    // --------------------------------------------------------
-    // JSON-LD
-    // --------------------------------------------------------
 
-    const productJSON =
-        JSON.stringify(productSchema)
-            .replace(/</g, "\\u003c");
-
-    const breadcrumbJSON =
-        JSON.stringify(breadcrumbSchema)
-            .replace(/</g, "\\u003c");
-
-    // --------------------------------------------------------
-    // HTML
-    // --------------------------------------------------------
+    // ========================================================
+    // SEO HTML
+    // ========================================================
 
     const html = `
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -899,7 +1037,9 @@ module.exports = function handler(req, res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>${escapeHTML(title)}</title>
+    <title>
+        ${escapeHTML(title)}
+    </title>
 
     <meta
         name="description"
@@ -916,13 +1056,14 @@ module.exports = function handler(req, res) {
         href="${escapeHTML(productURL)}"
     >
 
+
     <!-- =====================================================
          OPEN GRAPH
          ===================================================== -->
 
     <meta
         property="og:type"
-        content="website"
+        content="product"
     >
 
     <meta
@@ -980,6 +1121,7 @@ module.exports = function handler(req, res) {
         content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
     >
 
+
     <!-- =====================================================
          TWITTER / X
          ===================================================== -->
@@ -1009,19 +1151,26 @@ module.exports = function handler(req, res) {
         content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
     >
 
+
     <!-- =====================================================
-         PRODUCT STRUCTURED DATA
+         JSON-LD PRODUCT
          ===================================================== -->
 
     <script type="application/ld+json">
-${productJSON}
+${safeJSON(productSchema)}
     </script>
 
+
+    <!-- =====================================================
+         JSON-LD BREADCRUMB
+         ===================================================== -->
+
     <script type="application/ld+json">
-${breadcrumbJSON}
+${safeJSON(breadcrumbSchema)}
     </script>
 
 </head>
+
 
 <body>
 
@@ -1047,14 +1196,21 @@ ${breadcrumbJSON}
             </p>
 
             <p>
+
                 <a href="${escapeHTML(destinationURL)}">
                     Continue to ${escapeHTML(product.name)}
                 </a>
+
             </p>
 
         </article>
 
     </main>
+
+
+    <!-- =====================================================
+         NORMAL HUMAN VISIT
+         ===================================================== -->
 
     <script>
         window.location.replace(
@@ -1062,11 +1218,14 @@ ${breadcrumbJSON}
         );
     </script>
 
+
     <noscript>
+
         <meta
             http-equiv="refresh"
             content="0;url=${escapeHTML(destinationURL)}"
         >
+
     </noscript>
 
 </body>
