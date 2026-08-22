@@ -10,18 +10,20 @@
 // https://www.nextlevelsubs.com/product/spotify-premium
 //
 // Social crawlers receive SEO + OG metadata.
-// Normal visitors see the existing details.html product page
-// while the browser URL remains clean.
+// Normal visitors see the existing details.html product page.
+//
+// IMPORTANT:
+// The product page uses details.html inside an iframe.
+// This version also controls iframe navigation so that
+// Return/Home/history.back() navigates the TOP browser window.
 //
 // ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
     domain: "https://www.nextlevelsubs.com",
-
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
-
     locale: "en_US"
 };
 
@@ -709,21 +711,15 @@ function absoluteURL(path) {
 // ============================================================
 // SOCIAL IMAGE
 // ============================================================
-//
-// SVG is unreliable for WhatsApp/Facebook/social crawlers.
-// Therefore we use the product image only when it is a
-// raster format.
-//
-// If the product image is SVG, use the site's main logo
-// as a guaranteed fallback.
-//
-// Later you can replace these SVG files with PNG/WebP files
-// and the actual product artwork will be used automatically.
-// ============================================================
 
 function getSocialImage(product) {
 
     const image = product.image || "";
+
+    /*
+     * SVG images are not reliable for all social crawlers.
+     * Use logo.png as fallback.
+     */
 
     if (/\.svg(\?|#|$)/i.test(image)) {
         return "/assets/logo.png";
@@ -734,30 +730,46 @@ function getSocialImage(product) {
 
 
 // ============================================================
-// GET SLUG
+// GET PRODUCT SLUG
 // ============================================================
 
 function getProductSlug(req) {
 
+    // --------------------------------------------------------
     // Direct API:
+    //
     // /api/product?slug=netflix-premium
+    // --------------------------------------------------------
 
     if (
         req.query &&
         typeof req.query.slug === "string" &&
         req.query.slug.trim()
     ) {
-        return decodeURIComponent(req.query.slug)
-            .trim()
-            .toLowerCase();
+
+        try {
+
+            return decodeURIComponent(req.query.slug)
+                .trim()
+                .toLowerCase();
+
+        } catch {
+
+            return req.query.slug
+                .trim()
+                .toLowerCase();
+
+        }
     }
 
 
-    // Fallback:
+    // --------------------------------------------------------
+    // Clean URL:
+    //
     // /product/netflix-premium
+    // --------------------------------------------------------
 
     const rawURL = req.url || "";
-
     const pathname = rawURL.split("?")[0];
 
     const match = pathname.match(
@@ -769,13 +781,17 @@ function getProductSlug(req) {
     }
 
     try {
+
         return decodeURIComponent(match[1])
             .trim()
             .toLowerCase();
+
     } catch {
+
         return match[1]
             .trim()
             .toLowerCase();
+
     }
 }
 
@@ -800,46 +816,60 @@ function send404(res) {
 
     return res.end(`
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Product Not Found | NEXT LEVEL SUBS</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Product Not Found | NEXT LEVEL SUBS
+    </title>
 </head>
 
 <body>
 
-    <h1>Product Not Found</h1>
+    <h1>
+        Product Not Found
+    </h1>
 
     <p>
         The requested product could not be found.
     </p>
 
     <p>
-        <a href="${escapeHTML(SITE.domain)}">
+        <a href="${escapeHTML(SITE.domain)}/">
             Return to NEXT LEVEL SUBS
         </a>
     </p>
 
 </body>
+
 </html>
 `);
 }
 
 
 // ============================================================
-// MAIN FUNCTION
+// MAIN HANDLER
 // ============================================================
 
 module.exports = function handler(req, res) {
 
-    // --------------------------------------------------------
-    // GET / HEAD only
-    // --------------------------------------------------------
+    // ========================================================
+    // GET / HEAD ONLY
+    // ========================================================
 
     if (
         req.method !== "GET" &&
         req.method !== "HEAD"
     ) {
+
         res.statusCode = 405;
 
         res.setHeader(
@@ -851,9 +881,9 @@ module.exports = function handler(req, res) {
     }
 
 
-    // --------------------------------------------------------
-    // PRODUCT
-    // --------------------------------------------------------
+    // ========================================================
+    // FIND PRODUCT
+    // ========================================================
 
     const slug = getProductSlug(req);
 
@@ -864,9 +894,9 @@ module.exports = function handler(req, res) {
     }
 
 
-    // --------------------------------------------------------
-    // URLs
-    // --------------------------------------------------------
+    // ========================================================
+    // URLS
+    // ========================================================
 
     const productURL =
         `${SITE.domain}/product/${encodeURIComponent(slug)}`;
@@ -878,9 +908,9 @@ module.exports = function handler(req, res) {
         absoluteURL(product.page);
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // SEO
-    // --------------------------------------------------------
+    // ========================================================
 
     const title =
         `${product.name} Subscription | NEXT LEVEL SUBS`;
@@ -892,9 +922,9 @@ module.exports = function handler(req, res) {
         `${product.name} - NEXT LEVEL SUBS`;
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // JSON-LD PRODUCT
-    // --------------------------------------------------------
+    // ========================================================
 
     const productSchema = {
 
@@ -927,9 +957,9 @@ module.exports = function handler(req, res) {
     };
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // BREADCRUMB
-    // --------------------------------------------------------
+    // ========================================================
 
     const breadcrumbSchema = {
 
@@ -962,9 +992,9 @@ module.exports = function handler(req, res) {
     };
 
 
-    // --------------------------------------------------------
-    // HEADERS
-    // --------------------------------------------------------
+    // ========================================================
+    // RESPONSE HEADERS
+    // ========================================================
 
     res.statusCode = 200;
 
@@ -994,9 +1024,9 @@ module.exports = function handler(req, res) {
     );
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // HEAD
-    // --------------------------------------------------------
+    // ========================================================
 
     if (req.method === "HEAD") {
         return res.end();
@@ -1007,8 +1037,7 @@ module.exports = function handler(req, res) {
     // HTML
     // ========================================================
 
-    const html = `
-<!DOCTYPE html>
+    const html = `<!DOCTYPE html>
 
 <html lang="en">
 
@@ -1144,48 +1173,66 @@ module.exports = function handler(req, res) {
 ${safeJSON(productSchema)}
     </script>
 
-
     <script type="application/ld+json">
 ${safeJSON(breadcrumbSchema)}
     </script>
 
 
     <!-- =====================================================
-         BASIC PAGE STYLE
+         PAGE STYLE
          ===================================================== -->
 
     <style>
 
         html,
         body {
+
             margin: 0;
             padding: 0;
+
             width: 100%;
             height: 100%;
+
             overflow: hidden;
+
             background: #ffffff;
         }
 
+
         iframe {
+
             display: block;
+
             width: 100%;
             height: 100%;
+
             border: 0;
         }
 
+
         .fallback {
+
             position: fixed;
+
             inset: 0;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
+
             font-family: Arial, sans-serif;
+
             background: #ffffff;
+
             z-index: 10;
         }
 
+
         .fallback a {
+
             color: #111111;
+
             text-decoration: none;
         }
 
@@ -1196,26 +1243,31 @@ ${safeJSON(breadcrumbSchema)}
 
 <body>
 
-    <!--
-        Existing product detail page.
 
-        The iframe allows us to keep your existing
-        details.html implementation while the browser
-        remains on /product/slug.
-    -->
+    <!-- =====================================================
+         EXISTING PRODUCT DETAIL PAGE
+         ===================================================== -->
 
     <iframe
+        id="productFrame"
         src="${escapeHTML(destinationURL)}"
         title="${escapeHTML(product.name)}"
         loading="eager"
+        allow="fullscreen"
     ></iframe>
 
+
+    <!-- =====================================================
+         NOSCRIPT FALLBACK
+         ===================================================== -->
 
     <noscript>
 
         <div class="fallback">
 
-            <a href="${escapeHTML(destinationURL)}">
+            <a
+                href="${escapeHTML(destinationURL)}"
+            >
                 Continue to ${escapeHTML(product.name)}
             </a>
 
@@ -1224,10 +1276,369 @@ ${safeJSON(breadcrumbSchema)}
     </noscript>
 
 
+    <!-- =====================================================
+         PRODUCT NAVIGATION CONTROLLER
+         ===================================================== -->
+
+    <script>
+
+    (function () {
+
+        "use strict";
+
+
+        const SITE_HOME = "${escapeHTML(SITE.domain)}/";
+
+        const frame =
+            document.getElementById("productFrame");
+
+
+        if (!frame) {
+            return;
+        }
+
+
+        // ====================================================
+        // NAVIGATE TOP WINDOW
+        // ====================================================
+
+        function goHome() {
+
+            window.top.location.href = SITE_HOME;
+
+        }
+
+
+        // ====================================================
+        // CHECK IF LINK IS HOME
+        // ====================================================
+
+        function isHomeLink(href) {
+
+            if (!href) {
+                return false;
+            }
+
+
+            try {
+
+                const url =
+                    new URL(
+                        href,
+                        window.location.origin
+                    );
+
+
+                return (
+                    url.origin === window.location.origin &&
+                    (
+                        url.pathname === "/" ||
+                        url.pathname === "/index.html"
+                    )
+                );
+
+            } catch {
+
+                return (
+                    href === "/" ||
+                    href === "/index.html"
+                );
+
+            }
+        }
+
+
+        // ====================================================
+        // HANDLE IFRAME LOAD
+        // ====================================================
+
+        frame.addEventListener("load", function () {
+
+            try {
+
+                const frameWindow =
+                    frame.contentWindow;
+
+                const frameDocument =
+                    frameWindow.document;
+
+
+                // =================================================
+                // FORCE HISTORY BACK TO MAIN WEBSITE HOME
+                // =================================================
+
+                const originalBack =
+                    frameWindow.history.back.bind(
+                        frameWindow.history
+                    );
+
+
+                frameWindow.history.back = function () {
+
+                    /*
+                     * Your product page is being displayed
+                     * inside this iframe.
+                     *
+                     * Therefore history.back() inside
+                     * details.html should return to the
+                     * actual website homepage.
+                     */
+
+                    goHome();
+
+                };
+
+
+                // =================================================
+                // HANDLE history.go(-1)
+                // =================================================
+
+                const originalGo =
+                    frameWindow.history.go.bind(
+                        frameWindow.history
+                    );
+
+
+                frameWindow.history.go = function (delta) {
+
+                    if (
+                        typeof delta === "number" &&
+                        delta < 0
+                    ) {
+
+                        goHome();
+
+                        return;
+                    }
+
+
+                    return originalGo(delta);
+
+                };
+
+
+                // =================================================
+                // HANDLE ALL LINKS
+                // =================================================
+
+                frameDocument.addEventListener(
+                    "click",
+                    function (event) {
+
+                        const link =
+                            event.target.closest("a");
+
+
+                        if (!link) {
+                            return;
+                        }
+
+
+                        const href =
+                            link.getAttribute("href");
+
+
+                        if (!href) {
+                            return;
+                        }
+
+
+                        // -----------------------------------------
+                        // HOME LINK
+                        // -----------------------------------------
+
+                        if (isHomeLink(href)) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            goHome();
+
+                            return;
+                        }
+
+
+                        // -----------------------------------------
+                        // HASH / JAVASCRIPT LINKS
+                        // -----------------------------------------
+
+                        if (
+                            href.startsWith("#") ||
+                            href.startsWith("javascript:")
+                        ) {
+
+                            return;
+                        }
+
+
+                        // -----------------------------------------
+                        // DETAILS PAGE BACK LINKS
+                        // -----------------------------------------
+
+                        const normalized =
+                            href.toLowerCase();
+
+
+                        if (
+                            normalized.includes("history.back") ||
+                            normalized.includes("history.go(-1)")
+                        ) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            goHome();
+
+                            return;
+                        }
+
+                    },
+                    true
+                );
+
+
+                // =================================================
+                // HANDLE BUTTONS THAT CALL history.back()
+                // =================================================
+
+                frameDocument.addEventListener(
+                    "click",
+                    function (event) {
+
+                        const element =
+                            event.target.closest(
+                                "button, [role='button']"
+                            );
+
+
+                        if (!element) {
+                            return;
+                        }
+
+
+                        const text =
+                            (
+                                element.innerText ||
+                                element.textContent ||
+                                ""
+                            )
+                            .trim()
+                            .toLowerCase();
+
+
+                        /*
+                         * Catch common product-page
+                         * Back / Return buttons.
+                         */
+
+                        if (
+                            text === "back" ||
+                            text.includes("back to") ||
+                            text.includes("return to") ||
+                            text.includes("return home") ||
+                            text.includes("go home") ||
+                            text === "home"
+                        ) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            goHome();
+
+                        }
+
+                    },
+                    true
+                );
+
+
+                // =================================================
+                // HANDLE POPSTATE
+                // =================================================
+
+                frameWindow.addEventListener(
+                    "popstate",
+                    function () {
+
+                        goHome();
+
+                    }
+                );
+
+
+                // =================================================
+                // HANDLE BEFOREUNLOAD NAVIGATION
+                // =================================================
+
+                /*
+                 * We deliberately do NOT override normal
+                 * iframe navigation here because details.html
+                 * may need its own internal functionality.
+                 */
+
+                console.log(
+                    "NEXT LEVEL SUBS product navigation controller loaded:",
+                    "${escapeHTML(product.name)}"
+                );
+
+
+            } catch (error) {
+
+                /*
+                 * Same-origin is expected because both pages
+                 * are hosted on nextlevelsubs.com.
+                 */
+
+                console.warn(
+                    "Product iframe navigation controller:",
+                    error
+                );
+
+            }
+
+        });
+
+
+        // ====================================================
+        // TOP-LEVEL PRODUCT PAGE HISTORY
+        // ====================================================
+
+        /*
+         * This creates a clean history entry for the product.
+         *
+         * Example:
+         *
+         * Home
+         *   ↓
+         * /product/netflix-premium
+         *
+         * Browser Back therefore returns to Home.
+         */
+
+        if (
+            window.history &&
+            window.history.replaceState
+        ) {
+
+            window.history.replaceState(
+                {
+                    productSlug: "${escapeHTML(slug)}"
+                },
+                document.title,
+                window.location.href
+            );
+
+        }
+
+
+    })();
+
+    </script>
+
+
 </body>
 
-</html>
-`;
+</html>`;
 
     return res.end(html);
 };
