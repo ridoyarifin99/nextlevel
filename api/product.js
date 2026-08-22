@@ -2,24 +2,6 @@
 // NEXT LEVEL SUBS
 // HYBRID PRODUCT SEO / OPEN GRAPH / WHATSAPP PREVIEW HANDLER
 // ============================================================
-//
-// Supports:
-//
-// API:
-// https://nextlevelsubs.com/api/product?slug=netflix-premium
-//
-// Clean URL:
-// https://nextlevelsubs.com/product/netflix-premium
-//
-// Final visitor page:
-// https://nextlevelsubs.com/details.html?name=Netflix%20Premium
-//
-// ============================================================
-
-
-// ============================================================
-// SITE CONFIGURATION
-// ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
@@ -30,7 +12,6 @@ const SITE = {
     twitterCard: "summary_large_image"
 };
 
-
 // ============================================================
 // PRODUCT DATABASE
 // ============================================================
@@ -38,7 +19,7 @@ const SITE = {
 const products = {
 
     // =========================================================
-    // BEST-SELLING / STREAMING
+    // STREAMING
     // =========================================================
 
     "netflix-premium": {
@@ -105,51 +86,6 @@ const products = {
         category: "Streaming"
     },
 
-    "spotify-premium": {
-        name: "Spotify Premium",
-        description: "Ad-free music and podcasts",
-        image: "/assets/cards/spotify.jpg",
-        page: "/details.html?name=Spotify%20Premium",
-        category: "Music"
-    },
-
-    "amazon-music-unlimited": {
-        name: "Amazon Music Unlimited",
-        description: "High-quality music and podcasts",
-        image: "/assets/cards/amazon-music-unlimited.jpeg",
-        page: "/details.html?name=Amazon%20Music%20Unlimited",
-        category: "Music"
-    },
-
-    "youtube-premium-non-renewable": {
-        name: "Youtube Premium Non-Renewable",
-        description: "Ad-free videos and music",
-        image: "/assets/cards/youtube.webp",
-        page: "/details.html?name=Youtube%20Premium%20Non-Renewable",
-        category: "Streaming"
-    },
-
-    "microsoft-onedrive": {
-        name: "Microsoft OneDrive",
-        description: "1TB cloud storage with Office apps",
-        image: "/assets/cards/onedrive.svg",
-        page: "/details.html?name=Microsoft%20OneDrive",
-        category: "Cloud Storage"
-    },
-
-    "truecaller-gold": {
-        name: "True Caller Gold",
-        description: "Premium caller identification and protection",
-        image: "/assets/cards/truecaller.avif",
-        page: "/details.html?name=True%20Caller%20Gold",
-        category: "Productivity"
-    },
-
-
-    // =========================================================
-    // POPULAR STREAMING
-    // =========================================================
-
     "disney-plus": {
         name: "Disney+",
         description: "Premium movies, series and exclusive Disney content",
@@ -195,6 +131,14 @@ const products = {
         description: "Ad-free videos and YouTube Music",
         image: "/assets/cards/youtube.webp",
         page: "/details.html?name=YouTube%20Premium",
+        category: "Streaming"
+    },
+
+    "youtube-premium-non-renewable": {
+        name: "Youtube Premium Non-Renewable",
+        description: "Ad-free videos and music",
+        image: "/assets/cards/youtube.webp",
+        page: "/details.html?name=Youtube%20Premium%20Non-Renewable",
         category: "Streaming"
     },
 
@@ -254,10 +198,25 @@ const products = {
         category: "Streaming"
     },
 
-
     // =========================================================
     // MUSIC
     // =========================================================
+
+    "spotify-premium": {
+        name: "Spotify Premium",
+        description: "Ad-free music and podcasts",
+        image: "/assets/cards/spotify.jpg",
+        page: "/details.html?name=Spotify%20Premium",
+        category: "Music"
+    },
+
+    "amazon-music-unlimited": {
+        name: "Amazon Music Unlimited",
+        description: "High-quality music and podcasts",
+        image: "/assets/cards/amazon-music-unlimited.jpeg",
+        page: "/details.html?name=Amazon%20Music%20Unlimited",
+        category: "Music"
+    },
 
     "apple-music": {
         name: "Apple Music",
@@ -299,10 +258,17 @@ const products = {
         category: "Music"
     },
 
-
     // =========================================================
     // CLOUD STORAGE
     // =========================================================
+
+    "microsoft-onedrive": {
+        name: "Microsoft OneDrive",
+        description: "1TB cloud storage with Office apps",
+        image: "/assets/cards/onedrive.svg",
+        page: "/details.html?name=Microsoft%20OneDrive",
+        category: "Cloud Storage"
+    },
 
     "dropbox-plus": {
         name: "Dropbox Plus",
@@ -335,7 +301,6 @@ const products = {
         page: "/details.html?name=Amazon%20Drive",
         category: "Cloud Storage"
     },
-
 
     // =========================================================
     // VPN
@@ -404,7 +369,6 @@ const products = {
         page: "/details.html?name=Vypr%20VPN",
         category: "VPN"
     },
-
 
     // =========================================================
     // AI & DESIGN
@@ -481,7 +445,6 @@ const products = {
         page: "/details.html?name=Remini%20Ai",
         category: "AI & Design"
     },
-
 
     // =========================================================
     // COMBOS
@@ -567,7 +530,6 @@ const products = {
         category: "Combo"
     },
 
-
     // =========================================================
     // EDUCATION
     // =========================================================
@@ -612,9 +574,8 @@ const products = {
         category: "Education"
     },
 
-
     // =========================================================
-    // ADULT 18+
+    // ADULT
     // =========================================================
 
     "digital-playground": {
@@ -671,6 +632,18 @@ const products = {
         image: "/assets/cards/babes.webp",
         page: "/details.html?name=Babes.com",
         category: "Adult"
+    },
+
+    // =========================================================
+    // OTHER
+    // =========================================================
+
+    "truecaller-gold": {
+        name: "True Caller Gold",
+        description: "Premium caller identification and protection",
+        image: "/assets/cards/truecaller.avif",
+        page: "/details.html?name=True%20Caller%20Gold",
+        category: "Productivity"
     }
 };
 
@@ -688,14 +661,12 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
-
 function safeJSON(value) {
     return JSON.stringify(value)
         .replace(/</g, "\\u003c")
         .replace(/>/g, "\\u003e")
         .replace(/&/g, "\\u0026");
 }
-
 
 function absoluteURL(path) {
     if (!path) {
@@ -709,124 +680,30 @@ function absoluteURL(path) {
     return `${SITE.domain}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
+function getImageMimeType(url) {
+    const clean = url.split("?")[0].split("#")[0].toLowerCase();
 
-function getImageMimeType(imageURL) {
-    const cleanURL = imageURL
-        .split("?")[0]
-        .split("#")[0]
-        .toLowerCase();
-
-    if (cleanURL.endsWith(".webp")) {
-        return "image/webp";
-    }
-
-    if (
-        cleanURL.endsWith(".jpg") ||
-        cleanURL.endsWith(".jpeg")
-    ) {
+    if (clean.endsWith(".jpg") || clean.endsWith(".jpeg")) {
         return "image/jpeg";
     }
 
-    if (cleanURL.endsWith(".png")) {
+    if (clean.endsWith(".png")) {
         return "image/png";
     }
 
-    if (cleanURL.endsWith(".svg")) {
-        return "image/svg+xml";
+    if (clean.endsWith(".webp")) {
+        return "image/webp";
     }
 
-    if (cleanURL.endsWith(".avif")) {
+    if (clean.endsWith(".avif")) {
         return "image/avif";
     }
 
-    if (cleanURL.endsWith(".gif")) {
-        return "image/gif";
+    if (clean.endsWith(".svg")) {
+        return "image/svg+xml";
     }
 
     return "image/jpeg";
-}
-
-
-function createSEOTitle(product) {
-    return `${product.name} Subscription | NEXT LEVEL SUBS`;
-}
-
-
-function createSEODescription(product) {
-    return `${product.description}. Get ${product.name} subscription from NEXT LEVEL SUBS.`;
-}
-
-
-// ============================================================
-// STRUCTURED DATA
-// ============================================================
-
-function createProductSchema(
-    product,
-    productPage,
-    imageURL,
-    description
-) {
-    return {
-        "@context": "https://schema.org",
-        "@type": "Product",
-
-        "name": product.name,
-
-        "description": description,
-
-        "image": [
-            imageURL
-        ],
-
-        "url": productPage,
-
-        "category": product.category,
-
-        "brand": {
-            "@type": "Brand",
-            "name": SITE.name
-        },
-
-        "seller": {
-            "@type": "Organization",
-            "name": SITE.name,
-            "url": SITE.domain
-        }
-    };
-}
-
-
-function createBreadcrumbSchema(
-    product,
-    productPage
-) {
-    return {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-
-        "itemListElement": [
-            {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": SITE.domain
-            },
-
-            {
-                "@type": "ListItem",
-                "position": 2,
-                "name": product.category
-            },
-
-            {
-                "@type": "ListItem",
-                "position": 3,
-                "name": product.name,
-                "item": productPage
-            }
-        ]
-    };
 }
 
 
@@ -836,10 +713,7 @@ function createBreadcrumbSchema(
 
 function getProductSlug(req) {
 
-    // --------------------------------------------------------
     // /api/product?slug=netflix-premium
-    // --------------------------------------------------------
-
     if (
         req.query &&
         typeof req.query.slug === "string" &&
@@ -850,31 +724,25 @@ function getProductSlug(req) {
             .toLowerCase();
     }
 
-
-    // --------------------------------------------------------
     // /product/netflix-premium
-    // --------------------------------------------------------
+    const url = req.url || "";
+    const pathname = url.split("?")[0];
 
-    const requestURL = req.url || "";
-
-    const pathname = requestURL.split("?")[0];
-
-    const match = pathname.match(
-        /^\/product\/([^/]+)\/?$/
-    );
+    // IMPORTANT:
+    // This is the correct regex.
+    const match = pathname.match(/^\/product\/([^/]+)\/?$/);
 
     if (match && match[1]) {
         try {
             return decodeURIComponent(match[1])
                 .trim()
                 .toLowerCase();
-        } catch (error) {
+        } catch {
             return match[1]
                 .trim()
                 .toLowerCase();
         }
     }
-
 
     return "";
 }
@@ -895,84 +763,59 @@ function send404(res) {
 
     res.setHeader(
         "X-Robots-Tag",
-        "noindex, nofollow, noarchive"
-    );
-
-    res.setHeader(
-        "Cache-Control",
-        "public, max-age=60, s-maxage=60"
+        "noindex, nofollow"
     );
 
     return res.end(`
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <meta
-        name="robots"
-        content="noindex, nofollow, noarchive"
-    >
-
     <title>Product Not Found | NEXT LEVEL SUBS</title>
-
 </head>
 
 <body>
 
-    <main>
+    <h1>Product Not Found</h1>
 
-        <h1>Product Not Found</h1>
+    <p>
+        The requested product could not be found.
+    </p>
 
-        <p>
-            The requested product could not be found.
-        </p>
-
-        <p>
-            <a href="${escapeHTML(SITE.domain)}">
-                Return to NEXT LEVEL SUBS
-            </a>
-        </p>
-
-    </main>
+    <a href="${escapeHTML(SITE.domain)}">
+        Return to NEXT LEVEL SUBS
+    </a>
 
 </body>
-
 </html>
 `);
 }
 
 
 // ============================================================
-// MAIN SERVERLESS FUNCTION
+// MAIN VERCEL FUNCTION
 // ============================================================
 
-module.exports = (req, res) => {
+module.exports = function handler(req, res) {
 
     // --------------------------------------------------------
-    // GET SLUG
+    // Only GET / HEAD
+    // --------------------------------------------------------
+
+    if (req.method !== "GET" && req.method !== "HEAD") {
+        res.statusCode = 405;
+        res.setHeader("Allow", "GET, HEAD");
+        return res.end("Method Not Allowed");
+    }
+
+
+    // --------------------------------------------------------
+    // Get slug
     // --------------------------------------------------------
 
     const slug = getProductSlug(req);
 
-
-    // --------------------------------------------------------
-    // FIND PRODUCT
-    // --------------------------------------------------------
-
     const product = products[slug];
-
-
-    // --------------------------------------------------------
-    // PRODUCT NOT FOUND
-    // --------------------------------------------------------
 
     if (!product) {
         return send404(res);
@@ -980,48 +823,91 @@ module.exports = (req, res) => {
 
 
     // --------------------------------------------------------
-    // SEO DATA
+    // Build URLs
     // --------------------------------------------------------
 
-    const title = createSEOTitle(product);
-
-    const description =
-        createSEODescription(product);
+    const productURL =
+        `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
     const imageURL =
         absoluteURL(product.image);
 
-    const productPage =
-        `${SITE.domain}/product/${encodeURIComponent(slug)}`;
-
-    const destinationPage =
+    const destinationURL =
         absoluteURL(product.page);
+
+    const title =
+        `${product.name} Subscription | NEXT LEVEL SUBS`;
+
+    const description =
+        `${product.description}. Get ${product.name} subscription from NEXT LEVEL SUBS.`;
 
     const imageType =
         getImageMimeType(imageURL);
 
 
     // --------------------------------------------------------
-    // STRUCTURED DATA
+    // Product Schema
     // --------------------------------------------------------
 
-    const productSchema =
-        createProductSchema(
-            product,
-            productPage,
-            imageURL,
-            description
-        );
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": description,
+        "image": [imageURL],
+        "url": productURL,
 
-    const breadcrumbSchema =
-        createBreadcrumbSchema(
-            product,
-            productPage
-        );
+        "category": product.category,
+
+        "brand": {
+            "@type": "Brand",
+            "name": SITE.name
+        },
+
+        "seller": {
+            "@type": "Organization",
+            "name": SITE.name,
+            "url": SITE.domain
+        }
+    };
 
 
     // --------------------------------------------------------
-    // RESPONSE HEADERS
+    // Breadcrumb Schema
+    // --------------------------------------------------------
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+
+        "itemListElement": [
+
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": SITE.domain
+            },
+
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": product.category
+            },
+
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product.name,
+                "item": productURL
+            }
+
+        ]
+    };
+
+
+    // --------------------------------------------------------
+    // HTTP HEADERS
     // --------------------------------------------------------
 
     res.statusCode = 200;
@@ -1037,18 +923,13 @@ module.exports = (req, res) => {
     );
 
     res.setHeader(
-        "X-Robots-Tag",
-        "index, follow"
-    );
-
-    res.setHeader(
         "X-Content-Type-Options",
         "nosniff"
     );
 
     res.setHeader(
-        "Referrer-Policy",
-        "strict-origin-when-cross-origin"
+        "X-Robots-Tag",
+        "index, follow, max-image-preview:large"
     );
 
     res.setHeader(
@@ -1058,22 +939,23 @@ module.exports = (req, res) => {
 
 
     // --------------------------------------------------------
-    // HTML RESPONSE
+    // HEAD REQUEST
     // --------------------------------------------------------
 
-    return res.end(`
-<!DOCTYPE html>
+    if (req.method === "HEAD") {
+        return res.end();
+    }
 
-<html
-    lang="en"
-    prefix="og: https://ogp.me/ns#"
->
+
+    // --------------------------------------------------------
+    // SEO HTML
+    // --------------------------------------------------------
+
+    const html = `<!DOCTYPE html>
+
+<html lang="en">
 
 <head>
-
-    <!-- =====================================================
-         BASIC
-         ===================================================== -->
 
     <meta charset="UTF-8">
 
@@ -1081,26 +963,6 @@ module.exports = (req, res) => {
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
-
-    <meta
-        name="theme-color"
-        content="#000000"
-    >
-
-    <meta
-        name="application-name"
-        content="${escapeHTML(SITE.name)}"
-    >
-
-    <meta
-        name="author"
-        content="${escapeHTML(SITE.name)}"
-    >
-
-
-    <!-- =====================================================
-         SEO
-         ===================================================== -->
 
     <title>${escapeHTML(title)}</title>
 
@@ -1114,25 +976,14 @@ module.exports = (req, res) => {
         content="index, follow, max-image-preview:large"
     >
 
-    <meta
-        name="googlebot"
-        content="index, follow, max-image-preview:large"
-    >
-
-    <meta
-        name="bingbot"
-        content="index, follow, max-image-preview:large"
-    >
-
     <link
         rel="canonical"
-        href="${escapeHTML(productPage)}"
+        href="${escapeHTML(productURL)}"
     >
 
 
     <!-- =====================================================
          OPEN GRAPH
-         Facebook / WhatsApp / Messenger
          ===================================================== -->
 
     <meta
@@ -1162,7 +1013,7 @@ module.exports = (req, res) => {
 
     <meta
         property="og:url"
-        content="${escapeHTML(productPage)}"
+        content="${escapeHTML(productURL)}"
     >
 
     <meta
@@ -1202,7 +1053,7 @@ module.exports = (req, res) => {
 
     <meta
         name="twitter:card"
-        content="${escapeHTML(SITE.twitterCard)}"
+        content="summary_large_image"
     >
 
     <meta
@@ -1227,27 +1078,7 @@ module.exports = (req, res) => {
 
 
     <!-- =====================================================
-         PRODUCT META
-         ===================================================== -->
-
-    <meta
-        property="product:brand"
-        content="${escapeHTML(SITE.name)}"
-    >
-
-    <meta
-        property="product:name"
-        content="${escapeHTML(product.name)}"
-    >
-
-    <meta
-        property="product:category"
-        content="${escapeHTML(product.category)}"
-    >
-
-
-    <!-- =====================================================
-         PRODUCT JSON-LD
+         JSON-LD PRODUCT
          ===================================================== -->
 
     <script type="application/ld+json">
@@ -1256,7 +1087,7 @@ ${safeJSON(productSchema)}
 
 
     <!-- =====================================================
-         BREADCRUMB JSON-LD
+         JSON-LD BREADCRUMB
          ===================================================== -->
 
     <script type="application/ld+json">
@@ -1290,11 +1121,9 @@ ${safeJSON(breadcrumbSchema)}
             </p>
 
             <p>
-
-                <a href="${escapeHTML(destinationPage)}">
+                <a href="${escapeHTML(destinationURL)}">
                     Continue to ${escapeHTML(product.name)}
                 </a>
-
             </p>
 
         </article>
@@ -1303,35 +1132,31 @@ ${safeJSON(breadcrumbSchema)}
 
 
     <!-- =====================================================
-         BROWSER REDIRECT
-         
-         Important:
-         WhatsApp/Facebook crawlers do NOT need this.
-         They can read the OG metadata above.
+         REDIRECT NORMAL VISITORS
          ===================================================== -->
 
     <script>
+
         window.location.replace(
-            ${JSON.stringify(destinationPage)}
+            ${JSON.stringify(destinationURL)}
         );
+
     </script>
 
-
-    <!-- =====================================================
-         NO JAVASCRIPT FALLBACK
-         ===================================================== -->
 
     <noscript>
 
         <meta
             http-equiv="refresh"
-            content="0;url=${escapeHTML(destinationPage)}"
+            content="0;url=${escapeHTML(destinationURL)}"
         >
 
     </noscript>
 
 </body>
 
-</html>
-`);
+</html>`;
+
+
+    return res.end(html);
 };
