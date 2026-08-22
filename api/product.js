@@ -9,19 +9,19 @@
 // https://www.nextlevelsubs.com/product/hbo-max
 // https://www.nextlevelsubs.com/product/spotify-premium
 //
-// Social crawlers receive SEO + OG metadata.
+// Existing product page:
 //
-// Normal visitors see the existing details.html product page
-// while the browser URL remains the clean product URL.
+// /details.html?name=Netflix%20Premium
 //
 // IMPORTANT:
 //
 // 1. Product slugs are generated automatically.
-// 2. Product names remain synchronized with rawSubscriptions.
+// 2. Product names remain synchronized with rawProducts.
 // 3. Existing details.html continues to be used.
-// 4. Browser Back / Forward navigation is handled properly.
+// 4. Browser Back / Forward works.
 // 5. Product-to-product navigation updates the clean URL.
-// 6. No duplicate product database is required on the frontend.
+// 6. No duplicate slug database is required.
+// 7. Adding a new product automatically creates its slug.
 // ============================================================
 
 
@@ -47,19 +47,19 @@ const SITE = {
 //
 // Examples:
 //
-// productSlug("Netflix Premium")
+// Netflix Premium
 // → netflix-premium
 //
-// productSlug("Black Box Ai(CHAT-GPT5)")
+// Black Box Ai(CHAT-GPT5)
 // → black-box-ai-chat-gpt5
 //
-// productSlug("perplexity (ChatGPT-5)")
+// perplexity (ChatGPT-5)
 // → perplexity-chatgpt-5
 //
-// productSlug("Disney+")
+// Disney+
 // → disney
 //
-// productSlug("AMC+")
+// AMC+
 // → amc
 //
 // ============================================================
@@ -67,6 +67,8 @@ const SITE = {
 function productSlug(name) {
 
     return String(name)
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
@@ -78,13 +80,24 @@ function productSlug(name) {
 // PRODUCT DATABASE
 // ============================================================
 //
-// Format:
-//
-// [name, description, image, category]
-//
 // IMPORTANT:
-// This list is synchronized with the rawSubscriptions you
-// provided.
+//
+// Keep adding products here normally.
+//
+// DO NOT add slug manually.
+//
+// Example:
+//
+// [
+//     "Disney+ Premium",
+//     "Premium Disney streaming",
+//     "/assets/cards/disney-premium.webp",
+//     "Streaming"
+// ]
+//
+// Automatically becomes:
+//
+// /product/disney-premium
 //
 // ============================================================
 
@@ -663,7 +676,7 @@ const rawProducts = [
 
 
 // ============================================================
-// BUILD PRODUCT DATABASE
+// BUILD PRODUCT DATABASE AUTOMATICALLY
 // ============================================================
 
 const products = {};
@@ -672,25 +685,39 @@ for (const [name, description, image, category] of rawProducts) {
 
     const slug = productSlug(name);
 
-    /*
-     * If two products have exactly the same name,
-     * they intentionally resolve to the same slug.
-     *
-     * This matches your existing frontend naming system.
-     */
+    if (!slug) {
+        console.warn(
+            "Product skipped because it generated an empty slug:",
+            name
+        );
+
+        continue;
+    }
+
+    if (products[slug]) {
+
+        console.warn(
+            `Duplicate product slug "${slug}". ` +
+            `Product "${name}" conflicts with "${products[slug].name}".`
+        );
+
+        continue;
+    }
 
     products[slug] = {
+        slug,
         name,
         description,
         image,
         category,
-        page: `/details.html?name=${encodeURIComponent(name)}`
+        page:
+            `/details.html?name=${encodeURIComponent(name)}`
     };
 }
 
 
 // ============================================================
-// HELPER: ESCAPE HTML
+// HTML ESCAPE
 // ============================================================
 
 function escapeHTML(value) {
@@ -705,7 +732,7 @@ function escapeHTML(value) {
 
 
 // ============================================================
-// HELPER: SAFE JSON
+// SAFE JSON
 // ============================================================
 
 function safeJSON(value) {
@@ -720,7 +747,7 @@ function safeJSON(value) {
 
 
 // ============================================================
-// HELPER: ABSOLUTE URL
+// ABSOLUTE URL
 // ============================================================
 
 function absoluteURL(path) {
@@ -745,11 +772,7 @@ function getSocialImage(product) {
 
     const image = product.image || "";
 
-    /*
-     * SVG images are not ideal for social preview crawlers.
-     * Use the main logo as a safe fallback.
-     */
-
+    // SVG is not ideal for WhatsApp/Facebook previews.
     if (/\.svg(?:\?|#|$)/i.test(image)) {
         return "/assets/logo.png";
     }
@@ -769,9 +792,10 @@ function getImageMimeType(imageURL) {
         .split("#")[0]
         .toLowerCase();
 
-    if (cleanURL.endsWith(".jpg") ||
-        cleanURL.endsWith(".jpeg")) {
-
+    if (
+        cleanURL.endsWith(".jpg") ||
+        cleanURL.endsWith(".jpeg")
+    ) {
         return "image/jpeg";
     }
 
@@ -794,7 +818,7 @@ function getImageMimeType(imageURL) {
 function getProductSlug(req) {
 
     // --------------------------------------------------------
-    // Direct API:
+    // API:
     //
     // /api/product?slug=netflix-premium
     // --------------------------------------------------------
@@ -821,20 +845,26 @@ function getProductSlug(req) {
 
 
     // --------------------------------------------------------
-    // Clean URL:
+    // CLEAN URL:
     //
     // /product/netflix-premium
     // --------------------------------------------------------
 
-    const rawURL = req.url || "";
+    const rawURL =
+        req.url || "";
 
-    const pathname = rawURL.split("?")[0];
+    const pathname =
+        rawURL.split("?")[0];
 
-    const match = pathname.match(
-        /^\/product\/([^/]+)\/?$/
-    );
+    const match =
+        pathname.match(
+            /^\/product\/([^/]+)\/?$/
+        );
 
-    if (!match || !match[1]) {
+    if (
+        !match ||
+        !match[1]
+    ) {
         return "";
     }
 
@@ -884,7 +914,9 @@ function send404(res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Product Not Found | NEXT LEVEL SUBS</title>
+    <title>
+        Product Not Found | NEXT LEVEL SUBS
+    </title>
 
     <style>
 
@@ -913,9 +945,11 @@ function send404(res) {
     </p>
 
     <p>
+
         <a href="${escapeHTML(SITE.domain)}">
             Return to NEXT LEVEL SUBS
         </a>
+
     </p>
 
 </body>
@@ -931,9 +965,9 @@ function send404(res) {
 
 module.exports = function handler(req, res) {
 
-    // --------------------------------------------------------
-    // GET / HEAD only
-    // --------------------------------------------------------
+    // ========================================================
+    // METHOD CHECK
+    // ========================================================
 
     if (
         req.method !== "GET" &&
@@ -947,32 +981,39 @@ module.exports = function handler(req, res) {
             "GET, HEAD"
         );
 
-        return res.end("Method Not Allowed");
+        return res.end(
+            "Method Not Allowed"
+        );
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // FIND PRODUCT
-    // --------------------------------------------------------
+    // ========================================================
 
-    const slug = getProductSlug(req);
+    const slug =
+        getProductSlug(req);
 
-    const product = products[slug];
+    const product =
+        products[slug];
+
 
     if (!product) {
         return send404(res);
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // URLS
-    // --------------------------------------------------------
+    // ========================================================
 
     const productURL =
         `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
     const imageURL =
-        absoluteURL(getSocialImage(product));
+        absoluteURL(
+            getSocialImage(product)
+        );
 
     const destinationURL =
         absoluteURL(product.page);
@@ -981,9 +1022,9 @@ module.exports = function handler(req, res) {
         getImageMimeType(imageURL);
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // SEO
-    // --------------------------------------------------------
+    // ========================================================
 
     const title =
         `${product.name} Subscription | NEXT LEVEL SUBS`;
@@ -995,81 +1036,130 @@ module.exports = function handler(req, res) {
         `${product.name} - NEXT LEVEL SUBS`;
 
 
-    // --------------------------------------------------------
-    // JSON-LD PRODUCT
-    // --------------------------------------------------------
+    // ========================================================
+    // PRODUCT JSON-LD
+    // ========================================================
 
     const productSchema = {
 
-        "@context": "https://schema.org",
+        "@context":
+            "https://schema.org",
 
-        "@type": "Product",
+        "@type":
+            "Product",
 
-        "name": product.name,
+        "name":
+            product.name,
 
-        "description": description,
+        "description":
+            description,
 
         "image": [
             imageURL
         ],
 
-        "url": productURL,
+        "url":
+            productURL,
 
-        "category": product.category,
+        "category":
+            product.category,
 
         "brand": {
-            "@type": "Brand",
-            "name": SITE.name
+
+            "@type":
+                "Brand",
+
+            "name":
+                SITE.name
+
         },
 
         "seller": {
-            "@type": "Organization",
-            "name": SITE.name,
-            "url": SITE.domain
+
+            "@type":
+                "Organization",
+
+            "name":
+                SITE.name,
+
+            "url":
+                SITE.domain
+
         }
+
     };
 
 
-    // --------------------------------------------------------
-    // BREADCRUMB
-    // --------------------------------------------------------
+    // ========================================================
+    // BREADCRUMB JSON-LD
+    // ========================================================
 
     const breadcrumbSchema = {
 
-        "@context": "https://schema.org",
+        "@context":
+            "https://schema.org",
 
-        "@type": "BreadcrumbList",
+        "@type":
+            "BreadcrumbList",
 
         "itemListElement": [
 
             {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": SITE.domain
+
+                "@type":
+                    "ListItem",
+
+                "position":
+                    1,
+
+                "name":
+                    "Home",
+
+                "item":
+                    SITE.domain
+
             },
 
             {
-                "@type": "ListItem",
-                "position": 2,
-                "name": product.category,
-                "item": `${SITE.domain}/`
+
+                "@type":
+                    "ListItem",
+
+                "position":
+                    2,
+
+                "name":
+                    product.category,
+
+                "item":
+                    SITE.domain
+
             },
 
             {
-                "@type": "ListItem",
-                "position": 3,
-                "name": product.name,
-                "item": productURL
+
+                "@type":
+                    "ListItem",
+
+                "position":
+                    3,
+
+                "name":
+                    product.name,
+
+                "item":
+                    productURL
+
             }
 
         ]
+
     };
 
 
-    // --------------------------------------------------------
-    // HEADERS
-    // --------------------------------------------------------
+    // ========================================================
+    // RESPONSE HEADERS
+    // ========================================================
 
     res.statusCode = 200;
 
@@ -1099,13 +1189,43 @@ module.exports = function handler(req, res) {
     );
 
 
-    // --------------------------------------------------------
-    // HEAD
-    // --------------------------------------------------------
+    // ========================================================
+    // HEAD REQUEST
+    // ========================================================
 
     if (req.method === "HEAD") {
         return res.end();
     }
+
+
+    // ========================================================
+    // CLIENT PRODUCT MAP
+    // ========================================================
+
+    const clientProductMap =
+        Object.fromEntries(
+
+            Object.entries(products)
+                .map(
+                    ([slugValue, productData]) => [
+
+                        slugValue,
+
+                        {
+                            slug:
+                                slugValue,
+
+                            name:
+                                productData.name,
+
+                            page:
+                                productData.page
+
+                        }
+
+                    ]
+                )
+        );
 
 
     // ========================================================
@@ -1126,7 +1246,9 @@ module.exports = function handler(req, res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>${escapeHTML(title)}</title>
+    <title>
+        ${escapeHTML(title)}
+    </title>
 
     <meta
         name="description"
@@ -1258,7 +1380,7 @@ ${safeJSON(breadcrumbSchema)}
 
 
     <!-- =====================================================
-         BASIC PAGE STYLE
+         PAGE STYLE
          ===================================================== -->
 
     <style>
@@ -1296,6 +1418,7 @@ ${safeJSON(breadcrumbSchema)}
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             font-family: Arial, sans-serif;
@@ -1343,8 +1466,14 @@ ${safeJSON(breadcrumbSchema)}
     "use strict";
 
 
+    // ========================================================
+    // IFRAME
+    // ========================================================
+
     const frame =
-        document.getElementById("productFrame");
+        document.getElementById(
+            "productFrame"
+        );
 
 
     if (!frame) {
@@ -1352,71 +1481,53 @@ ${safeJSON(breadcrumbSchema)}
     }
 
 
-    /*
-     * -------------------------------------------------------
-     * PRODUCT DATABASE FOR THE CLIENT
-     * -------------------------------------------------------
-     *
-     * Only slug/name/page information is exposed here.
-     *
-     * This allows the iframe to communicate with the parent
-     * page without changing details.html.
-     */
+    // ========================================================
+    // PRODUCT MAP
+    // ========================================================
 
     const productMap =
-        ${safeJSON(
-            Object.fromEntries(
-                Object.entries(products).map(
-                    ([slug, product]) => [
-                        slug,
-                        {
-                            name: product.name,
-                            page: product.page
-                        }
-                    ]
-                )
-            )
-        )};
+        ${safeJSON(clientProductMap)};
 
 
-    /*
-     * -------------------------------------------------------
-     * CURRENT PRODUCT
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // CURRENT PRODUCT
+    // ========================================================
 
     let currentSlug =
         ${safeJSON(slug)};
 
 
-    let ignoreNextFrameLoad = false;
+    // ========================================================
+    // FLAG
+    // ========================================================
+
+    let loadingFromHistory =
+        false;
 
 
-    /*
-     * -------------------------------------------------------
-     * CONVERT DETAILS URL → PRODUCT SLUG
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // GET SLUG FROM details.html URL
+    // ========================================================
 
     function getSlugFromDetailsURL(url) {
 
         try {
 
-            const parsed =
-                new URL(url, window.location.origin);
+            const parsedURL =
+                new URL(
+                    url,
+                    window.location.origin
+                );
 
-
-            /*
-             * We only care about details.html pages.
-             */
 
             const pathname =
-                parsed.pathname.toLowerCase();
+                parsedURL.pathname.toLowerCase();
 
 
             if (
-                !pathname.endsWith("/details.html") &&
-                pathname !== "/details.html"
+                !pathname.endsWith(
+                    "/details.html"
+                )
             ) {
 
                 return null;
@@ -1424,7 +1535,9 @@ ${safeJSON(breadcrumbSchema)}
 
 
             const name =
-                parsed.searchParams.get("name");
+                parsedURL.searchParams.get(
+                    "name"
+                );
 
 
             if (!name) {
@@ -1432,85 +1545,118 @@ ${safeJSON(breadcrumbSchema)}
             }
 
 
-            const decodedName =
-                decodeURIComponent(name);
-
-
             const normalizedName =
-                decodedName
+                name
                     .trim()
                     .toLowerCase();
 
 
-            /*
-             * Find the matching product using the same slug
-             * algorithm as the server.
-             */
-
             for (
-                const [productSlugValue, productData]
+                const [
+                    slugValue,
+                    productData
+                ]
                 of Object.entries(productMap)
             ) {
 
                 if (
                     productData.name
                         .trim()
-                        .toLowerCase() === normalizedName
+                        .toLowerCase() ===
+                    normalizedName
                 ) {
 
-                    return productSlugValue;
+                    return slugValue;
                 }
+
             }
 
 
             return null;
 
-        } catch (error) {
+        } catch {
 
             return null;
         }
+
     }
 
 
-    /*
-     * -------------------------------------------------------
-     * CHANGE PARENT URL
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // GET SLUG FROM PARENT URL
+    // ========================================================
 
-    function updateParentProductURL(
-        newSlug,
-        usePushState
-    ) {
+    function getSlugFromParentURL() {
 
-        if (!newSlug) {
-            return;
+        const pathname =
+            window.location.pathname;
+
+
+        const match =
+            pathname.match(
+                /^\/product\/([^/]+)\/?$/
+            );
+
+
+        if (
+            !match ||
+            !match[1]
+        ) {
+
+            return null;
         }
 
 
-        const product =
-            productMap[newSlug];
+        try {
+
+            return decodeURIComponent(
+                match[1]
+            )
+                .trim()
+                .toLowerCase();
+
+        } catch {
+
+            return match[1]
+                .trim()
+                .toLowerCase();
+        }
+
+    }
 
 
-        if (!product) {
+    // ========================================================
+    // UPDATE CLEAN URL
+    // ========================================================
+
+    function updateProductURL(
+        newSlug,
+        push
+    ) {
+
+        if (
+            !newSlug ||
+            !productMap[newSlug]
+        ) {
+
             return;
         }
 
 
         const newURL =
             "/product/" +
-            encodeURIComponent(newSlug);
+            encodeURIComponent(
+                newSlug
+            );
 
 
         const currentURL =
             window.location.pathname;
 
 
-        /*
-         * Don't create duplicate history entries.
-         */
-
-        if (currentURL === newURL) {
+        if (
+            currentURL === newURL
+        ) {
 
             currentSlug =
                 newSlug;
@@ -1523,12 +1669,18 @@ ${safeJSON(breadcrumbSchema)}
             newSlug;
 
 
-        if (usePushState) {
+        const state = {
+
+            productSlug:
+                newSlug
+
+        };
+
+
+        if (push) {
 
             window.history.pushState(
-                {
-                    productSlug: newSlug
-                },
+                state,
                 "",
                 newURL
             );
@@ -1536,23 +1688,20 @@ ${safeJSON(breadcrumbSchema)}
         } else {
 
             window.history.replaceState(
-                {
-                    productSlug: newSlug
-                },
+                state,
                 "",
                 newURL
             );
         }
+
     }
 
 
-    /*
-     * -------------------------------------------------------
-     * LOAD PRODUCT INTO EXISTING details.html
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // LOAD PRODUCT
+    // ========================================================
 
-    function loadProductIntoFrame(
+    function loadProduct(
         newSlug
     ) {
 
@@ -1565,13 +1714,8 @@ ${safeJSON(breadcrumbSchema)}
         }
 
 
-        /*
-         * Prevent the iframe load event from creating another
-         * parent history entry while this navigation was caused
-         * by browser Back/Forward.
-         */
-
-        ignoreNextFrameLoad = true;
+        loadingFromHistory =
+            true;
 
 
         frame.src =
@@ -1579,21 +1723,47 @@ ${safeJSON(breadcrumbSchema)}
     }
 
 
-    /*
-     * -------------------------------------------------------
-     * INTERCEPT PRODUCT LINKS INSIDE details.html
-     * -------------------------------------------------------
-     *
-     * If details.html contains links such as:
-     *
-     * details.html?name=Spotify Premium
-     *
-     * they are converted into:
-     *
-     * /product/spotify-premium
-     *
-     * in the parent browser.
-     */
+    // ========================================================
+    // NAVIGATE TO PRODUCT
+    // ========================================================
+
+    function navigateToProduct(
+        newSlug
+    ) {
+
+        if (
+            !newSlug ||
+            !productMap[newSlug]
+        ) {
+
+            return;
+        }
+
+
+        if (
+            newSlug === currentSlug
+        ) {
+
+            return;
+        }
+
+
+        updateProductURL(
+            newSlug,
+            true
+        );
+
+
+        loadProduct(
+            newSlug
+        );
+
+    }
+
+
+    // ========================================================
+    // INSTALL NAVIGATION BRIDGE
+    // ========================================================
 
     function installNavigationBridge() {
 
@@ -1608,30 +1778,45 @@ ${safeJSON(breadcrumbSchema)}
             }
 
 
-            /*
-             * Avoid installing the same bridge repeatedly.
-             */
-
             if (
                 frameDoc.documentElement
                     .dataset
-                    .nextLevelNavigationInstalled === "true"
+                    .nextLevelNavigationInstalled ===
+                "true"
             ) {
 
                 return;
             }
 
 
-            frameDoc.documentElement.dataset
-                .nextLevelNavigationInstalled = "true";
+            frameDoc.documentElement
+                .dataset
+                .nextLevelNavigationInstalled =
+                "true";
 
 
             frameDoc.addEventListener(
                 "click",
                 function (event) {
 
+                    const target =
+                        event.target;
+
+
+                    if (
+                        !target ||
+                        typeof target.closest !==
+                            "function"
+                    ) {
+
+                        return;
+                    }
+
+
                     const link =
-                        event.target.closest("a");
+                        target.closest(
+                            "a"
+                        );
 
 
                     if (!link) {
@@ -1640,7 +1825,9 @@ ${safeJSON(breadcrumbSchema)}
 
 
                     const href =
-                        link.getAttribute("href");
+                        link.getAttribute(
+                            "href"
+                        );
 
 
                     if (!href) {
@@ -1648,11 +1835,9 @@ ${safeJSON(breadcrumbSchema)}
                     }
 
 
-                    /*
-                     * -----------------------------------------
-                     * HOME
-                     * -----------------------------------------
-                     */
+                    // ==================================================
+                    // HOME
+                    // ==================================================
 
                     if (
                         href === "/" ||
@@ -1663,47 +1848,33 @@ ${safeJSON(breadcrumbSchema)}
                         event.preventDefault();
                         event.stopPropagation();
 
-                        window.location.href = "/";
+
+                        window.location.href =
+                            "/";
+
 
                         return;
                     }
 
 
-                    /*
-                     * -----------------------------------------
-                     * DETAILS PRODUCT LINK
-                     * -----------------------------------------
-                     */
+                    // ==================================================
+                    // DETAILS.HTML PRODUCT LINK
+                    // ==================================================
 
-                    const productSlugValue =
+                    const detailsSlug =
                         getSlugFromDetailsURL(
                             href
                         );
 
 
-                    if (productSlugValue) {
+                    if (detailsSlug) {
 
                         event.preventDefault();
                         event.stopPropagation();
 
 
-                        /*
-                         * Update browser history.
-                         */
-
-                        updateParentProductURL(
-                            productSlugValue,
-                            true
-                        );
-
-
-                        /*
-                         * Load the product without causing
-                         * a full parent-page reload.
-                         */
-
-                        loadProductIntoFrame(
-                            productSlugValue
+                        navigateToProduct(
+                            detailsSlug
                         );
 
 
@@ -1711,15 +1882,9 @@ ${safeJSON(breadcrumbSchema)}
                     }
 
 
-                    /*
-                     * -----------------------------------------
-                     * CLEAN PRODUCT LINK
-                     * -----------------------------------------
-                     *
-                     * Also support links that are already:
-                     *
-                     * /product/spotify-premium
-                     */
+                    // ==================================================
+                    // CLEAN PRODUCT LINK
+                    // ==================================================
 
                     try {
 
@@ -1731,53 +1896,55 @@ ${safeJSON(breadcrumbSchema)}
 
 
                         if (
-                            parsedURL.origin ===
+                            parsedURL.origin !==
                             window.location.origin
                         ) {
 
-                            const productMatch =
-                                parsedURL.pathname.match(
-                                    /^\/product\/([^/]+)\/?$/
-                                );
-
-
-                            if (
-                                productMatch &&
-                                productMatch[1]
-                            ) {
-
-                                const targetSlug =
-                                    decodeURIComponent(
-                                        productMatch[1]
-                                    )
-                                    .trim()
-                                    .toLowerCase();
-
-
-                                if (
-                                    productMap[targetSlug]
-                                ) {
-
-                                    event.preventDefault();
-                                    event.stopPropagation();
-
-
-                                    updateParentProductURL(
-                                        targetSlug,
-                                        true
-                                    );
-
-
-                                    loadProductIntoFrame(
-                                        targetSlug
-                                    );
-
-                                    return;
-                                }
-                            }
+                            return;
                         }
 
-                    } catch (error) {
+
+                        const productMatch =
+                            parsedURL.pathname.match(
+                                /^\/product\/([^/]+)\/?$/
+                            );
+
+
+                        if (
+                            !productMatch ||
+                            !productMatch[1]
+                        ) {
+
+                            return;
+                        }
+
+
+                        const targetSlug =
+                            decodeURIComponent(
+                                productMatch[1]
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            !productMap[targetSlug]
+                        ) {
+
+                            return;
+                        }
+
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+
+                        navigateToProduct(
+                            targetSlug
+                        );
+
+
+                    } catch {
 
                         // Ignore invalid URLs.
                     }
@@ -1789,52 +1956,50 @@ ${safeJSON(breadcrumbSchema)}
         } catch (error) {
 
             console.warn(
-                "Product navigation bridge unavailable.",
+                "Navigation bridge unavailable:",
                 error
             );
         }
+
     }
 
 
-    /*
-     * -------------------------------------------------------
-     * IFRAME LOAD
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // IFRAME LOAD
+    // ========================================================
 
     frame.addEventListener(
         "load",
         function () {
 
-            /*
-             * Install product-link navigation bridge.
-             */
-
             installNavigationBridge();
 
 
-            /*
-             * If this load was caused by Back/Forward,
-             * don't create another history entry.
-             */
+            // ------------------------------------------------
+            // Product was loaded because of Back / Forward.
+            // ------------------------------------------------
 
-            if (ignoreNextFrameLoad) {
+            if (
+                loadingFromHistory
+            ) {
 
-                ignoreNextFrameLoad = false;
+                loadingFromHistory =
+                    false;
 
                 return;
             }
 
 
-            /*
-             * Detect whether details.html itself navigated
-             * to another product.
-             */
+            // ------------------------------------------------
+            // Detect direct navigation inside details.html.
+            // ------------------------------------------------
 
             try {
 
                 const frameURL =
-                    frame.contentWindow.location.href;
+                    frame.contentWindow
+                        .location
+                        .href;
 
 
                 const detectedSlug =
@@ -1845,54 +2010,40 @@ ${safeJSON(breadcrumbSchema)}
 
                 if (
                     detectedSlug &&
-                    detectedSlug !== currentSlug
+                    detectedSlug !==
+                        currentSlug
                 ) {
 
-                    updateParentProductURL(
+                    updateProductURL(
                         detectedSlug,
                         true
                     );
                 }
 
-            } catch (error) {
+            } catch {
 
-                console.warn(
-                    "Unable to synchronize product URL."
-                );
+                // Ignore iframe URL errors.
             }
 
         }
     );
 
 
-    /*
-     * -------------------------------------------------------
-     * BROWSER BACK / FORWARD
-     * -------------------------------------------------------
-     *
-     * This is the important part.
-     *
-     * When the user clicks:
-     *
-     *     Back
-     *
-     * the parent URL changes back to the previous product.
-     *
-     * We then load that product into details.html.
-     *
-     * No iframe history is pushed into the parent history.
-     */
+    // ========================================================
+    // BROWSER BACK / FORWARD
+    // ========================================================
 
     window.addEventListener(
         "popstate",
         function (event) {
 
-            let targetSlug = null;
+            let targetSlug =
+                null;
 
 
-            /*
-             * First use the history state.
-             */
+            // ------------------------------------------------
+            // History state
+            // ------------------------------------------------
 
             if (
                 event.state &&
@@ -1905,41 +2056,21 @@ ${safeJSON(breadcrumbSchema)}
             }
 
 
-            /*
-             * Otherwise read the URL.
-             */
+            // ------------------------------------------------
+            // URL fallback
+            // ------------------------------------------------
 
             if (!targetSlug) {
 
-                const pathname =
-                    window.location.pathname;
-
-
-                const match =
-                    pathname.match(
-                        /^\/product\/([^/]+)\/?$/
-                    );
-
-
-                if (
-                    match &&
-                    match[1]
-                ) {
-
-                    targetSlug =
-                        decodeURIComponent(
-                            match[1]
-                        )
-                        .trim()
-                        .toLowerCase();
-                }
+                targetSlug =
+                    getSlugFromParentURL();
             }
 
 
-            /*
-             * If the Back button leaves the product route,
-             * allow the browser to navigate normally.
-             */
+            // ------------------------------------------------
+            // Browser left product route.
+            // Let browser continue normally.
+            // ------------------------------------------------
 
             if (
                 !targetSlug ||
@@ -1950,11 +2081,16 @@ ${safeJSON(breadcrumbSchema)}
             }
 
 
+            // ------------------------------------------------
+            // Load previous/next product.
+            // Do NOT push another history entry.
+            // ------------------------------------------------
+
             currentSlug =
                 targetSlug;
 
 
-            loadProductIntoFrame(
+            loadProduct(
                 targetSlug
             );
 
@@ -1962,20 +2098,21 @@ ${safeJSON(breadcrumbSchema)}
     );
 
 
-    /*
-     * -------------------------------------------------------
-     * INITIAL HISTORY STATE
-     * -------------------------------------------------------
-     */
+    // ========================================================
+    // INITIAL HISTORY STATE
+    // ========================================================
 
     window.history.replaceState(
         {
-            productSlug: currentSlug
+            productSlug:
+                currentSlug
         },
         "",
-        window.location.pathname
+        "/product/" +
+            encodeURIComponent(
+                currentSlug
+            )
     );
-
 
 })();
 
@@ -1990,8 +2127,13 @@ ${safeJSON(breadcrumbSchema)}
 
     <div class="fallback">
 
-        <a href="${escapeHTML(destinationURL)}">
-            Continue to ${escapeHTML(product.name)}
+        <a
+            href="${escapeHTML(destinationURL)}"
+        >
+
+            Continue to
+            ${escapeHTML(product.name)}
+
         </a>
 
     </div>
@@ -2004,6 +2146,10 @@ ${safeJSON(breadcrumbSchema)}
 </html>
 `;
 
+
+    // ========================================================
+    // SEND RESPONSE
+    // ========================================================
 
     return res.end(html);
 };
