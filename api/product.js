@@ -130,25 +130,11 @@ function safeJSON(value) {
         .replace(/\u2029/g, "\\u2029");
 }
 
-function absoluteURL(path) {
-    if (!path) return SITE.domain;
-    if (/^https?:\/\//i.test(path)) return path;
-    return `${SITE.domain}${path.startsWith("/") ? "" : "/"}${path}`;
-}
-
-function productSlug(name) {
-    return String(name || "")
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
-
 function buildProductIndex() {
     const index = Object.create(null);
     Object.keys(products).forEach((key) => {
         index[key.toLowerCase()] = key;
-        const generated = productSlug(products[key].name);
+        const generated = String(products[key].name || "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
         if (generated) index[generated] = key;
     });
     Object.keys(slugAliases).forEach((alias) => {
@@ -169,7 +155,7 @@ function resolveProductKey(value) {
     if (products[decoded]) return decoded;
     if (productIndex[decoded]) return productIndex[decoded];
 
-    const generated = productSlug(decoded);
+    const generated = String(decoded).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
     return productIndex[generated] || "";
 }
 
@@ -231,6 +217,7 @@ module.exports = function handler(req, res) {
 
         var SITE_HOME = "${escapeHTML(SITE.domain)}/";
         var CURRENT_SLUG = "${escapeHTML(slug)}";
+        var frame = document.getElementById("productFrame");
 
         var PRODUCT_MAP = ${safeJSON(
             Object.keys(products).reduce((map, key) => {
@@ -239,8 +226,13 @@ module.exports = function handler(req, res) {
             }, {})
         )};
 
+        function goHome() {
+            window.top.location.href = SITE_HOME;
+        }
+
         function navigateToProduct(targetSlug) {
-            if (!targetSlug || targetSlug === CURRENT_SLUG) return;
+            if (!targetSlug) return;
+            if (targetSlug === CURRENT_SLUG) return;
             window.top.location.href = SITE_HOME + "products/" + encodeURIComponent(targetSlug);
         }
 
@@ -257,45 +249,97 @@ module.exports = function handler(req, res) {
             return PRODUCT_MAP[generated] ? generated : "";
         }
 
-        // Handle direct postMessage from details.html
+        function isHomeHref(href) {
+            if (!href) return false;
+            var lower = href.toLowerCase().trim();
+            return lower === "/" || 
+                   lower === "/index.html" || 
+                   lower === SITE_HOME.toLowerCase() || 
+                   lower.indexOf("index.html") !== -1;
+        }
+
+        // Listen to postMessage from frame
         window.addEventListener("message", function (event) {
             if (!event.data) return;
+            if (event.data.type === "NLS_GO_HOME") {
+                goHome();
+                return;
+            }
             if (event.data.type === "NLS_NAVIGATE_PRODUCT" && event.data.productName) {
                 var targetSlug = findSlugFromName(event.data.productName);
                 if (targetSlug) navigateToProduct(targetSlug);
             }
         });
 
-        // Intercept link clicks as backup
-        document.getElementById("productFrame").addEventListener("load", function () {
+        // Intercept click events inside iframe
+        frame.addEventListener("load", function () {
             try {
-                var doc = this.contentWindow.document;
-                doc.addEventListener("click", function (e) {
-                    var a = e.target.closest("a");
-                    if (!a) return;
-                    var href = a.getAttribute("href");
-                    if (!href) return;
+                var frameWin = frame.contentWindow;
+                var frameDoc = frameWin.document;
 
-                    if (href === "/" || href === "/index.html") {
-                        e.preventDefault();
-                        window.top.location.href = SITE_HOME;
-                        return;
+                // Override internal history back to force full top-page navigation
+                try {
+                    frameWin.history.back = function () { goHome(); };
+                    frameWin.history.go = function (delta) {
+                        if (typeof delta === "number" && delta < 0) goHome();
+                    };
+                } catch (_) {}
+
+                frameDoc.addEventListener("click", function (e) {
+                    var a = e.target.closest("a");
+                    if (a) {
+                        var href = a.getAttribute("href") || "";
+                        
+                        if (isHomeHref(href)) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            goHome();
+                            return;
+                        }
+
+                        try {
+                            var url = new URL(href, frameWin.location.href);
+                            if (isHomeHref(url.pathname)) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                goHome();
+                                return;
+                            }
+
+                            var name = url.searchParams.get("name");
+                            if (name) {
+                                var matchedSlug = findSlugFromName(name);
+                                if (matchedSlug && matchedSlug !== CURRENT_SLUG) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    navigateToProduct(matchedSlug);
+                                    return;
+                                }
+                            }
+                        } catch (_) {}
                     }
 
-                    try {
-                        var url = new URL(href, doc.location.href);
-                        var name = url.searchParams.get("name");
-                        if (name) {
-                            var matchedSlug = findSlugFromName(name);
-                            if (matchedSlug && matchedSlug !== CURRENT_SLUG) {
-                                e.preventDefault();
-                                navigateToProduct(matchedSlug);
-                            }
+                    var btn = e.target.closest("button, [role='button'], .back-btn, .home-btn");
+                    if (btn) {
+                        var txt = (btn.innerText || btn.textContent || "").trim().toLowerCase();
+                        if (txt === "home" || txt === "back" || txt.indexOf("back to") !== -1 || txt.indexOf("go home") !== -1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            goHome();
                         }
-                    } catch (_) {}
+                    }
                 }, true);
-            } catch (_) {}
+
+            } catch (err) {
+                console.warn("Frame navigation handler warning:", err);
+            }
         });
+
+        // Ensure browser Back button forces top window home navigation
+        window.addEventListener("popstate", function () {
+            goHome();
+        });
+
     })();
     </script>
 </body>
