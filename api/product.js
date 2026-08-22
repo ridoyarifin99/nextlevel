@@ -5,7 +5,7 @@
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
-    domain: "https://nextlevelsubs.com",
+    domain: "https://www.nextlevelsubs.com",
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
     locale: "en_US",
