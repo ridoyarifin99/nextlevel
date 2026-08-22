@@ -5100,150 +5100,38 @@ function init() {
     // Show loading/skeleton state
     showSkeletonLoaders();
 
-    // Load cart first
-    loadCart();
-
-    // Get product information from URL
-    const productURL = getProductFromURL();
-
-    // Give the browser a moment to render the skeleton
-    setTimeout(() => {
-
-        if (!productURL) {
-            console.warn('No product specified in URL.');
-            window.location.href = '/';
-            return;
-        }
-
-        let product = null;
-
-        // --------------------------------------------------------
-        // SEO URL
-        // /product/netflix-premium
-        // --------------------------------------------------------
-
-        if (productURL.type === 'slug') {
-
-            const slug = productURL.value.toLowerCase();
-
-            product = products.find(p => {
-                return productSlug(p.name) === slug;
-            });
-        }
-
-        // --------------------------------------------------------
-        // Legacy URL
-        // details.html?name=Netflix%20Premium
-        // --------------------------------------------------------
-
-        if (productURL.type === 'name') {
-
-            const requestedName = productURL.value.trim().toLowerCase();
-
-            product = products.find(p => {
-                return p.name.trim().toLowerCase() === requestedName;
-            });
-        }
-
-        // --------------------------------------------------------
-        // Product not found
-        // --------------------------------------------------------
-
-        if (!product) {
-
-            console.error(
-                'Product not found:',
-                productURL.value
-            );
-
-            window.location.href = '/';
-            return;
-        }
-
-        // --------------------------------------------------------
-        // Load product
-        // --------------------------------------------------------
-
-        loadProduct(product.name);
-
-        // Hide loading overlay
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove('active');
-        }
-
-    }, 300);
-
-
-    // ============================================================
-    // SCROLL BUTTONS
-    // ============================================================
-
-    window.addEventListener('scroll', () => {
-
-        if (window.pageYOffset > 300) {
-
-            if (fab) {
-                fab.style.opacity = '1';
-                fab.style.visibility = 'visible';
-            }
-
-            if (whatsappFab) {
-                whatsappFab.style.opacity = '1';
-                whatsappFab.style.visibility = 'visible';
-            }
-
-        } else {
-
-            if (fab) {
-                fab.style.opacity = '0';
-                fab.style.visibility = 'hidden';
-            }
-
-            if (whatsappFab) {
-                whatsappFab.style.opacity = '0';
-                whatsappFab.style.visibility = 'hidden';
-            }
-        }
-    });
-}
-// ============================================================
-// GET PRODUCT FROM URL
-// Supports:
-// /product/netflix-premium
-// /product/amazon-prime-video
-// details.html?name=Netflix%20Premium
-// ============================================================
-
-function getProductFromURL() {
-    const path = window.location.pathname.replace(/\/+$/, '');
-
-    // New SEO-friendly URL:
-    // /product/netflix-premium
-    const productMatch = path.match(/^\/product\/([^/]+)$/i);
-
-    if (productMatch) {
-        return {
-            type: 'slug',
-            value: decodeURIComponent(productMatch[1])
-        };
-    }
-
-    // Legacy URL:
-    // details.html?name=Netflix%20Premium
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get('name');
-
-    if (name) {
-        return {
-            type: 'name',
-            value: decodeURIComponent(name)
-        };
-    }
-
-    return null;
-}
+              
+            // Load cart from localStorage
+            loadCart();
             
-
+            // Simulate loading delay
+            setTimeout(() => {
+                if (productName) {
+                    loadProduct(productName);
+                } else {
+                    // If no product name, redirect to index
+                    window.location.href = 'index.html';
+                }
+                
+                // Hide loading overlay
+                loadingOverlay.classList.remove('active');
+            }, 1500);
+            
+            // Show/hide scroll to top button
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    fab.style.opacity = '1';
+                    fab.style.visibility = 'visible';
+                    whatsappFab.style.opacity = '1';
+                    whatsappFab.style.visibility = 'visible';
+                } else {
+                    fab.style.opacity = '0';
+                    fab.style.visibility = 'hidden';
+                    whatsappFab.style.opacity = '0';
+                    whatsappFab.style.visibility = 'hidden';
+                }
+            });
+        }
         
         // Show skeleton loaders for the page
         function showSkeletonLoaders() {
@@ -5318,6 +5206,63 @@ function getProductFromURL() {
                 `;
                 relatedProducts.appendChild(skeletonCard);
             }
+        }
+        
+        // Load cart from localStorage
+        function loadCart() {
+            const savedCart = localStorage.getItem('streamHubCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+            }
+            updateCartCount();
+        }
+        
+        // Save cart to localStorage
+        function saveCart() {
+            localStorage.setItem('streamHubCart', JSON.stringify(cart));
+        }
+        
+        // Load product details
+        function loadProduct(productName) {
+            // Find the product
+            const productIndex = products.findIndex(p => p.name === productName);
+            
+            if (productIndex === -1) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Create a deep copy of the product to avoid modifying the original
+            currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+            
+            // Ensure required arrays exist
+            if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
+                currentProduct.customerReviews = [];
+            }
+            
+            if (!currentProduct.faq || !Array.isArray(currentProduct.faq)) {
+                currentProduct.faq = [];
+            }
+            
+            // Update breadcrumb
+            breadcrumbProduct.textContent = currentProduct.name;
+            
+            // Reset current slide
+            currentSlide = 0;
+            
+            // Render product details
+            renderProductDetails();
+            
+            // Load default tab content
+            switchTab('description');
+            
+            // Load related products
+            loadRelatedProducts();
+            
+            // Refresh AOS after dynamically adding content
+            setTimeout(() => {
+                AOS.refresh();
+            }, 100);
         }
         
         
