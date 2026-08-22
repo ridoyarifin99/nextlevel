@@ -100,7 +100,7 @@
                         <i class="fa-solid fa-bars-staggered text-2xl"></i>
                     </button>
                     <div class="logo-container">
-                        <img src="/images/next_level.png" alt="Next Level Estore Logo" class="logo-image">
+                        <img src="/images/next_level.png" alt="Next Level Subs Logo" class="logo-image">
                         <div class="logo-text-container">
                             <div class="logo-text-item" style="color: var(--primary-color);">Trusted</div>
                             <div class="logo-text-item" style="color: var(--primary-color);">Cheap</div>
@@ -470,7 +470,7 @@ toggleButton.addEventListener('click', () => {
             </div>
             
             <div class="footer-bottom" data-aos="fade-up" data-aos-delay="400">
-                <p>&copy; 2025-2026 Next Level Estore. All rights reserved. | Premium Subscriptions Store in Bangladesh</p>
+                <p>&copy; 2025-2026 Next Level Subs. All rights reserved. | Premium Subscriptions Store in Bangladesh</p>
             </div>
         </div>
     </footer>
@@ -507,7 +507,17 @@ toggleButton.addEventListener('click', () => {
         <span id="notificationText">Item added to cart!</span>
     </div>
     
+    
     <script>
+        function productSlug(name) {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+// Your existing product rendering code below
         // Initialize AOS
         AOS.init({
             duration: 800,
@@ -1175,7 +1185,7 @@ function handleInitialPath() {
                 card.innerHTML = `
                     ${bestSellerBadge}
                     ${comboBadge}
-                    <a href="details.html?name=${encodeURIComponent(subscription.name)}" class="card-link">
+                    <a href="/product/${productSlug(subscription.name)}" class="card-link">
                         <div class="product-image-container">
                             ${productImageHTML}
                         </div>

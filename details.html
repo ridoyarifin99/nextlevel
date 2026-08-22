@@ -5244,6 +5244,14 @@
             // Load default tab content
             switchTab('description');
             
+            function productSlug(name) {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+            
             // Load related products
             loadRelatedProducts();
             
@@ -5679,7 +5687,7 @@
             
             relatedProducts.innerHTML = related.map((product, index) => `
                 <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
+                    <a href="/product/${productSlug(product.name)}" class="card-link">
                         <div class="product-image-container">
                             <img src="${product.image}" alt="${product.name}" class="product-image">
                         </div>
