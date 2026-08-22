@@ -10,20 +10,33 @@
 // https://www.nextlevelsubs.com/product/spotify-premium
 //
 // Social crawlers receive SEO + OG metadata.
+//
 // Normal visitors see the existing details.html product page
-// while the browser URL remains clean.
+// while the browser URL remains the clean product URL.
 //
 // IMPORTANT:
-// Product names/images/descriptions below are synchronized with
-// the rawSubscriptions list used by your website.
 //
+// 1. Product slugs are generated automatically.
+// 2. Product names remain synchronized with rawSubscriptions.
+// 3. Existing details.html continues to be used.
+// 4. Browser Back / Forward navigation is handled properly.
+// 5. Product-to-product navigation updates the clean URL.
+// 6. No duplicate product database is required on the frontend.
+// ============================================================
+
+
+// ============================================================
+// SITE CONFIGURATION
 // ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
+
     domain: "https://www.nextlevelsubs.com",
+
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
+
     locale: "en_US"
 };
 
@@ -32,7 +45,7 @@ const SITE = {
 // PRODUCT SLUG GENERATOR
 // ============================================================
 //
-// This matches the slug logic used by your frontend:
+// Examples:
 //
 // productSlug("Netflix Premium")
 // → netflix-premium
@@ -43,9 +56,16 @@ const SITE = {
 // productSlug("perplexity (ChatGPT-5)")
 // → perplexity-chatgpt-5
 //
+// productSlug("Disney+")
+// → disney
+//
+// productSlug("AMC+")
+// → amc
+//
 // ============================================================
 
 function productSlug(name) {
+
     return String(name)
         .toLowerCase()
         .trim()
@@ -58,12 +78,13 @@ function productSlug(name) {
 // PRODUCT DATABASE
 // ============================================================
 //
-// This uses the SAME product names as rawSubscriptions.
-// The slug and details.html URL are generated automatically.
-//
 // Format:
 //
 // [name, description, image, category]
+//
+// IMPORTANT:
+// This list is synchronized with the rawSubscriptions you
+// provided.
 //
 // ============================================================
 
@@ -299,17 +320,6 @@ const rawProducts = [
         "/assets/cards/deezer.svg",
         "Music"
     ],
-
-    // NOTE:
-    // This is intentionally a separate product entry because
-    // your rawSubscriptions contains Amazon Music Unlimited
-    // twice with different prices/durations.
-    //
-    // The URL slug must remain unique.
-    //
-    // Both entries therefore resolve to the same product name
-    // and same clean URL, which is consistent with your current
-    // product naming system.
 
     [
         "Amazon Music Unlimited",
@@ -655,30 +665,19 @@ const rawProducts = [
 // ============================================================
 // BUILD PRODUCT DATABASE
 // ============================================================
-//
-// Instead of manually maintaining:
-//
-// slug
-// name
-// image
-// page
-//
-// we generate them from the SAME product name.
-//
-// This prevents:
-//     /product/netflix-premium
-//     /product/black-box-ai-chat-gpt5
-//     /product/perplexity-chatgpt-5
-//
-// from becoming mismatched with details.html.
-//
-// ============================================================
 
 const products = {};
 
 for (const [name, description, image, category] of rawProducts) {
 
     const slug = productSlug(name);
+
+    /*
+     * If two products have exactly the same name,
+     * they intentionally resolve to the same slug.
+     *
+     * This matches your existing frontend naming system.
+     */
 
     products[slug] = {
         name,
@@ -691,7 +690,7 @@ for (const [name, description, image, category] of rawProducts) {
 
 
 // ============================================================
-// HELPERS
+// HELPER: ESCAPE HTML
 // ============================================================
 
 function escapeHTML(value) {
@@ -705,14 +704,24 @@ function escapeHTML(value) {
 }
 
 
+// ============================================================
+// HELPER: SAFE JSON
+// ============================================================
+
 function safeJSON(value) {
 
     return JSON.stringify(value)
         .replace(/</g, "\\u003c")
         .replace(/>/g, "\\u003e")
-        .replace(/&/g, "\\u0026");
+        .replace(/&/g, "\\u0026")
+        .replace(/\u2028/g, "\\u2028")
+        .replace(/\u2029/g, "\\u2029");
 }
 
+
+// ============================================================
+// HELPER: ABSOLUTE URL
+// ============================================================
 
 function absoluteURL(path) {
 
@@ -731,22 +740,50 @@ function absoluteURL(path) {
 // ============================================================
 // SOCIAL IMAGE
 // ============================================================
-//
-// SVG is unreliable for some social crawlers.
-//
-// If the product image is SVG, use logo.png as fallback.
-//
-// ============================================================
 
 function getSocialImage(product) {
 
     const image = product.image || "";
 
-    if (/\.svg(\?|#|$)/i.test(image)) {
+    /*
+     * SVG images are not ideal for social preview crawlers.
+     * Use the main logo as a safe fallback.
+     */
+
+    if (/\.svg(?:\?|#|$)/i.test(image)) {
         return "/assets/logo.png";
     }
 
     return image;
+}
+
+
+// ============================================================
+// IMAGE MIME TYPE
+// ============================================================
+
+function getImageMimeType(imageURL) {
+
+    const cleanURL = String(imageURL)
+        .split("?")[0]
+        .split("#")[0]
+        .toLowerCase();
+
+    if (cleanURL.endsWith(".jpg") ||
+        cleanURL.endsWith(".jpeg")) {
+
+        return "image/jpeg";
+    }
+
+    if (cleanURL.endsWith(".webp")) {
+        return "image/webp";
+    }
+
+    if (cleanURL.endsWith(".gif")) {
+        return "image/gif";
+    }
+
+    return "image/png";
 }
 
 
@@ -876,11 +913,9 @@ function send404(res) {
     </p>
 
     <p>
-
         <a href="${escapeHTML(SITE.domain)}">
             Return to NEXT LEVEL SUBS
         </a>
-
     </p>
 
 </body>
@@ -891,7 +926,7 @@ function send404(res) {
 
 
 // ============================================================
-// MAIN FUNCTION
+// MAIN HANDLER
 // ============================================================
 
 module.exports = function handler(req, res) {
@@ -917,7 +952,7 @@ module.exports = function handler(req, res) {
 
 
     // --------------------------------------------------------
-    // PRODUCT
+    // FIND PRODUCT
     // --------------------------------------------------------
 
     const slug = getProductSlug(req);
@@ -930,7 +965,7 @@ module.exports = function handler(req, res) {
 
 
     // --------------------------------------------------------
-    // URLs
+    // URLS
     // --------------------------------------------------------
 
     const productURL =
@@ -941,6 +976,9 @@ module.exports = function handler(req, res) {
 
     const destinationURL =
         absoluteURL(product.page);
+
+    const imageMimeType =
+        getImageMimeType(imageURL);
 
 
     // --------------------------------------------------------
@@ -1014,7 +1052,8 @@ module.exports = function handler(req, res) {
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": product.category
+                "name": product.category,
+                "item": `${SITE.domain}/`
             },
 
             {
@@ -1087,9 +1126,7 @@ module.exports = function handler(req, res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        ${escapeHTML(title)}
-    </title>
+    <title>${escapeHTML(title)}</title>
 
     <meta
         name="description"
@@ -1153,7 +1190,7 @@ module.exports = function handler(req, res) {
 
     <meta
         property="og:image:type"
-        content="image/png"
+        content="${escapeHTML(imageMimeType)}"
     >
 
     <meta
@@ -1203,12 +1240,17 @@ module.exports = function handler(req, res) {
 
 
     <!-- =====================================================
-         JSON-LD
+         JSON-LD PRODUCT
          ===================================================== -->
 
     <script type="application/ld+json">
 ${safeJSON(productSchema)}
     </script>
+
+
+    <!-- =====================================================
+         JSON-LD BREADCRUMB
+         ===================================================== -->
 
     <script type="application/ld+json">
 ${safeJSON(breadcrumbSchema)}
@@ -1277,14 +1319,10 @@ ${safeJSON(breadcrumbSchema)}
 
 <body>
 
-    <!--
-        Existing product detail page.
 
-        The iframe keeps the existing details.html
-        implementation while the browser remains on:
-
-        /product/product-slug
-    -->
+<!-- =======================================================
+     EXISTING DETAILS PAGE
+     ======================================================= -->
 
 <iframe
     id="productFrame"
@@ -1293,65 +1331,679 @@ ${safeJSON(breadcrumbSchema)}
     loading="eager"
 ></iframe>
 
+
+<!-- =======================================================
+     NAVIGATION / HISTORY BRIDGE
+     ======================================================= -->
+
 <script>
+
 (function () {
-    const frame = document.getElementById("productFrame");
 
-    if (!frame) return;
+    "use strict";
 
-    // Prevent the iframe page from creating an unwanted
-    // navigation state in the parent page.
-    frame.addEventListener("load", function () {
+
+    const frame =
+        document.getElementById("productFrame");
+
+
+    if (!frame) {
+        return;
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * PRODUCT DATABASE FOR THE CLIENT
+     * -------------------------------------------------------
+     *
+     * Only slug/name/page information is exposed here.
+     *
+     * This allows the iframe to communicate with the parent
+     * page without changing details.html.
+     */
+
+    const productMap =
+        ${safeJSON(
+            Object.fromEntries(
+                Object.entries(products).map(
+                    ([slug, product]) => [
+                        slug,
+                        {
+                            name: product.name,
+                            page: product.page
+                        }
+                    ]
+                )
+            )
+        )};
+
+
+    /*
+     * -------------------------------------------------------
+     * CURRENT PRODUCT
+     * -------------------------------------------------------
+     */
+
+    let currentSlug =
+        ${safeJSON(slug)};
+
+
+    let ignoreNextFrameLoad = false;
+
+
+    /*
+     * -------------------------------------------------------
+     * CONVERT DETAILS URL → PRODUCT SLUG
+     * -------------------------------------------------------
+     */
+
+    function getSlugFromDetailsURL(url) {
+
         try {
-            const frameDoc = frame.contentDocument;
 
-            if (!frameDoc) return;
+            const parsed =
+                new URL(url, window.location.origin);
 
-            frameDoc.addEventListener("click", function (event) {
-                const link = event.target.closest("a");
 
-                if (!link) return;
+            /*
+             * We only care about details.html pages.
+             */
 
-                const href = link.getAttribute("href");
+            const pathname =
+                parsed.pathname.toLowerCase();
 
-                if (!href) return;
 
-                // If the user clicks the homepage/return link
-                // inside details.html, navigate the parent window.
+            if (
+                !pathname.endsWith("/details.html") &&
+                pathname !== "/details.html"
+            ) {
+
+                return null;
+            }
+
+
+            const name =
+                parsed.searchParams.get("name");
+
+
+            if (!name) {
+                return null;
+            }
+
+
+            const decodedName =
+                decodeURIComponent(name);
+
+
+            const normalizedName =
+                decodedName
+                    .trim()
+                    .toLowerCase();
+
+
+            /*
+             * Find the matching product using the same slug
+             * algorithm as the server.
+             */
+
+            for (
+                const [productSlugValue, productData]
+                of Object.entries(productMap)
+            ) {
+
                 if (
-                    href === "/" ||
-                    href === "/index.html" ||
-                    href === "index.html"
+                    productData.name
+                        .trim()
+                        .toLowerCase() === normalizedName
                 ) {
-                    event.preventDefault();
-                    window.location.href = "/";
+
+                    return productSlugValue;
                 }
-            });
+            }
+
+
+            return null;
+
         } catch (error) {
-            console.warn("Product navigation bridge unavailable.");
+
+            return null;
         }
-    });
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * CHANGE PARENT URL
+     * -------------------------------------------------------
+     */
+
+    function updateParentProductURL(
+        newSlug,
+        usePushState
+    ) {
+
+        if (!newSlug) {
+            return;
+        }
+
+
+        const product =
+            productMap[newSlug];
+
+
+        if (!product) {
+            return;
+        }
+
+
+        const newURL =
+            "/product/" +
+            encodeURIComponent(newSlug);
+
+
+        const currentURL =
+            window.location.pathname;
+
+
+        /*
+         * Don't create duplicate history entries.
+         */
+
+        if (currentURL === newURL) {
+
+            currentSlug =
+                newSlug;
+
+            return;
+        }
+
+
+        currentSlug =
+            newSlug;
+
+
+        if (usePushState) {
+
+            window.history.pushState(
+                {
+                    productSlug: newSlug
+                },
+                "",
+                newURL
+            );
+
+        } else {
+
+            window.history.replaceState(
+                {
+                    productSlug: newSlug
+                },
+                "",
+                newURL
+            );
+        }
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * LOAD PRODUCT INTO EXISTING details.html
+     * -------------------------------------------------------
+     */
+
+    function loadProductIntoFrame(
+        newSlug
+    ) {
+
+        const product =
+            productMap[newSlug];
+
+
+        if (!product) {
+            return;
+        }
+
+
+        /*
+         * Prevent the iframe load event from creating another
+         * parent history entry while this navigation was caused
+         * by browser Back/Forward.
+         */
+
+        ignoreNextFrameLoad = true;
+
+
+        frame.src =
+            product.page;
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * INTERCEPT PRODUCT LINKS INSIDE details.html
+     * -------------------------------------------------------
+     *
+     * If details.html contains links such as:
+     *
+     * details.html?name=Spotify Premium
+     *
+     * they are converted into:
+     *
+     * /product/spotify-premium
+     *
+     * in the parent browser.
+     */
+
+    function installNavigationBridge() {
+
+        try {
+
+            const frameDoc =
+                frame.contentDocument;
+
+
+            if (!frameDoc) {
+                return;
+            }
+
+
+            /*
+             * Avoid installing the same bridge repeatedly.
+             */
+
+            if (
+                frameDoc.documentElement
+                    .dataset
+                    .nextLevelNavigationInstalled === "true"
+            ) {
+
+                return;
+            }
+
+
+            frameDoc.documentElement.dataset
+                .nextLevelNavigationInstalled = "true";
+
+
+            frameDoc.addEventListener(
+                "click",
+                function (event) {
+
+                    const link =
+                        event.target.closest("a");
+
+
+                    if (!link) {
+                        return;
+                    }
+
+
+                    const href =
+                        link.getAttribute("href");
+
+
+                    if (!href) {
+                        return;
+                    }
+
+
+                    /*
+                     * -----------------------------------------
+                     * HOME
+                     * -----------------------------------------
+                     */
+
+                    if (
+                        href === "/" ||
+                        href === "/index.html" ||
+                        href === "index.html"
+                    ) {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        window.location.href = "/";
+
+                        return;
+                    }
+
+
+                    /*
+                     * -----------------------------------------
+                     * DETAILS PRODUCT LINK
+                     * -----------------------------------------
+                     */
+
+                    const productSlugValue =
+                        getSlugFromDetailsURL(
+                            href
+                        );
+
+
+                    if (productSlugValue) {
+
+                        event.preventDefault();
+                        event.stopPropagation();
+
+
+                        /*
+                         * Update browser history.
+                         */
+
+                        updateParentProductURL(
+                            productSlugValue,
+                            true
+                        );
+
+
+                        /*
+                         * Load the product without causing
+                         * a full parent-page reload.
+                         */
+
+                        loadProductIntoFrame(
+                            productSlugValue
+                        );
+
+
+                        return;
+                    }
+
+
+                    /*
+                     * -----------------------------------------
+                     * CLEAN PRODUCT LINK
+                     * -----------------------------------------
+                     *
+                     * Also support links that are already:
+                     *
+                     * /product/spotify-premium
+                     */
+
+                    try {
+
+                        const parsedURL =
+                            new URL(
+                                href,
+                                window.location.origin
+                            );
+
+
+                        if (
+                            parsedURL.origin ===
+                            window.location.origin
+                        ) {
+
+                            const productMatch =
+                                parsedURL.pathname.match(
+                                    /^\/product\/([^/]+)\/?$/
+                                );
+
+
+                            if (
+                                productMatch &&
+                                productMatch[1]
+                            ) {
+
+                                const targetSlug =
+                                    decodeURIComponent(
+                                        productMatch[1]
+                                    )
+                                    .trim()
+                                    .toLowerCase();
+
+
+                                if (
+                                    productMap[targetSlug]
+                                ) {
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+
+                                    updateParentProductURL(
+                                        targetSlug,
+                                        true
+                                    );
+
+
+                                    loadProductIntoFrame(
+                                        targetSlug
+                                    );
+
+                                    return;
+                                }
+                            }
+                        }
+
+                    } catch (error) {
+
+                        // Ignore invalid URLs.
+                    }
+
+                },
+                true
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "Product navigation bridge unavailable.",
+                error
+            );
+        }
+    }
+
+
+    /*
+     * -------------------------------------------------------
+     * IFRAME LOAD
+     * -------------------------------------------------------
+     */
+
+    frame.addEventListener(
+        "load",
+        function () {
+
+            /*
+             * Install product-link navigation bridge.
+             */
+
+            installNavigationBridge();
+
+
+            /*
+             * If this load was caused by Back/Forward,
+             * don't create another history entry.
+             */
+
+            if (ignoreNextFrameLoad) {
+
+                ignoreNextFrameLoad = false;
+
+                return;
+            }
+
+
+            /*
+             * Detect whether details.html itself navigated
+             * to another product.
+             */
+
+            try {
+
+                const frameURL =
+                    frame.contentWindow.location.href;
+
+
+                const detectedSlug =
+                    getSlugFromDetailsURL(
+                        frameURL
+                    );
+
+
+                if (
+                    detectedSlug &&
+                    detectedSlug !== currentSlug
+                ) {
+
+                    updateParentProductURL(
+                        detectedSlug,
+                        true
+                    );
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Unable to synchronize product URL."
+                );
+            }
+
+        }
+    );
+
+
+    /*
+     * -------------------------------------------------------
+     * BROWSER BACK / FORWARD
+     * -------------------------------------------------------
+     *
+     * This is the important part.
+     *
+     * When the user clicks:
+     *
+     *     Back
+     *
+     * the parent URL changes back to the previous product.
+     *
+     * We then load that product into details.html.
+     *
+     * No iframe history is pushed into the parent history.
+     */
+
+    window.addEventListener(
+        "popstate",
+        function (event) {
+
+            let targetSlug = null;
+
+
+            /*
+             * First use the history state.
+             */
+
+            if (
+                event.state &&
+                typeof event.state.productSlug ===
+                    "string"
+            ) {
+
+                targetSlug =
+                    event.state.productSlug;
+            }
+
+
+            /*
+             * Otherwise read the URL.
+             */
+
+            if (!targetSlug) {
+
+                const pathname =
+                    window.location.pathname;
+
+
+                const match =
+                    pathname.match(
+                        /^\/product\/([^/]+)\/?$/
+                    );
+
+
+                if (
+                    match &&
+                    match[1]
+                ) {
+
+                    targetSlug =
+                        decodeURIComponent(
+                            match[1]
+                        )
+                        .trim()
+                        .toLowerCase();
+                }
+            }
+
+
+            /*
+             * If the Back button leaves the product route,
+             * allow the browser to navigate normally.
+             */
+
+            if (
+                !targetSlug ||
+                !productMap[targetSlug]
+            ) {
+
+                return;
+            }
+
+
+            currentSlug =
+                targetSlug;
+
+
+            loadProductIntoFrame(
+                targetSlug
+            );
+
+        }
+    );
+
+
+    /*
+     * -------------------------------------------------------
+     * INITIAL HISTORY STATE
+     * -------------------------------------------------------
+     */
+
+    window.history.replaceState(
+        {
+            productSlug: currentSlug
+        },
+        "",
+        window.location.pathname
+    );
+
+
 })();
+
 </script>
 
 
-    <noscript>
+<!-- =======================================================
+     NOSCRIPT FALLBACK
+     ======================================================= -->
 
-        <div class="fallback">
+<noscript>
 
-            <a href="${escapeHTML(destinationURL)}">
-                Continue to ${escapeHTML(product.name)}
-            </a>
+    <div class="fallback">
 
-        </div>
+        <a href="${escapeHTML(destinationURL)}">
+            Continue to ${escapeHTML(product.name)}
+        </a>
 
-    </noscript>
+    </div>
+
+</noscript>
 
 
 </body>
 
 </html>
 `;
+
 
     return res.end(html);
 };
