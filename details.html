@@ -5079,47 +5079,52 @@
         const successModal = document.getElementById('successModal');
         const fab = document.getElementById('fab');
         const whatsappFab = document.getElementById('whatsappFab');
+        function productSlug(name) {
+    return name
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
         
-        // Initialize the page
-        function init() {
-            // Show skeleton loaders first
-            showSkeletonLoaders();
-            
-            // Get product name from URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const productName = decodeURIComponent(urlParams.get('name'));
-            
-            // Load cart from localStorage
-            loadCart();
-            
-            // Simulate loading delay
-            setTimeout(() => {
-                if (productName) {
-                    loadProduct(productName);
-                } else {
-                    // If no product name, redirect to index
-                    window.location.href = 'index.html';
-                }
-                
-                // Hide loading overlay
-                loadingOverlay.classList.remove('active');
-            }, 1500);
-            
-            // Show/hide scroll to top button
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
-                    fab.style.opacity = '1';
-                    fab.style.visibility = 'visible';
-                    whatsappFab.style.opacity = '1';
-                    whatsappFab.style.visibility = 'visible';
-                } else {
-                    fab.style.opacity = '0';
-                    fab.style.visibility = 'hidden';
-                    whatsappFab.style.opacity = '0';
-                    whatsappFab.style.visibility = 'hidden';
-                }
-            });
+function init() {
+    // Show skeleton loaders first
+    showSkeletonLoaders();
+
+    // Get product slug from URL
+    // Example: /product/netflix-premium
+const pathParts = window.location.pathname.split('/').filter(Boolean);
+const productSlugValue = pathParts[0] === 'product' ? pathParts[1] : null;
+
+    // Load cart from localStorage
+    loadCart();
+
+    // Simulate loading delay
+    setTimeout(() => {
+if (productSlugValue) {
+    loadProduct(productSlugValue);
+        } else {
+            window.location.href = '/';
         }
+
+        loadingOverlay.classList.remove('active');
+    }, 1500);
+
+    // Show/hide scroll to top button
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            fab.style.opacity = '1';
+            fab.style.visibility = 'visible';
+            whatsappFab.style.opacity = '1';
+            whatsappFab.style.visibility = 'visible';
+        } else {
+            fab.style.opacity = '0';
+            fab.style.visibility = 'hidden';
+            whatsappFab.style.opacity = '0';
+            whatsappFab.style.visibility = 'hidden';
+        }
+    });
+}
         
         // Show skeleton loaders for the page
         function showSkeletonLoaders() {
@@ -5211,15 +5216,19 @@
         }
         
         // Load product details
-        function loadProduct(productName) {
-            // Find the product
-            const productIndex = products.findIndex(p => p.name === productName);
-            
-            if (productIndex === -1) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
+function loadProduct(slug) {
+
+    const productIndex = products.findIndex(
+        p => productSlug(p.name) === slug
+    );
+
+    if (productIndex === -1) {
+        window.location.href = '/';
+        return;
+    }
+
+    // keep everything below this exactly as it is
+
             // Create a deep copy of the product to avoid modifying the original
             currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
             
@@ -5679,7 +5688,7 @@
             
             relatedProducts.innerHTML = related.map((product, index) => `
                 <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
+                    <a href="/product/${encodeURIComponent(productSlug(product.name))}" class="card-link">
                         <div class="product-image-container">
                             <img src="${product.image}" alt="${product.name}" class="product-image">
                         </div>

@@ -1,13 +1,27 @@
 // ============================================================
 // NEXT LEVEL SUBS
-// HYBRID PRODUCT SEO / OPEN GRAPH / WHATSAPP PREVIEW HANDLER
+// PRODUCT SEO / OPEN GRAPH / SOCIAL PREVIEW HANDLER
+// ============================================================
+//
+// Clean URLs:
+//
+// https://www.nextlevelsubs.com/product/netflix-premium
+// https://www.nextlevelsubs.com/product/hbo-max
+// https://www.nextlevelsubs.com/product/spotify-premium
+//
+// Social crawlers receive SEO + OG metadata.
+// Normal visitors see the existing details.html product page
+// while the browser URL remains clean.
+//
 // ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
     domain: "https://www.nextlevelsubs.com",
+
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
+
     locale: "en_US"
 };
 
@@ -33,7 +47,7 @@ const products = {
     "amazon-prime-video": {
         name: "Amazon Prime Video",
         description: "Thousands of movies and TV shows",
-        image: "/assets/cards/prime_video.webp",
+        image: "/assets/cards/prime_video.svg",
         page: "/details.html?name=Amazon%20Prime%20Video",
         category: "Streaming"
     },
@@ -41,7 +55,7 @@ const products = {
     "hbo-max": {
         name: "HBO Max",
         description: "HBO, Warner Bros., DC, Max Originals",
-        image: "/assets/cards/hbo_max.webp",
+        image: "/assets/cards/hbo_max.svg",
         page: "/details.html?name=HBO%20Max",
         category: "Streaming"
     },
@@ -97,7 +111,7 @@ const products = {
     "hulu": {
         name: "Hulu",
         description: "Next-day TV and original content",
-        image: "/assets/cards/hulu.webp",
+        image: "/assets/cards/hulu.svg",
         page: "/details.html?name=Hulu",
         category: "Streaming"
     },
@@ -230,7 +244,7 @@ const products = {
     "tidal": {
         name: "Tidal",
         description: "High-fidelity music streaming",
-        image: "/assets/cards/tidal.webp",
+        image: "/assets/cards/tidal.svg",
         page: "/details.html?name=Tidal",
         category: "Music"
     },
@@ -238,7 +252,7 @@ const products = {
     "pandora-premium": {
         name: "Pandora Premium",
         description: "Personalized music and podcasts",
-        image: "/assets/cards/pandora.webp",
+        image: "/assets/cards/pandora.svg",
         page: "/details.html?name=Pandora%20Premium",
         category: "Music"
     },
@@ -246,7 +260,7 @@ const products = {
     "soundcloud-go-plus": {
         name: "SoundCloud Go+",
         description: "Ad-free music and offline listening",
-        image: "/assets/cards/sound_cloud.webp",
+        image: "/assets/cards/sound_cloud.svg",
         page: "/details.html?name=SoundCloud%20Go%2B",
         category: "Music"
     },
@@ -254,7 +268,7 @@ const products = {
     "deezer-hifi": {
         name: "Deezer HiFi",
         description: "High-quality audio streaming",
-        image: "/assets/cards/deezer.webp",
+        image: "/assets/cards/deezer.svg",
         page: "/details.html?name=Deezer%20HiFi",
         category: "Music"
     },
@@ -267,7 +281,7 @@ const products = {
     "microsoft-onedrive": {
         name: "Microsoft OneDrive",
         description: "1TB cloud storage with Office apps",
-        image: "/assets/cards/onedrive.webp",
+        image: "/assets/cards/onedrive.svg",
         page: "/details.html?name=Microsoft%20OneDrive",
         category: "Cloud Storage"
     },
@@ -275,7 +289,7 @@ const products = {
     "dropbox-plus": {
         name: "Dropbox Plus",
         description: "2TB secure cloud storage",
-        image: "/assets/cards/Dropbox_(service)-Logo.wine.webp",
+        image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
         page: "/details.html?name=Dropbox%20Plus",
         category: "Cloud Storage"
     },
@@ -283,7 +297,7 @@ const products = {
     "google-drive": {
         name: "Google Drive",
         description: "1TB cloud storage",
-        image: "/assets/cards/Google_Drive-Logo.wine.webp",
+        image: "/assets/cards/Google_Drive-Logo.wine.svg",
         page: "/details.html?name=Google%20Drive",
         category: "Cloud Storage"
     },
@@ -437,7 +451,7 @@ const products = {
     "perplexity-chatgpt5": {
         name: "Perplexity (ChatGPT-5)",
         description: "AI-powered search and research assistant",
-        image: "/assets/cards/Perplexity.webp",
+        image: "/assets/cards/Perplexity.svg",
         page: "/details.html?name=perplexity%20%28ChatGPT-5%29",
         category: "AI & Design"
     },
@@ -679,6 +693,7 @@ function safeJSON(value) {
 
 
 function absoluteURL(path) {
+
     if (!path) {
         return SITE.domain;
     }
@@ -691,47 +706,41 @@ function absoluteURL(path) {
 }
 
 
-function getImageMimeType(url) {
-    const clean = url
-        .split("?")[0]
-        .split("#")[0]
-        .toLowerCase();
+// ============================================================
+// SOCIAL IMAGE
+// ============================================================
+//
+// SVG is unreliable for WhatsApp/Facebook/social crawlers.
+// Therefore we use the product image only when it is a
+// raster format.
+//
+// If the product image is SVG, use the site's main logo
+// as a guaranteed fallback.
+//
+// Later you can replace these SVG files with PNG/WebP files
+// and the actual product artwork will be used automatically.
+// ============================================================
 
-    if (clean.endsWith(".jpg") || clean.endsWith(".jpeg")) {
-        return "image/jpeg";
+function getSocialImage(product) {
+
+    const image = product.image || "";
+
+    if (/\.svg(\?|#|$)/i.test(image)) {
+        return "/assets/logo.png";
     }
 
-    if (clean.endsWith(".png")) {
-        return "image/png";
-    }
-
-    if (clean.endsWith(".webp")) {
-        return "image/webp";
-    }
-
-    if (clean.endsWith(".avif")) {
-        return "image/avif";
-    }
-
-    return "image/jpeg";
+    return image;
 }
 
 
 // ============================================================
-// GET PRODUCT SLUG
+// GET SLUG
 // ============================================================
 
 function getProductSlug(req) {
 
-    // --------------------------------------------------------
-    // 1. Rewritten URL:
-    //
-    // /product/netflix-premium
-    //
-    // becomes:
-    //
+    // Direct API:
     // /api/product?slug=netflix-premium
-    // --------------------------------------------------------
 
     if (
         req.query &&
@@ -744,57 +753,30 @@ function getProductSlug(req) {
     }
 
 
-    // --------------------------------------------------------
-    // 2. Direct API URL fallback:
-    //
-    // /api/product?slug=netflix-premium
-    // --------------------------------------------------------
+    // Fallback:
+    // /product/netflix-premium
+
+    const rawURL = req.url || "";
+
+    const pathname = rawURL.split("?")[0];
+
+    const match = pathname.match(
+        /^\/product\/([^/]+)\/?$/
+    );
+
+    if (!match || !match[1]) {
+        return "";
+    }
 
     try {
-
-        const requestURL = new URL(
-            req.url || "",
-            `https://${req.headers.host || "www.nextlevelsubs.com"}`
-        );
-
-        const slug = requestURL.searchParams.get("slug");
-
-        if (slug && slug.trim()) {
-            return decodeURIComponent(slug)
-                .trim()
-                .toLowerCase();
-        }
-
-    } catch (error) {
-        // Ignore and continue to 404.
+        return decodeURIComponent(match[1])
+            .trim()
+            .toLowerCase();
+    } catch {
+        return match[1]
+            .trim()
+            .toLowerCase();
     }
-
-
-    // --------------------------------------------------------
-    // 3. Direct /product/ URL fallback
-    // --------------------------------------------------------
-
-    const pathname = (req.url || "").split("?")[0];
-
-    const match = pathname.match(/^\/product\/([^/]+)\/?$/i);
-
-    if (match && match[1]) {
-
-        try {
-
-            return decodeURIComponent(match[1])
-                .trim()
-                .toLowerCase();
-
-        } catch {
-
-            return match[1]
-                .trim()
-                .toLowerCase();
-        }
-    }
-
-    return "";
 }
 
 
@@ -819,13 +801,9 @@ function send404(res) {
     return res.end(`
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>Product Not Found | NEXT LEVEL SUBS</title>
-
 </head>
 
 <body>
@@ -836,29 +814,32 @@ function send404(res) {
         The requested product could not be found.
     </p>
 
-    <a href="${escapeHTML(SITE.domain)}">
-        Return to NEXT LEVEL SUBS
-    </a>
+    <p>
+        <a href="${escapeHTML(SITE.domain)}">
+            Return to NEXT LEVEL SUBS
+        </a>
+    </p>
 
 </body>
-
 </html>
 `);
 }
 
 
 // ============================================================
-// MAIN VERCEL FUNCTION
+// MAIN FUNCTION
 // ============================================================
 
 module.exports = function handler(req, res) {
 
-    // ========================================================
-    // METHOD
-    // ========================================================
+    // --------------------------------------------------------
+    // GET / HEAD only
+    // --------------------------------------------------------
 
-    if (req.method !== "GET" && req.method !== "HEAD") {
-
+    if (
+        req.method !== "GET" &&
+        req.method !== "HEAD"
+    ) {
         res.statusCode = 405;
 
         res.setHeader(
@@ -870,9 +851,9 @@ module.exports = function handler(req, res) {
     }
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // PRODUCT
-    // ========================================================
+    // --------------------------------------------------------
 
     const slug = getProductSlug(req);
 
@@ -883,18 +864,23 @@ module.exports = function handler(req, res) {
     }
 
 
-    // ========================================================
-    // URLS
-    // ========================================================
+    // --------------------------------------------------------
+    // URLs
+    // --------------------------------------------------------
 
     const productURL =
         `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
     const imageURL =
-        absoluteURL(product.image);
+        absoluteURL(getSocialImage(product));
 
     const destinationURL =
         absoluteURL(product.page);
+
+
+    // --------------------------------------------------------
+    // SEO
+    // --------------------------------------------------------
 
     const title =
         `${product.name} Subscription | NEXT LEVEL SUBS`;
@@ -902,13 +888,13 @@ module.exports = function handler(req, res) {
     const description =
         `${product.description}. Get ${product.name} subscription from NEXT LEVEL SUBS.`;
 
-    const imageType =
-        getImageMimeType(imageURL);
+    const imageAlt =
+        `${product.name} - NEXT LEVEL SUBS`;
 
 
-    // ========================================================
-    // PRODUCT SCHEMA
-    // ========================================================
+    // --------------------------------------------------------
+    // JSON-LD PRODUCT
+    // --------------------------------------------------------
 
     const productSchema = {
 
@@ -941,9 +927,9 @@ module.exports = function handler(req, res) {
     };
 
 
-    // ========================================================
-    // BREADCRUMB SCHEMA
-    // ========================================================
+    // --------------------------------------------------------
+    // BREADCRUMB
+    // --------------------------------------------------------
 
     const breadcrumbSchema = {
 
@@ -963,8 +949,7 @@ module.exports = function handler(req, res) {
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": product.category,
-                "item": SITE.domain
+                "name": product.category
             },
 
             {
@@ -973,14 +958,13 @@ module.exports = function handler(req, res) {
                 "name": product.name,
                 "item": productURL
             }
-
         ]
     };
 
 
-    // ========================================================
-    // RESPONSE HEADERS
-    // ========================================================
+    // --------------------------------------------------------
+    // HEADERS
+    // --------------------------------------------------------
 
     res.statusCode = 200;
 
@@ -1010,9 +994,9 @@ module.exports = function handler(req, res) {
     );
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // HEAD
-    // ========================================================
+    // --------------------------------------------------------
 
     if (req.method === "HEAD") {
         return res.end();
@@ -1020,7 +1004,7 @@ module.exports = function handler(req, res) {
 
 
     // ========================================================
-    // SEO HTML
+    // HTML
     // ========================================================
 
     const html = `
@@ -1103,7 +1087,7 @@ module.exports = function handler(req, res) {
 
     <meta
         property="og:image:type"
-        content="${escapeHTML(imageType)}"
+        content="image/png"
     >
 
     <meta
@@ -1118,7 +1102,7 @@ module.exports = function handler(req, res) {
 
     <meta
         property="og:image:alt"
-        content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
+        content="${escapeHTML(imageAlt)}"
     >
 
 
@@ -1148,12 +1132,12 @@ module.exports = function handler(req, res) {
 
     <meta
         name="twitter:image:alt"
-        content="${escapeHTML(product.name)} - NEXT LEVEL SUBS"
+        content="${escapeHTML(imageAlt)}"
     >
 
 
     <!-- =====================================================
-         JSON-LD PRODUCT
+         JSON-LD
          ===================================================== -->
 
     <script type="application/ld+json">
@@ -1161,72 +1145,84 @@ ${safeJSON(productSchema)}
     </script>
 
 
-    <!-- =====================================================
-         JSON-LD BREADCRUMB
-         ===================================================== -->
-
     <script type="application/ld+json">
 ${safeJSON(breadcrumbSchema)}
     </script>
+
+
+    <!-- =====================================================
+         BASIC PAGE STYLE
+         ===================================================== -->
+
+    <style>
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .fallback {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            z-index: 10;
+        }
+
+        .fallback a {
+            color: #111111;
+            text-decoration: none;
+        }
+
+    </style>
 
 </head>
 
 
 <body>
 
-    <main>
+    <!--
+        Existing product detail page.
 
-        <article>
+        The iframe allows us to keep your existing
+        details.html implementation while the browser
+        remains on /product/slug.
+    -->
 
-            <h1>
-                ${escapeHTML(product.name)}
-            </h1>
-
-            <p>
-                ${escapeHTML(product.description)}
-            </p>
-
-            <p>
-                Category:
-                ${escapeHTML(product.category)}
-            </p>
-
-            <p>
-                Opening ${escapeHTML(product.name)}...
-            </p>
-
-            <p>
-
-                <a href="${escapeHTML(destinationURL)}">
-                    Continue to ${escapeHTML(product.name)}
-                </a>
-
-            </p>
-
-        </article>
-
-    </main>
-
-
-    <!-- =====================================================
-         NORMAL HUMAN VISIT
-         ===================================================== -->
-
-    <script>
-        window.location.replace(
-            ${JSON.stringify(destinationURL)}
-        );
-    </script>
+    <iframe
+        src="${escapeHTML(destinationURL)}"
+        title="${escapeHTML(product.name)}"
+        loading="eager"
+    ></iframe>
 
 
     <noscript>
 
-        <meta
-            http-equiv="refresh"
-            content="0;url=${escapeHTML(destinationURL)}"
-        >
+        <div class="fallback">
+
+            <a href="${escapeHTML(destinationURL)}">
+                Continue to ${escapeHTML(product.name)}
+            </a>
+
+        </div>
 
     </noscript>
+
 
 </body>
 
