@@ -2,15 +2,45 @@
 // NEXT LEVEL SUBS
 // HYBRID PRODUCT SEO / OPEN GRAPH / WHATSAPP PREVIEW HANDLER
 // ============================================================
+//
+// Public product URL:
+//
+// https://www.nextlevelsubs.com/product/netflix-premium
+//
+// Internally redirects normal visitors to:
+//
+// /details.html?name=Netflix%20Premium
+//
+// Social crawlers receive:
+// - Product title
+// - Product description
+// - Product image
+// - Canonical URL
+// - Open Graph metadata
+// - Twitter/X metadata
+// - Product JSON-LD
+// - Breadcrumb JSON-LD
+//
+// ============================================================
+
+
+// ============================================================
+// SITE CONFIGURATION
+// ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
+
     domain: "https://www.nextlevelsubs.com",
+
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
+
     locale: "en_US",
+
     twitterCard: "summary_large_image"
 };
+
 
 // ============================================================
 // PRODUCT DATABASE
@@ -198,6 +228,7 @@ const products = {
         category: "Streaming"
     },
 
+
     // =========================================================
     // MUSIC
     // =========================================================
@@ -258,6 +289,7 @@ const products = {
         category: "Music"
     },
 
+
     // =========================================================
     // CLOUD STORAGE
     // =========================================================
@@ -301,6 +333,7 @@ const products = {
         page: "/details.html?name=Amazon%20Drive",
         category: "Cloud Storage"
     },
+
 
     // =========================================================
     // VPN
@@ -370,13 +403,15 @@ const products = {
         category: "VPN"
     },
 
+
     // =========================================================
     // AI & DESIGN
     // =========================================================
 
     "canva-pro": {
         name: "Canva Pro",
-        description: "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
+        description:
+            "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
         image: "/assets/cards/canva.png",
         page: "/details.html?name=Canva%20Pro",
         category: "AI & Design"
@@ -384,7 +419,8 @@ const products = {
 
     "photoroom-pro": {
         name: "Photoroom Pro",
-        description: "Professional AI-powered photo editing and design tools",
+        description:
+            "Professional AI-powered photo editing and design tools",
         image: "/assets/cards/photoroom.jpg",
         page: "/details.html?name=Photoroom%20Pro",
         category: "AI & Design"
@@ -392,7 +428,8 @@ const products = {
 
     "picsart-premium": {
         name: "Picsart Premium",
-        description: "Creative photo and video editing tools",
+        description:
+            "Creative photo and video editing tools",
         image: "/assets/cards/picsart.png",
         page: "/details.html?name=Picsart%20Premium",
         category: "AI & Design"
@@ -400,7 +437,8 @@ const products = {
 
     "photoroom-max": {
         name: "Photoroom Max",
-        description: "Advanced AI photo editing and creative tools",
+        description:
+            "Advanced AI photo editing and creative tools",
         image: "/assets/cards/photoroom.jpg",
         page: "/details.html?name=Photoroom%20Max",
         category: "AI & Design"
@@ -408,7 +446,8 @@ const products = {
 
     "blackbox-ai-chatgpt5": {
         name: "Black Box Ai (CHAT-GPT5)",
-        description: "AI-powered coding and development assistant",
+        description:
+            "AI-powered coding and development assistant",
         image: "/assets/cards/blackboxai.jpg",
         page: "/details.html?name=Black%20Box%20Ai%28CHAT-GPT5%29",
         category: "AI & Design"
@@ -416,7 +455,8 @@ const products = {
 
     "gemini-ai": {
         name: "Gemini Ai",
-        description: "Google's advanced AI assistant",
+        description:
+            "Google's advanced AI assistant",
         image: "/assets/cards/gemini.png",
         page: "/details.html?name=Gemini%20Ai",
         category: "AI & Design"
@@ -424,7 +464,8 @@ const products = {
 
     "chat-gpt": {
         name: "Chat GPT",
-        description: "Advanced AI assistant for writing, research and productivity",
+        description:
+            "Advanced AI assistant for writing, research and productivity",
         image: "/assets/cards/chatgpt.jpg",
         page: "/details.html?name=Chat%20GPT",
         category: "AI & Design"
@@ -432,7 +473,8 @@ const products = {
 
     "perplexity-chatgpt5": {
         name: "Perplexity (ChatGPT-5)",
-        description: "AI-powered search and research assistant",
+        description:
+            "AI-powered search and research assistant",
         image: "/assets/cards/Perplexity.svg",
         page: "/details.html?name=perplexity%20%28ChatGPT-5%29",
         category: "AI & Design"
@@ -440,11 +482,13 @@ const products = {
 
     "remini-ai": {
         name: "Remini Ai",
-        description: "AI-powered photo enhancement and restoration",
+        description:
+            "AI-powered photo enhancement and restoration",
         image: "/assets/cards/remini.avif",
         page: "/details.html?name=Remini%20Ai",
         category: "AI & Design"
     },
+
 
     // =========================================================
     // COMBOS
@@ -452,7 +496,8 @@ const products = {
 
     "netflix-prime-video": {
         name: "Netflix + Prime Video",
-        description: "Get both streaming services at a discount",
+        description:
+            "Get both streaming services at a discount",
         image: "/assets/cards/Netflix-vs-Amazon.jpg",
         page: "/details.html?name=Netflix%20%2B%20Prime%20Video",
         category: "Combo"
@@ -460,7 +505,8 @@ const products = {
 
     "netflix-hbo-max": {
         name: "Netflix + HBO Max",
-        description: "Premium content from both platforms",
+        description:
+            "Premium content from both platforms",
         image: "/assets/cards/netflix+hbomax.webp",
         page: "/details.html?name=Netflix%20%2B%20HBO%20Max",
         category: "Combo"
@@ -468,7 +514,8 @@ const products = {
 
     "prime-video-hbo-max": {
         name: "Prime Video + HBO Max",
-        description: "Premium content from both platforms",
+        description:
+            "Premium content from both platforms",
         image: "/assets/cards/prime+hbo.webp",
         page: "/details.html?name=Prime%20Video%20%2B%20HBO%20Max",
         category: "Combo"
@@ -476,7 +523,8 @@ const products = {
 
     "hbo-max-surfshark-vpn": {
         name: "HBO Max + Surfshark VPN",
-        description: "Stream securely with VPN protection",
+        description:
+            "Stream securely with VPN protection",
         image: "/assets/cards/hbo+surfshark.webp",
         page: "/details.html?name=HBO%20Max%20%2B%20Surfshark%20VPN",
         category: "Combo"
@@ -484,7 +532,8 @@ const products = {
 
     "spotify-youtube-premium": {
         name: "Spotify + YouTube Premium",
-        description: "Ad-free music and videos",
+        description:
+            "Ad-free music and videos",
         image: "/assets/cards/spotify+youtube.webp",
         page: "/details.html?name=Spotify%20%2B%20YouTube%20Premium",
         category: "Combo"
@@ -492,7 +541,8 @@ const products = {
 
     "disney-hbo-max": {
         name: "Disney + HBO Max",
-        description: "Disney+ and HBO Max premium entertainment",
+        description:
+            "Disney+ and HBO Max premium entertainment",
         image: "/assets/cards/disney+nordVPN.webp",
         page: "/details.html?name=Disney%20%2B%20HBO%20Max",
         category: "Combo"
@@ -500,7 +550,8 @@ const products = {
 
     "disney-nord-vpn": {
         name: "Disney + Nord VPN",
-        description: "Disney+ entertainment with NordVPN protection",
+        description:
+            "Disney+ entertainment with NordVPN protection",
         image: "/assets/cards/disney+nordVPN.webp",
         page: "/details.html?name=Disney%20%2B%20Nord%20VPN",
         category: "Combo"
@@ -508,7 +559,8 @@ const products = {
 
     "music-storage": {
         name: "Music & Storage",
-        description: "Amazon Music HD and 1TB OneDrive storage",
+        description:
+            "Amazon Music HD and 1TB OneDrive storage",
         image: "/assets/cards/amazon+onedrive.png",
         page: "/details.html?name=Music%20%26%20Storage",
         category: "Combo"
@@ -516,7 +568,8 @@ const products = {
 
     "security-bundle": {
         name: "Security Bundle",
-        description: "ExpressVPN and 1TB OneDrive cloud storage",
+        description:
+            "ExpressVPN and 1TB OneDrive cloud storage",
         image: "/assets/cards/expressvpn+onedrive.webp",
         page: "/details.html?name=Security%20Bundle",
         category: "Combo"
@@ -524,11 +577,13 @@ const products = {
 
     "ultimate-entertainment": {
         name: "Ultimate Entertainment",
-        description: "Netflix, HBO Max, and ExpressVPN",
+        description:
+            "Netflix, HBO Max, and ExpressVPN",
         image: "/assets/cards/netflix_expressvpn_hbomax.webp",
         page: "/details.html?name=Ultimate%20Entertainment",
         category: "Combo"
     },
+
 
     // =========================================================
     // EDUCATION
@@ -536,7 +591,8 @@ const products = {
 
     "doulingo": {
         name: "Doulingo",
-        description: "Learn languages with interactive lessons",
+        description:
+            "Learn languages with interactive lessons",
         image: "/assets/cards/doulingo.png",
         page: "/details.html?name=Doulingo",
         category: "Education"
@@ -544,7 +600,8 @@ const products = {
 
     "skillshare": {
         name: "Skillshare",
-        description: "Access thousands of online creative courses",
+        description:
+            "Access thousands of online creative courses",
         image: "/assets/cards/skill_share.png",
         page: "/details.html?name=Skillshare",
         category: "Education"
@@ -552,7 +609,8 @@ const products = {
 
     "linkedin-premium": {
         name: "LinkedIn Premium",
-        description: "Professional development and career tools",
+        description:
+            "Professional development and career tools",
         image: "/assets/cards/LinkedIn.png",
         page: "/details.html?name=LinkedIn%20Premium",
         category: "Education"
@@ -560,7 +618,8 @@ const products = {
 
     "numerade": {
         name: "Numerade",
-        description: "Learn with step-by-step educational video solutions",
+        description:
+            "Learn with step-by-step educational video solutions",
         image: "/assets/cards/Numerade.jpg",
         page: "/details.html?name=Numerade",
         category: "Education"
@@ -568,11 +627,13 @@ const products = {
 
     "grammarly-pro": {
         name: "Grammarly Pro",
-        description: "Advanced writing, grammar and productivity tools",
+        description:
+            "Advanced writing, grammar and productivity tools",
         image: "/assets/cards/grammarly.png",
         page: "/details.html?name=Grammarly%20Pro",
         category: "Education"
     },
+
 
     // =========================================================
     // ADULT
@@ -580,7 +641,8 @@ const products = {
 
     "digital-playground": {
         name: "Digital Playground",
-        description: "Exclusive premium content from creators",
+        description:
+            "Exclusive premium content from creators",
         image: "/assets/cards/DigitalPlayground-logo.png",
         page: "/details.html?name=Digital%20Playground",
         category: "Adult"
@@ -588,7 +650,8 @@ const products = {
 
     "pornhub-premium": {
         name: "Pornhub Premium",
-        description: "Ad-free premium adult entertainment",
+        description:
+            "Ad-free premium adult entertainment",
         image: "/assets/cards/pornhub.webp",
         page: "/details.html?name=Pornhub%20Premium",
         category: "Adult"
@@ -596,7 +659,8 @@ const products = {
 
     "brazzers": {
         name: "Brazzers",
-        description: "Premium adult content",
+        description:
+            "Premium adult content",
         image: "/assets/cards/brazzers.webp",
         page: "/details.html?name=Brazzers",
         category: "Adult"
@@ -604,7 +668,8 @@ const products = {
 
     "spice-vids": {
         name: "Spice Vids",
-        description: "Premium adult streaming platform",
+        description:
+            "Premium adult streaming platform",
         image: "/assets/cards/spicevids.webp",
         page: "/details.html?name=Spice%20Vids",
         category: "Adult"
@@ -612,7 +677,8 @@ const products = {
 
     "reality-kings": {
         name: "Reality Kings",
-        description: "Premium reality adult content",
+        description:
+            "Premium reality adult content",
         image: "/assets/cards/realitykings.webp",
         page: "/details.html?name=Reality%20Kings",
         category: "Adult"
@@ -620,7 +686,8 @@ const products = {
 
     "bang-bros": {
         name: "Bang Bros",
-        description: "High-quality, exclusive adult entertainment",
+        description:
+            "High-quality, exclusive adult entertainment",
         image: "/assets/cards/bangbros.webp",
         page: "/details.html?name=Bang%20Bros",
         category: "Adult"
@@ -628,11 +695,13 @@ const products = {
 
     "babes-com": {
         name: "Babes.com",
-        description: "High-quality, exclusive adult video content",
+        description:
+            "High-quality, exclusive adult video content",
         image: "/assets/cards/babes.webp",
         page: "/details.html?name=Babes.com",
         category: "Adult"
     },
+
 
     // =========================================================
     // OTHER
@@ -640,7 +709,8 @@ const products = {
 
     "truecaller-gold": {
         name: "True Caller Gold",
-        description: "Premium caller identification and protection",
+        description:
+            "Premium caller identification and protection",
         image: "/assets/cards/truecaller.avif",
         page: "/details.html?name=True%20Caller%20Gold",
         category: "Productivity"
@@ -649,7 +719,7 @@ const products = {
 
 
 // ============================================================
-// HELPERS
+// HELPER: ESCAPE HTML
 // ============================================================
 
 function escapeHTML(value) {
@@ -661,6 +731,11 @@ function escapeHTML(value) {
         .replace(/'/g, "&#039;");
 }
 
+
+// ============================================================
+// HELPER: SAFE JSON-LD
+// ============================================================
+
 function safeJSON(value) {
     return JSON.stringify(value)
         .replace(/</g, "\\u003c")
@@ -668,7 +743,13 @@ function safeJSON(value) {
         .replace(/&/g, "\\u0026");
 }
 
+
+// ============================================================
+// HELPER: ABSOLUTE URL
+// ============================================================
+
 function absoluteURL(path) {
+
     if (!path) {
         return SITE.domain;
     }
@@ -680,10 +761,22 @@ function absoluteURL(path) {
     return `${SITE.domain}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
-function getImageMimeType(url) {
-    const clean = url.split("?")[0].split("#")[0].toLowerCase();
 
-    if (clean.endsWith(".jpg") || clean.endsWith(".jpeg")) {
+// ============================================================
+// HELPER: IMAGE MIME TYPE
+// ============================================================
+
+function getImageMimeType(url) {
+
+    const clean = url
+        .split("?")[0]
+        .split("#")[0]
+        .toLowerCase();
+
+    if (
+        clean.endsWith(".jpg") ||
+        clean.endsWith(".jpeg")
+    ) {
         return "image/jpeg";
     }
 
@@ -713,7 +806,10 @@ function getImageMimeType(url) {
 
 function getProductSlug(req) {
 
+    // --------------------------------------------------------
     // /api/product?slug=netflix-premium
+    // --------------------------------------------------------
+
     if (
         req.query &&
         typeof req.query.slug === "string" &&
@@ -724,20 +820,29 @@ function getProductSlug(req) {
             .toLowerCase();
     }
 
+
+    // --------------------------------------------------------
     // /product/netflix-premium
+    // --------------------------------------------------------
+
     const url = req.url || "";
+
     const pathname = url.split("?")[0];
 
-    // IMPORTANT:
-    // This is the correct regex.
-    const match = pathname.match(/^\/product\/([^/]+)\/?$/);
+    const match = pathname.match(
+        /^\/product\/([^/]+)\/?$/
+    );
 
     if (match && match[1]) {
+
         try {
+
             return decodeURIComponent(match[1])
                 .trim()
                 .toLowerCase();
+
         } catch {
+
             return match[1]
                 .trim()
                 .toLowerCase();
@@ -749,7 +854,7 @@ function getProductSlug(req) {
 
 
 // ============================================================
-// 404
+// 404 RESPONSE
 // ============================================================
 
 function send404(res) {
@@ -769,6 +874,7 @@ function send404(res) {
     return res.end(`
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Product Not Found | NEXT LEVEL SUBS</title>
@@ -787,6 +893,7 @@ function send404(res) {
     </a>
 
 </body>
+
 </html>
 `);
 }
@@ -798,63 +905,110 @@ function send404(res) {
 
 module.exports = function handler(req, res) {
 
-    // --------------------------------------------------------
-    // Only GET / HEAD
-    // --------------------------------------------------------
+    // ========================================================
+    // ONLY GET / HEAD
+    // ========================================================
 
-    if (req.method !== "GET" && req.method !== "HEAD") {
+    if (
+        req.method !== "GET" &&
+        req.method !== "HEAD"
+    ) {
+
         res.statusCode = 405;
-        res.setHeader("Allow", "GET, HEAD");
+
+        res.setHeader(
+            "Allow",
+            "GET, HEAD"
+        );
+
         return res.end("Method Not Allowed");
     }
 
 
-    // --------------------------------------------------------
-    // Get slug
-    // --------------------------------------------------------
+    // ========================================================
+    // GET PRODUCT SLUG
+    // ========================================================
 
     const slug = getProductSlug(req);
 
     const product = products[slug];
+
+
+    // ========================================================
+    // PRODUCT NOT FOUND
+    // ========================================================
 
     if (!product) {
         return send404(res);
     }
 
 
-    // --------------------------------------------------------
-    // Build URLs
-    // --------------------------------------------------------
+    // ========================================================
+    // BUILD PRODUCT URL
+    // ========================================================
 
     const productURL =
         `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
+
+    // ========================================================
+    // BUILD IMAGE URL
+    // ========================================================
+
     const imageURL =
         absoluteURL(product.image);
+
+
+    // ========================================================
+    // BUILD DESTINATION URL
+    // ========================================================
 
     const destinationURL =
         absoluteURL(product.page);
 
+
+    // ========================================================
+    // SEO TITLE
+    // ========================================================
+
     const title =
         `${product.name} Subscription | NEXT LEVEL SUBS`;
 
+
+    // ========================================================
+    // SEO DESCRIPTION
+    // ========================================================
+
     const description =
         `${product.description}. Get ${product.name} subscription from NEXT LEVEL SUBS.`;
+
+
+    // ========================================================
+    // IMAGE MIME TYPE
+    // ========================================================
 
     const imageType =
         getImageMimeType(imageURL);
 
 
-    // --------------------------------------------------------
-    // Product Schema
-    // --------------------------------------------------------
+    // ========================================================
+    // PRODUCT JSON-LD
+    // ========================================================
 
     const productSchema = {
+
         "@context": "https://schema.org",
+
         "@type": "Product",
+
         "name": product.name,
+
         "description": description,
-        "image": [imageURL],
+
+        "image": [
+            imageURL
+        ],
+
         "url": productURL,
 
         "category": product.category,
@@ -872,12 +1026,14 @@ module.exports = function handler(req, res) {
     };
 
 
-    // --------------------------------------------------------
-    // Breadcrumb Schema
-    // --------------------------------------------------------
+    // ========================================================
+    // BREADCRUMB JSON-LD
+    // ========================================================
 
     const breadcrumbSchema = {
+
         "@context": "https://schema.org",
+
         "@type": "BreadcrumbList",
 
         "itemListElement": [
@@ -901,14 +1057,13 @@ module.exports = function handler(req, res) {
                 "name": product.name,
                 "item": productURL
             }
-
         ]
     };
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // HTTP HEADERS
-    // --------------------------------------------------------
+    // ========================================================
 
     res.statusCode = 200;
 
@@ -938,20 +1093,21 @@ module.exports = function handler(req, res) {
     );
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // HEAD REQUEST
-    // --------------------------------------------------------
+    // ========================================================
 
     if (req.method === "HEAD") {
         return res.end();
     }
 
 
-    // --------------------------------------------------------
+    // ========================================================
     // SEO HTML
-    // --------------------------------------------------------
+    // ========================================================
 
-    const html = `<!DOCTYPE html>
+    const html = `
+<!DOCTYPE html>
 
 <html lang="en">
 
@@ -964,17 +1120,34 @@ module.exports = function handler(req, res) {
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>${escapeHTML(title)}</title>
+    <title>
+        ${escapeHTML(title)}
+    </title>
+
+
+    <!-- =====================================================
+         META DESCRIPTION
+         ===================================================== -->
 
     <meta
         name="description"
         content="${escapeHTML(description)}"
     >
 
+
+    <!-- =====================================================
+         ROBOTS
+         ===================================================== -->
+
     <meta
         name="robots"
         content="index, follow, max-image-preview:large"
     >
+
+
+    <!-- =====================================================
+         CANONICAL
+         ===================================================== -->
 
     <link
         rel="canonical"
@@ -1053,7 +1226,7 @@ module.exports = function handler(req, res) {
 
     <meta
         name="twitter:card"
-        content="summary_large_image"
+        content="${escapeHTML(SITE.twitterCard)}"
     >
 
     <meta
@@ -1121,9 +1294,11 @@ ${safeJSON(breadcrumbSchema)}
             </p>
 
             <p>
+
                 <a href="${escapeHTML(destinationURL)}">
                     Continue to ${escapeHTML(product.name)}
                 </a>
+
             </p>
 
         </article>
@@ -1155,8 +1330,13 @@ ${safeJSON(breadcrumbSchema)}
 
 </body>
 
-</html>`;
+</html>
+`;
 
+
+    // ========================================================
+    // SEND RESPONSE
+    // ========================================================
 
     return res.end(html);
 };
