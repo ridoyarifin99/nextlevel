@@ -1,3 +1,4 @@
+@ -1,5811 +1,5821 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5079,28 +5080,16 @@
         const successModal = document.getElementById('successModal');
         const fab = document.getElementById('fab');
         const whatsappFab = document.getElementById('whatsappFab');
-// ============================================================
-// PRODUCT SLUG GENERATOR
-// ============================================================
-
-function productSlug(name) {
-    return name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
+        
         // Initialize the page
-// ============================================================
-// INITIALIZE PRODUCT PAGE
-// ============================================================
-
-function init() {
-
-    // Show loading/skeleton state
-    showSkeletonLoaders();
-
-              
+        function init() {
+            // Show skeleton loaders first
+            showSkeletonLoaders();
+            
+            // Get product name from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productName = decodeURIComponent(urlParams.get('name'));
+            
             // Load cart from localStorage
             loadCart();
             
@@ -5264,7 +5253,6 @@ function init() {
                 AOS.refresh();
             }, 100);
         }
-        
         
         // Render product details
         function renderProductDetails() {
@@ -5692,7 +5680,7 @@ function init() {
             
             relatedProducts.innerHTML = related.map((product, index) => `
                 <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="/product/${productSlug(product.name)}" class="card-link">
+                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
                         <div class="product-image-container">
                             <img src="${product.image}" alt="${product.name}" class="product-image">
                         </div>
