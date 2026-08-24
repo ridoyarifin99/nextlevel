@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Next Level Subs</title>
+
+    <meta
+        name="description"
+        content="Login to your Next Level Subs customer account."
+    >
+
+    <link rel="stylesheet" href="./src/output.css">
+    <link rel="stylesheet" href="./src/all.min.css">
+
+    <style>
+        body {
+            background: #f8fafc;
+        }
+
+        .auth-card {
+            animation: fadeIn 0.35s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255,255,255,.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="bg-white shadow-md sticky top-0 z-50">
+
+    <div class="container mx-auto px-4 py-3">
+
+        <div class="flex items-center justify-between">
+
+            <a
+                href="index.html"
+                class="flex items-center space-x-2"
+            >
+
+                <img
+                    src="/images/next_level.png"
+                    alt="Next Level Subs Logo"
+                    class="logo-image"
+                >
+
+                <div class="logo-text-container">
+
+                    <div
+                        class="logo-text-item"
+                        style="color: var(--primary-color); font-size: 1rem;"
+                    >
+                        Trusted
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="color: var(--primary-color); font-size: 1rem;"
+                    >
+                        Cheap
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="color: var(--primary-color); font-size: 1rem;"
+                    >
+                        Secure
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="color: var(--primary-color); font-size: 1rem;"
+                    >
+                        24/7 Support
+                    </div>
+
+                </div>
+
+            </a>
+
+            <a
+                href="index.html"
+                class="text-gray-600 hover:text-blue-500 transition-colors"
+            >
+                <i class="fas fa-arrow-left mr-2"></i>
+                Home
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="min-h-screen py-12 px-4">
+
+    <div class="max-w-md mx-auto">
+
+        <div
+            class="auth-card bg-white rounded-2xl shadow-xl p-6 sm:p-8"
+        >
+
+            <div class="flex justify-center mb-5">
+
+                <div
+                    class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center"
+                >
+                    <i
+                        class="fas fa-right-to-bracket text-2xl text-blue-500"
+                    ></i>
+                </div>
+
+            </div>
+
+
+            <div class="text-center mb-7">
+
+                <h1 class="text-3xl font-bold text-gray-900">
+                    Welcome Back
+                </h1>
+
+                <p class="text-gray-500 mt-2">
+                    Login to your Next Level Subs account
+                </p>
+
+            </div>
+
+
+            <div
+                id="errorMessage"
+                class="hidden mb-5 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm"
+            >
+
+                <div class="flex items-start">
+
+                    <i class="fas fa-circle-exclamation mt-0.5 mr-2"></i>
+
+                    <span id="errorText"></span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="successMessage"
+                class="hidden mb-5 p-4 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm"
+            >
+
+                <div class="flex items-start">
+
+                    <i class="fas fa-circle-check mt-0.5 mr-2"></i>
+
+                    <span id="successText"></span>
+
+                </div>
+
+            </div>
+
+
+            <form id="loginForm">
+
+                <div class="mb-5">
+
+                    <label
+                        for="email"
+                        class="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                        Email Address
+                    </label>
+
+                    <div class="relative">
+
+                        <i
+                            class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                        ></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            class="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="mb-5">
+
+                    <div class="flex items-center justify-between mb-2">
+
+                        <label
+                            for="password"
+                            class="block text-sm font-medium text-gray-700"
+                        >
+                            Password
+                        </label>
+
+                        <button
+                            type="button"
+                            id="forgotPassword"
+                            class="text-sm text-blue-500 hover:underline"
+                        >
+                            Forgot password?
+                        </button>
+
+                    </div>
+
+
+                    <div class="relative">
+
+                        <i
+                            class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                        ></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            class="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
+                            placeholder="Your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            aria-label="Show password"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="mb-6">
+
+                    <label class="flex items-center">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                            class="mr-3"
+                        >
+
+                        <span class="text-sm text-gray-600">
+                            Remember me
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="w-full py-3 px-4 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+
+                    <span id="loginButtonText">
+                        <i class="fas fa-right-to-bracket mr-2"></i>
+                        Login
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <div class="text-center mt-6">
+
+                <p class="text-gray-600 text-sm">
+
+                    Don't have an account?
+
+                    <a
+                        href="register.html"
+                        class="text-blue-500 font-semibold hover:underline"
+                    >
+                        Create Account
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="text-center mt-5 text-sm text-gray-500">
+
+            <i class="fas fa-shield-halved mr-1"></i>
+
+            Secure customer authentication
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./js/supabase-config.js"></script>
+
+
+<script>
+
+"use strict";
+
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const emailInput =
+    document.getElementById("email");
+
+const passwordInput =
+    document.getElementById("password");
+
+const loginButton =
+    document.getElementById("loginButton");
+
+const loginButtonText =
+    document.getElementById("loginButtonText");
+
+const errorMessage =
+    document.getElementById("errorMessage");
+
+const errorText =
+    document.getElementById("errorText");
+
+const successMessage =
+    document.getElementById("successMessage");
+
+const successText =
+    document.getElementById("successText");
+
+
+// ============================================================
+// SHOW ERROR
+// ============================================================
+
+function showError(message) {
+
+    errorText.textContent = message;
+
+    errorMessage.classList.remove("hidden");
+
+    successMessage.classList.add("hidden");
+
+}
+
+
+// ============================================================
+// SHOW SUCCESS
+// ============================================================
+
+function showSuccess(message) {
+
+    successText.textContent = message;
+
+    successMessage.classList.remove("hidden");
+
+    errorMessage.classList.add("hidden");
+
+}
+
+
+// ============================================================
+// PASSWORD TOGGLE
+// ============================================================
+
+document
+    .getElementById("togglePassword")
+    .addEventListener("click", function () {
+
+        const isPassword =
+            passwordInput.type === "password";
+
+        passwordInput.type =
+            isPassword ? "text" : "password";
+
+        const icon =
+            this.querySelector("i");
+
+        icon.classList.toggle(
+            "fa-eye",
+            !isPassword
+        );
+
+        icon.classList.toggle(
+            "fa-eye-slash",
+            isPassword
+        );
+
+    });
+
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+loginForm.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        errorMessage.classList.add("hidden");
+        successMessage.classList.add("hidden");
+
+        const email =
+            emailInput.value.trim().toLowerCase();
+
+        const password =
+            passwordInput.value;
+
+        if (!email || !password) {
+
+            showError(
+                "Please enter your email and password."
+            );
+
+            return;
+        }
+
+
+        loginButton.disabled = true;
+
+        loginButtonText.innerHTML =
+            '<div class="spinner"></div>';
+
+
+        try {
+
+            const {
+                data,
+                error
+            } = await supabaseClient.auth.signInWithPassword({
+
+                email: email,
+
+                password: password
+
+            });
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            if (!data.session) {
+
+                throw new Error(
+                    "Login was not completed. Please try again."
+                );
+
+            }
+
+
+            showSuccess(
+                "Login successful. Redirecting..."
+            );
+
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                },
+                700
+            );
+
+
+        }
+        catch(error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            let message =
+                "Unable to login. Please try again.";
+
+
+            if (error.message) {
+
+                message =
+                    error.message;
+
+            }
+
+
+            if (
+                message.toLowerCase().includes(
+                    "invalid login credentials"
+                )
+            ) {
+
+                message =
+                    "Incorrect email or password.";
+
+            }
+
+
+            if (
+                message.toLowerCase().includes(
+                    "email not confirmed"
+                )
+            ) {
+
+                message =
+                    "Please confirm your email address before logging in.";
+
+            }
+
+
+            showError(message);
+
+        }
+        finally {
+
+            loginButton.disabled = false;
+
+            loginButtonText.innerHTML =
+                '<i class="fas fa-right-to-bracket mr-2"></i>Login';
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+
+document
+    .getElementById("forgotPassword")
+    .addEventListener("click", async function() {
+
+        const email =
+            emailInput.value.trim().toLowerCase();
+
+
+        if (!email) {
+
+            showError(
+                "Enter your email address first."
+            );
+
+            emailInput.focus();
+
+            return;
+        }
+
+
+        try {
+
+            const {
+                error
+            } = await supabaseClient.auth.resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        window.location.origin +
+                        "/reset-password.html"
+                }
+            );
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            showSuccess(
+                "Password reset instructions have been sent to your email."
+            );
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            showError(
+                error.message ||
+                "Unable to send password reset email."
+            );
+
+        }
+
+    });
+
+
+</script>
+
+</body>
+</html>
