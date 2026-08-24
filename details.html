@@ -5087,9 +5087,7 @@ function goToProductParent(productName) {
     if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'NLS_NAVIGATE_PRODUCT', productName: productName }, '*');
     } else {
-        window.location.href =
-    '/details.html?slug=' +
-    encodeURIComponent(productSlug(productName));
+        window.location.href = '/details.html?name=' + encodeURIComponent(productName);
     }
 }
         // Cart state
@@ -5115,37 +5113,24 @@ function goToProductParent(productName) {
             showSkeletonLoaders();
             
             // Get product name from URL
-const urlParams = new URLSearchParams(window.location.search);
-const productSlug = urlParams.get('slug');
-if (productSlug) {
-    loadProduct(productSlug);
-} else {
-    window.location.href = 'index.html';
-}
-
-loadCart();
-
-setTimeout(() => {
-    if (slug) {
-        // ============================================================
-// SEO-FRIENDLY PRODUCT SLUG
-// ============================================================
-
-function productSlug(name) {
-    return String(name)
-        .toLowerCase()
-        .trim()
-        .replace(/&/g, 'and')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
-        loadProductBySlug(slug);
-    } else {
-        window.location.href = 'index.html';
-    }
-
-    loadingOverlay.classList.remove('active');
-}, 1500);
+            const urlParams = new URLSearchParams(window.location.search);
+            const productName = decodeURIComponent(urlParams.get('name'));
+            
+            // Load cart from localStorage
+            loadCart();
+            
+            // Simulate loading delay
+            setTimeout(() => {
+                if (productName) {
+                    loadProduct(productName);
+                } else {
+                    // If no product name, redirect to index
+                    window.location.href = 'index.html';
+                }
+                
+                // Hide loading overlay
+                loadingOverlay.classList.remove('active');
+            }, 1500);
             
             // Show/hide scroll to top button
             window.addEventListener('scroll', () => {
@@ -5253,56 +5238,47 @@ function productSlug(name) {
         }
         
         // Load product details
-        // ============================================================
-// LOAD PRODUCT BY SLUG
-// ============================================================
-
-function loadProduct(productSlug) {
-    // Find product by slug
-    const productIndex = products.findIndex(
-        p => p.slug === productSlug
-    );
-
-    if (productIndex === -1) {
-        console.error("Product not found:", productSlug);
-        window.location.href = 'index.html';
-        return;
-    }
-
-    // Create a deep copy so original product data isn't modified
-    currentProduct = JSON.parse(
-        JSON.stringify(products[productIndex])
-    );
-
-    // Ensure required arrays exist
-    if (!Array.isArray(currentProduct.customerReviews)) {
-        currentProduct.customerReviews = [];
-    }
-
-    if (!Array.isArray(currentProduct.faq)) {
-        currentProduct.faq = [];
-    }
-
-    // Update breadcrumb
-    breadcrumbProduct.textContent = currentProduct.name;
-
-    // Reset gallery
-    currentSlide = 0;
-
-    // Render product
-    renderProductDetails();
-
-    // Load default tab
-    switchTab('description');
-
-    // Load related products
-    loadRelatedProducts();
-
-    // Refresh AOS
-    setTimeout(() => {
-        AOS.refresh();
-    }, 100);
-}
+        function loadProduct(productName) {
+            // Find the product
+            const productIndex = products.findIndex(p => p.name === productName);
+            
+            if (productIndex === -1) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Create a deep copy of the product to avoid modifying the original
+            currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+            
+            // Ensure required arrays exist
+            if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
+                currentProduct.customerReviews = [];
+            }
+            
+            if (!currentProduct.faq || !Array.isArray(currentProduct.faq)) {
+                currentProduct.faq = [];
+            }
+            
+            // Update breadcrumb
+            breadcrumbProduct.textContent = currentProduct.name;
+            
+            // Reset current slide
+            currentSlide = 0;
+            
+            // Render product details
+            renderProductDetails();
+            
+            // Load default tab content
+            switchTab('description');
+            
+            // Load related products
+            loadRelatedProducts();
+            
+            // Refresh AOS after dynamically adding content
+            setTimeout(() => {
+                AOS.refresh();
+            }, 100);
+        }
         
         // Render product details
         function renderProductDetails() {
@@ -5730,7 +5706,7 @@ function loadProduct(productSlug) {
             
             relatedProducts.innerHTML = related.map((product, index) => `
                 <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="details.html?slug=${encodeURIComponent(productSlug(product.name))}" class="card-link">
+                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
                         <div class="product-image-container">
                             <img src="${product.image}" alt="${product.name}" class="product-image">
                         </div>
