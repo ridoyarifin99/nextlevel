@@ -68,7 +68,7 @@ const products = {
     "hbo-max": {
         name: "HBO Max",
         description: "HBO, Warner Bros., DC, Max Originals",
-        image: "/assets/cards/max.png",
+        image: "/assets/details/hbomax/1.webp",
         category: "Streaming"
     },
 
