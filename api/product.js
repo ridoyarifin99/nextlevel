@@ -70,7 +70,7 @@ const products = {
     "amazon-prime-video": {
         name: "Amazon Prime Video",
         description: "Thousands of movies and TV shows",
-        image: "/assets/cards/prime_video.svg",
+        image: "/assets/details/primevideo/prime1.webp",
         category: "Streaming"
     },
 
