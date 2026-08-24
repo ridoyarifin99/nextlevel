@@ -84,7 +84,9 @@
   // PROD:   https://api.nextlevelsubs.com  (or your deployed URL)
   window.AUTH_API_BASE = "http://localhost:8080";
 </script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./js/supabase-config.js"></script>
+<script src="./js/auth.js"></script>
 <body>
     
     <!-- Mobile Menu Overlay -->
@@ -110,36 +112,127 @@
                     </div>
                 </div>
                 
-                <nav class="nav-menu" id="navMenu" aria-label="Main navigation">
-<!-- User Icon Button -->
-<button
-  id="userBtn"
-  onclick="window.location.href='/auth.html?redirect=/'"
-  class="flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-fuchsia-600 transition duration-300 shadow-none hover:shadow-md"
-  aria-label="User account"
->
-  <i class="fas fa-user text-lg"></i>
-</button>
+<nav class="nav-menu" id="navMenu" aria-label="Main navigation">
 
-    <a href="/best-selling" class="nav-link" data-section="best-selling">Best Sellers</a>
-    <a href="/streaming" class="nav-link" data-section="streaming">Streaming</a>
-    <a href="/music" class="nav-link" data-section="music">Music</a>
-    <a href="/storage" class="nav-link" data-section="storage">Cloud Storage</a>
-    <a href="/vpn" class="nav-link" data-section="vpn">VPN</a>
-    <a href="/aiDesign" class="nav-link" data-section="aiDesign">Ai & Design</a>
-    <a href="/combos" class="nav-link" data-section="combos">Combos</a>
-    <a href="/education" class="nav-link" data-section="education">Education</a>
-    <a href="/adult" class="nav-link" data-section="adult">Adult</a>
-<!-- User Icon Button -->
+    <!-- =========================================================
+         AUTH — LOGGED OUT
+    ========================================================== -->
+
+    <a
+        href="/login.html"
+        id="loginLink"
+        class="auth-login flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-fuchsia-600 transition duration-300 shadow-none hover:shadow-md"
+        aria-label="Login"
+        title="Login"
+    >
+        <i class="fas fa-user text-lg"></i>
+    </a>
 
 
+    <!-- =========================================================
+         AUTH — LOGGED IN
+    ========================================================== -->
+
+    <a
+        href="/dashboard.html"
+        id="dashboardLink"
+        class="auth-dashboard flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-fuchsia-600 transition duration-300 shadow-none hover:shadow-md"
+        aria-label="Dashboard"
+        title="Dashboard"
+        style="display:none;"
+    >
+        <i class="fas fa-user text-lg"></i>
+    </a>
 
 
+    <button
+        type="button"
+        id="logoutButton"
+        class="auth-logout flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-red-500 transition duration-300 shadow-none hover:shadow-md"
+        aria-label="Logout"
+        title="Logout"
+        style="display:none;"
+    >
+        <i class="fas fa-right-from-bracket text-lg"></i>
+    </button>
 
 
+    <!-- =========================================================
+         MAIN NAVIGATION
+    ========================================================== -->
 
+    <a
+        href="/best-selling"
+        class="nav-link"
+        data-section="best-selling"
+    >
+        Best Sellers
+    </a>
 
-    
+    <a
+        href="/streaming"
+        class="nav-link"
+        data-section="streaming"
+    >
+        Streaming
+    </a>
+
+    <a
+        href="/music"
+        class="nav-link"
+        data-section="music"
+    >
+        Music
+    </a>
+
+    <a
+        href="/storage"
+        class="nav-link"
+        data-section="storage"
+    >
+        Cloud Storage
+    </a>
+
+    <a
+        href="/vpn"
+        class="nav-link"
+        data-section="vpn"
+    >
+        VPN
+    </a>
+
+    <a
+        href="/aiDesign"
+        class="nav-link"
+        data-section="aiDesign"
+    >
+        Ai & Design
+    </a>
+
+    <a
+        href="/combos"
+        class="nav-link"
+        data-section="combos"
+    >
+        Combos
+    </a>
+
+    <a
+        href="/education"
+        class="nav-link"
+        data-section="education"
+    >
+        Education
+    </a>
+
+    <a
+        href="/adult"
+        class="nav-link"
+        data-section="adult"
+    >
+        Adult
+    </a>
+
 </nav>
                 
                 <div id="contentDiv" class="md:flex lg:felx xl:flex 2xl:flex items-center gap-4 hidden">

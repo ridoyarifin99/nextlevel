@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -31,7 +32,6 @@
         href="./src/all.min.css"
     >
 
-
     <style>
 
         /* ============================================================
@@ -39,7 +39,6 @@
         ============================================================ */
 
         :root {
-
             --primary-color: #6a11cb;
             --primary-dark: #4a0699;
             --primary-light: #9d4edd;
@@ -48,11 +47,11 @@
 
             --text-dark: #2C3E50;
             --text-light: #7F8C8D;
+
             --border-color: #E5E7EB;
 
             --transition:
-                all .3s cubic-bezier(.4,0,.2,1);
-
+                all .3s cubic-bezier(.4, 0, .2, 1);
         }
 
 
@@ -64,16 +63,12 @@
             box-sizing: border-box;
         }
 
-
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
-
             margin: 0;
-
             min-height: 100vh;
 
             font-family:
@@ -90,12 +85,12 @@
             background:
                 radial-gradient(
                     circle at 10% 20%,
-                    rgba(106,17,203,.16),
+                    rgba(106, 17, 203, .16),
                     transparent 30%
                 ),
                 radial-gradient(
                     circle at 90% 10%,
-                    rgba(37,117,252,.16),
+                    rgba(37, 117, 252, .16),
                     transparent 30%
                 ),
                 linear-gradient(
@@ -114,7 +109,6 @@
         ============================================================ */
 
         .background-orb {
-
             position: fixed;
 
             width: 420px;
@@ -134,9 +128,7 @@
                 orbFloat 12s ease-in-out infinite;
         }
 
-
         .orb-one {
-
             top: -160px;
             left: -140px;
 
@@ -148,9 +140,7 @@
                 );
         }
 
-
         .orb-two {
-
             right: -160px;
             bottom: -160px;
 
@@ -164,18 +154,20 @@
             animation-delay: -5s;
         }
 
-
         @keyframes orbFloat {
 
             0%,
             100% {
-                transform: translate(0,0) scale(1);
+                transform:
+                    translate(0, 0)
+                    scale(1);
             }
 
             50% {
-                transform: translate(35px,25px) scale(1.08);
+                transform:
+                    translate(35px, 25px)
+                    scale(1.08);
             }
-
         }
 
 
@@ -184,7 +176,6 @@
         ============================================================ */
 
         .auth-page {
-
             position: relative;
 
             z-index: 1;
@@ -200,9 +191,7 @@
             padding: 30px 16px;
         }
 
-
         .auth-wrapper {
-
             width: 100%;
 
             max-width: 1050px;
@@ -224,16 +213,13 @@
         ============================================================ */
 
         .brand-panel {
-
             padding: 30px;
 
             animation:
                 fadeSlideUp .7s ease forwards;
         }
 
-
         .brand-logo {
-
             display: inline-flex;
 
             align-items: center;
@@ -245,11 +231,8 @@
             color: inherit;
         }
 
-
         .logo-image {
-
             width: 52px;
-
             height: 52px;
 
             object-fit: contain;
@@ -259,25 +242,20 @@
             filter:
                 drop-shadow(
                     0 8px 18px
-                    rgba(106,17,203,.15)
+                    rgba(106, 17, 203, .15)
                 );
         }
 
-
         .logo-text-container {
-
             position: relative;
 
             width: 150px;
-
             height: 26px;
 
             overflow: hidden;
         }
 
-
         .logo-text-item {
-
             position: absolute;
 
             inset: 0;
@@ -308,7 +286,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-
         .logo-text-item:nth-child(1) {
             animation-delay: 0s;
         }
@@ -324,7 +301,6 @@
         .logo-text-item:nth-child(4) {
             animation-delay: 6s;
         }
-
 
         @keyframes vanishingSlide {
 
@@ -345,18 +321,15 @@
                 transform: translateY(100%);
                 opacity: 0;
             }
-
         }
 
-
         .brand-title {
-
             margin-top: 45px;
 
             max-width: 600px;
 
             font-size:
-                clamp(2.4rem,5vw,4.3rem);
+                clamp(2.4rem, 5vw, 4.3rem);
 
             line-height: 1.05;
 
@@ -367,9 +340,7 @@
             color: #172033;
         }
 
-
         .brand-title span {
-
             background:
                 linear-gradient(
                     90deg,
@@ -383,9 +354,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-
         .brand-description {
-
             max-width: 540px;
 
             margin-top: 20px;
@@ -397,13 +366,11 @@
             color: var(--text-light);
         }
 
-
         .feature-list {
-
             display: grid;
 
             grid-template-columns:
-                repeat(2,minmax(0,1fr));
+                repeat(2, minmax(0, 1fr));
 
             gap: 14px;
 
@@ -412,9 +379,7 @@
             max-width: 570px;
         }
 
-
         .feature-item {
-
             display: flex;
 
             align-items: center;
@@ -425,18 +390,18 @@
 
             border:
                 1px solid
-                rgba(255,255,255,.8);
+                rgba(255, 255, 255, .8);
 
             border-radius: 14px;
 
             background:
-                rgba(255,255,255,.62);
+                rgba(255, 255, 255, .62);
 
             backdrop-filter: blur(14px);
 
             box-shadow:
                 0 8px 25px
-                rgba(30,41,59,.05);
+                rgba(30, 41, 59, .05);
 
             font-size: 13px;
 
@@ -447,20 +412,16 @@
             transition: var(--transition);
         }
 
-
         .feature-item:hover {
-
             transform:
                 translateY(-3px);
 
             box-shadow:
                 0 12px 30px
-                rgba(106,17,203,.10);
+                rgba(106, 17, 203, .10);
         }
 
-
         .feature-icon {
-
             width: 34px;
             height: 34px;
 
@@ -469,6 +430,7 @@
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             border-radius: 10px;
@@ -484,7 +446,7 @@
 
             box-shadow:
                 0 5px 12px
-                rgba(106,17,203,.20);
+                rgba(106, 17, 203, .20);
         }
 
 
@@ -493,7 +455,6 @@
         ============================================================ */
 
         .auth-card {
-
             position: relative;
 
             overflow: hidden;
@@ -502,12 +463,12 @@
 
             border:
                 1px solid
-                rgba(255,255,255,.75);
+                rgba(255, 255, 255, .75);
 
             border-radius: 28px;
 
             background:
-                rgba(255,255,255,.78);
+                rgba(255, 255, 255, .78);
 
             backdrop-filter:
                 blur(25px);
@@ -517,15 +478,13 @@
 
             box-shadow:
                 0 25px 70px
-                rgba(30,41,59,.13);
+                rgba(30, 41, 59, .13);
 
             animation:
                 fadeSlideUp .7s .1s ease both;
         }
 
-
         .auth-card::before {
-
             content: "";
 
             position: absolute;
@@ -550,7 +509,6 @@
                 gradientMove 4s linear infinite;
         }
 
-
         @keyframes gradientMove {
 
             0% {
@@ -560,12 +518,9 @@
             100% {
                 background-position: 200% 50%;
             }
-
         }
 
-
         .auth-heading {
-
             font-size: 27px;
 
             font-weight: 800;
@@ -573,9 +528,7 @@
             color: #172033;
         }
 
-
         .auth-subheading {
-
             margin-top: 6px;
 
             font-size: 14px;
@@ -589,7 +542,6 @@
         ============================================================ */
 
         .alert {
-
             display: none;
 
             align-items: flex-start;
@@ -607,14 +559,11 @@
             line-height: 1.5;
         }
 
-
         .alert.show {
             display: flex;
         }
 
-
         .alert.error {
-
             color: #991b1b;
 
             background: #fef2f2;
@@ -624,9 +573,7 @@
                 #fecaca;
         }
 
-
         .alert.success {
-
             color: #166534;
 
             background: #f0fdf4;
@@ -642,13 +589,10 @@
         ============================================================ */
 
         .form-group {
-
             margin-top: 20px;
         }
 
-
         .form-label {
-
             display: block;
 
             margin-bottom: 8px;
@@ -660,15 +604,11 @@
             color: #334155;
         }
 
-
         .input-wrapper {
-
             position: relative;
         }
 
-
         .input-icon {
-
             position: absolute;
 
             left: 15px;
@@ -685,9 +625,7 @@
             transition: var(--transition);
         }
 
-
         .form-input {
-
             width: 100%;
 
             height: 52px;
@@ -704,7 +642,7 @@
             outline: none;
 
             background:
-                rgba(255,255,255,.86);
+                rgba(255, 255, 255, .86);
 
             color: #172033;
 
@@ -714,22 +652,18 @@
 
             box-shadow:
                 inset 0 1px 2px
-                rgba(15,23,42,.02);
+                rgba(15, 23, 42, .02);
         }
-
 
         .form-input::placeholder {
             color: #a1aab8;
         }
 
-
         .form-input:hover {
             border-color: #cbd5e1;
         }
 
-
         .form-input:focus {
-
             border-color:
                 var(--primary-color);
 
@@ -737,20 +671,16 @@
 
             box-shadow:
                 0 0 0 4px
-                rgba(106,17,203,.09);
+                rgba(106, 17, 203, .09);
         }
-
 
         .input-wrapper:focus-within
         .input-icon {
-
             color:
                 var(--primary-color);
         }
 
-
         .password-toggle {
-
             position: absolute;
 
             right: 13px;
@@ -761,6 +691,7 @@
                 translateY(-50%);
 
             width: 34px;
+
             height: 34px;
 
             border: 0;
@@ -776,9 +707,7 @@
             transition: var(--transition);
         }
 
-
         .password-toggle:hover {
-
             background: #f1f5f9;
 
             color:
@@ -791,7 +720,6 @@
         ============================================================ */
 
         .form-options {
-
             display: flex;
 
             align-items: center;
@@ -803,9 +731,7 @@
             margin-top: 16px;
         }
 
-
         .remember {
-
             display: inline-flex;
 
             align-items: center;
@@ -819,10 +745,9 @@
             cursor: pointer;
         }
 
-
         .remember input {
-
             width: 15px;
+
             height: 15px;
 
             accent-color:
@@ -831,9 +756,7 @@
             cursor: pointer;
         }
 
-
         .forgot-link {
-
             color:
                 var(--primary-color);
 
@@ -846,9 +769,7 @@
             transition: var(--transition);
         }
 
-
         .forgot-link:hover {
-
             color:
                 var(--secondary-color);
         }
@@ -859,7 +780,6 @@
         ============================================================ */
 
         .submit-button {
-
             width: 100%;
 
             height: 52px;
@@ -895,7 +815,7 @@
 
             box-shadow:
                 0 10px 24px
-                rgba(106,17,203,.22);
+                rgba(106, 17, 203, .22);
 
             transition: var(--transition);
 
@@ -904,9 +824,7 @@
             overflow: hidden;
         }
 
-
         .submit-button::before {
-
             content: "";
 
             position: absolute;
@@ -921,42 +839,37 @@
                 linear-gradient(
                     90deg,
                     transparent,
-                    rgba(255,255,255,.25),
+                    rgba(255, 255, 255, .25),
                     transparent
                 );
 
-            transform: skewX(-20deg);
+            transform:
+                skewX(-20deg);
 
-            transition: left .7s ease;
+            transition:
+                left .7s ease;
         }
-
 
         .submit-button:hover::before {
             left: 140%;
         }
 
-
         .submit-button:hover {
-
             transform:
                 translateY(-2px);
 
             box-shadow:
                 0 14px 30px
-                rgba(106,17,203,.28);
+                rgba(106, 17, 203, .28);
         }
 
-
         .submit-button:active {
-
             transform:
                 translateY(0)
                 scale(.99);
         }
 
-
         .submit-button:disabled {
-
             opacity: .7;
 
             cursor:
@@ -965,15 +878,13 @@
             transform: none;
         }
 
-
         .button-spinner {
-
             width: 18px;
             height: 18px;
 
             border:
                 2px solid
-                rgba(255,255,255,.35);
+                rgba(255, 255, 255, .35);
 
             border-top-color: white;
 
@@ -983,13 +894,11 @@
                 spin .7s linear infinite;
         }
 
-
         @keyframes spin {
 
             to {
                 transform: rotate(360deg);
             }
-
         }
 
 
@@ -998,14 +907,14 @@
         ============================================================ */
 
         .divider {
-
             display: flex;
 
             align-items: center;
 
             gap: 12px;
 
-            margin: 25px 0 20px;
+            margin:
+                25px 0 20px;
 
             color: #94a3b8;
 
@@ -1016,10 +925,8 @@
             letter-spacing: 1px;
         }
 
-
         .divider::before,
         .divider::after {
-
             content: "";
 
             flex: 1;
@@ -1036,7 +943,6 @@
         ============================================================ */
 
         .switch-auth {
-
             text-align: center;
 
             color: #64748b;
@@ -1044,9 +950,7 @@
             font-size: 13px;
         }
 
-
         .switch-auth a {
-
             color:
                 var(--primary-color);
 
@@ -1059,9 +963,7 @@
             transition: var(--transition);
         }
 
-
         .switch-auth a:hover {
-
             color:
                 var(--secondary-color);
         }
@@ -1072,7 +974,6 @@
         ============================================================ */
 
         .security-note {
-
             display: flex;
 
             align-items: center;
@@ -1088,7 +989,6 @@
             font-size: 11px;
         }
 
-
         .security-note i {
             color: #22c55e;
         }
@@ -1099,7 +999,6 @@
         ============================================================ */
 
         .page-loader {
-
             position: fixed;
 
             inset: 0;
@@ -1113,7 +1012,7 @@
             justify-content: center;
 
             background:
-                rgba(248,249,255,.92);
+                rgba(248, 249, 255, .92);
 
             backdrop-filter:
                 blur(12px);
@@ -1127,9 +1026,7 @@
                 visibility .35s ease;
         }
 
-
         .page-loader.hidden {
-
             opacity: 0;
 
             visibility: hidden;
@@ -1137,23 +1034,20 @@
             pointer-events: none;
         }
 
-
         .loader-content {
-
             text-align: center;
         }
 
-
         .loader-spinner {
-
             width: 42px;
+
             height: 42px;
 
             margin: auto;
 
             border:
                 4px solid
-                rgba(106,17,203,.12);
+                rgba(106, 17, 203, .12);
 
             border-top-color:
                 var(--primary-color);
@@ -1167,9 +1061,7 @@
                 spin .8s linear infinite;
         }
 
-
         .loader-text {
-
             margin-top: 14px;
 
             color: #64748b;
@@ -1187,23 +1079,18 @@
         @keyframes fadeSlideUp {
 
             from {
-
                 opacity: 0;
 
                 transform:
                     translateY(22px);
-
             }
 
             to {
-
                 opacity: 1;
 
                 transform:
                     translateY(0);
-
             }
-
         }
 
 
@@ -1214,30 +1101,23 @@
         @media (max-width: 850px) {
 
             .auth-wrapper {
-
                 max-width: 520px;
 
                 display: block;
             }
 
-
             .brand-panel {
-
                 text-align: center;
 
                 padding:
                     10px 10px 25px;
             }
 
-
             .brand-logo {
-
                 justify-content: center;
             }
 
-
             .brand-title {
-
                 margin-top: 25px;
 
                 font-size: 2.35rem;
@@ -1245,9 +1125,7 @@
                 letter-spacing: -1px;
             }
 
-
             .brand-description {
-
                 margin-left: auto;
 
                 margin-right: auto;
@@ -1255,98 +1133,79 @@
                 font-size: 14px;
             }
 
-
             .feature-list {
-
                 max-width: 450px;
 
                 margin-left: auto;
+
                 margin-right: auto;
             }
-
         }
 
 
         @media (max-width: 520px) {
 
             .auth-page {
-
                 padding:
                     18px 12px;
             }
 
-
             .brand-panel {
-
                 padding:
                     5px 8px 20px;
             }
 
-
             .brand-title {
-
                 font-size: 2rem;
 
                 margin-top: 20px;
             }
 
-
             .brand-description {
-
                 display: none;
             }
 
-
             .feature-list {
-
                 grid-template-columns:
-                    repeat(2,minmax(0,1fr));
+                    repeat(2, minmax(0, 1fr));
 
                 gap: 8px;
 
                 margin-top: 18px;
             }
 
-
             .feature-item {
-
                 padding: 9px;
 
                 font-size: 10px;
 
-                justify-content: flex-start;
+                justify-content:
+                    flex-start;
             }
 
-
             .feature-icon {
-
                 width: 28px;
+
                 height: 28px;
 
                 font-size: 11px;
             }
 
-
             .auth-card {
-
-                padding: 24px 18px;
+                padding:
+                    24px 18px;
 
                 border-radius: 22px;
             }
 
-
             .auth-heading {
-
                 font-size: 24px;
             }
 
-
             .form-input,
             .submit-button {
-
                 height: 50px;
             }
-
         }
 
 
@@ -1372,18 +1231,23 @@
                 transition-duration:
                     .01ms !important;
             }
-
         }
 
     </style>
 
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./js/supabase-config.js"></script>
+<script src="./js/auth.js"></script>
 
 <body>
 
-    <!-- Animated background -->
+    <!-- ============================================================
+         ANIMATED BACKGROUND
+    ============================================================ -->
+
     <div class="background-orb orb-one"></div>
+
     <div class="background-orb orb-two"></div>
 
 
@@ -1420,7 +1284,7 @@
 
 
             <!-- ====================================================
-                 BRAND
+                 BRAND PANEL
             ==================================================== -->
 
             <section class="brand-panel">
@@ -1436,7 +1300,6 @@
                         alt="Next Level Subs"
                         class="logo-image"
                     >
-
 
                     <div class="logo-text-container">
 
@@ -1464,6 +1327,7 @@
                 <h1 class="brand-title">
 
                     Everything you love.
+
                     <br>
 
                     <span>
@@ -1488,9 +1352,7 @@
                     <div class="feature-item">
 
                         <div class="feature-icon">
-
                             <i class="fas fa-shield-halved"></i>
-
                         </div>
 
                         Secure Account
@@ -1501,9 +1363,7 @@
                     <div class="feature-item">
 
                         <div class="feature-icon">
-
                             <i class="fas fa-bolt"></i>
-
                         </div>
 
                         Fast Delivery
@@ -1514,9 +1374,7 @@
                     <div class="feature-item">
 
                         <div class="feature-icon">
-
                             <i class="fas fa-tv"></i>
-
                         </div>
 
                         Manage Subscriptions
@@ -1527,9 +1385,7 @@
                     <div class="feature-item">
 
                         <div class="feature-icon">
-
                             <i class="fas fa-headset"></i>
-
                         </div>
 
                         24/7 Support
@@ -1560,17 +1416,20 @@
                 </div>
 
 
-                <!-- Alert -->
+                <!-- =================================================
+                     ALERT
+                ================================================= -->
 
                 <div
                     id="alert"
                     class="alert"
                     role="alert"
+                    aria-live="polite"
                 >
 
                     <i
                         id="alertIcon"
-                        class="fas fa-circle-exclamation mt-0.5"
+                        class="fas fa-circle-exclamation"
                     ></i>
 
                     <span id="alertMessage"></span>
@@ -1588,7 +1447,7 @@
                 >
 
 
-                    <!-- Email -->
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -1623,7 +1482,7 @@
                     </div>
 
 
-                    <!-- Password -->
+                    <!-- PASSWORD -->
 
                     <div class="form-group">
 
@@ -1673,7 +1532,7 @@
                     </div>
 
 
-                    <!-- Options -->
+                    <!-- OPTIONS -->
 
                     <div class="form-options">
 
@@ -1699,7 +1558,7 @@
                     </div>
 
 
-                    <!-- Submit -->
+                    <!-- SUBMIT -->
 
                     <button
                         id="loginButton"
@@ -1720,10 +1579,16 @@
                 </form>
 
 
+                <!-- =================================================
+                     DIVIDER
+                ================================================= -->
+
                 <div class="divider">
                     Account
                 </div>
 
+
+                <!-- REGISTER -->
 
                 <div class="switch-auth">
 
@@ -1735,6 +1600,8 @@
 
                 </div>
 
+
+                <!-- SECURITY -->
 
                 <div class="security-note">
 
@@ -1760,9 +1627,11 @@
     ></script>
 
 
-    <script
-        src="./js/supabase-config.js"
-    ></script>
+    <!-- ============================================================
+         YOUR SUPABASE CONFIG
+    ============================================================ -->
+
+    <script src="./js/supabase-config.js"></script>
 
 
     <!-- ============================================================
@@ -1773,6 +1642,10 @@
 
         "use strict";
 
+
+        /* ============================================================
+           DOM ELEMENTS
+        ============================================================ */
 
         const pageLoader =
             document.getElementById("pageLoader");
@@ -1807,6 +1680,9 @@
         const alertMessage =
             document.getElementById("alertMessage");
 
+        const rememberMe =
+            document.getElementById("rememberMe");
+
 
         /* ============================================================
            HELPERS
@@ -1837,8 +1713,8 @@
 
             alertIcon.className =
                 type === "success"
-                    ? "fas fa-circle-check mt-0.5"
-                    : "fas fa-circle-exclamation mt-0.5";
+                    ? "fas fa-circle-check"
+                    : "fas fa-circle-exclamation";
 
 
             alertMessage.textContent =
@@ -1858,9 +1734,7 @@
         }
 
 
-        function setLoading(
-            loading
-        ) {
+        function setLoading(loading) {
 
             loginButton.disabled =
                 loading;
@@ -1869,22 +1743,15 @@
             if (loading) {
 
                 buttonContent.innerHTML = `
-
                     <span class="button-spinner"></span>
-
                     Signing in...
-
                 `;
 
-            }
-            else {
+            } else {
 
                 buttonContent.innerHTML = `
-
                     <i class="fas fa-right-to-bracket"></i>
-
                     Sign In
-
                 `;
 
             }
@@ -1936,6 +1803,76 @@
 
 
         /* ============================================================
+           REMEMBER ME
+        ============================================================ */
+
+        function loadRememberedEmail() {
+
+            try {
+
+                const savedEmail =
+                    localStorage.getItem(
+                        "nextlevelsubs_remember_email"
+                    );
+
+
+                if (savedEmail) {
+
+                    emailInput.value =
+                        savedEmail;
+
+                    rememberMe.checked =
+                        true;
+
+                }
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Unable to load remembered email:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        function saveRememberedEmail(email) {
+
+            try {
+
+                if (rememberMe.checked) {
+
+                    localStorage.setItem(
+                        "nextlevelsubs_remember_email",
+                        email
+                    );
+
+                }
+                else {
+
+                    localStorage.removeItem(
+                        "nextlevelsubs_remember_email"
+                    );
+
+                }
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Unable to save remembered email:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* ============================================================
            LOGIN
         ============================================================ */
 
@@ -1957,6 +1894,10 @@
                 const password =
                     passwordInput.value;
 
+
+                /* ----------------------------------------------------
+                   VALIDATION
+                ---------------------------------------------------- */
 
                 if (!email) {
 
@@ -1997,6 +1938,23 @@
                 }
 
 
+                if (password.length < 6) {
+
+                    showAlert(
+                        "Please enter your correct password."
+                    );
+
+                    passwordInput.focus();
+
+                    return;
+
+                }
+
+
+                /* ----------------------------------------------------
+                   SUPABASE CHECK
+                ---------------------------------------------------- */
+
                 if (
                     typeof supabaseClient ===
                     "undefined"
@@ -2016,19 +1974,27 @@
 
                 try {
 
+                    /* ------------------------------------------------
+                       SUPABASE LOGIN
+                    ------------------------------------------------ */
+
                     const {
                         data,
                         error
                     } =
                         await supabaseClient.auth
                             .signInWithPassword({
+
                                 email,
                                 password
+
                             });
 
 
                     if (error) {
+
                         throw error;
+
                     }
 
 
@@ -2040,6 +2006,17 @@
 
                     }
 
+
+                    /* ------------------------------------------------
+                       REMEMBER EMAIL
+                    ------------------------------------------------ */
+
+                    saveRememberedEmail(email);
+
+
+                    /* ------------------------------------------------
+                       SUCCESS
+                    ------------------------------------------------ */
 
                     showAlert(
                         "Login successful. Redirecting...",
@@ -2064,6 +2041,7 @@
                     );
 
                 }
+
                 catch (error) {
 
                     console.error(
@@ -2082,6 +2060,10 @@
                         ).toLowerCase();
 
 
+                    /* ------------------------------------------------
+                       SUPABASE ERROR MESSAGES
+                    ------------------------------------------------ */
+
                     if (
                         errorMessage.includes(
                             "invalid login credentials"
@@ -2092,6 +2074,8 @@
                             "Incorrect email or password.";
 
                     }
+
+
                     else if (
                         errorMessage.includes(
                             "email not confirmed"
@@ -2102,6 +2086,8 @@
                             "Please confirm your email address before signing in.";
 
                     }
+
+
                     else if (
                         errorMessage.includes(
                             "too many requests"
@@ -2110,6 +2096,42 @@
 
                         message =
                             "Too many login attempts. Please wait a moment and try again.";
+
+                    }
+
+
+                    else if (
+                        errorMessage.includes(
+                            "user not found"
+                        )
+                    ) {
+
+                        message =
+                            "No account was found with this email address.";
+
+                    }
+
+
+                    else if (
+                        errorMessage.includes(
+                            "network"
+                        )
+                    ) {
+
+                        message =
+                            "Network error. Please check your internet connection and try again.";
+
+                    }
+
+
+                    else if (
+                        errorMessage.includes(
+                            "fetch"
+                        )
+                    ) {
+
+                        message =
+                            "Unable to connect to the authentication server. Please try again.";
 
                     }
 
@@ -2132,10 +2154,18 @@
 
             try {
 
+                /*
+                 * Make sure Supabase is available.
+                 */
+
                 if (
                     typeof supabaseClient ===
                     "undefined"
                 ) {
+
+                    console.error(
+                        "supabaseClient is not defined."
+                    );
 
                     hideLoader();
 
@@ -2143,6 +2173,10 @@
 
                 }
 
+
+                /*
+                 * Get current session.
+                 */
 
                 const {
                     data,
@@ -2153,11 +2187,20 @@
 
 
                 if (error) {
+
                     throw error;
+
                 }
 
 
-                if (data?.session?.user) {
+                /*
+                 * If already logged in,
+                 * don't show the login page.
+                 */
+
+                if (
+                    data?.session?.user
+                ) {
 
                     window.location.replace(
                         "dashboard.html"
@@ -2168,6 +2211,7 @@
                 }
 
             }
+
             catch (error) {
 
                 console.error(
@@ -2178,7 +2222,73 @@
             }
 
 
+            /*
+             * No active session.
+             * Show login page.
+             */
+
             hideLoader();
+
+        }
+
+
+        /* ============================================================
+           SUPABASE AUTH STATE LISTENER
+        ============================================================ */
+
+        /*
+         * This listens for changes to the authentication state.
+         *
+         * Examples:
+         *
+         * SIGNED_IN
+         * SIGNED_OUT
+         * TOKEN_REFRESHED
+         *
+         */
+
+        function setupAuthListener() {
+
+            if (
+                typeof supabaseClient ===
+                "undefined"
+            ) {
+
+                return;
+
+            }
+
+
+            supabaseClient.auth.onAuthStateChange(
+                function (
+                    event,
+                    session
+                ) {
+
+                    /*
+                     * If a session suddenly becomes
+                     * available while on login page,
+                     * send the user to dashboard.
+                     */
+
+                    if (
+                        event === "SIGNED_IN" &&
+                        session?.user
+                    ) {
+
+                        /*
+                         * Don't immediately redirect
+                         * if the form itself is currently
+                         * handling the login.
+                         *
+                         * The normal login flow already
+                         * redirects after showing success.
+                         */
+
+                    }
+
+                }
+            );
 
         }
 
@@ -2187,9 +2297,21 @@
            START
         ============================================================ */
 
-        checkExistingSession();
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                loadRememberedEmail();
+
+                setupAuthListener();
+
+                checkExistingSession();
+
+            }
+        );
 
     </script>
 
 </body>
+
 </html>
