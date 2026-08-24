@@ -5115,8 +5115,13 @@ function goToProductParent(productName) {
             showSkeletonLoaders();
             
             // Get product name from URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const slug = urlParams.get('slug');
+const urlParams = new URLSearchParams(window.location.search);
+const productSlug = urlParams.get('slug');
+if (productSlug) {
+    loadProduct(productSlug);
+} else {
+    window.location.href = 'index.html';
+}
 
 loadCart();
 
@@ -5252,17 +5257,19 @@ function productSlug(name) {
 // LOAD PRODUCT BY SLUG
 // ============================================================
 
-function loadProductBySlug(slug) {
-
-    const productIndex = products.findIndex(product => {
-        return productSlug(product.name) === slug;
-    });
+function loadProduct(productSlug) {
+    // Find product by slug
+    const productIndex = products.findIndex(
+        p => p.slug === productSlug
+    );
 
     if (productIndex === -1) {
+        console.error("Product not found:", productSlug);
         window.location.href = 'index.html';
         return;
     }
 
+    // Create a deep copy so original product data isn't modified
     currentProduct = JSON.parse(
         JSON.stringify(products[productIndex])
     );
@@ -5285,13 +5292,13 @@ function loadProductBySlug(slug) {
     // Render product
     renderProductDetails();
 
-    // Default tab
+    // Load default tab
     switchTab('description');
 
-    // Related products
+    // Load related products
     loadRelatedProducts();
 
-    // Refresh animations
+    // Refresh AOS
     setTimeout(() => {
         AOS.refresh();
     }, 100);
