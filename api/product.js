@@ -3,58 +3,71 @@
 // PRODUCTION HYBRID PRODUCT SEO HANDLER
 // ============================================================
 //
-// Canonical product URLs:
+// URL:
+//   https://www.nextlevelsubs.com/product/hbo-max
 //
-// https://www.nextlevelsubs.com/product/netflix-premium
-// https://www.nextlevelsubs.com/product/spotify-premium
-// https://www.nextlevelsubs.com/product/hbo-max
+// PURPOSE:
+//   1. Server-rendered SEO HTML
+//   2. Product structured data
+//   3. Breadcrumb structured data
+//   4. Organization / WebSite structured data
+//   5. Bangladesh-focused product SEO
+//   6. Open Graph / Twitter
+//   7. Canonical URLs
+//   8. Crawlable internal links
+//   9. Existing details.html customer UI
+//  10. Product navigation preservation
 //
-// ARCHITECTURE
-// ------------------------------------------------------------
-// 1. Server-render real SEO/product content.
-// 2. Generate title + description + canonical.
-// 3. Generate Open Graph / Twitter metadata.
-// 4. Generate Product JSON-LD.
-// 5. Generate BreadcrumbList JSON-LD.
-// 6. Generate Organization + WebSite JSON-LD.
-// 7. Generate crawlable internal product links.
-// 8. Keep existing details.html as shopping UI.
-// 9. Preserve /product/{slug} in browser.
-// 10. Handle all products through one production handler.
-//
-// IMPORTANT
-// ------------------------------------------------------------
-// This file intentionally does NOT depend on details.html
-// for the primary SEO content.
-//
-// details.html remains the customer-facing interface.
-// The product wrapper is now a real HTML page first.
+// IMPORTANT:
+//   details.html DOES NOT need to be rewritten for this handler.
 //
 // ============================================================
 
 "use strict";
 
 // ============================================================
-// SITE CONFIGURATION
+// SITE CONFIG
 // ============================================================
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
     domain: "https://www.nextlevelsubs.com",
-    locale: "en_US",
-    language: "en",
+    locale: "en_BD",
+    language: "en-BD",
+
+    description:
+        "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and digital services in Bangladesh.",
+
+    currency: "BDT",
+
     country: "BD",
-    countryName: "Bangladesh",
 
-    defaultDescription:
-        "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and digital services from NEXT LEVEL SUBS in Bangladesh.",
-
-    organizationDescription:
-        "NEXT LEVEL SUBS provides digital subscriptions and premium online services for customers in Bangladesh."
+    logo:
+        "https://www.nextlevelsubs.com/assets/logo.png"
 };
 
 // ============================================================
 // PRODUCT DATABASE
+// ============================================================
+//
+// Keep your existing product database here.
+//
+// The important change is that every product can now optionally
+// contain SEO-specific information.
+//
+// You can gradually add:
+//   price
+//   duration
+//   features
+//   seoTitle
+//   seoDescription
+//   seoIntro
+//   keywords
+//   faq
+//
+// Products without those fields automatically receive sensible
+// SEO enrichment from the central system below.
+//
 // ============================================================
 
 const products = {
@@ -65,311 +78,168 @@ const products = {
 
     "netflix-premium": {
         name: "Netflix Premium",
-        shortName: "Netflix",
-        description:
-            "Watch movies, TV shows, series and Netflix Originals with a Netflix Premium subscription.",
+        description: "Watch unlimited movies and TV shows",
         image: "/assets/cards/netflix.webp",
-        category: "Streaming",
-        keywords: [
-            "Netflix Premium subscription",
-            "Netflix subscription Bangladesh",
-            "Netflix Premium Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "amazon-prime-video": {
         name: "Amazon Prime Video",
-        shortName: "Prime Video",
-        description:
-            "Stream movies, TV shows, Amazon Originals and exclusive entertainment with Prime Video.",
+        description: "Thousands of movies and TV shows",
         image: "/assets/cards/prime_video.svg",
-        category: "Streaming",
-        keywords: [
-            "Prime Video subscription",
-            "Amazon Prime Video Bangladesh",
-            "Prime Video subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "hbo-max": {
         name: "HBO Max",
-        shortName: "HBO Max",
-        description:
-            "Stream HBO, Warner Bros., DC, Max Originals, movies and premium entertainment with an HBO Max subscription.",
+        description: "HBO, Warner Bros., DC, Max Originals",
         image: "/assets/cards/hbomax.jpg",
-        category: "Streaming",
-        keywords: [
-            "HBO Max subscription",
-            "HBO Max Bangladesh",
-            "HBO Max subscription Bangladesh",
-            "Max subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "crunchy-roll-mega": {
         name: "Crunchy Roll Mega",
-        shortName: "Crunchyroll",
-        description:
-            "Watch anime, popular series and exclusive anime content with a Crunchy Roll Mega subscription.",
+        description: "Anime. Streaming. Community",
         image: "/assets/cards/crunchy.png",
-        category: "Streaming",
-        keywords: [
-            "Crunchyroll subscription",
-            "Crunchyroll Bangladesh",
-            "anime subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "netflix-for-tv": {
         name: "Netflix For TV",
-        shortName: "Netflix For TV",
-        description:
-            "Enjoy Netflix movies and TV shows on compatible television devices with a Netflix For TV subscription.",
+        description: "Watch unlimited movies and TV shows",
         image: "/assets/cards/netflixfortv.webp",
-        category: "Streaming",
-        keywords: [
-            "Netflix for TV",
-            "Netflix TV subscription",
-            "Netflix TV Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "chorki-premium": {
         name: "Chorki Premium",
-        shortName: "Chorki",
-        description:
-            "Watch Bangla movies, series, originals and entertainment with Chorki Premium.",
+        description: "Bengali. Bold. Streaming",
         image: "/assets/cards/chorki.webp",
-        category: "Streaming",
-        keywords: [
-            "Chorki Premium",
-            "Chorki subscription Bangladesh",
-            "Chorki Premium Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "hoichoi-premium": {
         name: "Hoichoi Premium",
-        shortName: "Hoichoi",
-        description:
-            "Enjoy Bangla movies, web series and original entertainment with Hoichoi Premium.",
+        description: "Unlimited Bangla Entertainment",
         image: "/assets/cards/hoichoi.png",
-        category: "Streaming",
-        keywords: [
-            "Hoichoi Premium",
-            "Hoichoi subscription Bangladesh",
-            "Hoichoi Premium Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "bongo": {
         name: "Bongo",
-        shortName: "Bongo",
-        description:
-            "Watch Bangla movies, dramas, series and entertainment through Bongo.",
+        description: "Unlimited Bangla Entertainment",
         image: "/assets/cards/bongo.png",
-        category: "Streaming",
-        keywords: [
-            "Bongo subscription",
-            "Bongo Bangladesh",
-            "Bongo premium Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "disney-plus": {
         name: "Disney+",
-        shortName: "Disney+",
         description:
-            "Stream Disney movies, series and exclusive entertainment with Disney+.",
+            "Premium movies, series and exclusive Disney content",
         image: "/assets/cards/disney.jpg",
-        category: "Streaming",
-        keywords: [
-            "Disney Plus subscription",
-            "Disney Plus Bangladesh",
-            "Disney+ subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "hulu": {
         name: "Hulu",
-        shortName: "Hulu",
-        description:
-            "Watch TV shows, movies and Hulu Originals with a Hulu subscription.",
+        description: "Next-day TV and original content",
         image: "/assets/cards/hulu.svg",
-        category: "Streaming",
-        keywords: [
-            "Hulu subscription",
-            "Hulu Bangladesh",
-            "Hulu subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "apple-tv-plus": {
         name: "Apple TV+",
-        shortName: "Apple TV+",
-        description:
-            "Watch Apple Original series, movies and exclusive entertainment with Apple TV+.",
+        description: "Original shows and movies",
         image: "/assets/cards/apple_tv.jpg",
-        category: "Streaming",
-        keywords: [
-            "Apple TV Plus subscription",
-            "Apple TV+ Bangladesh",
-            "Apple TV Plus Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "paramount-plus": {
         name: "Paramount+",
-        shortName: "Paramount+",
         description:
-            "Stream movies, series, live sports and Paramount+ Originals.",
+            "Movies, live sports, and exclusive originals",
         image: "/assets/cards/paramount.webp",
-        category: "Streaming",
-        keywords: [
-            "Paramount Plus subscription",
-            "Paramount+ Bangladesh",
-            "Paramount Plus Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "peacock": {
         name: "Peacock",
-        shortName: "Peacock",
         description:
-            "Stream NBCUniversal entertainment, movies, series and live sports with Peacock.",
+            "NBCUniversal content and live sports",
         image: "/assets/cards/Peacock.avif",
-        category: "Streaming",
-        keywords: [
-            "Peacock subscription",
-            "Peacock Bangladesh",
-            "Peacock subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "youtube-premium": {
         name: "YouTube Premium",
-        shortName: "YouTube Premium",
         description:
-            "Enjoy ad-free YouTube videos, YouTube Music and premium viewing features.",
+            "Ad-free videos and YouTube Music",
         image: "/assets/cards/youtube.webp",
-        category: "Streaming",
-        keywords: [
-            "YouTube Premium subscription",
-            "YouTube Premium Bangladesh",
-            "YouTube Premium subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "youtube-premium-non-renewable": {
-        name: "YouTube Premium Non-Renewable",
-        shortName: "YouTube Premium Non-Renewable",
+        name: "Youtube Premium Non-Renewable",
         description:
-            "Enjoy ad-free YouTube videos and music with a non-renewable YouTube Premium subscription.",
+            "Ad-free videos and music",
         image: "/assets/cards/youtube.webp",
-        category: "Streaming",
-        keywords: [
-            "YouTube Premium non renewable",
-            "YouTube Premium Bangladesh",
-            "YouTube Premium subscription"
-        ]
+        category: "Streaming"
     },
 
     "discovery-plus": {
         name: "Discovery+",
-        shortName: "Discovery+",
         description:
-            "Watch documentaries, reality shows, lifestyle programming and entertainment with Discovery+.",
+            "Documentaries, Reality, Entertainment",
         image: "/assets/cards/discovery.webp",
-        category: "Streaming",
-        keywords: [
-            "Discovery Plus subscription",
-            "Discovery+ Bangladesh",
-            "Discovery Plus Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "shudder-premium": {
         name: "Shudder Premium",
-        shortName: "Shudder",
         description:
-            "Stream horror, thriller and suspense movies and series with Shudder Premium.",
+            "Horror, Thriller, Suspense",
         image: "/assets/cards/shudder.jpg",
-        category: "Streaming",
-        keywords: [
-            "Shudder Premium",
-            "Shudder subscription Bangladesh",
-            "Shudder Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "prime-video-full": {
         name: "Prime Video Full",
-        shortName: "Prime Video Full",
         description:
-            "Watch movies, series and Amazon Originals with Prime Video Full.",
+            "Movies, Series, Originals",
         image: "/assets/cards/primefull.webp",
-        category: "Streaming",
-        keywords: [
-            "Prime Video Full",
-            "Prime Video subscription Bangladesh",
-            "Amazon Prime Video Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "amc-plus": {
         name: "AMC+",
-        shortName: "AMC+",
         description:
-            "Stream AMC+ movies, series, horror, thriller and premium entertainment.",
+            "Horror, Thriller, Suspense",
         image: "/assets/cards/amc+.webp",
-        category: "Streaming",
-        keywords: [
-            "AMC Plus subscription",
-            "AMC+ Bangladesh",
-            "AMC Plus Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "fubo-tv": {
         name: "Fubo TV",
-        shortName: "FuboTV",
         description:
-            "Watch live sports, television channels and entertainment with Fubo TV.",
+            "Sports, Live, Entertainment",
         image: "/assets/cards/fuboTV.webp",
-        category: "Streaming",
-        keywords: [
-            "Fubo TV subscription",
-            "FuboTV Bangladesh",
-            "Fubo subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "ullu-pro": {
         name: "Ullu Pro",
-        shortName: "Ullu Pro",
         description:
-            "Access premium Ullu web series and entertainment with Ullu Pro.",
+            "Adult, Web, Series",
         image: "/assets/cards/ullu.png",
-        category: "Streaming",
-        keywords: [
-            "Ullu Pro",
-            "Ullu subscription Bangladesh",
-            "Ullu Pro Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     "sling-tv": {
         name: "Sling TV",
-        shortName: "Sling TV",
         description:
-            "Watch live television, channels and streaming entertainment with Sling TV.",
+            "Live, Channels, Streaming",
         image: "/assets/cards/slingtv.png",
-        category: "Streaming",
-        keywords: [
-            "Sling TV subscription",
-            "Sling TV Bangladesh",
-            "Sling subscription Bangladesh"
-        ]
+        category: "Streaming"
     },
 
     // ========================================================
@@ -378,100 +248,58 @@ const products = {
 
     "spotify-premium": {
         name: "Spotify Premium",
-        shortName: "Spotify",
         description:
-            "Listen to music and podcasts without ads and enjoy premium Spotify features.",
+            "Ad-free music and podcasts",
         image: "/assets/cards/spotify.jpg",
-        category: "Music",
-        keywords: [
-            "Spotify Premium subscription",
-            "Spotify Premium Bangladesh",
-            "Spotify subscription Bangladesh"
-        ]
+        category: "Music"
     },
 
     "amazon-music-unlimited": {
         name: "Amazon Music Unlimited",
-        shortName: "Amazon Music",
         description:
-            "Stream high-quality music and podcasts with Amazon Music Unlimited.",
+            "High-quality music and podcasts",
         image: "/assets/cards/amazon-music-unlimited.jpeg",
-        category: "Music",
-        keywords: [
-            "Amazon Music Unlimited",
-            "Amazon Music Bangladesh",
-            "Amazon Music subscription Bangladesh"
-        ]
+        category: "Music"
     },
 
     "apple-music": {
         name: "Apple Music",
-        shortName: "Apple Music",
         description:
-            "Stream millions of songs, playlists and Apple Music content.",
+            "Stream over 75 million songs",
         image: "/assets/cards/apple_music.jpg",
-        category: "Music",
-        keywords: [
-            "Apple Music subscription",
-            "Apple Music Bangladesh",
-            "Apple Music subscription Bangladesh"
-        ]
+        category: "Music"
     },
 
     "tidal": {
         name: "Tidal",
-        shortName: "Tidal",
         description:
-            "Enjoy high-fidelity music streaming with Tidal.",
+            "High-fidelity music streaming",
         image: "/assets/cards/tidal.svg",
-        category: "Music",
-        keywords: [
-            "Tidal subscription",
-            "Tidal Bangladesh",
-            "Tidal subscription Bangladesh"
-        ]
+        category: "Music"
     },
 
     "pandora-premium": {
         name: "Pandora Premium",
-        shortName: "Pandora Premium",
         description:
-            "Enjoy personalized music and podcasts with Pandora Premium.",
+            "Personalized music and podcasts",
         image: "/assets/cards/pandora.svg",
-        category: "Music",
-        keywords: [
-            "Pandora Premium",
-            "Pandora subscription Bangladesh",
-            "Pandora Bangladesh"
-        ]
+        category: "Music"
     },
 
     "soundcloud-go-plus": {
         name: "SoundCloud Go+",
-        shortName: "SoundCloud Go+",
         description:
-            "Listen to music without ads and enjoy offline listening with SoundCloud Go+.",
+            "Ad-free music and offline listening",
         image: "/assets/cards/sound_cloud.svg",
-        category: "Music",
-        keywords: [
-            "SoundCloud Go Plus",
-            "SoundCloud subscription Bangladesh",
-            "SoundCloud Go+ Bangladesh"
-        ]
+        category: "Music"
     },
 
     "deezer-hifi": {
         name: "Deezer HiFi",
-        shortName: "Deezer HiFi",
         description:
-            "Stream high-quality audio and music with Deezer HiFi.",
+            "High-quality audio streaming",
         image: "/assets/cards/deezer.svg",
-        category: "Music",
-        keywords: [
-            "Deezer HiFi",
-            "Deezer subscription Bangladesh",
-            "Deezer Bangladesh"
-        ]
+        category: "Music"
     },
 
     // ========================================================
@@ -480,72 +308,42 @@ const products = {
 
     "microsoft-onedrive": {
         name: "Microsoft OneDrive",
-        shortName: "OneDrive",
         description:
-            "Get cloud storage and access to your files with Microsoft OneDrive.",
+            "1TB cloud storage with Office apps",
         image: "/assets/cards/onedrive.svg",
-        category: "Cloud Storage",
-        keywords: [
-            "OneDrive subscription",
-            "OneDrive Bangladesh",
-            "OneDrive subscription Bangladesh"
-        ]
+        category: "Cloud Storage"
     },
 
     "dropbox-plus": {
         name: "Dropbox Plus",
-        shortName: "Dropbox Plus",
         description:
-            "Store, sync and access your files securely with Dropbox Plus.",
+            "2TB secure cloud storage",
         image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
-        category: "Cloud Storage",
-        keywords: [
-            "Dropbox Plus",
-            "Dropbox subscription Bangladesh",
-            "Dropbox Plus Bangladesh"
-        ]
+        category: "Cloud Storage"
     },
 
     "google-drive": {
         name: "Google Drive",
-        shortName: "Google Drive",
         description:
-            "Store and access files online with Google Drive cloud storage.",
+            "1TB cloud storage",
         image: "/assets/cards/Google_Drive-Logo.wine.svg",
-        category: "Cloud Storage",
-        keywords: [
-            "Google Drive storage",
-            "Google Drive Bangladesh",
-            "Google Drive subscription Bangladesh"
-        ]
+        category: "Cloud Storage"
     },
 
     "icloud-plus": {
         name: "iCloud+",
-        shortName: "iCloud+",
         description:
-            "Get additional iCloud storage and premium iCloud features.",
+            "50GB cloud storage for Apple users",
         image: "/assets/cards/icloud+webp.webp",
-        category: "Cloud Storage",
-        keywords: [
-            "iCloud Plus",
-            "iCloud+ Bangladesh",
-            "iCloud storage Bangladesh"
-        ]
+        category: "Cloud Storage"
     },
 
     "amazon-drive": {
         name: "Amazon Drive",
-        shortName: "Amazon Drive",
         description:
-            "Store and access files online with Amazon Drive cloud storage.",
+            "100GB cloud storage",
         image: "/assets/cards/amazon_drive.png",
-        category: "Cloud Storage",
-        keywords: [
-            "Amazon Drive",
-            "Amazon Drive Bangladesh",
-            "Amazon cloud storage Bangladesh"
-        ]
+        category: "Cloud Storage"
     },
 
     // ========================================================
@@ -554,114 +352,66 @@ const products = {
 
     "expressvpn": {
         name: "ExpressVPN",
-        shortName: "ExpressVPN",
         description:
-            "Protect your internet connection and browse privately with ExpressVPN.",
+            "High-speed, secure VPN service",
         image: "/assets/cards/expressVPN.png",
-        category: "VPN",
-        keywords: [
-            "ExpressVPN subscription",
-            "ExpressVPN Bangladesh",
-            "ExpressVPN subscription Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "nordvpn": {
         name: "NordVPN",
-        shortName: "NordVPN",
         description:
-            "Protect your connection and access advanced VPN security features with NordVPN.",
+            "Advanced security with double VPN",
         image: "/assets/cards/nordvpn.webp",
-        category: "VPN",
-        keywords: [
-            "NordVPN subscription",
-            "NordVPN Bangladesh",
-            "NordVPN subscription Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "surfshark": {
         name: "Surfshark",
-        shortName: "Surfshark",
         description:
-            "Protect multiple devices with Surfshark VPN and its privacy features.",
+            "Unlimited devices and connections",
         image: "/assets/cards/surfsharkvpn.webp",
-        category: "VPN",
-        keywords: [
-            "Surfshark subscription",
-            "Surfshark Bangladesh",
-            "Surfshark subscription Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "cyberghost": {
         name: "CyberGhost",
-        shortName: "CyberGhost",
         description:
-            "Use a user-friendly VPN service with CyberGhost.",
+            "User-friendly VPN with 45-day guarantee",
         image: "/assets/cards/cyberghost.png",
-        category: "VPN",
-        keywords: [
-            "CyberGhost subscription",
-            "CyberGhost Bangladesh",
-            "CyberGhost VPN Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "ipvanish": {
         name: "IPVanish",
-        shortName: "IPVanish",
         description:
-            "Protect your internet connection with IPVanish VPN.",
+            "Fast connections with no logs",
         image: "/assets/cards/ipvanish.webp",
-        category: "VPN",
-        keywords: [
-            "IPVanish subscription",
-            "IPVanish Bangladesh",
-            "IPVanish VPN Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "private-internet-access": {
         name: "Private Internet Access",
-        shortName: "PIA VPN",
         description:
-            "Use a customizable VPN service with Private Internet Access.",
+            "Highly customizable VPN",
         image: "/assets/cards/pia.png",
-        category: "VPN",
-        keywords: [
-            "Private Internet Access subscription",
-            "PIA VPN Bangladesh",
-            "PIA VPN subscription Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "hotspot-shield": {
         name: "Hotspot Shield",
-        shortName: "Hotspot Shield",
         description:
-            "Protect your connection and browse privately with Hotspot Shield VPN.",
+            "Patented VPN technology",
         image: "/assets/cards/Hotspot-Shield-vpn.webp",
-        category: "VPN",
-        keywords: [
-            "Hotspot Shield subscription",
-            "Hotspot Shield Bangladesh",
-            "Hotspot Shield VPN Bangladesh"
-        ]
+        category: "VPN"
     },
 
     "vypr-vpn": {
         name: "Vypr VPN",
-        shortName: "VyprVPN",
         description:
-            "Use secure VPN connections with Vypr VPN.",
+            "Secure and private VPN service",
         image: "/assets/cards/vyprvpn.webp",
-        category: "VPN",
-        keywords: [
-            "VyprVPN subscription",
-            "VyprVPN Bangladesh",
-            "Vypr VPN Bangladesh"
-        ]
+        category: "VPN"
     },
 
     // ========================================================
@@ -670,128 +420,74 @@ const products = {
 
     "canva-pro": {
         name: "Canva Pro",
-        shortName: "Canva Pro",
         description:
-            "Create professional designs, presentations, graphics and visual content with Canva Pro.",
+            "Professional design tools and premium content",
         image: "/assets/cards/canva.png",
-        category: "AI & Design",
-        keywords: [
-            "Canva Pro subscription",
-            "Canva Pro Bangladesh",
-            "Canva Pro subscription Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "photoroom-pro": {
         name: "Photoroom Pro",
-        shortName: "Photoroom Pro",
         description:
-            "Use professional AI-powered photo editing and design tools with Photoroom Pro.",
+            "Professional AI-powered photo editing and design tools",
         image: "/assets/cards/photoroom.jpg",
-        category: "AI & Design",
-        keywords: [
-            "Photoroom Pro",
-            "Photoroom subscription Bangladesh",
-            "Photoroom Pro Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "picsart-premium": {
         name: "Picsart Premium",
-        shortName: "Picsart Premium",
         description:
-            "Create and edit photos and videos with Picsart Premium.",
+            "Creative photo and video editing tools",
         image: "/assets/cards/picsart.png",
-        category: "AI & Design",
-        keywords: [
-            "Picsart Premium",
-            "Picsart subscription Bangladesh",
-            "Picsart Premium Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "photoroom-max": {
         name: "Photoroom Max",
-        shortName: "Photoroom Max",
         description:
-            "Access advanced AI photo editing and creative tools with Photoroom Max.",
+            "Advanced AI photo editing and creative tools",
         image: "/assets/cards/photoroom.jpg",
-        category: "AI & Design",
-        keywords: [
-            "Photoroom Max",
-            "Photoroom Max Bangladesh",
-            "Photoroom subscription Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "blackbox-ai-chatgpt5": {
         name: "Black Box Ai (CHAT-GPT5)",
-        shortName: "BlackBox AI",
         description:
-            "Use an AI-powered coding and development assistant with Black Box AI.",
+            "AI-powered coding and development assistant",
         image: "/assets/cards/blackboxai.jpg",
-        category: "AI & Design",
-        keywords: [
-            "BlackBox AI subscription",
-            "BlackBox AI Bangladesh",
-            "AI coding assistant Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "gemini-ai": {
         name: "Gemini Ai",
-        shortName: "Gemini AI",
         description:
-            "Use Google's AI assistant for research, writing, productivity and everyday tasks.",
+            "Google's advanced AI assistant",
         image: "/assets/cards/gemini.png",
-        category: "AI & Design",
-        keywords: [
-            "Gemini AI subscription",
-            "Gemini AI Bangladesh",
-            "Gemini subscription Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "chat-gpt": {
         name: "Chat GPT",
-        shortName: "ChatGPT",
         description:
-            "Use an advanced AI assistant for writing, research, productivity and everyday tasks.",
+            "Advanced AI assistant for writing, research and productivity",
         image: "/assets/cards/chatgpt.jpg",
-        category: "AI & Design",
-        keywords: [
-            "ChatGPT subscription",
-            "ChatGPT Bangladesh",
-            "ChatGPT subscription Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "perplexity-chatgpt5": {
         name: "Perplexity (ChatGPT-5)",
-        shortName: "Perplexity",
         description:
-            "Use AI-powered search and research tools with Perplexity.",
+            "AI-powered search and research assistant",
         image: "/assets/cards/Perplexity.svg",
-        category: "AI & Design",
-        keywords: [
-            "Perplexity subscription",
-            "Perplexity Bangladesh",
-            "Perplexity AI subscription Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     "remini-ai": {
         name: "Remini Ai",
-        shortName: "Remini AI",
         description:
-            "Enhance and restore photos with AI-powered Remini tools.",
+            "AI-powered photo enhancement and restoration",
         image: "/assets/cards/remini.avif",
-        category: "AI & Design",
-        keywords: [
-            "Remini AI subscription",
-            "Remini Bangladesh",
-            "Remini Pro Bangladesh"
-        ]
+        category: "AI & Design"
     },
 
     // ========================================================
@@ -800,142 +496,82 @@ const products = {
 
     "netflix-prime-video": {
         name: "Netflix + Prime Video",
-        shortName: "Netflix + Prime Video",
         description:
-            "Get Netflix and Prime Video together through a combined streaming package.",
+            "Get both streaming services at a discount",
         image: "/assets/cards/Netflix-vs-Amazon.jpg",
-        category: "Combo",
-        keywords: [
-            "Netflix Prime Video combo",
-            "Netflix Prime Video Bangladesh",
-            "Netflix and Prime Video subscription"
-        ]
+        category: "Combo"
     },
 
     "netflix-hbo-max": {
         name: "Netflix + HBO Max",
-        shortName: "Netflix + HBO Max",
         description:
-            "Get Netflix and HBO Max together through a combined premium entertainment package.",
+            "Premium content from both platforms",
         image: "/assets/cards/netflix+hbomax.webp",
-        category: "Combo",
-        keywords: [
-            "Netflix HBO Max combo",
-            "Netflix HBO Max Bangladesh",
-            "Netflix and HBO Max subscription"
-        ]
+        category: "Combo"
     },
 
     "prime-video-hbo-max": {
         name: "Prime Video + HBO Max",
-        shortName: "Prime Video + HBO Max",
         description:
-            "Combine Prime Video and HBO Max for premium streaming entertainment.",
+            "Premium content from both platforms",
         image: "/assets/cards/prime+hbo.webp",
-        category: "Combo",
-        keywords: [
-            "Prime Video HBO Max combo",
-            "Prime Video HBO Max Bangladesh",
-            "Prime Video and HBO Max"
-        ]
+        category: "Combo"
     },
 
     "hbo-max-surfshark-vpn": {
         name: "HBO Max + Surfshark VPN",
-        shortName: "HBO Max + Surfshark VPN",
         description:
-            "Combine HBO Max entertainment with Surfshark VPN protection.",
+            "Stream securely with VPN protection",
         image: "/assets/cards/hbo+surfshark.webp",
-        category: "Combo",
-        keywords: [
-            "HBO Max Surfshark combo",
-            "HBO Max VPN Bangladesh",
-            "HBO Max Surfshark Bangladesh"
-        ]
+        category: "Combo"
     },
 
     "spotify-youtube-premium": {
         name: "Spotify + YouTube Premium",
-        shortName: "Spotify + YouTube Premium",
         description:
-            "Combine Spotify Premium music with YouTube Premium ad-free entertainment.",
+            "Ad-free music and videos",
         image: "/assets/cards/spotify+youtube.webp",
-        category: "Combo",
-        keywords: [
-            "Spotify YouTube Premium combo",
-            "Spotify YouTube Premium Bangladesh",
-            "Spotify and YouTube Premium"
-        ]
+        category: "Combo"
     },
 
     "disney-hbo-max": {
         name: "Disney + HBO Max",
-        shortName: "Disney + HBO Max",
         description:
-            "Combine Disney+ and HBO Max premium entertainment.",
+            "Disney+ and HBO Max premium entertainment",
         image: "/assets/cards/disney+nordVPN.webp",
-        category: "Combo",
-        keywords: [
-            "Disney HBO Max combo",
-            "Disney HBO Max Bangladesh",
-            "Disney and HBO Max subscription"
-        ]
+        category: "Combo"
     },
 
     "disney-nord-vpn": {
         name: "Disney + Nord VPN",
-        shortName: "Disney + NordVPN",
         description:
-            "Combine Disney+ entertainment with NordVPN protection.",
+            "Disney+ entertainment with NordVPN protection",
         image: "/assets/cards/disney+nordVPN.webp",
-        category: "Combo",
-        keywords: [
-            "Disney NordVPN combo",
-            "Disney NordVPN Bangladesh",
-            "Disney VPN subscription"
-        ]
+        category: "Combo"
     },
 
     "music-storage": {
         name: "Music & Storage",
-        shortName: "Music & Storage",
         description:
-            "Combine music streaming with cloud storage in one package.",
+            "Amazon Music HD and 1TB OneDrive storage",
         image: "/assets/cards/amazon+onedrive.png",
-        category: "Combo",
-        keywords: [
-            "music storage combo",
-            "music cloud storage Bangladesh",
-            "Amazon Music OneDrive"
-        ]
+        category: "Combo"
     },
 
     "security-bundle": {
         name: "Security Bundle",
-        shortName: "Security Bundle",
         description:
-            "Combine VPN protection with cloud storage through the Security Bundle.",
+            "ExpressVPN and 1TB OneDrive cloud storage",
         image: "/assets/cards/expressvpn+onedrive.webp",
-        category: "Combo",
-        keywords: [
-            "security bundle VPN storage",
-            "VPN cloud storage Bangladesh",
-            "ExpressVPN OneDrive bundle"
-        ]
+        category: "Combo"
     },
 
     "ultimate-entertainment": {
         name: "Ultimate Entertainment",
-        shortName: "Ultimate Entertainment",
         description:
-            "Combine Netflix, HBO Max and ExpressVPN in one entertainment bundle.",
+            "Netflix, HBO Max, and ExpressVPN",
         image: "/assets/cards/netflix_expressvpn_hbomax.webp",
-        category: "Combo",
-        keywords: [
-            "ultimate entertainment bundle",
-            "Netflix HBO Max ExpressVPN",
-            "streaming VPN bundle Bangladesh"
-        ]
+        category: "Combo"
     },
 
     // ========================================================
@@ -944,72 +580,42 @@ const products = {
 
     "doulingo": {
         name: "Doulingo",
-        shortName: "Duolingo",
         description:
-            "Learn languages with interactive lessons and language-learning exercises.",
+            "Learn languages with interactive lessons",
         image: "/assets/cards/doulingo.png",
-        category: "Education",
-        keywords: [
-            "Duolingo subscription",
-            "Duolingo Bangladesh",
-            "Duolingo Premium Bangladesh"
-        ]
+        category: "Education"
     },
 
     "skillshare": {
         name: "Skillshare",
-        shortName: "Skillshare",
         description:
-            "Access thousands of online creative and professional courses with Skillshare.",
+            "Access thousands of online creative courses",
         image: "/assets/cards/skill_share.png",
-        category: "Education",
-        keywords: [
-            "Skillshare subscription",
-            "Skillshare Bangladesh",
-            "Skillshare Premium Bangladesh"
-        ]
+        category: "Education"
     },
 
     "linkedin-premium": {
         name: "LinkedIn Premium",
-        shortName: "LinkedIn Premium",
         description:
-            "Access professional development, career tools and premium LinkedIn features.",
+            "Professional development and career tools",
         image: "/assets/cards/LinkedIn.png",
-        category: "Education",
-        keywords: [
-            "LinkedIn Premium subscription",
-            "LinkedIn Premium Bangladesh",
-            "LinkedIn Premium Bangladesh subscription"
-        ]
+        category: "Education"
     },
 
     "numerade": {
         name: "Numerade",
-        shortName: "Numerade",
         description:
-            "Learn through step-by-step educational video solutions with Numerade.",
+            "Learn with step-by-step educational video solutions",
         image: "/assets/cards/Numerade.jpg",
-        category: "Education",
-        keywords: [
-            "Numerade subscription",
-            "Numerade Bangladesh",
-            "Numerade Premium Bangladesh"
-        ]
+        category: "Education"
     },
 
     "grammarly-pro": {
         name: "Grammarly Pro",
-        shortName: "Grammarly Pro",
         description:
-            "Improve writing, grammar and productivity with Grammarly Pro.",
+            "Advanced writing, grammar and productivity tools",
         image: "/assets/cards/grammarly.png",
-        category: "Education",
-        keywords: [
-            "Grammarly Pro subscription",
-            "Grammarly Pro Bangladesh",
-            "Grammarly subscription Bangladesh"
-        ]
+        category: "Education"
     },
 
     // ========================================================
@@ -1018,94 +624,58 @@ const products = {
 
     "digital-playground": {
         name: "Digital Playground",
-        shortName: "Digital Playground",
         description:
-            "Access premium entertainment content from Digital Playground.",
+            "Exclusive premium content from creators",
         image: "/assets/cards/DigitalPlayground-logo.png",
-        category: "Adult",
-        keywords: [
-            "Digital Playground subscription",
-            "Digital Playground Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "pornhub-premium": {
         name: "Pornhub Premium",
-        shortName: "Pornhub Premium",
         description:
-            "Access premium adult entertainment with Pornhub Premium.",
+            "Ad-free premium adult entertainment",
         image: "/assets/cards/pornhub.webp",
-        category: "Adult",
-        keywords: [
-            "Pornhub Premium subscription",
-            "Pornhub Premium Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "brazzers": {
         name: "Brazzers",
-        shortName: "Brazzers",
         description:
-            "Access premium adult entertainment through a Brazzers subscription.",
+            "Premium adult content",
         image: "/assets/cards/brazzers.webp",
-        category: "Adult",
-        keywords: [
-            "Brazzers subscription",
-            "Brazzers Bangladesh",
-            "Brazzers Premium Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "spice-vids": {
         name: "Spice Vids",
-        shortName: "Spice Vids",
         description:
-            "Access premium adult streaming content with Spice Vids.",
+            "Premium adult streaming platform",
         image: "/assets/cards/spicevids.webp",
-        category: "Adult",
-        keywords: [
-            "Spice Vids subscription",
-            "Spice Vids Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "reality-kings": {
         name: "Reality Kings",
-        shortName: "Reality Kings",
         description:
-            "Access premium adult entertainment through Reality Kings.",
+            "Premium reality adult content",
         image: "/assets/cards/realitykings.webp",
-        category: "Adult",
-        keywords: [
-            "Reality Kings subscription",
-            "Reality Kings Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "bang-bros": {
         name: "Bang Bros",
-        shortName: "Bang Bros",
         description:
-            "Access premium adult entertainment through Bang Bros.",
+            "High-quality, exclusive adult entertainment",
         image: "/assets/cards/bangbros.webp",
-        category: "Adult",
-        keywords: [
-            "Bang Bros subscription",
-            "Bang Bros Bangladesh"
-        ]
+        category: "Adult"
     },
 
     "babes-com": {
         name: "Babes.com",
-        shortName: "Babes.com",
         description:
-            "Access premium adult video entertainment through Babes.com.",
+            "High-quality, exclusive adult video content",
         image: "/assets/cards/babes.webp",
-        category: "Adult",
-        keywords: [
-            "Babes.com subscription",
-            "Babes.com Bangladesh"
-        ]
+        category: "Adult"
     },
 
     // ========================================================
@@ -1114,16 +684,10 @@ const products = {
 
     "truecaller-gold": {
         name: "True Caller Gold",
-        shortName: "Truecaller Gold",
         description:
-            "Access premium caller identification and protection features with Truecaller Gold.",
+            "Premium caller identification and protection",
         image: "/assets/cards/truecaller.avif",
-        category: "Productivity",
-        keywords: [
-            "Truecaller Gold subscription",
-            "Truecaller Gold Bangladesh",
-            "Truecaller Premium Bangladesh"
-        ]
+        category: "Productivity"
     }
 };
 
@@ -1136,6 +700,117 @@ const slugAliases = {
     "duolingo": "doulingo",
     "youtube-premium-nonrenewable":
         "youtube-premium-non-renewable"
+};
+
+// ============================================================
+// SPECIAL PRODUCT SEO
+// ============================================================
+//
+// These are the products where we can give stronger,
+// product-specific search intent instead of generic templates.
+//
+// ============================================================
+
+const seoOverrides = {
+
+    "hbo-max": {
+        seoTitle:
+            "HBO Max Subscription in Bangladesh | Buy HBO Max BD",
+
+        seoDescription:
+            "Buy HBO Max subscription in Bangladesh from NEXT LEVEL SUBS. Explore HBO Max plans, pricing and subscription options for customers in Bangladesh.",
+
+        intro:
+            "Looking for an HBO Max subscription in Bangladesh? NEXT LEVEL SUBS provides HBO Max subscription options for customers in Bangladesh, with flexible plans and support.",
+
+        searchTerms: [
+            "HBO Max subscription Bangladesh",
+            "HBO Max subscription BD",
+            "buy HBO Max Bangladesh",
+            "HBO Max price in Bangladesh",
+            "HBO Max BD"
+        ],
+
+        features: [
+            "Access HBO Max entertainment",
+            "Watch HBO and Max Originals",
+            "Enjoy Warner Bros. and DC content",
+            "Flexible subscription options",
+            "Bangladesh customer support"
+        ],
+
+        faq: [
+            {
+                q: "Where can I buy an HBO Max subscription in Bangladesh?",
+                a: "You can purchase an HBO Max subscription through NEXT LEVEL SUBS and choose the available subscription option shown on the product page."
+            },
+            {
+                q: "How much does HBO Max cost in Bangladesh?",
+                a: "The current HBO Max price is displayed on the product page and may vary depending on the selected subscription duration or plan."
+            },
+            {
+                q: "Can I buy HBO Max from Bangladesh?",
+                a: "Yes. NEXT LEVEL SUBS offers HBO Max subscription options for customers in Bangladesh."
+            }
+        ]
+    },
+
+    "netflix-premium": {
+        seoTitle:
+            "Netflix Premium Subscription in Bangladesh | Buy Netflix BD",
+
+        seoDescription:
+            "Buy Netflix Premium subscription in Bangladesh from NEXT LEVEL SUBS. Compare available Netflix plans and subscription options for customers in Bangladesh.",
+
+        intro:
+            "Looking for a Netflix Premium subscription in Bangladesh? NEXT LEVEL SUBS offers Netflix subscription options for customers in Bangladesh.",
+
+        searchTerms: [
+            "Netflix subscription Bangladesh",
+            "Netflix subscription BD",
+            "buy Netflix Bangladesh",
+            "Netflix price Bangladesh",
+            "Netflix BD"
+        ]
+    },
+
+    "spotify-premium": {
+        seoTitle:
+            "Spotify Premium Subscription in Bangladesh | Buy Spotify BD",
+
+        seoDescription:
+            "Buy Spotify Premium subscription in Bangladesh from NEXT LEVEL SUBS. Explore available Spotify subscription options and plans for Bangladesh.",
+
+        intro:
+            "Looking for Spotify Premium in Bangladesh? NEXT LEVEL SUBS provides Spotify Premium subscription options for customers in Bangladesh.",
+
+        searchTerms: [
+            "Spotify Premium Bangladesh",
+            "Spotify subscription BD",
+            "buy Spotify Premium Bangladesh",
+            "Spotify price Bangladesh",
+            "Spotify BD"
+        ]
+    },
+
+    "amazon-prime-video": {
+        seoTitle:
+            "Amazon Prime Video Subscription in Bangladesh | Buy Prime Video BD",
+
+        seoDescription:
+            "Buy Amazon Prime Video subscription in Bangladesh from NEXT LEVEL SUBS. Explore available Prime Video subscription options for Bangladesh.",
+
+        intro:
+            "Looking for an Amazon Prime Video subscription in Bangladesh? NEXT LEVEL SUBS offers Prime Video subscription options for customers in Bangladesh.",
+
+        searchTerms: [
+            "Amazon Prime Video Bangladesh",
+            "Prime Video subscription BD",
+            "buy Prime Video Bangladesh",
+            "Prime Video price Bangladesh",
+            "Amazon Prime Video BD"
+        ]
+    }
 };
 
 // ============================================================
@@ -1152,7 +827,7 @@ function escapeHTML(value) {
 }
 
 // ============================================================
-// SAFE JSON
+// JSON-LD SAFE SERIALIZER
 // ============================================================
 
 function safeJSON(value) {
@@ -1177,18 +852,19 @@ function generateSlug(value) {
 }
 
 // ============================================================
-// PRODUCT INDEX
+// BUILD PRODUCT INDEX
 // ============================================================
 
 function buildProductIndex() {
+
     const index = Object.create(null);
 
     Object.keys(products).forEach(function (key) {
+
         index[key.toLowerCase()] = key;
 
-        const generated = generateSlug(
-            products[key].name
-        );
+        const generated =
+            generateSlug(products[key].name);
 
         if (generated) {
             index[generated] = key;
@@ -1196,7 +872,9 @@ function buildProductIndex() {
     });
 
     Object.keys(slugAliases).forEach(function (alias) {
-        const target = slugAliases[alias];
+
+        const target =
+            slugAliases[alias];
 
         if (products[target]) {
             index[alias.toLowerCase()] = target;
@@ -1206,13 +884,15 @@ function buildProductIndex() {
     return index;
 }
 
-const productIndex = buildProductIndex();
+const productIndex =
+    buildProductIndex();
 
 // ============================================================
 // RESOLVE PRODUCT
 // ============================================================
 
 function resolveProductKey(value) {
+
     if (typeof value !== "string") {
         return "";
     }
@@ -1220,13 +900,15 @@ function resolveProductKey(value) {
     let decoded = value.trim();
 
     try {
-        decoded = decodeURIComponent(decoded);
+        decoded =
+            decodeURIComponent(decoded);
     } catch (_) {}
 
-    decoded = decoded
-        .trim()
-        .toLowerCase()
-        .replace(/^\/+|\/+$/g, "");
+    decoded =
+        decoded
+            .trim()
+            .toLowerCase()
+            .replace(/^\/+|\/+$/g, "");
 
     if (products[decoded]) {
         return decoded;
@@ -1236,7 +918,8 @@ function resolveProductKey(value) {
         return productIndex[decoded];
     }
 
-    const generated = generateSlug(decoded);
+    const generated =
+        generateSlug(decoded);
 
     return productIndex[generated] || "";
 }
@@ -1248,7 +931,7 @@ function resolveProductKey(value) {
 function getProductSlug(req) {
 
     // --------------------------------------------------------
-    // /api/product?slug=hbo-max
+    // API QUERY
     // --------------------------------------------------------
 
     if (
@@ -1256,9 +939,9 @@ function getProductSlug(req) {
         typeof req.query.slug === "string" &&
         req.query.slug.trim()
     ) {
-        const resolved = resolveProductKey(
-            req.query.slug
-        );
+
+        const resolved =
+            resolveProductKey(req.query.slug);
 
         if (resolved) {
             return resolved;
@@ -1266,15 +949,19 @@ function getProductSlug(req) {
     }
 
     // --------------------------------------------------------
-    // /product/hbo-max
+    // /product/{slug}
     // --------------------------------------------------------
 
-    const rawURL = req.url || "";
-    const pathname = rawURL.split("?")[0];
+    const rawURL =
+        req.url || "";
 
-    const match = pathname.match(
-        /^\/product\/([^/]+)\/?$/i
-    );
+    const pathname =
+        rawURL.split("?")[0];
+
+    const match =
+        pathname.match(
+            /^\/product\/([^/]+)\/?$/i
+        );
 
     if (!match || !match[1]) {
         return "";
@@ -1284,271 +971,196 @@ function getProductSlug(req) {
 }
 
 // ============================================================
-// IMAGE URL
+// SEO PRODUCT BUILDER
 // ============================================================
 
-function buildImageURL(product) {
+function buildSEOProduct(slug, product) {
 
-    let imageURL =
-        product.image || "/assets/logo.png";
+    const override =
+        seoOverrides[slug] || {};
 
-    // SVG is less reliable for social previews.
-    if (/\.svg(?:\?|#|$)/i.test(imageURL)) {
-        imageURL = "/assets/logo.png";
+    const name =
+        product.name;
+
+    const category =
+        product.category || "Digital Services";
+
+    const generatedNameSlug =
+        generateSlug(name);
+
+    const defaultTitle =
+        `${name} Subscription in Bangladesh | Buy ${name} BD`;
+
+    const defaultDescription =
+        `Buy ${name} subscription in Bangladesh from NEXT LEVEL SUBS. Explore available ${name} plans and subscription options for customers in Bangladesh.`;
+
+    const title =
+        override.seoTitle ||
+        product.seoTitle ||
+        defaultTitle;
+
+    const description =
+        override.seoDescription ||
+        product.seoDescription ||
+        defaultDescription;
+
+    const intro =
+        override.intro ||
+        product.seoIntro ||
+        `Looking for a ${name} subscription in Bangladesh? NEXT LEVEL SUBS provides ${name} subscription options for customers in Bangladesh.`;
+
+    const searchTerms =
+        override.searchTerms ||
+        product.keywords ||
+        [
+            `${name} Bangladesh`,
+            `${name} subscription Bangladesh`,
+            `${name} subscription BD`,
+            `buy ${name} Bangladesh`,
+            `${name} price Bangladesh`,
+            `${name} BD`
+        ];
+
+    const features =
+        override.features ||
+        product.features ||
+        [
+            `${name} subscription options`,
+            "Flexible subscription plans",
+            "Bangladesh customer support",
+            "Fast digital delivery",
+            "Secure ordering process"
+        ];
+
+    const faq =
+        override.faq ||
+        product.faq ||
+        [
+            {
+                q: `Where can I buy ${name} in Bangladesh?`,
+                a: `You can view the available ${name} subscription options on the NEXT LEVEL SUBS product page.`
+            },
+            {
+                q: `How much does ${name} cost in Bangladesh?`,
+                a: `The current ${name} price is displayed on the product page and depends on the available plan or subscription duration.`
+            }
+        ];
+
+    return {
+        slug,
+        name,
+        category,
+        generatedNameSlug,
+        title,
+        description,
+        intro,
+        searchTerms,
+        features,
+        faq
+    };
+}
+
+// ============================================================
+// ABSOLUTE IMAGE URL
+// ============================================================
+
+function getImageURL(product) {
+
+    let image =
+        product.image ||
+        "/assets/logo.png";
+
+    // SVG is not ideal as a social preview image.
+    if (/\.svg(\?|#|$)/i.test(image)) {
+        image =
+            "/assets/logo.png";
     }
 
-    if (!/^https?:\/\//i.test(imageURL)) {
-        imageURL =
-            SITE.domain +
-            (imageURL.startsWith("/")
+    if (!/^https?:\/\//i.test(image)) {
+
+        image =
+            `${SITE.domain}${image.startsWith("/")
                 ? ""
-                : "/") +
-            imageURL;
+                : "/"}${image}`;
     }
 
-    return imageURL;
-}
-
-// ============================================================
-// CATEGORY SLUG
-// ============================================================
-
-function categorySlug(category) {
-    return generateSlug(category);
-}
-
-// ============================================================
-// PRODUCT URL
-// ============================================================
-
-function productURL(slug) {
-    return (
-        SITE.domain +
-        "/product/" +
-        encodeURIComponent(slug)
-    );
-}
-
-// ============================================================
-// PRODUCT TITLE
-// ============================================================
-
-function buildTitle(product) {
-    return (
-        product.name +
-        " Subscription in Bangladesh | NEXT LEVEL SUBS"
-    );
-}
-
-// ============================================================
-// PRODUCT META DESCRIPTION
-// ============================================================
-
-function buildDescription(product) {
-
-    return (
-        product.description +
-        " Buy or get " +
-        product.name +
-        " subscription from NEXT LEVEL SUBS in Bangladesh."
-    );
-}
-
-// ============================================================
-// PRODUCT INTRO
-// ============================================================
-
-function buildIntro(product) {
-
-    return (
-        "Looking for a " +
-        product.name +
-        " subscription in Bangladesh? " +
-        product.description +
-        " NEXT LEVEL SUBS offers digital subscription services with plans available through our online store."
-    );
-}
-
-// ============================================================
-// PRODUCT BENEFITS
-// ============================================================
-
-function getBenefits(product) {
-
-    const category = product.category;
-
-    if (category === "Streaming") {
-        return [
-            "Access premium streaming entertainment",
-            "Choose an available subscription plan",
-            "Use the service on supported devices",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "Music") {
-        return [
-            "Enjoy premium music and audio features",
-            "Access supported premium features",
-            "Choose an available subscription plan",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "VPN") {
-        return [
-            "Use a premium VPN service",
-            "Protect your internet connection",
-            "Access supported privacy features",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "Cloud Storage") {
-        return [
-            "Store and access files online",
-            "Use supported cloud storage features",
-            "Choose an available subscription plan",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "AI & Design") {
-        return [
-            "Access premium AI or creative tools",
-            "Use supported productivity features",
-            "Choose an available subscription plan",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "Education") {
-        return [
-            "Access premium learning or productivity tools",
-            "Use supported educational features",
-            "Choose an available subscription plan",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "Combo") {
-        return [
-            "Get multiple services in one package",
-            "Choose an available bundle",
-            "Use supported services",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    if (category === "Productivity") {
-        return [
-            "Access premium productivity features",
-            "Use supported service features",
-            "Choose an available subscription plan",
-            "Order online from Bangladesh"
-        ];
-    }
-
-    return [
-        "Access premium service features",
-        "Choose an available subscription plan",
-        "Use the service on supported devices",
-        "Order online from Bangladesh"
-    ];
+    return image;
 }
 
 // ============================================================
 // RELATED PRODUCTS
 // ============================================================
 
-function getRelatedProducts(currentSlug, limit) {
+function getRelatedProducts(currentSlug, product) {
 
-    const current = products[currentSlug];
+    const currentCategory =
+        product.category;
 
-    if (!current) {
-        return [];
+    const sameCategory =
+        Object.keys(products)
+            .filter(function (slug) {
+
+                return (
+                    slug !== currentSlug &&
+                    products[slug].category ===
+                        currentCategory
+                );
+            })
+            .slice(0, 8);
+
+    if (sameCategory.length >= 6) {
+        return sameCategory;
     }
 
-    const sameCategory = [];
-    const otherProducts = [];
+    const additional =
+        Object.keys(products)
+            .filter(function (slug) {
 
-    Object.keys(products).forEach(function (slug) {
+                return (
+                    slug !== currentSlug &&
+                    sameCategory.indexOf(slug) === -1
+                );
+            })
+            .slice(
+                0,
+                8 - sameCategory.length
+            );
 
-        if (slug === currentSlug) {
-            return;
-        }
-
-        if (
-            products[slug].category ===
-            current.category
-        ) {
-            sameCategory.push(slug);
-        } else {
-            otherProducts.push(slug);
-        }
-    });
-
-    return sameCategory
-        .concat(otherProducts)
-        .slice(0, limit || 8);
+    return sameCategory.concat(additional);
 }
 
 // ============================================================
-// SEO TEXT
-// ============================================================
-
-function buildSEOKeywords(product) {
-
-    const keywords =
-        Array.isArray(product.keywords)
-            ? product.keywords
-            : [];
-
-    return Array.from(
-        new Set(
-            keywords.concat([
-                product.name,
-                product.name + " subscription",
-                product.name + " Bangladesh"
-            ])
-        )
-    );
-}
-
-// ============================================================
-// PRODUCT JSON-LD
+// PRODUCT SCHEMA
 // ============================================================
 
 function buildProductSchema(
+    seo,
     product,
-    slug,
-    imageURL,
-    description
+    productURL,
+    imageURL
 ) {
 
-    return {
+    const schema = {
+
         "@context": "https://schema.org",
+
         "@type": "Product",
 
-        "@id":
-            productURL(slug) +
-            "#product",
+        name: seo.name,
 
-        name: product.name,
-
-        description: description,
+        description: seo.description,
 
         image: [
             imageURL
         ],
 
-        url: productURL(slug),
+        url: productURL,
 
-        category: product.category,
+        category: seo.category,
 
         brand: {
             "@type": "Brand",
-            name: SITE.name
+            name: seo.name
         },
 
         seller: {
@@ -1557,103 +1169,160 @@ function buildProductSchema(
             url: SITE.domain
         }
     };
+
+    // --------------------------------------------------------
+    // ONLY ADD OFFER IF REAL PRODUCT DATA EXISTS
+    // --------------------------------------------------------
+
+    if (
+        typeof product.price === "number" &&
+        product.price > 0
+    ) {
+
+        schema.offers = {
+
+            "@type": "Offer",
+
+            priceCurrency:
+                product.currency ||
+                SITE.currency,
+
+            price:
+                product.price,
+
+            availability:
+                product.availability ||
+                "https://schema.org/InStock",
+
+            url:
+                productURL,
+
+            seller: {
+                "@type":
+                    "Organization",
+
+                name:
+                    SITE.name
+            }
+        };
+    }
+
+    return schema;
 }
 
 // ============================================================
-// BREADCRUMB JSON-LD
+// BREADCRUMB SCHEMA
 // ============================================================
 
 function buildBreadcrumbSchema(
-    product,
-    slug
+    seo,
+    productURL
 ) {
 
-    const categoryURL =
-        SITE.domain +
-        "/#" +
-        categorySlug(product.category);
-
     return {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
+
+        "@context":
+            "https://schema.org",
+
+        "@type":
+            "BreadcrumbList",
 
         itemListElement: [
 
             {
-                "@type": "ListItem",
-                position: 1,
-                name: "Home",
-                item: SITE.domain + "/"
+                "@type":
+                    "ListItem",
+
+                position:
+                    1,
+
+                name:
+                    "Home",
+
+                item:
+                    `${SITE.domain}/`
             },
 
             {
-                "@type": "ListItem",
-                position: 2,
-                name: product.category,
-                item: categoryURL
+                "@type":
+                    "ListItem",
+
+                position:
+                    2,
+
+                name:
+                    seo.category
             },
 
             {
-                "@type": "ListItem",
-                position: 3,
-                name: product.name,
-                item: productURL(slug)
+                "@type":
+                    "ListItem",
+
+                position:
+                    3,
+
+                name:
+                    seo.name,
+
+                item:
+                    productURL
             }
         ]
     };
 }
 
 // ============================================================
-// ORGANIZATION JSON-LD
+// ORGANIZATION SCHEMA
 // ============================================================
 
 function buildOrganizationSchema() {
 
     return {
-        "@context": "https://schema.org",
-        "@type": "Organization",
 
-        "@id":
-            SITE.domain +
-            "#organization",
+        "@context":
+            "https://schema.org",
 
-        name: SITE.name,
+        "@type":
+            "Organization",
 
-        url: SITE.domain,
+        name:
+            SITE.name,
 
-        description:
-            SITE.organizationDescription
+        url:
+            `${SITE.domain}/`,
+
+        logo:
+            SITE.logo
     };
 }
 
 // ============================================================
-// WEBSITE JSON-LD
+// WEBSITE SCHEMA
 // ============================================================
 
 function buildWebsiteSchema() {
 
     return {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
 
-        "@id":
-            SITE.domain +
-            "#website",
+        "@context":
+            "https://schema.org",
 
-        name: SITE.name,
+        "@type":
+            "WebSite",
 
-        url: SITE.domain,
+        name:
+            SITE.name,
 
-        publisher: {
-            "@id":
-                SITE.domain +
-                "#organization"
-        }
+        url:
+            `${SITE.domain}/`,
+
+        inLanguage:
+            SITE.language
     };
 }
 
 // ============================================================
-// 404
+// SEND 404
 // ============================================================
 
 function send404(res) {
@@ -1670,43 +1339,22 @@ function send404(res) {
         "noindex, nofollow"
     );
 
-    res.setHeader(
-        "Cache-Control",
-        "no-store"
-    );
-
     return res.end(`
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-    <title>Product Not Found | NEXT LEVEL SUBS</title>
-    <meta
-        name="robots"
-        content="noindex, nofollow"
-    >
+<meta charset="UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Product Not Found | ${escapeHTML(SITE.name)}</title>
 </head>
-
 <body>
-
-    <main>
-        <h1>Product Not Found</h1>
-
-        <p>
-            The requested product could not be found.
-        </p>
-
-        <p>
-            <a href="${escapeHTML(SITE.domain)}/">
-                Return to NEXT LEVEL SUBS
-            </a>
-        </p>
-    </main>
-
+<h1>Product Not Found</h1>
+<p>The requested product could not be found.</p>
+<p>
+<a href="${escapeHTML(SITE.domain)}/">
+Return to ${escapeHTML(SITE.name)}
+</a>
+</p>
 </body>
 </html>
 `);
@@ -1719,7 +1367,7 @@ function send404(res) {
 module.exports = function handler(req, res) {
 
     // ========================================================
-    // METHODS
+    // METHOD
     // ========================================================
 
     if (
@@ -1756,51 +1404,24 @@ module.exports = function handler(req, res) {
     const product =
         products[slug];
 
+    const seo =
+        buildSEOProduct(
+            slug,
+            product
+        );
+
     // ========================================================
     // URLS
     // ========================================================
 
-    const canonicalURL =
-        productURL(slug);
+    const productURL =
+        `${SITE.domain}/product/${encodeURIComponent(slug)}`;
 
     const destinationURL =
-        SITE.domain +
-        "/details.html?name=" +
-        encodeURIComponent(
-            product.name
-        );
-
-    // ========================================================
-    // SEO
-    // ========================================================
-
-    const title =
-        buildTitle(product);
-
-    const description =
-        buildDescription(product);
-
-    const intro =
-        buildIntro(product);
+        `${SITE.domain}/details.html?name=${encodeURIComponent(product.name)}`;
 
     const imageURL =
-        buildImageURL(product);
-
-    const imageAlt =
-        product.name +
-        " subscription - NEXT LEVEL SUBS";
-
-    const benefits =
-        getBenefits(product);
-
-    const relatedSlugs =
-        getRelatedProducts(
-            slug,
-            8
-        );
-
-    const keywords =
-        buildSEOKeywords(product);
+        getImageURL(product);
 
     // ========================================================
     // STRUCTURED DATA
@@ -1808,16 +1429,16 @@ module.exports = function handler(req, res) {
 
     const productSchema =
         buildProductSchema(
+            seo,
             product,
-            slug,
-            imageURL,
-            description
+            productURL,
+            imageURL
         );
 
     const breadcrumbSchema =
         buildBreadcrumbSchema(
-            product,
-            slug
+            seo,
+            productURL
         );
 
     const organizationSchema =
@@ -1827,7 +1448,37 @@ module.exports = function handler(req, res) {
         buildWebsiteSchema();
 
     // ========================================================
-    // HEADERS
+    // RELATED PRODUCTS
+    // ========================================================
+
+    const relatedProducts =
+        getRelatedProducts(
+            slug,
+            product
+        );
+
+    // ========================================================
+    // PRODUCT MAP
+    // ========================================================
+
+    const productMap =
+        Object.keys(products)
+            .reduce(
+                function(map, key) {
+
+                    map[key] = {
+                        name:
+                            products[key].name
+                    };
+
+                    return map;
+
+                },
+                {}
+            );
+
+    // ========================================================
+    // HTTP HEADERS
     // ========================================================
 
     res.statusCode = 200;
@@ -1839,7 +1490,7 @@ module.exports = function handler(req, res) {
 
     res.setHeader(
         "Content-Language",
-        "en"
+        "en-BD"
     );
 
     res.setHeader(
@@ -1848,13 +1499,8 @@ module.exports = function handler(req, res) {
     );
 
     res.setHeader(
-        "Referrer-Policy",
-        "strict-origin-when-cross-origin"
-    );
-
-    res.setHeader(
         "X-Robots-Tag",
-        "index, follow, max-image-preview:large"
+        "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     );
 
     res.setHeader(
@@ -1871,1161 +1517,902 @@ module.exports = function handler(req, res) {
     }
 
     // ========================================================
-    // PRODUCT MAP FOR FRONTEND
-    // ========================================================
-
-    const productMap =
-        Object.keys(products).reduce(
-            function (map, key) {
-
-                map[key] = {
-                    name:
-                        products[key].name
-                };
-
-                return map;
-            },
-            {}
-        );
-
-    // ========================================================
-    // RELATED PRODUCT HTML
-    // ========================================================
-
-    const relatedHTML =
-        relatedSlugs
-            .map(function (relatedSlug) {
-
-                const related =
-                    products[relatedSlug];
-
-                return `
-                    <li>
-                        <a
-                            href="${escapeHTML(
-                                productURL(relatedSlug)
-                            )}"
-                        >
-                            ${escapeHTML(
-                                related.name
-                            )}
-                        </a>
-                    </li>
-                `;
-            })
-            .join("");
-
-    // ========================================================
-    // BENEFITS HTML
-    // ========================================================
-
-    const benefitsHTML =
-        benefits
-            .map(function (benefit) {
-
-                return `
-                    <li>
-                        ${escapeHTML(benefit)}
-                    </li>
-                `;
-            })
-            .join("");
-
-    // ========================================================
-    // KEYWORD META
-    // ========================================================
-    //
-    // Kept for compatibility.
-    // Google does not use meta keywords for ranking.
-    //
-    // ========================================================
-
-    const keywordMeta =
-        keywords
-            .slice(0, 12)
-            .map(escapeHTML)
-            .join(", ");
-
-    // ========================================================
     // HTML
     // ========================================================
 
     const html = `
 <!DOCTYPE html>
 
-<html
-    lang="en"
-    dir="ltr"
->
+<html lang="en-BD">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <!-- =====================================================
-         PRIMARY SEO
-         ===================================================== -->
+<title>${escapeHTML(seo.title)}</title>
 
-    <title>
-        ${escapeHTML(title)}
-    </title>
+<meta
+    name="description"
+    content="${escapeHTML(seo.description)}"
+>
 
-    <meta
-        name="description"
-        content="${escapeHTML(description)}"
-    >
+<meta
+    name="robots"
+    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+>
 
-    <meta
-        name="robots"
-        content="index, follow, max-image-preview:large"
-    >
+<link
+    rel="canonical"
+    href="${escapeHTML(productURL)}"
+>
 
-    <meta
-        name="googlebot"
-        content="index, follow, max-image-preview:large"
-    >
+<link
+    rel="alternate"
+    hreflang="en-bd"
+    href="${escapeHTML(productURL)}"
+>
 
-    <meta
-        name="keywords"
-        content="${keywordMeta}"
-    >
+<link
+    rel="alternate"
+    hreflang="x-default"
+    href="${escapeHTML(productURL)}"
+>
 
-    <link
-        rel="canonical"
-        href="${escapeHTML(canonicalURL)}"
-    >
+<meta
+    name="theme-color"
+    content="#ffffff"
+>
 
-    <link
-        rel="alternate"
-        hreflang="en"
-        href="${escapeHTML(canonicalURL)}"
-    >
+<!-- =====================================================
+     OPEN GRAPH
+     ===================================================== -->
 
-    <link
-        rel="alternate"
-        hreflang="x-default"
-        href="${escapeHTML(canonicalURL)}"
-    >
+<meta
+    property="og:type"
+    content="website"
+>
 
-    <!-- =====================================================
-         OPEN GRAPH
-         ===================================================== -->
+<meta
+    property="og:site_name"
+    content="${escapeHTML(SITE.name)}"
+>
 
-    <meta
-        property="og:type"
-        content="product"
-    >
+<meta
+    property="og:locale"
+    content="${escapeHTML(SITE.locale)}"
+>
 
-    <meta
-        property="og:site_name"
-        content="${escapeHTML(SITE.name)}"
-    >
+<meta
+    property="og:title"
+    content="${escapeHTML(seo.title)}"
+>
 
-    <meta
-        property="og:locale"
-        content="${escapeHTML(SITE.locale)}"
-    >
+<meta
+    property="og:description"
+    content="${escapeHTML(seo.description)}"
+>
 
-    <meta
-        property="og:title"
-        content="${escapeHTML(title)}"
-    >
+<meta
+    property="og:url"
+    content="${escapeHTML(productURL)}"
+>
 
-    <meta
-        property="og:description"
-        content="${escapeHTML(description)}"
-    >
+<meta
+    property="og:image"
+    content="${escapeHTML(imageURL)}"
+>
 
-    <meta
-        property="og:url"
-        content="${escapeHTML(canonicalURL)}"
-    >
+<meta
+    property="og:image:secure_url"
+    content="${escapeHTML(imageURL)}"
+>
 
-    <meta
-        property="og:image"
-        content="${escapeHTML(imageURL)}"
-    >
+<meta
+    property="og:image:width"
+    content="1200"
+>
 
-    <meta
-        property="og:image:secure_url"
-        content="${escapeHTML(imageURL)}"
-    >
+<meta
+    property="og:image:height"
+    content="630"
+>
 
-    <meta
-        property="og:image:type"
-        content="image/jpeg"
-    >
+<meta
+    property="og:image:alt"
+    content="${escapeHTML(
+        `${seo.name} subscription in Bangladesh`
+    )}"
+>
 
-    <meta
-        property="og:image:width"
-        content="1200"
-    >
+<!-- =====================================================
+     TWITTER
+     ===================================================== -->
 
-    <meta
-        property="og:image:height"
-        content="630"
-    >
+<meta
+    name="twitter:card"
+    content="summary_large_image"
+>
 
-    <meta
-        property="og:image:alt"
-        content="${escapeHTML(imageAlt)}"
-    >
+<meta
+    name="twitter:title"
+    content="${escapeHTML(seo.title)}"
+>
 
-    <!-- =====================================================
-         TWITTER / X
-         ===================================================== -->
+<meta
+    name="twitter:description"
+    content="${escapeHTML(seo.description)}"
+>
 
-    <meta
-        name="twitter:card"
-        content="summary_large_image"
-    >
+<meta
+    name="twitter:image"
+    content="${escapeHTML(imageURL)}"
+>
 
-    <meta
-        name="twitter:title"
-        content="${escapeHTML(title)}"
-    >
+<!-- =====================================================
+     PRODUCT JSON-LD
+     ===================================================== -->
 
-    <meta
-        name="twitter:description"
-        content="${escapeHTML(description)}"
-    >
-
-    <meta
-        name="twitter:image"
-        content="${escapeHTML(imageURL)}"
-    >
-
-    <meta
-        name="twitter:image:alt"
-        content="${escapeHTML(imageAlt)}"
-    >
-
-    <!-- =====================================================
-         PRODUCT JSON-LD
-         ===================================================== -->
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
 ${safeJSON(productSchema)}
-    </script>
+</script>
 
-    <!-- =====================================================
-         BREADCRUMB JSON-LD
-         ===================================================== -->
+<!-- =====================================================
+     BREADCRUMB JSON-LD
+     ===================================================== -->
 
-    <script type="application/ld+json">
+<script type="application/ld+json">
 ${safeJSON(breadcrumbSchema)}
-    </script>
+</script>
 
-    <!-- =====================================================
-         ORGANIZATION JSON-LD
-         ===================================================== -->
+<!-- =====================================================
+     ORGANIZATION JSON-LD
+     ===================================================== -->
 
-    <script type="application/ld+json">
+<script type="application/ld+json">
 ${safeJSON(organizationSchema)}
-    </script>
+</script>
 
-    <!-- =====================================================
-         WEBSITE JSON-LD
-         ===================================================== -->
+<!-- =====================================================
+     WEBSITE JSON-LD
+     ===================================================== -->
 
-    <script type="application/ld+json">
+<script type="application/ld+json">
 ${safeJSON(websiteSchema)}
-    </script>
+</script>
 
-    <!-- =====================================================
-         SEO PAGE CSS
-         ===================================================== -->
+<!-- =====================================================
+     SEO PAGE STYLE
+     ===================================================== -->
 
-    <style>
+<style>
 
-        :root {
-            color-scheme: light;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        * {
-            box-sizing: border-box;
-        }
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    color: #111827;
+    background: #ffffff;
+}
 
-        html {
-            margin: 0;
-            padding: 0;
-            scroll-behavior: smooth;
-        }
+.seo-content {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 20px;
+}
 
-        body {
-            margin: 0;
-            padding: 0;
-            background: #ffffff;
-            color: #111827;
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-            line-height: 1.65;
-        }
+.seo-content h1 {
+    margin: 0 0 14px;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.15;
+}
 
-        .seo-product-page {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 20px;
-        }
+.seo-intro {
+    margin: 0 0 20px;
+    font-size: 17px;
+    line-height: 1.7;
+}
 
-        .seo-breadcrumbs {
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
+.seo-section {
+    margin-top: 24px;
+}
 
-        .seo-breadcrumbs a {
-            color: #2563eb;
-            text-decoration: none;
-        }
+.seo-section h2 {
+    margin: 0 0 12px;
+    font-size: 23px;
+}
 
-        .seo-breadcrumbs a:hover {
-            text-decoration: underline;
-        }
+.seo-section p {
+    line-height: 1.7;
+}
 
-        .seo-product-header {
-            display: grid;
-            grid-template-columns:
-                minmax(180px, 280px)
-                minmax(0, 1fr);
-            gap: 36px;
-            align-items: center;
-            margin-bottom: 36px;
-        }
+.seo-features {
+    margin: 0;
+    padding-left: 22px;
+}
 
-        .seo-product-image {
-            width: 100%;
-            max-width: 280px;
-            max-height: 280px;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-        }
+.seo-features li {
+    margin: 7px 0;
+    line-height: 1.6;
+}
 
-        .seo-product-header h1 {
-            margin: 0 0 16px;
-            font-size: clamp(30px, 5vw, 46px);
-            line-height: 1.12;
-        }
+.seo-faq {
+    margin-top: 12px;
+}
 
-        .seo-product-lead {
-            margin: 0;
-            font-size: 18px;
-            color: #4b5563;
-        }
+.seo-faq details {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 12px 0;
+}
 
-        .seo-section {
-            margin: 38px 0;
-        }
+.seo-faq summary {
+    cursor: pointer;
+    font-weight: 600;
+}
 
-        .seo-section h2 {
-            margin: 0 0 14px;
-            font-size: 27px;
-            line-height: 1.25;
-        }
+.related-products {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+}
 
-        .seo-section p {
-            max-width: 850px;
-        }
+.related-products a {
+    display: block;
+    padding: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    color: #111827;
+    text-decoration: none;
+    font-weight: 600;
+}
 
-        .seo-benefits {
-            padding-left: 24px;
-        }
+.related-products a:hover {
+    text-decoration: underline;
+}
 
-        .seo-benefits li {
-            margin: 8px 0;
-        }
+.product-frame {
+    display: block;
+    width: 100%;
+    min-height: 850px;
+    border: 0;
+}
 
-        .seo-related {
-            padding-left: 24px;
-        }
+@media (max-width: 700px) {
 
-        .seo-related li {
-            margin: 7px 0;
-        }
+    .seo-content {
+        padding:
+            22px 16px 16px;
+    }
 
-        .seo-related a {
-            color: #2563eb;
-            text-decoration: none;
-        }
+    .seo-intro {
+        font-size: 16px;
+    }
 
-        .seo-related a:hover {
-            text-decoration: underline;
-        }
+    .product-frame {
+        min-height: 900px;
+    }
+}
 
-        .seo-category {
-            display: inline-block;
-            margin-top: 18px;
-            padding: 6px 11px;
-            border-radius: 999px;
-            background: #f3f4f6;
-            color: #374151;
-            font-size: 13px;
-        }
-
-        .seo-shop-area {
-            margin-top: 48px;
-            border-top: 1px solid #e5e7eb;
-            padding-top: 28px;
-        }
-
-        .seo-shop-area h2 {
-            margin-bottom: 8px;
-        }
-
-        .product-frame {
-            display: block;
-            width: 100%;
-            min-height: 900px;
-            border: 0;
-            margin-top: 20px;
-            background: #ffffff;
-        }
-
-        @media (max-width: 700px) {
-
-            .seo-product-page {
-                padding: 22px 16px;
-            }
-
-            .seo-product-header {
-                grid-template-columns: 1fr;
-                gap: 22px;
-            }
-
-            .seo-product-image {
-                max-width: 210px;
-            }
-
-            .seo-product-header h1 {
-                font-size: 32px;
-            }
-
-            .seo-product-lead {
-                font-size: 16px;
-            }
-
-            .product-frame {
-                min-height: 850px;
-            }
-        }
-
-    </style>
+</style>
 
 </head>
 
 <body>
 
-    <!-- =====================================================
-         SERVER-RENDERED SEO CONTENT
-         ===================================================== -->
-
-    <main
-        class="seo-product-page"
-        id="product-content"
-    >
-
-        <!-- =================================================
-             BREADCRUMBS
-             ================================================= -->
-
-        <nav
-            class="seo-breadcrumbs"
-            aria-label="Breadcrumb"
-        >
-
-            <a href="/">
-                Home
-            </a>
-
-            <span aria-hidden="true">
-                /
-            </span>
-
-            <span>
-                ${escapeHTML(product.category)}
-            </span>
-
-            <span aria-hidden="true">
-                /
-            </span>
-
-            <span>
-                ${escapeHTML(product.name)}
-            </span>
-
-        </nav>
-
-        <!-- =================================================
-             PRODUCT HEADER
-             ================================================= -->
-
-        <header
-            class="seo-product-header"
-        >
-
-            <div>
-
-                <img
-                    class="seo-product-image"
-                    src="${escapeHTML(imageURL)}"
-                    alt="${escapeHTML(imageAlt)}"
-                    width="280"
-                    height="280"
-                    loading="eager"
-                    decoding="async"
-                >
-
-            </div>
-
-            <div>
-
-                <h1>
-                    ${escapeHTML(
-                        product.name
-                    )}
-                    Subscription in Bangladesh
-                </h1>
-
-                <p class="seo-product-lead">
-                    ${escapeHTML(intro)}
-                </p>
-
-                <span
-                    class="seo-category"
-                >
-                    ${escapeHTML(
-                        product.category
-                    )}
-                </span>
-
-            </div>
+<!-- =====================================================
+     SERVER-RENDERED SEO CONTENT
+     ===================================================== -->
 
-        </header>
-
-        <!-- =================================================
-             PRODUCT DESCRIPTION
-             ================================================= -->
-
-        <section class="seo-section">
-
-            <h2>
-                ${escapeHTML(
-                    product.name
-                )} Subscription
-            </h2>
-
-            <p>
-                ${escapeHTML(
-                    product.description
-                )}
-                Choose from the available plans
-                on NEXT LEVEL SUBS and complete
-                your order online.
-            </p>
-
-            <p>
-                This page is dedicated to
-                ${escapeHTML(
-                    product.name
-                )}
-                and provides information about
-                the available subscription service
-                and ordering options in Bangladesh.
-            </p>
-
-        </section>
-
-        <!-- =================================================
-             BENEFITS
-             ================================================= -->
-
-        <section class="seo-section">
-
-            <h2>
-                ${escapeHTML(
-                    product.name
-                )} Features
-            </h2>
+<main>
 
-            <ul class="seo-benefits">
+<section
+    class="seo-content"
+    aria-labelledby="product-title"
+>
 
-                ${benefitsHTML}
+<h1 id="product-title">
+    ${escapeHTML(seo.name)} Subscription in Bangladesh
+</h1>
 
-            </ul>
+<p class="seo-intro">
+    ${escapeHTML(seo.intro)}
+</p>
 
-        </section>
+<section class="seo-section">
 
-        <!-- =================================================
-             BANGLADESH SECTION
-             ================================================= -->
+<h2>
+    ${escapeHTML(seo.name)} Subscription
+</h2>
 
-        <section class="seo-section">
+<p>
+    NEXT LEVEL SUBS provides
+    ${escapeHTML(seo.name)}
+    subscription options for customers in Bangladesh.
+    View the available plans and details below before
+    placing your order.
+</p>
 
-            <h2>
-                ${escapeHTML(
-                    product.name
-                )} in Bangladesh
-            </h2>
+</section>
 
-            <p>
-                NEXT LEVEL SUBS provides
-                ${escapeHTML(
-                    product.name
-                )}
-                subscription options for customers
-                in Bangladesh. You can review the
-                available plans, select the option
-                that fits your needs and continue
-                through the online checkout process.
-            </p>
+<section class="seo-section">
 
-        </section>
+<h2>
+    ${escapeHTML(seo.name)} Features
+</h2>
 
-        <!-- =================================================
-             RELATED PRODUCTS
-             ================================================= -->
+<ul class="seo-features">
 
-        <section class="seo-section">
+${seo.features.map(function(feature) {
 
-            <h2>
-                Related Subscriptions
-            </h2>
+    return `
+<li>
+    ${escapeHTML(feature)}
+</li>
+`;
 
-            <ul class="seo-related">
-
-                ${relatedHTML}
+}).join("")}
 
-            </ul>
+</ul>
 
-        </section>
+</section>
 
-        <!-- =================================================
-             EXISTING SHOPPING UI
-             ================================================= -->
+<section class="seo-section">
 
-        <section
-            class="seo-shop-area"
-            aria-label="Product ordering area"
-        >
+<h2>
+    ${escapeHTML(seo.name)} in Bangladesh
+</h2>
 
-            <h2>
-                Get ${escapeHTML(
-                    product.name
-                )}
-            </h2>
+<p>
+    If you are searching for
+    ${escapeHTML(seo.name)}
+    subscription in Bangladesh or
+    ${escapeHTML(seo.name)} BD,
+    this page contains the available subscription
+    information from NEXT LEVEL SUBS.
+</p>
 
-            <p>
-                Select an available plan below
-                to continue with your order.
-            </p>
+</section>
 
-            <iframe
-                id="productFrame"
-                class="product-frame"
-                src="${escapeHTML(destinationURL)}"
-                title="${escapeHTML(
-                    product.name
-                )} subscription ordering interface"
-                loading="eager"
-                allow="fullscreen"
-            ></iframe>
+<!-- =====================================================
+     FAQ
+     ===================================================== -->
 
-        </section>
+<section
+    class="seo-section"
+    aria-labelledby="faq-heading"
+>
 
-    </main>
+<h2 id="faq-heading">
+    Frequently Asked Questions
+</h2>
 
-    <!-- =====================================================
-         PRODUCT NAVIGATION CONTROLLER
-         ===================================================== -->
+<div class="seo-faq">
 
-    <script>
+${seo.faq.map(function(item) {
 
-    (function () {
+    return `
+<details>
+    <summary>
+        ${escapeHTML(item.q)}
+    </summary>
 
-        "use strict";
+    <p>
+        ${escapeHTML(item.a)}
+    </p>
+</details>
+`;
 
-        // ====================================================
-        // CONSTANTS
-        // ====================================================
+}).join("")}
 
-        var SITE_HOME =
-            "${escapeHTML(SITE.domain)}/";
+</div>
 
-        var PRODUCT_BASE =
-            SITE_HOME + "product/";
+</section>
 
-        var CURRENT_SLUG =
-            "${escapeHTML(slug)}";
+<!-- =====================================================
+     RELATED PRODUCTS
+     ===================================================== -->
 
-        var CURRENT_PRODUCT_NAME =
-            ${safeJSON(product.name)};
+<section
+    class="seo-section"
+    aria-labelledby="related-heading"
+>
 
-        var PRODUCT_MAP =
-            ${safeJSON(productMap)};
+<h2 id="related-heading">
+    Related Subscriptions
+</h2>
 
-        var frame =
-            document.getElementById(
-                "productFrame"
-            );
+<nav
+    class="related-products"
+    aria-label="Related products"
+>
 
-        if (!frame) {
-            return;
-        }
+${relatedProducts.map(function(relatedSlug) {
 
-        // ====================================================
-        // GENERATE SLUG
-        // ====================================================
+    const related =
+        products[relatedSlug];
 
-        function generateSlug(value) {
+    return `
+<a
+    href="${escapeHTML(
+        `${SITE.domain}/product/${encodeURIComponent(relatedSlug)}`
+    )}"
+>
+    ${escapeHTML(related.name)}
+</a>
+`;
 
-            return String(value || "")
-                .toLowerCase()
-                .trim()
-                .replace(
-                    /[^a-z0-9]+/g,
-                    "-"
-                )
-                .replace(
-                    /^-+|-+$/g,
-                    "");
-        }
+}).join("")}
 
-        // ====================================================
-        // HOME
-        // ====================================================
+</nav>
 
-        function goHome() {
+</section>
 
+</section>
+
+<!-- =====================================================
+     EXISTING CUSTOMER PRODUCT UI
+     ===================================================== -->
+
+<iframe
+    id="productFrame"
+    class="product-frame"
+    src="${escapeHTML(destinationURL)}"
+    title="${escapeHTML(seo.name)}"
+    loading="eager"
+    allow="fullscreen"
+></iframe>
+
+</main>
+
+<!-- =====================================================
+     PRODUCT NAVIGATION CONTROLLER
+     ===================================================== -->
+
+<script>
+
+(function () {
+
+    "use strict";
+
+    var SITE_HOME =
+        ${safeJSON(`${SITE.domain}/`)};
+
+    var PRODUCT_BASE =
+        SITE_HOME + "product/";
+
+    var CURRENT_SLUG =
+        ${safeJSON(slug)};
+
+    var frame =
+        document.getElementById(
+            "productFrame"
+        );
+
+    if (!frame) {
+        return;
+    }
+
+    var PRODUCT_MAP =
+        ${safeJSON(productMap)};
+
+    // =====================================================
+    // SLUG
+    // =====================================================
+
+    function generateSlug(value) {
+
+        return String(value || "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+    }
+
+    // =====================================================
+    // HOME
+    // =====================================================
+
+    function goHome() {
+
+        if (
+            window.top.location.href !==
+            SITE_HOME
+        ) {
             window.top.location.href =
                 SITE_HOME;
         }
+    }
 
-        // ====================================================
-        // PRODUCT NAVIGATION
-        // ====================================================
+    // =====================================================
+    // PRODUCT
+    // =====================================================
 
-        function goToProduct(
-            targetSlug
-        ) {
+    function goToProduct(targetSlug) {
 
-            if (!targetSlug) {
-                return;
-            }
-
-            targetSlug =
-                String(targetSlug)
-                    .trim()
-                    .toLowerCase();
-
-            if (
-                !PRODUCT_MAP[
-                    targetSlug
-                ]
-            ) {
-                return;
-            }
-
-            if (
-                targetSlug ===
-                CURRENT_SLUG
-            ) {
-                return;
-            }
-
-            window.top.location.href =
-                PRODUCT_BASE +
-                encodeURIComponent(
-                    targetSlug
-                );
+        if (!targetSlug) {
+            return;
         }
 
-        // ====================================================
-        // FIND SLUG FROM NAME
-        // ====================================================
+        targetSlug =
+            String(targetSlug)
+                .trim()
+                .toLowerCase();
 
-        function findSlugFromName(
-            name
+        if (!PRODUCT_MAP[targetSlug]) {
+            return;
+        }
+
+        if (
+            targetSlug ===
+            CURRENT_SLUG
         ) {
+            return;
+        }
 
-            if (!name) {
-                return "";
-            }
+        window.top.location.href =
+            PRODUCT_BASE +
+            encodeURIComponent(targetSlug);
+    }
 
-            var decoded =
-                String(name);
+    // =====================================================
+    // FIND SLUG FROM NAME
+    // =====================================================
 
-            try {
-                decoded =
-                    decodeURIComponent(
-                        decoded
-                    );
-            } catch (_) {}
+    function findSlugFromName(name) {
 
-            decoded =
-                decoded
-                    .trim()
-                    .toLowerCase();
-
-            // Exact product name
-            for (
-                var key in PRODUCT_MAP
-            ) {
-
-                if (
-                    !Object.prototype
-                        .hasOwnProperty
-                        .call(
-                            PRODUCT_MAP,
-                            key
-                        )
-                ) {
-                    continue;
-                }
-
-                var productName =
-                    String(
-                        PRODUCT_MAP[key]
-                            .name || ""
-                    )
-                    .trim()
-                    .toLowerCase();
-
-                if (
-                    productName ===
-                    decoded
-                ) {
-                    return key;
-                }
-            }
-
-            // Generated slug
-            var generated =
-                generateSlug(
-                    decoded
-                );
-
-            if (
-                PRODUCT_MAP[
-                    generated
-                ]
-            ) {
-                return generated;
-            }
-
+        if (!name) {
             return "";
         }
 
-        // ====================================================
-        // FIND SLUG FROM URL
-        // ====================================================
+        var decoded =
+            String(name)
+                .trim()
+                .toLowerCase();
 
-        function findSlugFromURL(
-            url
+        try {
+            decoded =
+                decodeURIComponent(decoded);
+        } catch (_) {}
+
+        for (
+            var key in PRODUCT_MAP
         ) {
 
-            if (!url) {
-                return "";
+            if (
+                !Object.prototype.hasOwnProperty
+                    .call(PRODUCT_MAP, key)
+            ) {
+                continue;
             }
 
-            try {
+            var productName =
+                String(
+                    PRODUCT_MAP[key].name ||
+                    ""
+                )
+                    .trim()
+                    .toLowerCase();
 
-                var parsed =
-                    new URL(
-                        url,
-                        window.location.origin
-                    );
+            if (
+                productName ===
+                decoded
+            ) {
+                return key;
+            }
+        }
 
-                var match =
-                    parsed.pathname.match(
-                        /^\/product\/([^/]+)\/?$/i
-                    );
+        var generated =
+            generateSlug(decoded);
 
-                if (
-                    match &&
-                    match[1]
-                ) {
+        return PRODUCT_MAP[generated]
+            ? generated
+            : "";
+    }
 
-                    var directSlug =
-                        decodeURIComponent(
-                            match[1]
-                        )
+    // =====================================================
+    // FIND SLUG FROM URL
+    // =====================================================
+
+    function findSlugFromURL(url) {
+
+        if (!url) {
+            return "";
+        }
+
+        try {
+
+            var parsed =
+                new URL(
+                    url,
+                    window.location.origin
+                );
+
+            var match =
+                parsed.pathname.match(
+                    /^\/product\/([^/]+)\/?$/i
+                );
+
+            if (
+                match &&
+                match[1]
+            ) {
+
+                var directSlug =
+                    decodeURIComponent(
+                        match[1]
+                    )
                         .trim()
                         .toLowerCase();
 
+                if (
+                    PRODUCT_MAP[directSlug]
+                ) {
+                    return directSlug;
+                }
+            }
+
+            if (
+                parsed.pathname
+                    .toLowerCase()
+                    .indexOf(
+                        "/details.html"
+                    ) !== -1
+            ) {
+
+                var name =
+                    parsed.searchParams.get(
+                        "name"
+                    );
+
+                if (name) {
+                    return findSlugFromName(
+                        name
+                    );
+                }
+            }
+
+        } catch (_) {}
+
+        return "";
+    }
+
+    // =====================================================
+    // POSTMESSAGE
+    // =====================================================
+
+    window.addEventListener(
+        "message",
+        function (event) {
+
+            if (!event.data) {
+                return;
+            }
+
+            if (
+                event.data.type ===
+                "NLS_GO_HOME"
+            ) {
+                goHome();
+                return;
+            }
+
+            if (
+                event.data.type ===
+                "NLS_NAVIGATE_PRODUCT"
+            ) {
+
+                var targetSlug = "";
+
+                if (
+                    event.data.productSlug
+                ) {
+
+                    targetSlug =
+                        findSlugFromName(
+                            event.data.productSlug
+                        );
+
                     if (
                         PRODUCT_MAP[
-                            directSlug
+                            event.data.productSlug
                         ]
                     ) {
-                        return directSlug;
+                        targetSlug =
+                            event.data.productSlug;
                     }
                 }
 
                 if (
-                    parsed.pathname
-                        .toLowerCase()
-                        .indexOf(
-                            "details.html"
-                        ) !== -1
+                    !targetSlug &&
+                    event.data.productName
                 ) {
 
-                    var name =
-                        parsed.searchParams.get(
-                            "name"
+                    targetSlug =
+                        findSlugFromName(
+                            event.data.productName
                         );
+                }
 
-                    if (name) {
+                if (targetSlug) {
+                    goToProduct(
+                        targetSlug
+                    );
+                }
+            }
 
-                        return findSlugFromName(
+        }
+    );
+
+    // =====================================================
+    // IFRAME LOCATION
+    // =====================================================
+
+    function pollFrameLocation() {
+
+        try {
+
+            var frameWin =
+                frame.contentWindow;
+
+            if (
+                !frameWin ||
+                !frameWin.location
+            ) {
+                return;
+            }
+
+            var href =
+                frameWin.location.href ||
+                "";
+
+            if (!href) {
+                return;
+            }
+
+            var parsed =
+                new URL(href);
+
+            var pathname =
+                parsed.pathname
+                    .toLowerCase();
+
+            if (
+                pathname === "/" ||
+                pathname === "/index.html"
+            ) {
+                goHome();
+                return;
+            }
+
+            if (
+                pathname.indexOf(
+                    "/details.html"
+                ) !== -1
+            ) {
+
+                var name =
+                    parsed.searchParams.get(
+                        "name"
+                    );
+
+                if (name) {
+
+                    var targetSlug =
+                        findSlugFromName(
                             name
                         );
-                    }
-                }
-
-            } catch (_) {}
-
-            return "";
-        }
-
-        // ====================================================
-        // POSTMESSAGE
-        // ====================================================
-
-        window.addEventListener(
-            "message",
-            function (event) {
-
-                if (!event.data) {
-                    return;
-                }
-
-                // HOME
-                if (
-                    event.data.type ===
-                    "NLS_GO_HOME"
-                ) {
-
-                    goHome();
-
-                    return;
-                }
-
-                // PRODUCT
-                if (
-                    event.data.type ===
-                    "NLS_NAVIGATE_PRODUCT"
-                ) {
-
-                    var targetSlug = "";
 
                     if (
-                        event.data.productSlug
+                        targetSlug &&
+                        targetSlug !==
+                            CURRENT_SLUG
                     ) {
-
-                        targetSlug =
-                            findSlugFromName(
-                                event.data.productSlug
-                            );
-
-                        if (
-                            PRODUCT_MAP[
-                                event.data.productSlug
-                            ]
-                        ) {
-
-                            targetSlug =
-                                event.data.productSlug;
-                        }
-                    }
-
-                    if (
-                        !targetSlug &&
-                        event.data.productName
-                    ) {
-
-                        targetSlug =
-                            findSlugFromName(
-                                event.data.productName
-                            );
-                    }
-
-                    if (targetSlug) {
 
                         goToProduct(
                             targetSlug
                         );
                     }
                 }
-
             }
-        );
 
-        // ====================================================
-        // IFRAME LOCATION
-        // ====================================================
+            var detectedSlug =
+                findSlugFromURL(href);
 
-        function pollFrameLocation() {
+            if (
+                detectedSlug &&
+                detectedSlug !==
+                    CURRENT_SLUG
+            ) {
+
+                goToProduct(
+                    detectedSlug
+                );
+            }
+
+        } catch (_) {}
+    }
+
+    // =====================================================
+    // POLLING
+    // =====================================================
+
+    setInterval(
+        pollFrameLocation,
+        500
+    );
+
+    // =====================================================
+    // IFRAME LOAD
+    // =====================================================
+
+    frame.addEventListener(
+        "load",
+        function () {
 
             try {
 
                 var frameWin =
                     frame.contentWindow;
 
-                if (
-                    !frameWin ||
-                    !frameWin.location
-                ) {
-                    return;
-                }
+                var frameDoc =
+                    frameWin.document;
 
-                var href =
-                    frameWin.location.href ||
-                    "";
+                frameDoc.addEventListener(
+                    "click",
+                    function (event) {
 
-                if (!href) {
-                    return;
-                }
+                        var target =
+                            event.target;
 
-                var parsed =
-                    new URL(href);
-
-                var pathname =
-                    parsed.pathname
-                        .toLowerCase();
-
-                // HOME
-                if (
-                    pathname === "/" ||
-                    pathname === "/index.html"
-                ) {
-
-                    goHome();
-
-                    return;
-                }
-
-                // DETAILS
-                if (
-                    pathname.indexOf(
-                        "/details.html"
-                    ) !== -1
-                ) {
-
-                    var name =
-                        parsed.searchParams.get(
-                            "name"
-                        );
-
-                    if (name) {
-
-                        var targetSlug =
-                            findSlugFromName(
-                                name
-                            );
-
-                        if (
-                            targetSlug &&
-                            targetSlug !==
-                                CURRENT_SLUG
-                        ) {
-
-                            goToProduct(
-                                targetSlug
-                            );
+                        if (!target) {
+                            return;
                         }
-                    }
-                }
 
-                // PRODUCT
-                var detectedSlug =
-                    findSlugFromURL(
-                        href
-                    );
+                        var link =
+                            target.closest(
+                                "a"
+                            );
 
-                if (
-                    detectedSlug &&
-                    detectedSlug !==
-                        CURRENT_SLUG
-                ) {
+                        if (link) {
 
-                    goToProduct(
-                        detectedSlug
-                    );
-                }
+                            var href =
+                                link.getAttribute(
+                                    "href"
+                                ) || "";
 
-            } catch (_) {}
-        }
+                            try {
 
-        // ====================================================
-        // POLLING
-        // ====================================================
+                                var url =
+                                    new URL(
+                                        href,
+                                        frameWin.location.href
+                                    );
 
-        setInterval(
-            pollFrameLocation,
-            500
-        );
+                                var pathname =
+                                    url.pathname
+                                        .toLowerCase();
 
-        // ====================================================
-        // IFRAME LOAD
-        // ====================================================
-
-        frame.addEventListener(
-            "load",
-            function () {
-
-                try {
-
-                    var frameWin =
-                        frame.contentWindow;
-
-                    var frameDoc =
-                        frameWin.document;
-
-                    // ========================================
-                    // CLICK INTERCEPTION
-                    // ========================================
-
-                    frameDoc.addEventListener(
-                        "click",
-                        function (event) {
-
-                            var target =
-                                event.target;
-
-                            if (!target) {
-                                return;
-                            }
-
-                            var link =
-                                target.closest(
-                                    "a"
-                                );
-
-                            if (link) {
-
-                                var href =
-                                    link.getAttribute(
-                                        "href"
-                                    ) || "";
-
-                                var lower =
-                                    href
-                                        .toLowerCase()
-                                        .trim();
-
-                                // HOME
                                 if (
-                                    lower === "/" ||
-                                    lower === "/index.html" ||
-                                    lower.indexOf(
+                                    pathname === "/" ||
+                                    pathname.indexOf(
                                         "index.html"
                                     ) !== -1
                                 ) {
@@ -3034,45 +2421,45 @@ ${safeJSON(websiteSchema)}
                                     event.stopPropagation();
 
                                     goHome();
+                                    return;
+                                }
+
+                                var matchedSlug =
+                                    findSlugFromURL(
+                                        url.href
+                                    );
+
+                                if (
+                                    matchedSlug &&
+                                    matchedSlug !==
+                                        CURRENT_SLUG
+                                ) {
+
+                                    event.preventDefault();
+                                    event.stopPropagation();
+
+                                    goToProduct(
+                                        matchedSlug
+                                    );
 
                                     return;
                                 }
 
-                                try {
+                                var name =
+                                    url.searchParams.get(
+                                        "name"
+                                    );
 
-                                    var url =
-                                        new URL(
-                                            href,
-                                            frameWin.location.href
-                                        );
+                                if (name) {
 
-                                    // HOME
-                                    if (
-                                        url.pathname === "/" ||
-                                        url.pathname
-                                            .toLowerCase()
-                                            .indexOf(
-                                                "index.html"
-                                            ) !== -1
-                                    ) {
-
-                                        event.preventDefault();
-                                        event.stopPropagation();
-
-                                        goHome();
-
-                                        return;
-                                    }
-
-                                    // PRODUCT
-                                    var matchedSlug =
-                                        findSlugFromURL(
-                                            url.href
+                                    var nameSlug =
+                                        findSlugFromName(
+                                            name
                                         );
 
                                     if (
-                                        matchedSlug &&
-                                        matchedSlug !==
+                                        nameSlug &&
+                                        nameSlug !==
                                             CURRENT_SLUG
                                     ) {
 
@@ -3080,126 +2467,84 @@ ${safeJSON(websiteSchema)}
                                         event.stopPropagation();
 
                                         goToProduct(
-                                            matchedSlug
+                                            nameSlug
                                         );
-
-                                        return;
                                     }
+                                }
 
-                                    // DETAILS
-                                    var name =
-                                        url.searchParams.get(
-                                            "name"
-                                        );
+                            } catch (_) {}
+                        }
 
-                                    if (name) {
+                        var button =
+                            target.closest(
+                                "button, [role='button'], .back-btn, .home-btn"
+                            );
 
-                                        var nameSlug =
-                                            findSlugFromName(
-                                                name
-                                            );
+                        if (button) {
 
-                                        if (
-                                            nameSlug &&
-                                            nameSlug !==
-                                                CURRENT_SLUG
-                                        ) {
-
-                                            event.preventDefault();
-                                            event.stopPropagation();
-
-                                            goToProduct(
-                                                nameSlug
-                                            );
-
-                                            return;
-                                        }
-                                    }
-
-                                } catch (_) {}
-                            }
-
-                            // =================================
-                            // BUTTONS
-                            // =================================
-
-                            var button =
-                                target.closest(
-                                    "button, [role='button'], .back-btn, .home-btn"
-                                );
-
-                            if (button) {
-
-                                var text =
-                                    (
-                                        button.innerText ||
-                                        button.textContent ||
-                                        ""
-                                    )
+                            var text =
+                                (
+                                    button.innerText ||
+                                    button.textContent ||
+                                    ""
+                                )
                                     .trim()
                                     .toLowerCase();
 
-                                if (
-                                    text === "home" ||
-                                    text === "back" ||
-                                    text.indexOf(
-                                        "back to"
-                                    ) !== -1 ||
-                                    text.indexOf(
-                                        "return to"
-                                    ) !== -1 ||
-                                    text.indexOf(
-                                        "return home"
-                                    ) !== -1 ||
-                                    text.indexOf(
-                                        "go home"
-                                    ) !== -1
-                                ) {
+                            if (
+                                text === "home" ||
+                                text === "back" ||
+                                text.indexOf(
+                                    "back to"
+                                ) !== -1 ||
+                                text.indexOf(
+                                    "return to"
+                                ) !== -1 ||
+                                text.indexOf(
+                                    "return home"
+                                ) !== -1 ||
+                                text.indexOf(
+                                    "go home"
+                                ) !== -1
+                            ) {
 
-                                    event.preventDefault();
-                                    event.stopPropagation();
+                                event.preventDefault();
+                                event.stopPropagation();
 
-                                    goHome();
-
-                                    return;
-                                }
+                                goHome();
                             }
+                        }
 
-                        },
-                        true
-                    );
+                    },
+                    true
+                );
 
-                } catch (error) {
+            } catch (error) {
 
-                    console.warn(
-                        "NEXT LEVEL SUBS product controller:",
-                        error
-                    );
-                }
+                console.warn(
+                    "NEXT LEVEL SUBS iframe controller:",
+                    error
+                );
             }
-        );
+        }
+    );
 
-        // ====================================================
-        // INITIAL CHECK
-        // ====================================================
+    // =====================================================
+    // INITIAL CHECK
+    // =====================================================
 
-        setTimeout(
-            pollFrameLocation,
-            800
-        );
+    setTimeout(
+        pollFrameLocation,
+        700
+    );
 
-    })();
+})();
 
-    </script>
+</script>
 
 </body>
-
 </html>
 `;
-
-    // ========================================================
-    // SEND
-    // ========================================================
 
     return res.end(html);
 };
