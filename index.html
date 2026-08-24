@@ -112,54 +112,47 @@
                     </div>
                 </div>
                 
-<nav class="nav-menu" id="navMenu" aria-label="Main navigation">
+<nav
+    class="nav-menu"
+    id="navMenu"
+    aria-label="Main navigation"
+>
 
-    <!-- =========================================================
-         AUTH — LOGGED OUT
-    ========================================================== -->
+    <!-- =====================================================
+         AUTH
+         Logged out  → Login
+         Logged in   → Username
+    ====================================================== -->
 
     <a
-        href="/login.html"
         id="loginLink"
-        class="auth-login flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-fuchsia-600 transition duration-300 shadow-none hover:shadow-md"
+        class="nav-link nls-auth-link"
+        href="/login.html?redirect=/"
         aria-label="Login"
-        title="Login"
     >
-        <i class="fas fa-user text-lg"></i>
+        <span class="nls-auth-text">
+            Login
+        </span>
     </a>
 
 
-    <!-- =========================================================
-         AUTH — LOGGED IN
-    ========================================================== -->
-
-    <a
-        href="/dashboard.html"
-        id="dashboardLink"
-        class="auth-dashboard flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-fuchsia-600 transition duration-300 shadow-none hover:shadow-md"
-        aria-label="Dashboard"
-        title="Dashboard"
-        style="display:none;"
-    >
-        <i class="fas fa-user text-lg"></i>
-    </a>
+<a
+    id="userAccountArea"
+    class="nav-link nls-auth-link nls-user-link"
+    href="/dashboard.html"
+    aria-label="Open dashboard"
+    style="display: none;"
+>
+    <span
+        id="navUserName"
+        class="nls-auth-text"
+    >User</span>
+</a>
 
 
-    <button
-        type="button"
-        id="logoutButton"
-        class="auth-logout flex items-center justify-center h-10 w-10 rounded-full text-[#48b0ff] hover:text-red-500 transition duration-300 shadow-none hover:shadow-md"
-        aria-label="Logout"
-        title="Logout"
-        style="display:none;"
-    >
-        <i class="fas fa-right-from-bracket text-lg"></i>
-    </button>
-
-
-    <!-- =========================================================
+    <!-- =====================================================
          MAIN NAVIGATION
-    ========================================================== -->
+    ====================================================== -->
 
     <a
         href="/best-selling"
@@ -169,6 +162,7 @@
         Best Sellers
     </a>
 
+
     <a
         href="/streaming"
         class="nav-link"
@@ -176,6 +170,7 @@
     >
         Streaming
     </a>
+
 
     <a
         href="/music"
@@ -185,6 +180,7 @@
         Music
     </a>
 
+
     <a
         href="/storage"
         class="nav-link"
@@ -192,6 +188,7 @@
     >
         Cloud Storage
     </a>
+
 
     <a
         href="/vpn"
@@ -201,6 +198,7 @@
         VPN
     </a>
 
+
     <a
         href="/aiDesign"
         class="nav-link"
@@ -208,6 +206,7 @@
     >
         Ai & Design
     </a>
+
 
     <a
         href="/combos"
@@ -217,6 +216,7 @@
         Combos
     </a>
 
+
     <a
         href="/education"
         class="nav-link"
@@ -224,6 +224,7 @@
     >
         Education
     </a>
+
 
     <a
         href="/adult"
@@ -234,6 +235,274 @@
     </a>
 
 </nav>
+
+
+<style>
+
+/* =========================================================
+   NEXT LEVEL SUBS
+   MODERN AUTH LINK
+========================================================= */
+
+.nls-auth-link {
+
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 38px;
+
+    padding: 7px 13px;
+
+    border-radius: 999px;
+
+    color: #48b0ff;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transform: translateZ(0);
+
+    transition:
+        color 0.28s ease,
+        background 0.28s ease,
+        transform 0.18s
+        cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.28s ease;
+
+}
+
+
+/* =========================================================
+   SUBTLE GLOW
+========================================================= */
+
+.nls-auth-link::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(72,176,255,0.10),
+            rgba(192,38,211,0.08)
+        );
+
+    opacity: 0;
+
+    transform:
+        scale(0.85);
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   TEXT
+========================================================= */
+
+.nls-auth-text {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: inline-block;
+
+    max-width: 150px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-weight: 500;
+
+    transition:
+        transform 0.28s
+        cubic-bezier(0.22, 1, 0.36, 1),
+        letter-spacing 0.28s ease;
+
+}
+
+
+/* =========================================================
+   HOVER
+========================================================= */
+
+.nls-auth-link:hover {
+
+    color: #c026d3;
+
+    background:
+        rgba(72,176,255,0.07);
+
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 8px 24px
+        rgba(72,176,255,0.10);
+}
+
+
+.nls-auth-link:hover::before {
+
+    opacity: 1;
+
+    transform:
+        scale(1);
+}
+
+
+.nls-auth-link:hover .nls-auth-text {
+
+    transform:
+        translateY(-1px);
+
+    letter-spacing:
+        0.01em;
+}
+
+
+/* =========================================================
+   CLICK / TAP
+========================================================= */
+
+.nls-auth-link:active {
+
+    transform:
+        scale(0.91);
+
+    background:
+        rgba(72,176,255,0.12);
+
+    box-shadow:
+        0 2px 8px
+        rgba(72,176,255,0.08);
+
+    transition:
+        transform 0.08s ease;
+}
+
+
+/* =========================================================
+   USERNAME APPEAR ANIMATION
+========================================================= */
+
+.nls-user-link {
+
+    animation:
+        nlsUserAppear
+        0.42s
+        cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+@keyframes nlsUserAppear {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            translateY(-7px)
+            scale(0.94);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   MOBILE / TOUCH
+========================================================= */
+
+@media (hover: none) {
+
+    .nls-auth-link:active {
+
+        color: #c026d3;
+
+        background:
+            rgba(72,176,255,0.12);
+
+        transform:
+            scale(0.91);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .nls-auth-link {
+
+        min-height: 36px;
+
+        padding:
+            6px 10px;
+    }
+
+
+    .nls-auth-text {
+
+        max-width:
+            110px;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nls-auth-link,
+    .nls-auth-link::before,
+    .nls-auth-text {
+
+        transition: none !important;
+
+        animation: none !important;
+    }
+}
+
+</style>
                 
                 <div id="contentDiv" class="md:flex lg:felx xl:flex 2xl:flex items-center gap-4 hidden">
                     <div class="search-container relative flex-1 max-w-md">

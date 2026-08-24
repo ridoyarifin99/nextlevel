@@ -3,34 +3,24 @@
 /*
 ============================================================
 NEXT LEVEL SUBS
-GLOBAL AUTHENTICATION SYSTEM
+GLOBAL SUPABASE AUTHENTICATION
 ============================================================
 
-Requires:
-    1. Supabase JS v2
-    2. /js/supabase-config.js
+LOGGED OUT:
+    Login
 
-Your supabase-config.js must create:
+LOGGED IN:
+    Username
 
-    window.supabaseClient
+USERNAME CLICK:
+    /dashboard.html
 
-This file handles:
-
-    - Current session detection
-    - Navbar login/logout state
-    - Dashboard visibility
-    - Logout
-    - Auth state changes
-    - Protected pages
-    - Redirecting logged-in users
-    - Getting current user
+No dropdown.
+No account settings.
+No logout button.
 ============================================================
 */
 
-
-/* ============================================================
-   GLOBAL AUTH OBJECT
-============================================================ */
 
 window.NextLevelAuth = {
 
@@ -40,11 +30,10 @@ window.NextLevelAuth = {
 
     async getSession() {
 
-        if (
-            typeof window.supabaseClient === "undefined"
-        ) {
+        if (!window.supabaseClient) {
+
             console.error(
-                "Next Level Subs: supabaseClient is not available."
+                "NEXT LEVEL SUBS: supabaseClient not found."
             );
 
             return null;
@@ -55,12 +44,12 @@ window.NextLevelAuth = {
             const {
                 data,
                 error
-            } =
-                await window.supabaseClient.auth.getSession();
+            } = await window.supabaseClient.auth.getSession();
 
             if (error) {
+
                 console.error(
-                    "Auth session error:",
+                    "NEXT LEVEL SUBS: Session error:",
                     error
                 );
 
@@ -73,7 +62,7 @@ window.NextLevelAuth = {
         catch (error) {
 
             console.error(
-                "Auth getSession error:",
+                "NEXT LEVEL SUBS: getSession error:",
                 error
             );
 
@@ -83,14 +72,12 @@ window.NextLevelAuth = {
 
 
     /* ========================================================
-       GET CURRENT USER
+       GET USER
     ======================================================== */
 
     async getUser() {
 
-        if (
-            typeof window.supabaseClient === "undefined"
-        ) {
+        if (!window.supabaseClient) {
             return null;
         }
 
@@ -99,13 +86,12 @@ window.NextLevelAuth = {
             const {
                 data,
                 error
-            } =
-                await window.supabaseClient.auth.getUser();
+            } = await window.supabaseClient.auth.getUser();
 
             if (error) {
 
                 console.error(
-                    "Auth getUser error:",
+                    "NEXT LEVEL SUBS: User error:",
                     error
                 );
 
@@ -118,7 +104,7 @@ window.NextLevelAuth = {
         catch (error) {
 
             console.error(
-                "Auth user error:",
+                "NEXT LEVEL SUBS: getUser error:",
                 error
             );
 
@@ -128,87 +114,101 @@ window.NextLevelAuth = {
 
 
     /* ========================================================
-       IS LOGGED IN
+       GET USERNAME
     ======================================================== */
 
-    async isLoggedIn() {
+    getUserDisplayName(user) {
 
-        const session =
-            await this.getSession();
+        if (!user) {
+            return "User";
+        }
 
-        return !!session;
+        const metadata =
+            user.user_metadata || {};
+
+        const name =
+            metadata.username ||
+            metadata.full_name ||
+            metadata.name ||
+            metadata.display_name;
+
+        if (
+            name &&
+            String(name).trim()
+        ) {
+
+            return String(name).trim();
+        }
+
+        /*
+        --------------------------------------------------------
+        Fallback to email username
+        --------------------------------------------------------
+        */
+
+        if (user.email) {
+
+            const emailName =
+                user.email.split("@")[0];
+
+            if (emailName) {
+                return emailName;
+            }
+        }
+
+        return "User";
     },
 
 
     /* ========================================================
-       LOGOUT
+       SET USERNAME NAVIGATION
     ======================================================== */
 
-    async logout() {
+    setupUsernameNavigation() {
+
+        const userAccount =
+            document.getElementById(
+                "userAccountArea"
+            );
+
+        if (!userAccount) {
+            return;
+        }
+
+        /*
+        --------------------------------------------------------
+        Prevent duplicate listener
+        --------------------------------------------------------
+        */
 
         if (
-            typeof window.supabaseClient === "undefined"
+            userAccount.dataset.authNavigationBound ===
+            "true"
         ) {
-            console.error(
-                "Next Level Subs: Supabase is unavailable."
-            );
-
-            return {
-                success: false,
-                error: new Error(
-                    "Authentication service unavailable."
-                )
-            };
+            return;
         }
 
-        try {
+        userAccount.dataset.authNavigationBound =
+            "true";
 
-            const {
-                error
-            } =
-                await window.supabaseClient.auth.signOut();
 
-            if (error) {
+        /*
+        --------------------------------------------------------
+        Force dashboard navigation
+        --------------------------------------------------------
+        */
 
-                console.error(
-                    "Logout error:",
-                    error
-                );
+        userAccount.addEventListener(
+            "click",
+            function (event) {
 
-                return {
-                    success: false,
-                    error
-                };
+                event.preventDefault();
+                event.stopPropagation();
+
+                window.location.href =
+                    "/dashboard.html";
             }
-
-            /*
-            ====================================================
-            SUCCESSFUL LOGOUT
-            ====================================================
-            */
-
-            window.NextLevelAuth.updateNavbar(
-                null
-            );
-
-            return {
-                success: true,
-                error: null
-            };
-
-        }
-        catch (error) {
-
-            console.error(
-                "Logout exception:",
-                error
-            );
-
-            return {
-                success: false,
-                error
-            };
-        }
+        );
     },
 
 
@@ -218,100 +218,111 @@ window.NextLevelAuth = {
 
     updateNavbar(user) {
 
+        const loginLink =
+            document.getElementById(
+                "loginLink"
+            );
+
+        const userAccount =
+            document.getElementById(
+                "userAccountArea"
+            );
+
+        const userName =
+            document.getElementById(
+                "navUserName"
+            );
+
+
         /*
         --------------------------------------------------------
-        Supported navbar selectors
-        --------------------------------------------------------
-
-        You can use any of these IDs/classes in your navbar:
-
-            #loginLink
-            #registerLink
-            #dashboardLink
-            #logoutButton
-
-        Or:
-
-            .auth-login
-            .auth-register
-            .auth-dashboard
-            .auth-logout
+        No authentication elements
         --------------------------------------------------------
         */
 
-
-        const loginElements =
-            document.querySelectorAll(
-                "#loginLink, .auth-login"
-            );
-
-        const registerElements =
-            document.querySelectorAll(
-                "#registerLink, .auth-register"
-            );
-
-        const dashboardElements =
-            document.querySelectorAll(
-                "#dashboardLink, .auth-dashboard"
-            );
-
-        const logoutElements =
-            document.querySelectorAll(
-                "#logoutButton, .auth-logout"
-            );
-
-
-        const loggedIn =
-            !!user;
+        if (
+            !loginLink &&
+            !userAccount
+        ) {
+            return;
+        }
 
 
         /* ====================================================
            LOGGED IN
         ==================================================== */
 
-        if (loggedIn) {
+        if (user) {
 
-            loginElements.forEach(
-                function (element) {
-
-                    element.style.display =
-                        "none";
-                }
-            );
-
-
-            registerElements.forEach(
-                function (element) {
-
-                    element.style.display =
-                        "none";
-                }
-            );
-
-
-            dashboardElements.forEach(
-                function (element) {
-
-                    element.style.display =
-                        "";
-                }
-            );
-
-
-            logoutElements.forEach(
-                function (element) {
-
-                    element.style.display =
-                        "";
-                }
-            );
+            const displayName =
+                this.getUserDisplayName(user);
 
 
             /*
             ----------------------------------------------------
-            Add user information to elements
+            Hide Login
             ----------------------------------------------------
             */
+
+            if (loginLink) {
+
+                loginLink.style.display =
+                    "none";
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Show username
+            ----------------------------------------------------
+            */
+
+            if (userAccount) {
+
+                userAccount.style.display =
+                    "inline-flex";
+
+                userAccount.href =
+                    "/dashboard.html";
+
+                userAccount.setAttribute(
+                    "aria-label",
+                    "Open dashboard"
+                );
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Display username
+            ----------------------------------------------------
+            */
+
+            if (userName) {
+
+                userName.textContent =
+                    displayName;
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Generic user elements
+            ----------------------------------------------------
+            */
+
+            document
+                .querySelectorAll(
+                    "[data-user-name]"
+                )
+                .forEach(
+                    function (element) {
+
+                        element.textContent =
+                            displayName;
+                    }
+                );
+
 
             document
                 .querySelectorAll(
@@ -341,7 +352,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Store a safe reference for UI use only
+            Authentication state
             ----------------------------------------------------
             */
 
@@ -350,7 +361,6 @@ window.NextLevelAuth = {
                     "data-authenticated",
                     "true"
                 );
-
         }
 
 
@@ -360,41 +370,50 @@ window.NextLevelAuth = {
 
         else {
 
-            loginElements.forEach(
-                function (element) {
+            /*
+            ----------------------------------------------------
+            Show Login
+            ----------------------------------------------------
+            */
 
-                    element.style.display =
-                        "";
-                }
-            );
+            if (loginLink) {
 
-
-            registerElements.forEach(
-                function (element) {
-
-                    element.style.display =
-                        "";
-                }
-            );
+                loginLink.style.display =
+                    "inline-flex";
+            }
 
 
-            dashboardElements.forEach(
-                function (element) {
+            /*
+            ----------------------------------------------------
+            Hide Username
+            ----------------------------------------------------
+            */
 
-                    element.style.display =
-                        "none";
-                }
-            );
+            if (userAccount) {
+
+                userAccount.style.display =
+                    "none";
+            }
 
 
-            logoutElements.forEach(
-                function (element) {
+            /*
+            ----------------------------------------------------
+            Reset username
+            ----------------------------------------------------
+            */
 
-                    element.style.display =
-                        "none";
-                }
-            );
+            if (userName) {
 
+                userName.textContent =
+                    "User";
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Authentication state
+            ----------------------------------------------------
+            */
 
             document.documentElement
                 .setAttribute(
@@ -406,18 +425,15 @@ window.NextLevelAuth = {
 
 
     /* ========================================================
-       INITIALIZE NAVBAR
+       INITIALIZE
     ======================================================== */
 
-    async initNavbar() {
+    async init() {
 
-        if (
-            typeof window.supabaseClient ===
-            "undefined"
-        ) {
+        if (!window.supabaseClient) {
 
             console.error(
-                "Next Level Subs: Supabase client not found."
+                "NEXT LEVEL SUBS: Supabase client is missing."
             );
 
             return;
@@ -426,38 +442,38 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Immediately hide authenticated-only items
-        until session check finishes.
+        Make username navigation work
         --------------------------------------------------------
         */
 
-        document
-            .querySelectorAll(
-                "#dashboardLink, .auth-dashboard, #logoutButton, .auth-logout"
-            )
-            .forEach(
-                function (element) {
+        this.setupUsernameNavigation();
 
-                    element.style.display =
-                        "none";
-                }
-            );
 
+        /*
+        --------------------------------------------------------
+        Get current session
+        --------------------------------------------------------
+        */
 
         const session =
             await this.getSession();
 
-
         const user =
             session?.user || null;
 
+
+        /*
+        --------------------------------------------------------
+        Update navbar
+        --------------------------------------------------------
+        */
 
         this.updateNavbar(user);
 
 
         /*
         --------------------------------------------------------
-        Listen for future authentication changes
+        Listen for authentication changes
         --------------------------------------------------------
         */
 
@@ -471,15 +487,19 @@ window.NextLevelAuth = {
                     const user =
                         session?.user || null;
 
-                    window.NextLevelAuth
-                        .updateNavbar(
-                            user
-                        );
+                    setTimeout(
+                        function () {
+
+                            window.NextLevelAuth
+                                .updateNavbar(user);
+
+                        },
+                        0
+                    );
+
 
                     /*
-                    --------------------------------------------
                     Custom event
-                    --------------------------------------------
                     */
 
                     window.dispatchEvent(
@@ -487,158 +507,90 @@ window.NextLevelAuth = {
                             "nextlevelauthchange",
                             {
                                 detail: {
-                                    event,
-                                    session,
-                                    user
+                                    event: event,
+                                    session: session,
+                                    user: user
                                 }
                             }
                         )
                     );
                 }
             );
-
-
-        /*
-        --------------------------------------------------------
-        Attach logout buttons
-        --------------------------------------------------------
-        */
-
-        this.attachLogoutHandlers();
     },
 
 
     /* ========================================================
-       LOGOUT BUTTON HANDLERS
+       LOGOUT
     ======================================================== */
 
-    attachLogoutHandlers() {
+    async logout() {
 
-        document
-            .querySelectorAll(
-                "#logoutButton, .auth-logout"
-            )
-            .forEach(
-                function (button) {
+        if (!window.supabaseClient) {
 
-                    /*
-                    Avoid attaching duplicate listeners.
-                    */
+            return {
+                success: false,
+                error: new Error(
+                    "Supabase unavailable."
+                )
+            };
+        }
 
-                    if (
-                        button.dataset.authLogoutBound ===
-                        "true"
-                    ) {
-                        return;
-                    }
+        try {
 
+            const {
+                error
+            } =
+                await window.supabaseClient.auth.signOut();
 
-                    button.dataset.authLogoutBound =
-                        "true";
+            if (error) {
 
+                return {
+                    success: false,
+                    error: error
+                };
+            }
 
-                    button.addEventListener(
-                        "click",
-                        async function (event) {
+            this.updateNavbar(null);
 
-                            event.preventDefault();
+            return {
+                success: true,
+                error: null
+            };
 
+        }
+        catch (error) {
 
-                            /*
-                            --------------------------------
-                            Optional confirmation
-                            --------------------------------
-                            */
-
-                            const confirmed =
-                                window.confirm(
-                                    "Are you sure you want to log out?"
-                                );
-
-
-                            if (!confirmed) {
-                                return;
-                            }
+            return {
+                success: false,
+                error: error
+            };
+        }
+    },
 
 
-                            /*
-                            --------------------------------
-                            Loading state
-                            --------------------------------
-                            */
+    /* ========================================================
+       IS LOGGED IN
+    ======================================================== */
 
-                            const originalHTML =
-                                button.innerHTML;
+    async isLoggedIn() {
 
+        const session =
+            await this.getSession();
 
-                            button.disabled =
-                                true;
-
-
-                            button.innerHTML =
-                                `
-                                <i class="fas fa-spinner fa-spin"></i>
-                                Logging out...
-                                `;
-
-
-                            const result =
-                                await window.NextLevelAuth
-                                    .logout();
-
-
-                            if (
-                                !result.success
-                            ) {
-
-                                button.disabled =
-                                    false;
-
-                                button.innerHTML =
-                                    originalHTML;
-
-
-                                alert(
-                                    "Unable to log out. Please try again."
-                                );
-
-                                return;
-                            }
-
-
-                            /*
-                            --------------------------------
-                            Redirect home
-                            --------------------------------
-                            */
-
-                            window.location.replace(
-                                "index.html"
-                            );
-                        }
-                    );
-                }
-            );
+        return !!session;
     },
 
 
     /* ========================================================
        PROTECT PAGE
-    ========================================================
-
-       Use on dashboard.html:
-
-       await NextLevelAuth.requireAuth();
-
     ======================================================== */
 
     async requireAuth(
-        redirect = "login.html"
+        redirect = "/login.html"
     ) {
 
         const session =
             await this.getSession();
-
 
         if (
             !session ||
@@ -649,12 +601,10 @@ window.NextLevelAuth = {
                 window.location.pathname +
                 window.location.search;
 
-
             const separator =
                 redirect.includes("?")
                     ? "&"
                     : "?";
-
 
             window.location.replace(
                 redirect +
@@ -665,10 +615,8 @@ window.NextLevelAuth = {
                 )
             );
 
-
             return null;
         }
-
 
         return session.user;
     },
@@ -676,22 +624,14 @@ window.NextLevelAuth = {
 
     /* ========================================================
        REDIRECT IF ALREADY LOGGED IN
-    ========================================================
-
-       Useful for:
-
-           login.html
-           register.html
-
     ======================================================== */
 
     async redirectIfAuthenticated(
-        destination = "dashboard.html"
+        destination = "/dashboard.html"
     ) {
 
         const session =
             await this.getSession();
-
 
         if (
             session &&
@@ -702,124 +642,23 @@ window.NextLevelAuth = {
                 destination
             );
 
-
             return true;
         }
 
-
         return false;
-    },
-
-
-    /* ========================================================
-       USER DISPLAY NAME
-    ======================================================== */
-
-    getUserDisplayName(user) {
-
-        if (!user) {
-            return "User";
-        }
-
-
-        /*
-        Supabase user metadata
-        */
-
-        const metadata =
-            user.user_metadata || {};
-
-
-        const name =
-            metadata.full_name ||
-            metadata.name ||
-            metadata.display_name;
-
-
-        if (name) {
-            return name;
-        }
-
-
-        /*
-        Use email username if no name exists
-        */
-
-        if (user.email) {
-
-            return user.email
-                .split("@")[0];
-        }
-
-
-        return "User";
-    },
-
-
-    /* ========================================================
-       GET USER EMAIL
-    ======================================================== */
-
-    getUserEmail(user) {
-
-        return user?.email || "";
-    },
-
-
-    /* ========================================================
-       WAIT FOR AUTH
-    ======================================================== */
-
-    waitForAuth() {
-
-        return new Promise(
-            function (resolve) {
-
-                if (
-                    typeof window.supabaseClient ===
-                    "undefined"
-                ) {
-
-                    resolve(null);
-
-                    return;
-                }
-
-
-                window.supabaseClient.auth
-                    .getSession()
-                    .then(
-                        function ({
-                            data
-                        }) {
-
-                            resolve(
-                                data?.session ||
-                                null
-                            );
-                        }
-                    )
-                    .catch(
-                        function () {
-
-                            resolve(null);
-                        }
-                    );
-            }
-        );
     }
 };
 
 
 /* ============================================================
-   AUTOMATIC NAVBAR INITIALIZATION
+   INITIALIZE AFTER DOM
 ============================================================ */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        window.NextLevelAuth
-            .initNavbar();
+        window.NextLevelAuth.init();
+
     }
 );
