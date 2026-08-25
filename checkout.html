@@ -347,7 +347,7 @@
 
 
         .form-input:hover {
-            border-color: #9ca3af;
+            border-color: #0646b6;
         }
 
 
@@ -660,7 +660,9 @@
 
             transition: 0.3s;
         }
-
+.first_name .last_name{
+    margin-left: 10px;
+}
 
         .slider::before {
             content: "";
@@ -1357,7 +1359,7 @@
                                     <input
                                         type="text"
                                         id="firstName"
-                                        class="form-input checkout-input"
+                                        class="form-input checkout-input with-icon"
                                         placeholder="John"
                                         autocomplete="given-name"
                                         required
@@ -1385,7 +1387,7 @@
                                     <input
                                         type="text"
                                         id="lastName"
-                                        class="form-input checkout-input"
+                                        class="form-input checkout-input with-icon"
                                         placeholder="Doe"
                                         autocomplete="family-name"
                                         required
@@ -1848,7 +1850,7 @@
                             <div class="form-group mb-0">
 
                                 <label
-                                    class="form-label"
+                                    class="form-label first_name"
                                     for="paymentReference"
                                 >
                                     Transaction ID / Payment Reference
@@ -2371,7 +2373,6 @@
 
 .checkout-logo .logo-text-item {
     font-size: 0.68rem !important;
-    font-weight: 800;
 
     line-height: 1.05;
 }
@@ -4596,9 +4597,9 @@
         font-size: 0.86rem;
     }
 
-    .checkout-input.with-icon {
+    /* .checkout-input.with-icon {
         padding-left: 39px;
-    }
+    } */
 
     .checkout-input-icon {
         left: 13px;
