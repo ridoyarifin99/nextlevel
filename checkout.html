@@ -1586,190 +1586,222 @@
 
 
 
-                        <!-- PAYMENT METHODS -->
-
-                        <div class="payment-method-grid">
-
-
-                            <!-- BKASH -->
-
-                            <button
-                                type="button"
-                                class="payment-method rounded-xl p-4 text-center selected"
-                                data-method="bkash"
-                            >
-
-                                <div class="payment-method-icon pink">
-
-                                    <i class="fas fa-mobile-screen-button"></i>
-
-                                </div>
-
-                                <div class="payment-method-content">
-
-                                    <h3>
-                                        bKash
-                                    </h3>
-
-                                    <p>
-                                        Send Money
-                                    </p>
-
-                                </div>
-
-                                <div class="payment-selected-check">
-
-                                    <i class="fas fa-check"></i>
-
-                                </div>
-
-                            </button>
-
-
-
-                            <!-- NAGAD -->
-
-                            <button
-                                type="button"
-                                class="payment-method rounded-xl p-4 text-center"
-                                data-method="nagad"
-                            >
-
-                                <div class="payment-method-icon orange">
-
-                                    <i class="fas fa-wallet"></i>
-
-                                </div>
-
-                                <div class="payment-method-content">
-
-                                    <h3>
-                                        Nagad
-                                    </h3>
-
-                                    <p>
-                                        Send Money
-                                    </p>
-
-                                </div>
-
-                                <div class="payment-selected-check">
-
-                                    <i class="fas fa-check"></i>
-
-                                </div>
-
-                            </button>
-
-
-
-                            <!-- ROCKET -->
-
-                            <button
-                                type="button"
-                                class="payment-method rounded-xl p-4 text-center"
-                                data-method="rocket"
-                            >
-
-                                <div class="payment-method-icon purple">
-
-                                    <i class="fas fa-mobile-screen-button"></i>
-
-                                </div>
-
-                                <div class="payment-method-content">
-
-                                    <h3>
-                                        Rocket
-                                    </h3>
-
-                                    <p>
-                                        Send Money
-                                    </p>
-
-                                </div>
-
-                                <div class="payment-selected-check">
-
-                                    <i class="fas fa-check"></i>
-
-                                </div>
-
-                            </button>
-
-
-
-                            <!-- UPAY -->
-
-                            <button
-                                type="button"
-                                class="payment-method rounded-xl p-4 text-center"
-                                data-method="upay"
-                            >
-
-                                <div class="payment-method-icon green">
-
-                                    <i class="fas fa-money-bill-transfer"></i>
-
-                                </div>
-
-                                <div class="payment-method-content">
-
-                                    <h3>
-                                        Upay
-                                    </h3>
-
-                                    <p>
-                                        Send Money
-                                    </p>
-
-                                </div>
-
-                                <div class="payment-selected-check">
-
-                                    <i class="fas fa-check"></i>
-
-                                </div>
-
-                            </button>
-
-
-
-                            <!-- BANK -->
-
-                            <button
-                                type="button"
-                                class="payment-method payment-method-bank rounded-xl p-4 text-center"
-                                data-method="bank_transfer"
-                            >
-
-                                <div class="payment-method-icon blue">
-
-                                    <i class="fas fa-building-columns"></i>
-
-                                </div>
-
-                                <div class="payment-method-content">
-
-                                    <h3>
-                                        Bank Transfer
-                                    </h3>
-
-                                    <p>
-                                        Direct bank transfer
-                                    </p>
-
-                                </div>
-
-                                <div class="payment-selected-check">
-
-                                    <i class="fas fa-check"></i>
-
-                                </div>
-
-                            </button>
-
-                        </div>
+<!-- =========================================================
+     PAYMENT METHODS
+========================================================= -->
+
+<div class="payment-method-grid">
+
+    <!-- =====================================================
+         BKASH
+    ====================================================== -->
+    <button
+        type="button"
+        class="payment-method group rounded-2xl p-4 text-center"
+        data-method="bkash"
+    >
+
+        <!-- Logo -->
+        <div
+            class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-pink-50 ring-1 ring-pink-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-pink-100"
+        >
+            <img
+                src="/images/payment/bkash.png"
+                alt="bKash"
+                class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"
+            >
+        </div>
+
+        <!-- Content -->
+        <div class="payment-method-content">
+            <h3 class="font-semibold leading-tight text-gray-900">
+                bKash
+            </h3>
+
+            <p class="mt-1 text-sm leading-5 text-gray-500">
+                Send Money
+            </p>
+        </div>
+
+        <!-- Selected Check -->
+        <div class="payment-selected-check mt-3 flex justify-center">
+            <span
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300"
+            >
+                ✓
+            </span>
+        </div>
+
+    </button>
+
+
+    <!-- =====================================================
+         NAGAD
+    ====================================================== -->
+    <button
+        type="button"
+        class="payment-method group rounded-2xl p-4 text-center"
+        data-method="nagad"
+    >
+
+        <!-- Logo -->
+        <div
+            class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-orange-50 ring-1 ring-orange-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-orange-100"
+        >
+            <img
+                src="/images/payment/nagad.svg"
+                alt="Nagad"
+                class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"
+            >
+        </div>
+
+        <!-- Content -->
+        <div class="payment-method-content">
+            <h3 class="font-semibold leading-tight text-gray-900">
+                Nagad
+            </h3>
+
+            <p class="mt-1 text-sm leading-5 text-gray-500">
+                Send Money
+            </p>
+        </div>
+
+        <!-- Selected Check -->
+        <div class="payment-selected-check mt-3 flex justify-center">
+            <span
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300"
+            >
+                ✓
+            </span>
+        </div>
+
+    </button>
+
+
+    <!-- =====================================================
+         ROCKET
+    ====================================================== -->
+    <button
+        type="button"
+        class="payment-method group rounded-2xl p-4 text-center"
+        data-method="rocket"
+    >
+
+        <!-- Logo -->
+        <div
+            class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-purple-50 ring-1 ring-purple-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-purple-100"
+        >
+            <img
+                src="/images/payment/rocket.png"
+                alt="Rocket"
+                class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"
+            >
+        </div>
+
+        <!-- Content -->
+        <div class="payment-method-content">
+            <h3 class="font-semibold leading-tight text-gray-900">
+                Rocket
+            </h3>
+
+            <p class="mt-1 text-sm leading-5 text-gray-500">
+                Send Money
+            </p>
+        </div>
+
+        <!-- Selected Check -->
+        <div class="payment-selected-check mt-3 flex justify-center">
+            <span
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300"
+            >
+                ✓
+            </span>
+        </div>
+
+    </button>
+
+
+    <!-- =====================================================
+         UPAY
+    ====================================================== -->
+    <button
+        type="button"
+        class="payment-method group rounded-2xl p-4 text-center"
+        data-method="upay"
+    >
+
+        <!-- Logo -->
+        <div
+            class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-green-50 ring-1 ring-green-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-green-100"
+        >
+            <img
+                src="/images/payment/upay.png"
+                alt="Upay"
+                class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"
+            >
+        </div>
+
+        <!-- Content -->
+        <div class="payment-method-content">
+            <h3 class="font-semibold leading-tight text-gray-900">
+                Upay
+            </h3>
+
+            <p class="mt-1 text-sm leading-5 text-gray-500">
+                Send Money
+            </p>
+        </div>
+
+        <!-- Selected Check -->
+        <div class="payment-selected-check mt-3 flex justify-center">
+            <span
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300"
+            >
+                ✓
+            </span>
+        </div>
+
+    </button>
+
+
+   <!-- BANK TRANSFER -->
+<button
+    type="button"
+    class="payment-method payment-method-bank group rounded-2xl p-4 text-center"
+    data-method="bank_transfer"
+>
+
+    <div
+        class="payment-method-icon mx-auto mb-3 flex !h-16 !w-24 items-center justify-center rounded-2xl bg-slate-50 ring-1 ring-slate-200 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-blue-50 group-hover:ring-blue-200"
+    >
+        <img
+            src="/images/payment/city_bank.png"
+            alt="City Bank"
+            class="!h-14 !w-auto !max-w-[110px] object-contain transition-transform duration-300 ease-out group-hover:scale-110"
+        >
+    </div>
+
+    <div class="payment-method-content">
+        <h3 class="font-semibold leading-tight text-gray-900">
+            Bank Transfer
+        </h3>
+
+        <p class="mt-1 text-sm leading-5 text-gray-500">
+            Direct bank transfer
+        </p>
+    </div>
+
+    <div class="payment-selected-check mt-3 flex justify-center">
+        <span
+            class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20"
+        >
+            ✓
+        </span>
+    </div>
+
+</button>
+
+</div>
 
 
 
