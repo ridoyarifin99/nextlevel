@@ -119,16 +119,16 @@
 >
 
     <!-- =====================================================
-         AUTH
-         Logged out  → Login
-         Logged in   → Username
+         AUTHENTICATION
     ====================================================== -->
 
+    <!-- LOGGED OUT -->
     <a
         id="loginLink"
         class="nav-link nls-auth-link"
         href="/login.html?redirect=/"
         aria-label="Login"
+        onclick="window.location.href='/login.html?redirect=/'; return false;"
     >
         <span class="nls-auth-text">
             Login
@@ -136,18 +136,21 @@
     </a>
 
 
-<a
-    id="userAccountArea"
-    class="nav-link nls-auth-link nls-user-link"
-    href="/dashboard.html"
-    aria-label="Open dashboard"
-    style="display: none;"
->
-    <span
-        id="navUserName"
-        class="nls-auth-text"
-    >User</span>
-</a>
+    <!-- LOGGED IN -->
+    <a
+        id="userAccountArea"
+        class="nav-link nls-auth-link nls-user-link"
+        href="/dashboard.html"
+        aria-label="Open dashboard"
+        style="display: none;"
+    >
+        <span
+            id="navUserName"
+            class="nls-auth-text"
+        >
+            User
+        </span>
+    </a>
 
 
     <!-- =====================================================
@@ -162,7 +165,6 @@
         Best Sellers
     </a>
 
-
     <a
         href="/streaming"
         class="nav-link"
@@ -170,7 +172,6 @@
     >
         Streaming
     </a>
-
 
     <a
         href="/music"
@@ -180,7 +181,6 @@
         Music
     </a>
 
-
     <a
         href="/storage"
         class="nav-link"
@@ -188,7 +188,6 @@
     >
         Cloud Storage
     </a>
-
 
     <a
         href="/vpn"
@@ -198,15 +197,13 @@
         VPN
     </a>
 
-
     <a
         href="/aiDesign"
         class="nav-link"
         data-section="aiDesign"
     >
-        Ai & Design
+        AI &amp; Design
     </a>
-
 
     <a
         href="/combos"
@@ -216,7 +213,6 @@
         Combos
     </a>
 
-
     <a
         href="/education"
         class="nav-link"
@@ -224,7 +220,6 @@
     >
         Education
     </a>
-
 
     <a
         href="/adult"

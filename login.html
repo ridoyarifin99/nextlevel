@@ -34,30 +34,16 @@
 
     <style>
 
-        /* ============================================================
-           ROOT
-        ============================================================ */
-
         :root {
             --primary-color: #6a11cb;
             --primary-dark: #4a0699;
             --primary-light: #9d4edd;
             --secondary-color: #2575fc;
-            --accent-color: #E74C3C;
-
             --text-dark: #2C3E50;
             --text-light: #7F8C8D;
-
-            --border-color: #E5E7EB;
-
             --transition:
                 all .3s cubic-bezier(.4, 0, .2, 1);
         }
-
-
-        /* ============================================================
-           BASE
-        ============================================================ */
 
         * {
             box-sizing: border-box;
@@ -68,6 +54,7 @@
         }
 
         body {
+
             margin: 0;
             min-height: 100vh;
 
@@ -103,12 +90,12 @@
             overflow-x: hidden;
         }
 
-
         /* ============================================================
-           ANIMATED BACKGROUND
+           BACKGROUND
         ============================================================ */
 
         .background-orb {
+
             position: fixed;
 
             width: 420px;
@@ -129,6 +116,7 @@
         }
 
         .orb-one {
+
             top: -160px;
             left: -140px;
 
@@ -141,6 +129,7 @@
         }
 
         .orb-two {
+
             right: -160px;
             bottom: -160px;
 
@@ -170,14 +159,13 @@
             }
         }
 
-
         /* ============================================================
            PAGE
         ============================================================ */
 
         .auth-page {
-            position: relative;
 
+            position: relative;
             z-index: 1;
 
             min-height: 100vh;
@@ -192,6 +180,7 @@
         }
 
         .auth-wrapper {
+
             width: 100%;
 
             max-width: 1050px;
@@ -207,12 +196,12 @@
             align-items: center;
         }
 
-
         /* ============================================================
-           BRAND PANEL
+           BRAND
         ============================================================ */
 
         .brand-panel {
+
             padding: 30px;
 
             animation:
@@ -220,6 +209,7 @@
         }
 
         .brand-logo {
+
             display: inline-flex;
 
             align-items: center;
@@ -232,6 +222,7 @@
         }
 
         .logo-image {
+
             width: 52px;
             height: 52px;
 
@@ -247,6 +238,7 @@
         }
 
         .logo-text-container {
+
             position: relative;
 
             width: 150px;
@@ -256,6 +248,7 @@
         }
 
         .logo-text-item {
+
             position: absolute;
 
             inset: 0;
@@ -281,6 +274,7 @@
                 );
 
             -webkit-background-clip: text;
+
             background-clip: text;
 
             -webkit-text-fill-color: transparent;
@@ -324,6 +318,7 @@
         }
 
         .brand-title {
+
             margin-top: 45px;
 
             max-width: 600px;
@@ -341,6 +336,7 @@
         }
 
         .brand-title span {
+
             background:
                 linear-gradient(
                     90deg,
@@ -349,12 +345,14 @@
                 );
 
             -webkit-background-clip: text;
+
             background-clip: text;
 
             -webkit-text-fill-color: transparent;
         }
 
         .brand-description {
+
             max-width: 540px;
 
             margin-top: 20px;
@@ -367,6 +365,7 @@
         }
 
         .feature-list {
+
             display: grid;
 
             grid-template-columns:
@@ -380,6 +379,7 @@
         }
 
         .feature-item {
+
             display: flex;
 
             align-items: center;
@@ -413,6 +413,7 @@
         }
 
         .feature-item:hover {
+
             transform:
                 translateY(-3px);
 
@@ -422,6 +423,7 @@
         }
 
         .feature-icon {
+
             width: 34px;
             height: 34px;
 
@@ -449,12 +451,12 @@
                 rgba(106, 17, 203, .20);
         }
 
-
         /* ============================================================
            AUTH CARD
         ============================================================ */
 
         .auth-card {
+
             position: relative;
 
             overflow: hidden;
@@ -485,6 +487,7 @@
         }
 
         .auth-card::before {
+
             content: "";
 
             position: absolute;
@@ -521,6 +524,9 @@
         }
 
         .auth-heading {
+
+            margin: 0;
+
             font-size: 27px;
 
             font-weight: 800;
@@ -529,19 +535,20 @@
         }
 
         .auth-subheading {
-            margin-top: 6px;
+
+            margin: 6px 0 0;
 
             font-size: 14px;
 
             color: var(--text-light);
         }
 
-
         /* ============================================================
            ALERT
         ============================================================ */
 
         .alert {
+
             display: none;
 
             align-items: flex-start;
@@ -564,6 +571,7 @@
         }
 
         .alert.error {
+
             color: #991b1b;
 
             background: #fef2f2;
@@ -574,6 +582,7 @@
         }
 
         .alert.success {
+
             color: #166534;
 
             background: #f0fdf4;
@@ -582,7 +591,6 @@
                 1px solid
                 #bbf7d0;
         }
-
 
         /* ============================================================
            FORM
@@ -593,6 +601,7 @@
         }
 
         .form-label {
+
             display: block;
 
             margin-bottom: 8px;
@@ -609,6 +618,7 @@
         }
 
         .input-icon {
+
             position: absolute;
 
             left: 15px;
@@ -626,6 +636,7 @@
         }
 
         .form-input {
+
             width: 100%;
 
             height: 52px;
@@ -664,6 +675,7 @@
         }
 
         .form-input:focus {
+
             border-color:
                 var(--primary-color);
 
@@ -676,11 +688,13 @@
 
         .input-wrapper:focus-within
         .input-icon {
+
             color:
                 var(--primary-color);
         }
 
         .password-toggle {
+
             position: absolute;
 
             right: 13px;
@@ -691,7 +705,6 @@
                 translateY(-50%);
 
             width: 34px;
-
             height: 34px;
 
             border: 0;
@@ -708,18 +721,19 @@
         }
 
         .password-toggle:hover {
+
             background: #f1f5f9;
 
             color:
                 var(--primary-color);
         }
 
-
         /* ============================================================
            OPTIONS
         ============================================================ */
 
         .form-options {
+
             display: flex;
 
             align-items: center;
@@ -732,6 +746,7 @@
         }
 
         .remember {
+
             display: inline-flex;
 
             align-items: center;
@@ -746,8 +761,8 @@
         }
 
         .remember input {
-            width: 15px;
 
+            width: 15px;
             height: 15px;
 
             accent-color:
@@ -757,6 +772,7 @@
         }
 
         .forgot-link {
+
             color:
                 var(--primary-color);
 
@@ -770,16 +786,17 @@
         }
 
         .forgot-link:hover {
+
             color:
                 var(--secondary-color);
         }
 
-
         /* ============================================================
-           PRIMARY BUTTON
+           BUTTON
         ============================================================ */
 
         .submit-button {
+
             width: 100%;
 
             height: 52px;
@@ -825,6 +842,7 @@
         }
 
         .submit-button::before {
+
             content: "";
 
             position: absolute;
@@ -855,6 +873,7 @@
         }
 
         .submit-button:hover {
+
             transform:
                 translateY(-2px);
 
@@ -864,12 +883,14 @@
         }
 
         .submit-button:active {
+
             transform:
                 translateY(0)
                 scale(.99);
         }
 
         .submit-button:disabled {
+
             opacity: .7;
 
             cursor:
@@ -879,6 +900,7 @@
         }
 
         .button-spinner {
+
             width: 18px;
             height: 18px;
 
@@ -901,12 +923,12 @@
             }
         }
 
-
         /* ============================================================
            DIVIDER
         ============================================================ */
 
         .divider {
+
             display: flex;
 
             align-items: center;
@@ -927,6 +949,7 @@
 
         .divider::before,
         .divider::after {
+
             content: "";
 
             flex: 1;
@@ -937,12 +960,12 @@
                 #e2e8f0;
         }
 
-
         /* ============================================================
-           REGISTER LINK
+           REGISTER
         ============================================================ */
 
         .switch-auth {
+
             text-align: center;
 
             color: #64748b;
@@ -951,6 +974,7 @@
         }
 
         .switch-auth a {
+
             color:
                 var(--primary-color);
 
@@ -964,16 +988,17 @@
         }
 
         .switch-auth a:hover {
+
             color:
                 var(--secondary-color);
         }
 
-
         /* ============================================================
-           SECURITY NOTE
+           SECURITY
         ============================================================ */
 
         .security-note {
+
             display: flex;
 
             align-items: center;
@@ -993,12 +1018,12 @@
             color: #22c55e;
         }
 
-
         /* ============================================================
-           LOADING OVERLAY
+           LOADER
         ============================================================ */
 
         .page-loader {
+
             position: fixed;
 
             inset: 0;
@@ -1027,6 +1052,7 @@
         }
 
         .page-loader.hidden {
+
             opacity: 0;
 
             visibility: hidden;
@@ -1039,8 +1065,8 @@
         }
 
         .loader-spinner {
-            width: 42px;
 
+            width: 42px;
             height: 42px;
 
             margin: auto;
@@ -1062,6 +1088,7 @@
         }
 
         .loader-text {
+
             margin-top: 14px;
 
             color: #64748b;
@@ -1071,7 +1098,6 @@
             font-weight: 600;
         }
 
-
         /* ============================================================
            ANIMATION
         ============================================================ */
@@ -1079,6 +1105,7 @@
         @keyframes fadeSlideUp {
 
             from {
+
                 opacity: 0;
 
                 transform:
@@ -1086,13 +1113,13 @@
             }
 
             to {
+
                 opacity: 1;
 
                 transform:
                     translateY(0);
             }
         }
-
 
         /* ============================================================
            MOBILE
@@ -1101,12 +1128,14 @@
         @media (max-width: 850px) {
 
             .auth-wrapper {
+
                 max-width: 520px;
 
                 display: block;
             }
 
             .brand-panel {
+
                 text-align: center;
 
                 padding:
@@ -1118,6 +1147,7 @@
             }
 
             .brand-title {
+
                 margin-top: 25px;
 
                 font-size: 2.35rem;
@@ -1126,6 +1156,7 @@
             }
 
             .brand-description {
+
                 margin-left: auto;
 
                 margin-right: auto;
@@ -1134,6 +1165,7 @@
             }
 
             .feature-list {
+
                 max-width: 450px;
 
                 margin-left: auto;
@@ -1142,20 +1174,22 @@
             }
         }
 
-
         @media (max-width: 520px) {
 
             .auth-page {
+
                 padding:
                     18px 12px;
             }
 
             .brand-panel {
+
                 padding:
                     5px 8px 20px;
             }
 
             .brand-title {
+
                 font-size: 2rem;
 
                 margin-top: 20px;
@@ -1166,6 +1200,7 @@
             }
 
             .feature-list {
+
                 grid-template-columns:
                     repeat(2, minmax(0, 1fr));
 
@@ -1175,6 +1210,7 @@
             }
 
             .feature-item {
+
                 padding: 9px;
 
                 font-size: 10px;
@@ -1184,14 +1220,15 @@
             }
 
             .feature-icon {
-                width: 28px;
 
+                width: 28px;
                 height: 28px;
 
                 font-size: 11px;
             }
 
             .auth-card {
+
                 padding:
                     24px 18px;
 
@@ -1207,11 +1244,6 @@
                 height: 50px;
             }
         }
-
-
-        /* ============================================================
-           REDUCED MOTION
-        ============================================================ */
 
         @media (prefers-reduced-motion: reduce) {
 
@@ -1236,14 +1268,14 @@
     </style>
 
 </head>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./js/supabase-config.js"></script>
-<script src="./js/auth.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script src="/js/auth.js"></script>
 <body>
 
     <!-- ============================================================
-         ANIMATED BACKGROUND
+         BACKGROUND
     ============================================================ -->
 
     <div class="background-orb orb-one"></div>
@@ -1252,7 +1284,7 @@
 
 
     <!-- ============================================================
-         PAGE LOADER
+         LOADER
     ============================================================ -->
 
     <div
@@ -1275,7 +1307,7 @@
 
 
     <!-- ============================================================
-         AUTH PAGE
+         LOGIN PAGE
     ============================================================ -->
 
     <main class="auth-page">
@@ -1284,13 +1316,13 @@
 
 
             <!-- ====================================================
-                 BRAND PANEL
+                 BRAND
             ==================================================== -->
 
             <section class="brand-panel">
 
                 <a
-                    href="index.html"
+                    href="/"
                     class="brand-logo"
                     aria-label="Next Level Subs Home"
                 >
@@ -1403,22 +1435,16 @@
 
             <section class="auth-card">
 
-                <div>
+                <h2 class="auth-heading">
+                    Welcome back 👋
+                </h2>
 
-                    <h2 class="auth-heading">
-                        Welcome back 👋
-                    </h2>
-
-                    <p class="auth-subheading">
-                        Sign in to continue to your account.
-                    </p>
-
-                </div>
+                <p class="auth-subheading">
+                    Sign in to continue to your account.
+                </p>
 
 
-                <!-- =================================================
-                     ALERT
-                ================================================= -->
+                <!-- ALERT -->
 
                 <div
                     id="alert"
@@ -1437,15 +1463,12 @@
                 </div>
 
 
-                <!-- =================================================
-                     LOGIN FORM
-                ================================================= -->
+                <!-- LOGIN FORM -->
 
                 <form
                     id="loginForm"
                     novalidate
                 >
-
 
                     <!-- EMAIL -->
 
@@ -1458,13 +1481,11 @@
                             Email Address
                         </label>
 
-
                         <div class="input-wrapper">
 
                             <i
                                 class="fas fa-envelope input-icon"
                             ></i>
-
 
                             <input
                                 id="email"
@@ -1493,13 +1514,11 @@
                             Password
                         </label>
 
-
                         <div class="input-wrapper">
 
                             <i
                                 class="fas fa-lock input-icon"
                             ></i>
-
 
                             <input
                                 id="password"
@@ -1511,7 +1530,6 @@
                                 maxlength="128"
                                 required
                             >
-
 
                             <button
                                 type="button"
@@ -1549,7 +1567,7 @@
 
 
                         <a
-                            href="reset-password.html"
+                            href="/reset-password.html"
                             class="forgot-link"
                         >
                             Forgot password?
@@ -1558,7 +1576,7 @@
                     </div>
 
 
-                    <!-- SUBMIT -->
+                    <!-- LOGIN BUTTON -->
 
                     <button
                         id="loginButton"
@@ -1579,9 +1597,7 @@
                 </form>
 
 
-                <!-- =================================================
-                     DIVIDER
-                ================================================= -->
+                <!-- DIVIDER -->
 
                 <div class="divider">
                     Account
@@ -1594,7 +1610,7 @@
 
                     Don't have an account?
 
-                    <a href="register.html">
+                    <a href="/register.html">
                         Create one
                     </a>
 
@@ -1605,7 +1621,7 @@
 
                 <div class="security-note">
 
-                    <i class="fas fa-shield-check"></i>
+                    <i class="fas fa-shield-halved"></i>
 
                     Your account is securely protected
 
@@ -1620,18 +1636,24 @@
 
     <!-- ============================================================
          SUPABASE
+         LOAD ONLY ONCE
     ============================================================ -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
     <!-- ============================================================
-         YOUR SUPABASE CONFIG
+         SUPABASE CONFIG
     ============================================================ -->
 
     <script src="./js/supabase-config.js"></script>
+
+
+    <!-- ============================================================
+         GLOBAL AUTH
+    ============================================================ -->
+
+    <script src="./js/auth.js"></script>
 
 
     <!-- ============================================================
@@ -1644,7 +1666,7 @@
 
 
         /* ============================================================
-           DOM ELEMENTS
+           DOM
         ============================================================ */
 
         const pageLoader =
@@ -1685,20 +1707,34 @@
 
 
         /* ============================================================
+           CONSTANTS
+        ============================================================ */
+
+        const REMEMBER_EMAIL_KEY =
+            "nextlevelsubs_remember_email";
+
+
+        /* ============================================================
            HELPERS
         ============================================================ */
 
         function showLoader() {
 
-            pageLoader.classList.remove("hidden");
+            if (!pageLoader) {
+                return;
+            }
 
+            pageLoader.classList.remove("hidden");
         }
 
 
         function hideLoader() {
 
-            pageLoader.classList.add("hidden");
+            if (!pageLoader) {
+                return;
+            }
 
+            pageLoader.classList.add("hidden");
         }
 
 
@@ -1707,38 +1743,45 @@
             type = "error"
         ) {
 
+            if (!alertBox) {
+                return;
+            }
+
             alertBox.className =
                 "alert show " + type;
-
 
             alertIcon.className =
                 type === "success"
                     ? "fas fa-circle-check"
                     : "fas fa-circle-exclamation";
 
-
             alertMessage.textContent =
                 message;
-
         }
 
 
         function hideAlert() {
+
+            if (!alertBox) {
+                return;
+            }
 
             alertBox.className =
                 "alert";
 
             alertMessage.textContent =
                 "";
-
         }
 
 
         function setLoading(loading) {
 
+            if (!loginButton || !buttonContent) {
+                return;
+            }
+
             loginButton.disabled =
                 loading;
-
 
             if (loading) {
 
@@ -1753,9 +1796,7 @@
                     <i class="fas fa-right-to-bracket"></i>
                     Sign In
                 `;
-
             }
-
         }
 
 
@@ -1763,7 +1804,28 @@
 
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
                 .test(email);
+        }
 
+
+        function getRedirectUrl() {
+
+            const params =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+            const redirect =
+                params.get("redirect");
+
+            if (
+                redirect &&
+                redirect.startsWith("/")
+            ) {
+
+                return redirect;
+            }
+
+            return "/dashboard.html";
         }
 
 
@@ -1771,39 +1833,38 @@
            PASSWORD TOGGLE
         ============================================================ */
 
-        passwordToggle.addEventListener(
-            "click",
-            function () {
+        if (passwordToggle) {
 
-                const isPassword =
-                    passwordInput.type === "password";
+            passwordToggle.addEventListener(
+                "click",
+                function () {
 
+                    const isPassword =
+                        passwordInput.type === "password";
 
-                passwordInput.type =
-                    isPassword
-                        ? "text"
-                        : "password";
+                    passwordInput.type =
+                        isPassword
+                            ? "text"
+                            : "password";
 
+                    passwordToggleIcon.className =
+                        isPassword
+                            ? "fas fa-eye-slash"
+                            : "fas fa-eye";
 
-                passwordToggleIcon.className =
-                    isPassword
-                        ? "fas fa-eye-slash"
-                        : "fas fa-eye";
-
-
-                passwordToggle.setAttribute(
-                    "aria-label",
-                    isPassword
-                        ? "Hide password"
-                        : "Show password"
-                );
-
-            }
-        );
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        isPassword
+                            ? "Hide password"
+                            : "Show password"
+                    );
+                }
+            );
+        }
 
 
         /* ============================================================
-           REMEMBER ME
+           REMEMBER EMAIL
         ============================================================ */
 
         function loadRememberedEmail() {
@@ -1812,9 +1873,8 @@
 
                 const savedEmail =
                     localStorage.getItem(
-                        "nextlevelsubs_remember_email"
+                        REMEMBER_EMAIL_KEY
                     );
-
 
                 if (savedEmail) {
 
@@ -1823,7 +1883,6 @@
 
                     rememberMe.checked =
                         true;
-
                 }
 
             }
@@ -1833,9 +1892,7 @@
                     "Unable to load remembered email:",
                     error
                 );
-
             }
-
         }
 
 
@@ -1846,17 +1903,15 @@
                 if (rememberMe.checked) {
 
                     localStorage.setItem(
-                        "nextlevelsubs_remember_email",
+                        REMEMBER_EMAIL_KEY,
                         email
                     );
 
-                }
-                else {
+                } else {
 
                     localStorage.removeItem(
-                        "nextlevelsubs_remember_email"
+                        REMEMBER_EMAIL_KEY
                     );
-
                 }
 
             }
@@ -1866,9 +1921,29 @@
                     "Unable to save remembered email:",
                     error
                 );
+            }
+        }
 
+
+        /* ============================================================
+           CHECK SUPABASE
+        ============================================================ */
+
+        function getSupabaseClient() {
+
+            if (
+                window.supabaseClient &&
+                window.supabaseClient.auth
+            ) {
+
+                return window.supabaseClient;
             }
 
+            console.error(
+                "NEXT LEVEL SUBS: window.supabaseClient is missing."
+            );
+
+            return null;
         }
 
 
@@ -1884,19 +1959,17 @@
 
                 hideAlert();
 
-
                 const email =
                     emailInput.value
                         .trim()
                         .toLowerCase();
-
 
                 const password =
                     passwordInput.value;
 
 
                 /* ----------------------------------------------------
-                   VALIDATION
+                   EMAIL VALIDATION
                 ---------------------------------------------------- */
 
                 if (!email) {
@@ -1908,7 +1981,6 @@
                     emailInput.focus();
 
                     return;
-
                 }
 
 
@@ -1921,9 +1993,12 @@
                     emailInput.focus();
 
                     return;
-
                 }
 
+
+                /* ----------------------------------------------------
+                   PASSWORD VALIDATION
+                ---------------------------------------------------- */
 
                 if (!password) {
 
@@ -1934,7 +2009,6 @@
                     passwordInput.focus();
 
                     return;
-
                 }
 
 
@@ -1947,25 +2021,23 @@
                     passwordInput.focus();
 
                     return;
-
                 }
 
 
                 /* ----------------------------------------------------
-                   SUPABASE CHECK
+                   SUPABASE
                 ---------------------------------------------------- */
 
-                if (
-                    typeof supabaseClient ===
-                    "undefined"
-                ) {
+                const client =
+                    getSupabaseClient();
+
+                if (!client) {
 
                     showAlert(
                         "Authentication service is unavailable. Please try again later."
                     );
 
                     return;
-
                 }
 
 
@@ -1975,26 +2047,21 @@
                 try {
 
                     /* ------------------------------------------------
-                       SUPABASE LOGIN
+                       SIGN IN
                     ------------------------------------------------ */
 
                     const {
                         data,
                         error
                     } =
-                        await supabaseClient.auth
-                            .signInWithPassword({
-
-                                email,
-                                password
-
-                            });
+                        await client.auth.signInWithPassword({
+                            email: email,
+                            password: password
+                        });
 
 
                     if (error) {
-
                         throw error;
-
                     }
 
 
@@ -2003,12 +2070,11 @@
                         throw new Error(
                             "Login was unsuccessful."
                         );
-
                     }
 
 
                     /* ------------------------------------------------
-                       REMEMBER EMAIL
+                       SAVE EMAIL
                     ------------------------------------------------ */
 
                     saveRememberedEmail(email);
@@ -2025,27 +2091,36 @@
 
 
                     /*
-                     * Give Supabase a moment to persist
-                     * the session before dashboard loads.
+                     * Give Supabase enough time to finish
+                     * persisting the session.
                      */
 
-                    setTimeout(
-                        function () {
-
-                            window.location.replace(
-                                "dashboard.html"
+                    await new Promise(
+                        function (resolve) {
+                            setTimeout(
+                                resolve,
+                                300
                             );
+                        }
+                    );
 
-                        },
-                        500
+
+                    /* ------------------------------------------------
+                       REDIRECT
+                    ------------------------------------------------ */
+
+                    const redirect =
+                        getRedirectUrl();
+
+                    window.location.replace(
+                        redirect
                     );
 
                 }
-
                 catch (error) {
 
                     console.error(
-                        "Login error:",
+                        "NEXT LEVEL SUBS LOGIN ERROR:",
                         error
                     );
 
@@ -2061,7 +2136,7 @@
 
 
                     /* ------------------------------------------------
-                       SUPABASE ERROR MESSAGES
+                       ERROR HANDLING
                     ------------------------------------------------ */
 
                     if (
@@ -2075,7 +2150,6 @@
 
                     }
 
-
                     else if (
                         errorMessage.includes(
                             "email not confirmed"
@@ -2086,7 +2160,6 @@
                             "Please confirm your email address before signing in.";
 
                     }
-
 
                     else if (
                         errorMessage.includes(
@@ -2099,19 +2172,6 @@
 
                     }
 
-
-                    else if (
-                        errorMessage.includes(
-                            "user not found"
-                        )
-                    ) {
-
-                        message =
-                            "No account was found with this email address.";
-
-                    }
-
-
                     else if (
                         errorMessage.includes(
                             "network"
@@ -2122,7 +2182,6 @@
                             "Network error. Please check your internet connection and try again.";
 
                     }
-
 
                     else if (
                         errorMessage.includes(
@@ -2135,11 +2194,21 @@
 
                     }
 
+                    else if (
+                        errorMessage.includes(
+                            "failed to fetch"
+                        )
+                    ) {
+
+                        message =
+                            "Unable to connect to the authentication server. Please check your internet connection.";
+
+                    }
+
 
                     showAlert(message);
 
                     setLoading(false);
-
                 }
 
             }
@@ -2147,149 +2216,70 @@
 
 
         /* ============================================================
-           SESSION CHECK
+           CHECK EXISTING SESSION
         ============================================================ */
 
         async function checkExistingSession() {
 
+            const client =
+                getSupabaseClient();
+
+
+            if (!client) {
+
+                hideLoader();
+
+                return;
+            }
+
+
             try {
-
-                /*
-                 * Make sure Supabase is available.
-                 */
-
-                if (
-                    typeof supabaseClient ===
-                    "undefined"
-                ) {
-
-                    console.error(
-                        "supabaseClient is not defined."
-                    );
-
-                    hideLoader();
-
-                    return;
-
-                }
-
-
-                /*
-                 * Get current session.
-                 */
 
                 const {
                     data,
                     error
                 } =
-                    await supabaseClient.auth
-                        .getSession();
+                    await client.auth.getSession();
 
 
                 if (error) {
-
                     throw error;
-
                 }
 
 
                 /*
-                 * If already logged in,
-                 * don't show the login page.
+                 * Already logged in.
                  */
 
                 if (
                     data?.session?.user
                 ) {
 
+                    const redirect =
+                        getRedirectUrl();
+
                     window.location.replace(
-                        "dashboard.html"
+                        redirect
                     );
 
                     return;
-
                 }
 
             }
-
             catch (error) {
 
                 console.error(
-                    "Session check error:",
+                    "NEXT LEVEL SUBS: Session check error:",
                     error
                 );
-
             }
 
 
             /*
              * No active session.
-             * Show login page.
              */
 
             hideLoader();
-
-        }
-
-
-        /* ============================================================
-           SUPABASE AUTH STATE LISTENER
-        ============================================================ */
-
-        /*
-         * This listens for changes to the authentication state.
-         *
-         * Examples:
-         *
-         * SIGNED_IN
-         * SIGNED_OUT
-         * TOKEN_REFRESHED
-         *
-         */
-
-        function setupAuthListener() {
-
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
-
-                return;
-
-            }
-
-
-            supabaseClient.auth.onAuthStateChange(
-                function (
-                    event,
-                    session
-                ) {
-
-                    /*
-                     * If a session suddenly becomes
-                     * available while on login page,
-                     * send the user to dashboard.
-                     */
-
-                    if (
-                        event === "SIGNED_IN" &&
-                        session?.user
-                    ) {
-
-                        /*
-                         * Don't immediately redirect
-                         * if the form itself is currently
-                         * handling the login.
-                         *
-                         * The normal login flow already
-                         * redirects after showing success.
-                         */
-
-                    }
-
-                }
-            );
-
         }
 
 
@@ -2302,8 +2292,6 @@
             function () {
 
                 loadRememberedEmail();
-
-                setupAuthListener();
 
                 checkExistingSession();
 
