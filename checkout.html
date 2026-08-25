@@ -2622,7 +2622,14 @@
             // These are filled later by your admin/delivery
             // process.
             // -------------------------------------------------
-
+const orderNumber =
+    "NLS-" +
+    Date.now().toString(36).toUpperCase() +
+    "-" +
+    Math.random()
+        .toString(36)
+        .substring(2, 7)
+        .toUpperCase();
             const orderPayload = {
 
                 user_id:
@@ -2872,12 +2879,7 @@
 
 
             successMessage.textContent =
-                `Order #${String(
-                    createdOrder.id
-                ).substring(
-                    0,
-                    8
-                )} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+    `Order #${orderNumber} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
 
 
             successModal.classList.remove(
