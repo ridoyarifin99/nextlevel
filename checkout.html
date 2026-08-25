@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Checkout - Next Level Subs</title>
+    <title>Checkout - NEXT LEVEL SUBS</title>
 
     <link
         rel="stylesheet"
@@ -27,55 +27,37 @@
         .payment-method {
             cursor: pointer;
             transition: all 0.2s ease;
-            position: relative;
         }
 
         .payment-method:hover {
             transform: translateY(-2px);
-            border-color: #3b82f6;
+            border-color: #93c5fd;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         }
 
         .payment-method.selected {
-            border-color: #3b82f6 !important;
+            border-color: #3b82f6;
             background: #eff6ff;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
         }
 
-        .payment-method.selected::after {
-            content: "✓";
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background: #3b82f6;
-            color: white;
-            font-size: 13px;
+        .payment-method.selected .payment-check {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        }
+
+        .payment-check {
+            display: none;
         }
 
         .payment-number {
-            user-select: all;
             letter-spacing: 0.5px;
         }
 
-        .copy-button {
-            cursor: pointer;
-        }
-
-        .payment-warning {
-            border-left: 4px solid #f59e0b;
-        }
-
         .spinner {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border: 3px solid rgba(255,255,255,0.35);
-            border-top-color: #fff;
+            border-top-color: white;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
         }
@@ -87,7 +69,7 @@
         }
 
         .animate-fade-in {
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.25s ease-out;
         }
 
         @keyframes fadeIn {
@@ -102,31 +84,13 @@
             }
         }
 
-        .modal-backdrop {
-            background: rgba(0, 0, 0, 0.55);
+        .copy-btn {
+            transition: all 0.2s ease;
         }
 
-        .quantity-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-            background: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .quantity-btn:hover {
-            background: #f3f4f6;
-        }
-
-        .remove-btn {
-            color: #ef4444;
-        }
-
-        .remove-btn:hover {
-            color: #dc2626;
+        .copy-btn.copied {
+            background: #16a34a !important;
+            color: white !important;
         }
 
     </style>
@@ -139,89 +103,81 @@
 
 <!-- =========================================================
      HEADER
-========================================================= -->
+========================================================== -->
 
 <header class="bg-white shadow-md sticky top-0 z-50">
 
     <div
-        class="
-            container
-            mx-auto
-            px-4
-            py-3
-            flex
-            items-center
-            justify-between
-        "
+        class="container mx-auto px-4 py-3 flex items-center justify-between"
     >
 
-        <a
-            href="index.html"
-            class="flex items-center space-x-2"
-        >
+        <div class="flex items-center space-x-2">
 
-            <img
-                src="/images/next_level.png"
-                alt="Next Level Subs Logo"
-                class="logo-image"
+            <a
+                href="index.html"
+                class="flex items-center space-x-2"
             >
 
-            <div class="logo-text-container">
-
-                <div
-                    class="logo-text-item"
-                    style="
-                        color: var(--primary-color);
-                        font-size: 1rem;
-                    "
+                <img
+                    src="/images/next_level.png"
+                    alt="NEXT LEVEL SUBS Logo"
+                    class="logo-image"
                 >
-                    Trusted
+
+                <div class="logo-text-container">
+
+                    <div
+                        class="logo-text-item"
+                        style="
+                            color: var(--primary-color);
+                            font-size: 1rem;
+                        "
+                    >
+                        Trusted
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="
+                            color: var(--primary-color);
+                            font-size: 1rem;
+                        "
+                    >
+                        Cheap
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="
+                            color: var(--primary-color);
+                            font-size: 1rem;
+                        "
+                    >
+                        Secure
+                    </div>
+
+                    <div
+                        class="logo-text-item"
+                        style="
+                            color: var(--primary-color);
+                            font-size: 1rem;
+                        "
+                    >
+                        24/7 Support
+                    </div>
+
                 </div>
 
-                <div
-                    class="logo-text-item"
-                    style="
-                        color: var(--primary-color);
-                        font-size: 1rem;
-                    "
-                >
-                    Cheap
-                </div>
+            </a>
 
-                <div
-                    class="logo-text-item"
-                    style="
-                        color: var(--primary-color);
-                        font-size: 1rem;
-                    "
-                >
-                    Secure
-                </div>
-
-                <div
-                    class="logo-text-item"
-                    style="
-                        color: var(--primary-color);
-                        font-size: 1rem;
-                    "
-                >
-                    24/7 Support
-                </div>
-
-            </div>
-
-        </a>
+        </div>
 
 
         <div class="flex items-center space-x-4">
 
             <a
                 href="index.html"
-                class="
-                    text-gray-600
-                    hover:text-blue-500
-                    transition-colors
-                "
+                class="text-gray-600 hover:text-blue-500 transition-colors"
             >
 
                 <i class="fas fa-arrow-left mr-2"></i>
@@ -235,21 +191,11 @@
 
                 <a
                     href="checkout.html"
-                    class="
-                        relative
-                        p-2
-                        text-gray-700
-                        hover:text-blue-500
-                        transition-colors
-                    "
+                    class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors"
                 >
 
                     <i
-                        class="
-                            fa-solid
-                            fa-basket-shopping-simple
-                            text-2xl
-                        "
+                        class="fa-solid fa-basket-shopping-simple text-2xl"
                     ></i>
 
                     <span
@@ -286,7 +232,7 @@
 
 <!-- =========================================================
      CHECKOUT PROGRESS
-========================================================= -->
+========================================================== -->
 
 <section class="py-6 bg-white shadow-sm">
 
@@ -384,9 +330,9 @@
 
 <!-- =========================================================
      MAIN
-========================================================= -->
+========================================================== -->
 
-<main class="py-10">
+<main class="py-12">
 
     <div class="container mx-auto px-4">
 
@@ -401,17 +347,17 @@
 
 
             <!-- =================================================
-                 LEFT
+                 LEFT SIDE
             ================================================== -->
 
             <div class="lg:col-span-2">
 
 
-                <!-- =================================================
-                     BILLING
-                ================================================== -->
+                <!-- =============================================
+                     BILLING INFORMATION
+                ============================================== -->
 
-                <h2 class="text-2xl font-bold mb-5">
+                <h2 class="text-2xl font-bold mb-6">
                     Customer Information
                 </h2>
 
@@ -432,15 +378,15 @@
                             grid
                             grid-cols-1
                             md:grid-cols-2
-                            gap-5
+                            gap-6
                         "
                     >
 
-                        <div>
+                        <div class="form-group">
 
                             <label
-                                for="firstName"
                                 class="form-label"
+                                for="firstName"
                             >
                                 First Name
                             </label>
@@ -448,7 +394,7 @@
                             <input
                                 type="text"
                                 id="firstName"
-                                class="form-input"
+                                class="form-input w-full"
                                 placeholder="John"
                                 autocomplete="given-name"
                                 required
@@ -457,11 +403,11 @@
                         </div>
 
 
-                        <div>
+                        <div class="form-group">
 
                             <label
-                                for="lastName"
                                 class="form-label"
+                                for="lastName"
                             >
                                 Last Name
                             </label>
@@ -469,7 +415,7 @@
                             <input
                                 type="text"
                                 id="lastName"
-                                class="form-input"
+                                class="form-input w-full"
                                 placeholder="Doe"
                                 autocomplete="family-name"
                                 required
@@ -483,8 +429,8 @@
                     <div class="form-group">
 
                         <label
-                            for="email"
                             class="form-label"
+                            for="email"
                         >
                             Email Address
                         </label>
@@ -492,11 +438,16 @@
                         <input
                             type="email"
                             id="email"
-                            class="form-input"
-                            placeholder="you@example.com"
+                            class="form-input w-full"
+                            placeholder="john@example.com"
                             autocomplete="email"
                             required
                         >
+
+                        <p class="text-xs text-gray-500 mt-1">
+                            Your order and subscription information will be
+                            associated with this account.
+                        </p>
 
                     </div>
 
@@ -504,8 +455,8 @@
                     <div class="form-group">
 
                         <label
-                            for="phone"
                             class="form-label"
+                            for="phone"
                         >
                             Phone Number
                         </label>
@@ -513,7 +464,7 @@
                         <input
                             type="tel"
                             id="phone"
-                            class="form-input"
+                            class="form-input w-full"
                             placeholder="01XXXXXXXXX"
                             autocomplete="tel"
                             required
@@ -525,17 +476,18 @@
                     <div class="form-group">
 
                         <label
-                            for="address"
                             class="form-label"
+                            for="address"
                         >
                             Address
                         </label>
 
                         <textarea
                             id="address"
-                            class="form-input"
+                            class="form-input w-full"
                             rows="3"
                             placeholder="Your address"
+                            autocomplete="street-address"
                             required
                         ></textarea>
 
@@ -545,8 +497,8 @@
                     <div class="form-group">
 
                         <label
-                            for="notes"
                             class="form-label"
+                            for="notes"
                         >
                             Order Notes
                             <span class="text-gray-400">
@@ -556,7 +508,7 @@
 
                         <textarea
                             id="notes"
-                            class="form-input"
+                            class="form-input w-full"
                             rows="2"
                             placeholder="Any special instructions..."
                         ></textarea>
@@ -567,24 +519,61 @@
 
 
 
-                <!-- =================================================
-                     PAYMENT
-                ================================================== -->
+                <!-- =============================================
+                     PAYMENT METHOD
+                ============================================== -->
 
-                <h2 class="text-2xl font-bold mb-5">
-                    Choose Payment Method
+                <h2 class="text-2xl font-bold mb-6">
+                    Payment Method
                 </h2>
 
 
-                <div
-                    class="
-                        bg-white
-                        rounded-xl
-                        shadow-md
-                        p-6
-                        mb-8
-                    "
-                >
+                <div class="bg-white rounded-xl shadow-md p-6">
+
+                    <div class="mb-6">
+
+                        <div
+                            class="
+                                flex
+                                items-start
+                                gap-3
+                                p-4
+                                bg-blue-50
+                                border
+                                border-blue-100
+                                rounded-lg
+                            "
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-circle-info
+                                    text-blue-500
+                                    mt-1
+                                "
+                            ></i>
+
+                            <div>
+
+                                <h3 class="font-semibold text-blue-800">
+                                    Manual Payment
+                                </h3>
+
+                                <p class="text-sm text-blue-700 mt-1">
+
+                                    Select your payment method, send the exact
+                                    total shown below, then enter your sender
+                                    number and Transaction ID.
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
 
 
                     <!-- PAYMENT METHODS -->
@@ -593,7 +582,7 @@
                         class="
                             grid
                             grid-cols-1
-                            sm:grid-cols-2
+                            md:grid-cols-2
                             gap-4
                         "
                     >
@@ -604,8 +593,9 @@
                         <div
                             class="
                                 payment-method
-                                p-5
-                                rounded-xl
+                                relative
+                                p-4
+                                rounded-lg
                                 border
                                 border-gray-200
                                 text-center
@@ -613,6 +603,24 @@
                             "
                             data-method="bkash"
                         >
+
+                            <div
+                                class="
+                                    payment-check
+                                    absolute
+                                    top-2
+                                    right-2
+                                    w-6
+                                    h-6
+                                    rounded-full
+                                    bg-blue-500
+                                    text-white
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
 
                             <i
                                 class="
@@ -624,11 +632,11 @@
                                 "
                             ></i>
 
-                            <h3 class="font-bold text-lg">
+                            <h3 class="font-semibold">
                                 bKash
                             </h3>
 
-                            <p class="text-sm text-gray-500">
+                            <p class="text-sm text-gray-600">
                                 Send Money
                             </p>
 
@@ -641,14 +649,33 @@
                         <div
                             class="
                                 payment-method
-                                p-5
-                                rounded-xl
+                                relative
+                                p-4
+                                rounded-lg
                                 border
                                 border-gray-200
                                 text-center
                             "
                             data-method="nagad"
                         >
+
+                            <div
+                                class="
+                                    payment-check
+                                    absolute
+                                    top-2
+                                    right-2
+                                    w-6
+                                    h-6
+                                    rounded-full
+                                    bg-blue-500
+                                    text-white
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
 
                             <i
                                 class="
@@ -660,11 +687,11 @@
                                 "
                             ></i>
 
-                            <h3 class="font-bold text-lg">
+                            <h3 class="font-semibold">
                                 Nagad
                             </h3>
 
-                            <p class="text-sm text-gray-500">
+                            <p class="text-sm text-gray-600">
                                 Send Money
                             </p>
 
@@ -677,14 +704,33 @@
                         <div
                             class="
                                 payment-method
-                                p-5
-                                rounded-xl
+                                relative
+                                p-4
+                                rounded-lg
                                 border
                                 border-gray-200
                                 text-center
                             "
                             data-method="rocket"
                         >
+
+                            <div
+                                class="
+                                    payment-check
+                                    absolute
+                                    top-2
+                                    right-2
+                                    w-6
+                                    h-6
+                                    rounded-full
+                                    bg-blue-500
+                                    text-white
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
 
                             <i
                                 class="
@@ -696,11 +742,11 @@
                                 "
                             ></i>
 
-                            <h3 class="font-bold text-lg">
+                            <h3 class="font-semibold">
                                 Rocket
                             </h3>
 
-                            <p class="text-sm text-gray-500">
+                            <p class="text-sm text-gray-600">
                                 Send Money
                             </p>
 
@@ -713,14 +759,33 @@
                         <div
                             class="
                                 payment-method
-                                p-5
-                                rounded-xl
+                                relative
+                                p-4
+                                rounded-lg
                                 border
                                 border-gray-200
                                 text-center
                             "
                             data-method="upay"
                         >
+
+                            <div
+                                class="
+                                    payment-check
+                                    absolute
+                                    top-2
+                                    right-2
+                                    w-6
+                                    h-6
+                                    rounded-full
+                                    bg-blue-500
+                                    text-white
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
 
                             <i
                                 class="
@@ -732,11 +797,11 @@
                                 "
                             ></i>
 
-                            <h3 class="font-bold text-lg">
+                            <h3 class="font-semibold">
                                 Upay
                             </h3>
 
-                            <p class="text-sm text-gray-500">
+                            <p class="text-sm text-gray-600">
                                 Send Money
                             </p>
 
@@ -749,15 +814,34 @@
                         <div
                             class="
                                 payment-method
-                                p-5
-                                rounded-xl
+                                relative
+                                p-4
+                                rounded-lg
                                 border
                                 border-gray-200
                                 text-center
-                                sm:col-span-2
+                                md:col-span-2
                             "
                             data-method="bank_transfer"
                         >
+
+                            <div
+                                class="
+                                    payment-check
+                                    absolute
+                                    top-2
+                                    right-2
+                                    w-6
+                                    h-6
+                                    rounded-full
+                                    bg-blue-500
+                                    text-white
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
 
                             <i
                                 class="
@@ -769,12 +853,12 @@
                                 "
                             ></i>
 
-                            <h3 class="font-bold text-lg">
+                            <h3 class="font-semibold">
                                 Bank Transfer
                             </h3>
 
-                            <p class="text-sm text-gray-500">
-                                City Bank
+                            <p class="text-sm text-gray-600">
+                                Direct bank transfer
                             </p>
 
                         </div>
@@ -783,9 +867,9 @@
 
 
 
-                    <!-- =================================================
+                    <!-- =============================================
                          PAYMENT INSTRUCTIONS
-                    ================================================== -->
+                    ============================================== -->
 
                     <div
                         id="paymentDetails"
@@ -793,7 +877,7 @@
                             mt-6
                             p-5
                             bg-gray-50
-                            rounded-xl
+                            rounded-lg
                             border
                             border-gray-200
                         "
@@ -801,83 +885,33 @@
 
 
 
-                    <!-- =================================================
-                         PAYMENT WARNING
-                    ================================================== -->
+                    <!-- =============================================
+                         PAYMENT PROOF
+                    ============================================== -->
 
                     <div
+                        id="paymentProofSection"
                         class="
-                            payment-warning
-                            bg-yellow-50
-                            p-4
-                            rounded-lg
-                            mt-5
+                            mt-6
+                            border-t
+                            border-gray-200
+                            pt-6
                         "
                     >
 
-                        <div class="flex items-start">
-
-                            <i
-                                class="
-                                    fas
-                                    fa-triangle-exclamation
-                                    text-yellow-600
-                                    mt-1
-                                    mr-3
-                                "
-                            ></i>
-
-                            <div>
-
-                                <p
-                                    class="
-                                        font-semibold
-                                        text-yellow-800
-                                    "
-                                >
-                                    Important
-                                </p>
-
-                                <p
-                                    class="
-                                        text-sm
-                                        text-yellow-700
-                                        mt-1
-                                    "
-                                >
-                                    Send the exact total amount shown
-                                    in the order summary. After payment,
-                                    enter your sender number and
-                                    transaction ID correctly.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- =================================================
-                         PAYMENT PROOF
-                    ================================================== -->
-
-                    <div class="mt-6">
-
-                        <h3 class="text-lg font-bold mb-4">
-                            Payment Verification Details
+                        <h3 class="text-lg font-semibold mb-4">
+                            Payment Verification Information
                         </h3>
 
 
                         <div class="form-group">
 
                             <label
-                                for="paymentSenderNumber"
                                 class="form-label"
+                                for="paymentSenderNumber"
                             >
 
-                                Payment Sender Number
+                                Sender Number / Account
 
                                 <span class="text-red-500">
                                     *
@@ -888,20 +922,17 @@
                             <input
                                 type="tel"
                                 id="paymentSenderNumber"
-                                class="form-input"
+                                class="form-input w-full"
                                 placeholder="01XXXXXXXXX"
+                                autocomplete="off"
                                 required
                             >
 
-                            <p
-                                class="
-                                    text-xs
-                                    text-gray-500
-                                    mt-1
-                                "
-                            >
+                            <p class="text-sm text-gray-500 mt-1">
+
                                 Enter the mobile number or bank account
-                                from which you sent the payment.
+                                you used to send the payment.
+
                             </p>
 
                         </div>
@@ -910,8 +941,8 @@
                         <div class="form-group">
 
                             <label
-                                for="paymentReference"
                                 class="form-label"
+                                for="paymentReference"
                             >
 
                                 Transaction ID / Reference
@@ -925,20 +956,41 @@
                             <input
                                 type="text"
                                 id="paymentReference"
-                                class="form-input"
-                                placeholder="Example: 8A7B6C5D"
+                                class="form-input w-full"
+                                placeholder="Enter transaction ID"
+                                autocomplete="off"
                                 required
                             >
 
-                            <p
-                                class="
-                                    text-xs
-                                    text-gray-500
-                                    mt-1
-                                "
-                            >
-                                Enter the transaction ID exactly as
-                                shown by your payment provider.
+                            <p class="text-sm text-gray-500 mt-1">
+
+                                Enter the exact transaction ID shown in your
+                                payment confirmation.
+
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                mt-4
+                                p-3
+                                bg-yellow-50
+                                border
+                                border-yellow-100
+                                rounded-lg
+                            "
+                        >
+
+                            <p class="text-sm text-yellow-800">
+
+                                <i class="fas fa-shield-halved mr-1"></i>
+
+                                Your payment will remain
+                                <strong>Pending</strong>
+                                until an administrator verifies it.
+
                             </p>
 
                         </div>
@@ -952,7 +1004,7 @@
 
 
             <!-- =================================================
-                 RIGHT — ORDER SUMMARY
+                 RIGHT SIDE
             ================================================== -->
 
             <div class="lg:col-span-1">
@@ -968,14 +1020,14 @@
                     "
                 >
 
-                    <h2 class="text-2xl font-bold mb-5">
+                    <h2 class="text-2xl font-bold mb-4">
                         Order Summary
                     </h2>
 
 
                     <div
                         id="orderSummary"
-                        class="space-y-3 mb-6"
+                        class="space-y-4 mb-6"
                     ></div>
 
 
@@ -987,7 +1039,9 @@
                         "
                     >
 
-                        <div class="flex justify-between mb-2">
+                        <div
+                            class="flex justify-between mb-2"
+                        >
 
                             <span>
                                 Subtotal
@@ -1000,7 +1054,9 @@
                         </div>
 
 
-                        <div class="flex justify-between mb-2">
+                        <div
+                            class="flex justify-between mb-2"
+                        >
 
                             <span>
                                 Tax (1.85%)
@@ -1013,7 +1069,9 @@
                         </div>
 
 
-                        <div class="flex justify-between mb-4">
+                        <div
+                            class="flex justify-between mb-4"
+                        >
 
                             <span>
                                 Discount
@@ -1021,7 +1079,7 @@
 
                             <span
                                 id="discount"
-                                class="text-green-600"
+                                class="text-green-500"
                             >
                                 -৳0.00
                             </span>
@@ -1034,7 +1092,7 @@
                                 flex
                                 justify-between
                                 font-bold
-                                text-xl
+                                text-lg
                                 border-t
                                 pt-4
                             "
@@ -1054,9 +1112,9 @@
 
 
 
-                    <!-- =================================================
+                    <!-- =============================================
                          PROMO
-                    ================================================== -->
+                    ============================================== -->
 
                     <div class="mt-6">
 
@@ -1070,7 +1128,7 @@
                         >
 
                             <label class="text-sm font-medium">
-                                Promo Code
+                                Apply Promo Code
                             </label>
 
                             <label class="toggle-switch">
@@ -1120,6 +1178,8 @@
                                         bg-gray-200
                                         text-gray-700
                                         rounded-r-lg
+                                        hover:bg-gray-300
+                                        transition-colors
                                     "
                                 >
                                     Apply
@@ -1133,9 +1193,51 @@
 
 
 
-                    <!-- =================================================
+                    <!-- =============================================
+                         PAYMENT STATUS
+                    ============================================== -->
+
+                    <div
+                        class="
+                            mt-6
+                            p-4
+                            bg-gray-50
+                            rounded-lg
+                            text-sm
+                        "
+                    >
+
+                        <div class="flex items-center mb-2">
+
+                            <i
+                                class="
+                                    fas
+                                    fa-clock
+                                    text-yellow-500
+                                    mr-2
+                                "
+                            ></i>
+
+                            <strong>
+                                Payment Verification
+                            </strong>
+
+                        </div>
+
+                        <p class="text-gray-600">
+
+                            After submitting your order, your payment will be
+                            reviewed by our team.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =============================================
                          PLACE ORDER
-                    ================================================== -->
+                    ============================================== -->
 
                     <button
                         id="placeOrderBtn"
@@ -1148,15 +1250,12 @@
                             font-semibold
                             text-white
                             btn-primary
-                            flex
-                            items-center
-                            justify-center
                         "
                     >
 
                         <i class="fas fa-lock mr-2"></i>
 
-                        Submit Order
+                        Place Order
 
                     </button>
 
@@ -1176,21 +1275,6 @@
 
                     </div>
 
-
-                    <div
-                        class="
-                            mt-4
-                            text-center
-                            text-xs
-                            text-gray-400
-                        "
-                    >
-
-                        Payment is manually verified before
-                        subscription delivery.
-
-                    </div>
-
                 </div>
 
             </div>
@@ -1205,7 +1289,7 @@
 
 <!-- =========================================================
      SUCCESS MODAL
-========================================================= -->
+========================================================== -->
 
 <div
     id="successModal"
@@ -1214,9 +1298,10 @@
 
     <div
         class="
-            modal-backdrop
             absolute
             inset-0
+            bg-black
+            bg-opacity-50
         "
     ></div>
 
@@ -1279,12 +1364,19 @@
                 id="successMessage"
                 class="text-gray-600 mb-6"
             >
-                Your order has been submitted and is awaiting
-                payment verification.
+                Your order has been submitted successfully.
             </p>
 
 
-            <div class="flex justify-center gap-3">
+            <div
+                class="
+                    flex
+                    flex-col
+                    sm:flex-row
+                    justify-center
+                    gap-3
+                "
+            >
 
                 <a
                     href="dashboard.html"
@@ -1297,7 +1389,11 @@
                         btn-primary
                     "
                 >
+
+                    <i class="fas fa-user mr-2"></i>
+
                     Go to Dashboard
+
                 </a>
 
 
@@ -1311,9 +1407,12 @@
                         rounded-lg
                         font-medium
                         hover:bg-gray-100
+                        transition-colors
                     "
                 >
+
                     Continue Shopping
+
                 </a>
 
             </div>
@@ -1328,15 +1427,17 @@
 
 <!-- =========================================================
      SUPABASE
-========================================================= -->
+========================================================== -->
 
 <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
 ></script>
 
+
 <script
     src="./js/supabase-config.js"
 ></script>
+
 
 <script
     src="./js/nextlevel-auth.js"
@@ -1368,39 +1469,42 @@ let isSubmitting = false;
 
 // ============================================================
 // PAYMENT ACCOUNTS
+// ============================================================
 //
 // IMPORTANT:
-// These are public payment receiving details.
-// Do NOT put Supabase service_role keys here.
+// These are the accounts displayed to customers.
+// Change them here if your payment numbers change.
 // ============================================================
 
 const PAYMENT_ACCOUNTS = {
 
     bkash: {
+        type: "mobile",
         number: "01912261564",
-        type: "Personal",
-        instruction: "Use bKash Send Money."
+        label: "bKash"
     },
 
     nagad: {
+        type: "mobile",
         number: "01644490566",
-        type: "Personal",
-        instruction: "Use Nagad Send Money."
+        label: "Nagad"
     },
 
     rocket: {
+        type: "mobile",
         number: "016444905664",
-        type: "Personal",
-        instruction: "Use Rocket Send Money."
+        label: "Rocket"
     },
 
     upay: {
+        type: "mobile",
         number: "01590093965",
-        type: "Personal",
-        instruction: "Use Upay Send Money."
+        label: "Upay"
     },
 
     bank_transfer: {
+
+        type: "bank",
 
         bankName: "City Bank",
 
@@ -1443,7 +1547,7 @@ const promoToggle =
 const promoCodeSection =
     document.getElementById("promoCodeSection");
 
-const promoCodeInput =
+const promoCode =
     document.getElementById("promoCode");
 
 const applyPromo =
@@ -1472,7 +1576,7 @@ const cartCount =
 
 
 // ============================================================
-// HTML ESCAPE
+// ESCAPE HTML
 // ============================================================
 
 function escapeHTML(value) {
@@ -1481,9 +1585,7 @@ function escapeHTML(value) {
         value === null ||
         value === undefined
     ) {
-
         return "";
-
     }
 
     return String(value)
@@ -1529,13 +1631,18 @@ function generateOrderNumber() {
             now.getDate()
         ).padStart(2, "0");
 
+    const timestamp =
+        Date.now()
+            .toString()
+            .slice(-6);
+
     const random =
         Math.floor(
-            100000 +
-            Math.random() * 900000
+            100 +
+            Math.random() * 900
         );
 
-    return `NLS-${year}${month}${day}-${random}`;
+    return `NLS-${year}${month}${day}-${timestamp}${random}`;
 
 }
 
@@ -1546,69 +1653,62 @@ function generateOrderNumber() {
 
 function getPaymentMethodLabel(method) {
 
-    const labels = {
+    const account =
+        PAYMENT_ACCOUNTS[method];
 
-        bkash: "bKash",
+    if (
+        account &&
+        account.label
+    ) {
+        return account.label;
+    }
 
-        nagad: "Nagad",
+    if (
+        method === "bank_transfer"
+    ) {
+        return "Bank Transfer";
+    }
 
-        rocket: "Rocket",
-
-        upay: "Upay",
-
-        bank_transfer: "Bank Transfer"
-
-    };
-
-    return labels[method] || "Payment";
+    return "Unknown";
 
 }
 
 
 // ============================================================
-// COPY PAYMENT NUMBER
+// COPY TO CLIPBOARD
 // ============================================================
 
-async function copyPaymentNumber() {
-
-    const account =
-        PAYMENT_ACCOUNTS[
-            selectedPaymentMethod
-        ];
-
-    if (
-        !account ||
-        !account.number
-    ) {
-
-        return;
-
-    }
+async function copyPaymentNumber(
+    number,
+    button
+) {
 
     try {
 
         await navigator.clipboard.writeText(
-            account.number
+            number
         );
 
-        const button =
-            document.getElementById(
-                "copyPaymentNumber"
-            );
+        const original =
+            button.innerHTML;
 
-        if (button) {
+        button.innerHTML =
+            '<i class="fas fa-check mr-1"></i> Copied';
+
+        button.classList.add(
+            "copied"
+        );
+
+        setTimeout(() => {
 
             button.innerHTML =
-                '<i class="fas fa-check mr-1"></i> Copied';
+                original;
 
-            setTimeout(() => {
+            button.classList.remove(
+                "copied"
+            );
 
-                button.innerHTML =
-                    '<i class="fas fa-copy mr-1"></i> Copy';
-
-            }, 1500);
-
-        }
+        }, 1500);
 
     }
     catch (error) {
@@ -1616,6 +1716,10 @@ async function copyPaymentNumber() {
         console.error(
             "Copy failed:",
             error
+        );
+
+        alert(
+            "Unable to copy automatically. Please copy the number manually."
         );
 
     }
@@ -1639,49 +1743,25 @@ function renderPaymentDetails() {
 
         paymentDetails.innerHTML = `
 
-            <div class="flex items-center mb-4">
+            <h3 class="font-semibold text-lg mb-4">
 
-                <div
+                <i
                     class="
-                        w-10
-                        h-10
-                        rounded-full
-                        bg-blue-100
-                        flex
-                        items-center
-                        justify-center
-                        mr-3
+                        fas
+                        fa-university
+                        text-blue-500
+                        mr-2
                     "
-                >
+                ></i>
 
-                    <i
-                        class="
-                            fas
-                            fa-university
-                            text-blue-600
-                        "
-                    ></i>
+                Bank Transfer Instructions
 
-                </div>
-
-                <div>
-
-                    <h3 class="font-bold">
-                        Bank Transfer
-                    </h3>
-
-                    <p class="text-xs text-gray-500">
-                        Transfer to the account below
-                    </p>
-
-                </div>
-
-            </div>
+            </h3>
 
 
             <div class="space-y-3 text-sm">
 
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-4">
 
                     <span class="text-gray-500">
                         Bank
@@ -1694,7 +1774,7 @@ function renderPaymentDetails() {
                 </div>
 
 
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-4">
 
                     <span class="text-gray-500">
                         Account Name
@@ -1707,7 +1787,7 @@ function renderPaymentDetails() {
                 </div>
 
 
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-4">
 
                     <span class="text-gray-500">
                         Account Number
@@ -1720,7 +1800,7 @@ function renderPaymentDetails() {
                 </div>
 
 
-                <div class="flex justify-between">
+                <div class="flex justify-between gap-4">
 
                     <span class="text-gray-500">
                         Branch
@@ -1734,13 +1814,31 @@ function renderPaymentDetails() {
 
             </div>
 
+
+            <div
+                class="
+                    mt-4
+                    p-3
+                    bg-blue-50
+                    rounded-lg
+                    text-sm
+                    text-blue-800
+                "
+            >
+
+                <i class="fas fa-info-circle mr-1"></i>
+
+                Transfer the exact order total to the account above.
+
+            </div>
+
         `;
 
         paymentSenderNumber.placeholder =
-            "Your bank account number";
+            "Enter your bank account number";
 
         paymentReference.placeholder =
-            "Bank transaction/reference number";
+            "Enter bank transaction/reference number";
 
         return;
 
@@ -1752,6 +1850,10 @@ function renderPaymentDetails() {
             selectedPaymentMethod
         ];
 
+    if (!account) {
+        return;
+    }
+
     const label =
         getPaymentMethodLabel(
             selectedPaymentMethod
@@ -1760,52 +1862,30 @@ function renderPaymentDetails() {
 
     paymentDetails.innerHTML = `
 
-        <div class="flex items-center mb-4">
+        <h3 class="font-semibold text-lg mb-4">
 
-            <div
+            <i
                 class="
-                    w-10
-                    h-10
-                    rounded-full
-                    bg-blue-100
-                    flex
-                    items-center
-                    justify-center
-                    mr-3
+                    fas
+                    fa-mobile-screen-button
+                    text-blue-500
+                    mr-2
                 "
-            >
+            ></i>
 
-                <i
-                    class="
-                        fas
-                        fa-mobile-screen-button
-                        text-blue-600
-                    "
-                ></i>
+            ${escapeHTML(label)}
+            Payment Instructions
 
-            </div>
-
-
-            <div>
-
-                <h3 class="font-bold">
-                    ${escapeHTML(label)} Payment
-                </h3>
-
-                <p class="text-xs text-gray-500">
-                    ${escapeHTML(account.type)}
-                    account
-                </p>
-
-            </div>
-
-        </div>
+        </h3>
 
 
         <p class="text-sm text-gray-600 mb-3">
 
-            Send the exact total amount shown below
-            using ${escapeHTML(label)}.
+            Send the exact order total using
+            <strong>
+                ${escapeHTML(label)}
+            </strong>
+            Send Money.
 
         </p>
 
@@ -1815,45 +1895,40 @@ function renderPaymentDetails() {
                 flex
                 items-center
                 justify-between
+                gap-3
                 bg-white
                 border
                 border-gray-200
                 rounded-lg
-                p-4
+                p-3
             "
         >
 
-            <div>
-
-                <p class="text-xs text-gray-500 mb-1">
-                    ${escapeHTML(label)} Number
-                </p>
-
-                <strong
-                    class="
-                        payment-number
-                        text-xl
-                    "
-                >
-                    ${escapeHTML(account.number)}
-                </strong>
-
-            </div>
+            <span
+                class="
+                    payment-number
+                    font-bold
+                    text-xl
+                "
+            >
+                ${escapeHTML(account.number)}
+            </span>
 
 
             <button
                 type="button"
-                id="copyPaymentNumber"
-                onclick="copyPaymentNumber()"
                 class="
-                    copy-button
+                    copy-btn
+                    shrink-0
                     px-3
                     py-2
                     bg-gray-100
+                    text-gray-700
                     rounded-lg
                     text-sm
                     hover:bg-gray-200
                 "
+                data-copy-number="${escapeHTML(account.number)}"
             >
 
                 <i class="fas fa-copy mr-1"></i>
@@ -1868,27 +1943,28 @@ function renderPaymentDetails() {
         <div
             class="
                 mt-4
+                p-3
+                bg-yellow-50
+                rounded-lg
                 text-sm
-                text-gray-600
+                text-yellow-800
             "
         >
 
-            <p>
-                <strong>Step 1:</strong>
-                Send the exact amount.
-            </p>
+            <i class="fas fa-triangle-exclamation mr-1"></i>
 
-            <p>
-                <strong>Step 2:</strong>
-                Keep your transaction ID.
-            </p>
-
-            <p>
-                <strong>Step 3:</strong>
-                Enter your sender number and transaction ID below.
-            </p>
+            Please send the exact total shown in
+            <strong>Order Summary</strong>.
 
         </div>
+
+
+        <p class="text-sm text-gray-500 mt-3">
+
+            After payment, enter the number you used to send
+            the money and your Transaction ID below.
+
+        </p>
 
     `;
 
@@ -1903,7 +1979,7 @@ function renderPaymentDetails() {
 
 
 // ============================================================
-// PAYMENT SELECTION
+// PAYMENT METHOD SELECTION
 // ============================================================
 
 function selectPaymentMethod(method) {
@@ -1911,9 +1987,7 @@ function selectPaymentMethod(method) {
     if (
         !PAYMENT_ACCOUNTS[method]
     ) {
-
         return;
-
     }
 
     selectedPaymentMethod =
@@ -1978,25 +2052,29 @@ function getCartTotals() {
     cart.forEach(item => {
 
         const plan =
-            item.selectedPlan || {
-
-                price:
-                    item.price || 0
-
+            item.selectedPlan ||
+            {
+                price: item.price
             };
 
 
         const quantity =
+            Math.max(
+                1,
+                Number(
+                    item.quantity || 1
+                )
+            );
+
+
+        const price =
             Number(
-                item.quantity || 1
+                plan.price || 0
             );
 
 
         const itemTotal =
-            Number(
-                plan.price || 0
-            ) *
-            quantity;
+            price * quantity;
 
 
         subtotal +=
@@ -2036,7 +2114,10 @@ function getCartTotals() {
 
         total:
             Number(
-                total.toFixed(2)
+                Math.max(
+                    0,
+                    total
+                ).toFixed(2)
             )
 
     };
@@ -2052,6 +2133,7 @@ function renderOrderSummary() {
 
     orderSummary.innerHTML = "";
 
+
     let subtotal = 0;
 
     let totalTax = 0;
@@ -2060,23 +2142,20 @@ function renderOrderSummary() {
     cart.forEach(item => {
 
         const plan =
-            item.selectedPlan || {
-
-                price:
-                    item.price,
-
-                duration:
-                    item.duration,
-
-                currency:
-                    "BDT"
-
+            item.selectedPlan ||
+            {
+                price: item.price,
+                duration: item.duration,
+                currency: "BDT"
             };
 
 
         const quantity =
-            Number(
-                item.quantity || 1
+            Math.max(
+                1,
+                Number(
+                    item.quantity || 1
+                )
             );
 
 
@@ -2110,12 +2189,12 @@ function renderOrderSummary() {
             "order-item p-3 border-b border-gray-200";
 
 
-        let imageHTML = "";
+        let productImageHTML = "";
 
 
         if (item.image) {
 
-            imageHTML = `
+            productImageHTML = `
 
                 <img
                     src="${escapeHTML(item.image)}"
@@ -2123,11 +2202,12 @@ function renderOrderSummary() {
                         item.name || "Product"
                     )}"
                     class="
-                        w-11
-                        h-11
+                        w-12
+                        h-12
                         rounded-lg
                         mr-3
                         object-contain
+                        bg-gray-50
                     "
                 >
 
@@ -2136,12 +2216,21 @@ function renderOrderSummary() {
         }
         else {
 
-            imageHTML = `
+            const icon =
+                item.icon ||
+                "fas fa-box";
+
+            const color =
+                item.color ||
+                "#555555";
+
+
+            productImageHTML = `
 
                 <div
                     class="
-                        w-11
-                        h-11
+                        w-12
+                        h-12
                         rounded-lg
                         flex
                         items-center
@@ -2149,19 +2238,17 @@ function renderOrderSummary() {
                         mr-3
                     "
                     style="
-                        background:
-                        ${escapeHTML(
-                            item.color ||
-                            "#eeeeee"
-                        )}20;
+                        background-color:
+                        ${escapeHTML(color)}20;
                     "
                 >
 
                     <i
-                        class="${escapeHTML(
-                            item.icon ||
-                            "fas fa-box"
-                        )}"
+                        class="${escapeHTML(icon)}"
+                        style="
+                            color:
+                            ${escapeHTML(color)};
+                        "
                     ></i>
 
                 </div>
@@ -2178,27 +2265,39 @@ function renderOrderSummary() {
                     flex
                     justify-between
                     items-start
+                    gap-3
                 "
             >
 
-                <div class="flex items-start">
+                <div
+                    class="
+                        flex
+                        items-start
+                        min-w-0
+                    "
+                >
 
-                    ${imageHTML}
+                    ${productImageHTML}
 
-                    <div>
+                    <div class="min-w-0">
 
-                        <h4 class="font-semibold">
+                        <h4 class="font-medium truncate">
+
                             ${escapeHTML(
                                 item.name ||
                                 "Product"
                             )}
+
                         </h4>
 
-                        <p class="text-xs text-gray-500">
+
+                        <p class="text-sm text-gray-500">
+
                             ${escapeHTML(
                                 plan.duration ||
                                 ""
                             )}
+
                         </p>
 
                     </div>
@@ -2206,14 +2305,19 @@ function renderOrderSummary() {
                 </div>
 
 
-                <div class="text-right">
+                <div class="text-right shrink-0">
 
-                    <span class="font-semibold">
+                    <span class="font-medium">
+
                         ৳${formatMoney(itemTotal)}
+
                     </span>
 
-                    <p class="text-xs text-gray-500">
+
+                    <p class="text-sm text-gray-500">
+
                         Qty: ${quantity}
+
                     </p>
 
                 </div>
@@ -2234,7 +2338,11 @@ function renderOrderSummary() {
                     type="button"
                     class="
                         remove-btn
+                        flex
+                        items-center
                         text-sm
+                        text-red-500
+                        hover:text-red-700
                     "
                     data-product-name="${escapeHTML(
                         item.name
@@ -2248,23 +2356,40 @@ function renderOrderSummary() {
                 </button>
 
 
-                <div class="flex items-center gap-2">
+                <div
+                    class="
+                        flex
+                        items-center
+                        border
+                        border-gray-200
+                        rounded-lg
+                        overflow-hidden
+                    "
+                >
 
                     <button
                         type="button"
-                        class="quantity-btn decrease-btn"
+                        class="
+                            quantity-btn
+                            decrease-btn
+                            px-3
+                            py-1
+                            hover:bg-gray-100
+                        "
                         data-product-name="${escapeHTML(
                             item.name
                         )}"
                     >
-                        <i class="fas fa-minus"></i>
+
+                        <i class="fas fa-minus text-xs"></i>
+
                     </button>
 
 
                     <span
                         class="
-                            min-w-[25px]
-                            text-center
+                            px-3
+                            py-1
                             text-sm
                             font-medium
                         "
@@ -2275,12 +2400,20 @@ function renderOrderSummary() {
 
                     <button
                         type="button"
-                        class="quantity-btn increase-btn"
+                        class="
+                            quantity-btn
+                            increase-btn
+                            px-3
+                            py-1
+                            hover:bg-gray-100
+                        "
                         data-product-name="${escapeHTML(
                             item.name
                         )}"
                     >
-                        <i class="fas fa-plus"></i>
+
+                        <i class="fas fa-plus text-xs"></i>
+
                     </button>
 
                 </div>
@@ -2298,9 +2431,12 @@ function renderOrderSummary() {
 
 
     const total =
-        subtotal +
-        totalTax -
-        discountAmount;
+        Math.max(
+            0,
+            subtotal +
+            totalTax -
+            discountAmount
+        );
 
 
     subtotalEl.textContent =
@@ -2327,19 +2463,22 @@ function renderOrderSummary() {
 
 function updateCartCount() {
 
-    const count =
+    const totalItems =
         cart.reduce(
             (sum, item) =>
                 sum +
-                Number(
-                    item.quantity || 0
+                Math.max(
+                    0,
+                    Number(
+                        item.quantity || 0
+                    )
                 ),
             0
         );
 
 
     cartCount.textContent =
-        count;
+        totalItems;
 
 }
 
@@ -2391,7 +2530,7 @@ function removeItem(name) {
 
 
 // ============================================================
-// QUANTITY
+// INCREASE
 // ============================================================
 
 function increaseQuantity(name) {
@@ -2404,15 +2543,16 @@ function increaseQuantity(name) {
 
 
     if (!item) {
-
         return;
-
     }
 
 
     item.quantity =
-        Number(
-            item.quantity || 1
+        Math.max(
+            1,
+            Number(
+                item.quantity || 1
+            )
         ) + 1;
 
 
@@ -2425,6 +2565,10 @@ function increaseQuantity(name) {
 }
 
 
+// ============================================================
+// DECREASE
+// ============================================================
+
 function decreaseQuantity(name) {
 
     const item =
@@ -2434,22 +2578,26 @@ function decreaseQuantity(name) {
         );
 
 
-    if (
-        !item ||
+    if (!item) {
+        return;
+    }
+
+
+    const currentQuantity =
         Number(
             item.quantity || 1
-        ) <= 1
+        );
+
+
+    if (
+        currentQuantity <= 1
     ) {
-
         return;
-
     }
 
 
     item.quantity =
-        Number(
-            item.quantity
-        ) - 1;
+        currentQuantity - 1;
 
 
     saveCart();
@@ -2462,23 +2610,23 @@ function decreaseQuantity(name) {
 
 
 // ============================================================
-// ORDER SUMMARY EVENTS
+// CART EVENTS
 // ============================================================
 
 orderSummary.addEventListener(
     "click",
     event => {
 
-        const remove =
+        const removeButton =
             event.target.closest(
                 ".remove-btn"
             );
 
 
-        if (remove) {
+        if (removeButton) {
 
             removeItem(
-                remove.dataset.productName
+                removeButton.dataset.productName
             );
 
             return;
@@ -2486,16 +2634,16 @@ orderSummary.addEventListener(
         }
 
 
-        const increase =
+        const increaseButton =
             event.target.closest(
                 ".increase-btn"
             );
 
 
-        if (increase) {
+        if (increaseButton) {
 
             increaseQuantity(
-                increase.dataset.productName
+                increaseButton.dataset.productName
             );
 
             return;
@@ -2503,17 +2651,91 @@ orderSummary.addEventListener(
         }
 
 
-        const decrease =
+        const decreaseButton =
             event.target.closest(
                 ".decrease-btn"
             );
 
 
-        if (decrease) {
+        if (decreaseButton) {
 
             decreaseQuantity(
-                decrease.dataset.productName
+                decreaseButton.dataset.productName
             );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// PAYMENT COPY EVENT
+// ============================================================
+
+paymentDetails.addEventListener(
+    "click",
+    event => {
+
+        const button =
+            event.target.closest(
+                ".copy-btn"
+            );
+
+
+        if (!button) {
+            return;
+        }
+
+
+        const number =
+            button.dataset.copyNumber;
+
+
+        if (!number) {
+            return;
+        }
+
+
+        copyPaymentNumber(
+            number,
+            button
+        );
+
+    }
+);
+
+
+// ============================================================
+// PROMO TOGGLE
+// ============================================================
+
+promoToggle.addEventListener(
+    "change",
+    () => {
+
+        if (
+            promoToggle.checked
+        ) {
+
+            promoCodeSection.classList.remove(
+                "hidden"
+            );
+
+        }
+        else {
+
+            promoCodeSection.classList.add(
+                "hidden"
+            );
+
+            discountAmount = 0;
+
+            appliedPromoCode = "";
+
+            promoCode.value = "";
+
+            renderOrderSummary();
 
         }
 
@@ -2525,30 +2747,125 @@ orderSummary.addEventListener(
 // PROMO
 // ============================================================
 
-function togglePromoSection() {
+function applyPromoCode() {
 
-    if (
-        promoToggle.checked
-    ) {
+    const code =
+        promoCode.value
+            .trim()
+            .toUpperCase();
 
-        promoCodeSection.classList.remove(
-            "hidden"
+
+    if (!code) {
+
+        showPromoResult(
+            "Enter Code",
+            false
         );
+
+        return;
 
     }
-    else {
 
-        promoCodeSection.classList.add(
-            "hidden"
-        );
 
-        discountAmount = 0;
+    const totals =
+        getCartTotals();
 
-        appliedPromoCode = "";
+
+    if (
+        code === "TAXFREE"
+    ) {
+
+        discountAmount =
+            totals.tax;
+
+
+        appliedPromoCode =
+            "TAXFREE";
+
 
         renderOrderSummary();
 
+
+        showPromoResult(
+            "Tax Free!",
+            true
+        );
+
+
+        return;
+
     }
+
+
+    if (
+        code === "JULY36"
+    ) {
+
+        discountAmount =
+            30;
+
+
+        appliedPromoCode =
+            "JULY36";
+
+
+        renderOrderSummary();
+
+
+        showPromoResult(
+            "30 Taka Off!",
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        code === "NEXTLEVEL10"
+    ) {
+
+        discountAmount =
+            Number(
+                (
+                    totals.subtotal *
+                    0.10
+                ).toFixed(2)
+            );
+
+
+        appliedPromoCode =
+            "NEXTLEVEL10";
+
+
+        renderOrderSummary();
+
+
+        showPromoResult(
+            "10% Off!",
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    discountAmount = 0;
+
+    appliedPromoCode = "";
+
+
+    renderOrderSummary();
+
+
+    showPromoResult(
+        "Invalid",
+        false
+    );
 
 }
 
@@ -2594,125 +2911,28 @@ function showPromoResult(
         applyPromo.textContent =
             "Apply";
 
+
         applyPromo.classList.remove(
             "bg-green-500",
             "bg-red-500",
             "text-white"
         );
 
+
         applyPromo.classList.add(
             "bg-gray-200",
             "text-gray-700"
         );
 
-    }, 1800);
+    }, 2000);
 
 }
 
 
-function applyPromoCode() {
-
-    const code =
-        promoCodeInput.value
-            .trim()
-            .toUpperCase();
-
-
-    const totals =
-        getCartTotals();
-
-
-    if (
-        code === "TAXFREE"
-    ) {
-
-        discountAmount =
-            totals.tax;
-
-        appliedPromoCode =
-            "TAXFREE";
-
-
-        renderOrderSummary();
-
-
-        showPromoResult(
-            "Tax Free!",
-            true
-        );
-
-
-        return;
-
-    }
-
-
-    if (
-        code === "JULY36"
-    ) {
-
-        discountAmount = 30;
-
-        appliedPromoCode =
-            "JULY36";
-
-
-        renderOrderSummary();
-
-
-        showPromoResult(
-            "30 Taka Off!",
-            true
-        );
-
-
-        return;
-
-    }
-
-
-    if (
-        code === "NEXTLEVEL10"
-    ) {
-
-        discountAmount =
-            Math.round(
-                totals.subtotal * 0.10
-            );
-
-
-        appliedPromoCode =
-            "NEXTLEVEL10";
-
-
-        renderOrderSummary();
-
-
-        showPromoResult(
-            "10% Off!",
-            true
-        );
-
-
-        return;
-
-    }
-
-
-    discountAmount = 0;
-
-    appliedPromoCode = "";
-
-
-    renderOrderSummary();
-
-
-    showPromoResult(
-        "Invalid",
-        false
-    );
-
-}
+applyPromo.addEventListener(
+    "click",
+    applyPromoCode
+);
 
 
 // ============================================================
@@ -2721,38 +2941,40 @@ function applyPromoCode() {
 
 function getCustomerName() {
 
-    const first =
+    const firstName =
         document.getElementById(
             "firstName"
         ).value.trim();
 
 
-    const last =
+    const lastName =
         document.getElementById(
             "lastName"
         ).value.trim();
 
 
-    return `${first} ${last}`.trim();
+    return (
+        `${firstName} ${lastName}`
+    ).trim();
 
 }
 
 
 // ============================================================
-// VALIDATE BANGLADESH PHONE
+// VALIDATE BANGLADESHI MOBILE NUMBER
 // ============================================================
 
-function validatePhoneNumber(value) {
+function isValidMobileNumber(number) {
 
     const normalized =
-        String(value)
+        String(number || "")
             .replace(
                 /[\s-]/g,
                 ""
             );
 
 
-    return /^(?:\+?880|0)1[3-9]\d{8}$/
+    return /^(\+880|880|0)1[3-9]\d{8}$/
         .test(normalized);
 
 }
@@ -2789,59 +3011,6 @@ function validateCheckout() {
     }
 
 
-    const phone =
-        document.getElementById(
-            "phone"
-        ).value.trim();
-
-
-    if (
-        !validatePhoneNumber(phone)
-    ) {
-
-        alert(
-            "Please enter a valid Bangladesh mobile number."
-        );
-
-        document
-            .getElementById("phone")
-            .focus();
-
-        return false;
-
-    }
-
-
-    if (
-        !paymentSenderNumber.value.trim()
-    ) {
-
-        alert(
-            "Please enter the payment sender number."
-        );
-
-        paymentSenderNumber.focus();
-
-        return false;
-
-    }
-
-
-    if (
-        !paymentReference.value.trim()
-    ) {
-
-        alert(
-            "Please enter the transaction ID / reference."
-        );
-
-        paymentReference.focus();
-
-        return false;
-
-    }
-
-
     if (
         cart.length === 0
     ) {
@@ -2858,30 +3027,121 @@ function validateCheckout() {
     }
 
 
+    const senderNumber =
+        paymentSenderNumber.value.trim();
+
+
+    if (!senderNumber) {
+
+        alert(
+            "Please enter the payment sender number."
+        );
+
+        paymentSenderNumber.focus();
+
+        return false;
+
+    }
+
+
+    if (
+        selectedPaymentMethod !==
+        "bank_transfer"
+    ) {
+
+        if (
+            !isValidMobileNumber(
+                senderNumber
+            )
+        ) {
+
+            alert(
+                "Please enter a valid Bangladeshi mobile number."
+            );
+
+            paymentSenderNumber.focus();
+
+            return false;
+
+        }
+
+    }
+
+
+    const reference =
+        paymentReference.value.trim();
+
+
+    if (!reference) {
+
+        alert(
+            "Please enter the transaction ID / payment reference."
+        );
+
+        paymentReference.focus();
+
+        return false;
+
+    }
+
+
+    if (
+        reference.length < 4
+    ) {
+
+        alert(
+            "The transaction ID appears to be too short."
+        );
+
+        paymentReference.focus();
+
+        return false;
+
+    }
+
+
+    const totals =
+        getCartTotals();
+
+
+    if (
+        !Number.isFinite(
+            totals.total
+        ) ||
+        totals.total <= 0
+    ) {
+
+        alert(
+            "Invalid order total."
+        );
+
+        return false;
+
+    }
+
+
     return true;
 
 }
 
 
 // ============================================================
-// PLACE ORDER
+// CREATE ORDER
 // ============================================================
 
 async function placeOrder() {
 
-    if (isSubmitting) {
-
+    if (
+        isSubmitting
+    ) {
         return;
-
     }
 
 
     if (
         !validateCheckout()
     ) {
-
         return;
-
     }
 
 
@@ -2898,7 +3158,7 @@ async function placeOrder() {
 
     placeOrderBtn.innerHTML = `
 
-        <div class="spinner"></div>
+        <div class="spinner mx-auto"></div>
 
     `;
 
@@ -2916,10 +3176,10 @@ async function placeOrder() {
             await supabaseClient.auth.getUser();
 
 
-        if (authError) {
-
+        if (
+            authError
+        ) {
             throw authError;
-
         }
 
 
@@ -2946,7 +3206,7 @@ async function placeOrder() {
 
 
         // ====================================================
-        // CUSTOMER INFORMATION
+        // CUSTOMER DATA
         // ====================================================
 
         const customerName =
@@ -2993,17 +3253,6 @@ async function placeOrder() {
             getCartTotals();
 
 
-        if (
-            totals.total <= 0
-        ) {
-
-            throw new Error(
-                "Invalid order total."
-            );
-
-        }
-
-
         // ====================================================
         // ORDER NUMBER
         // ====================================================
@@ -3013,7 +3262,13 @@ async function placeOrder() {
 
 
         // ====================================================
-        // ORDER
+        // ORDER PAYLOAD
+        // ====================================================
+        //
+        // Payment remains pending until admin verification.
+        //
+        // Subscription credentials remain NULL until
+        // the administrator delivers the subscription.
         // ====================================================
 
         const orderPayload = {
@@ -3113,7 +3368,14 @@ async function placeOrder() {
                 .single();
 
 
-        if (orderError) {
+        if (
+            orderError
+        ) {
+
+            console.error(
+                "Order INSERT error:",
+                orderError
+            );
 
             throw orderError;
 
@@ -3121,32 +3383,32 @@ async function placeOrder() {
 
 
         if (
-            !createdOrder?.id
+            !createdOrder ||
+            !createdOrder.id
         ) {
 
             throw new Error(
-                "Order ID was not returned."
+                "Order was created but no order ID was returned."
             );
 
         }
 
 
         // ====================================================
-        // ORDER ITEMS
+        // CREATE ORDER ITEMS
         // ====================================================
 
         const orderItems =
             cart.map(item => {
 
                 const plan =
-                    item.selectedPlan || {
-
+                    item.selectedPlan ||
+                    {
                         price:
                             item.price,
 
                         duration:
                             item.duration
-
                     };
 
 
@@ -3173,8 +3435,11 @@ async function placeOrder() {
                         ),
 
                     quantity:
-                        Number(
-                            item.quantity || 1
+                        Math.max(
+                            1,
+                            Number(
+                                item.quantity || 1
+                            )
                         )
 
                 };
@@ -3182,8 +3447,12 @@ async function placeOrder() {
             });
 
 
+        // ====================================================
+        // INSERT ORDER ITEMS
+        // ====================================================
+
         const {
-            error: itemError
+            error: itemsError
         } =
             await supabaseClient
                 .from("order_items")
@@ -3192,18 +3461,16 @@ async function placeOrder() {
                 );
 
 
-        if (itemError) {
-
-            // Important:
-            // The order exists, but items failed.
-            // Do not pretend checkout succeeded.
+        if (
+            itemsError
+        ) {
 
             console.error(
-                "Order item insert failed:",
-                itemError
+                "Order items INSERT error:",
+                itemsError
             );
 
-            throw itemError;
+            throw itemsError;
 
         }
 
@@ -3223,8 +3490,27 @@ async function placeOrder() {
         updateCartCount();
 
 
-        successMessage.textContent =
-            `Order ${createdOrder.order_number} has been submitted successfully. Your payment is now pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+        successMessage.innerHTML = `
+
+            <strong>
+                Order ${escapeHTML(
+                    createdOrder.order_number
+                )}
+            </strong>
+            has been submitted successfully.
+
+            <br><br>
+
+            Your payment is now
+            <strong>pending verification</strong>.
+
+            <br><br>
+
+            Once your payment is verified,
+            your subscription/account details will
+            appear in your dashboard.
+
+        `;
 
 
         successModal.classList.remove(
@@ -3245,8 +3531,40 @@ async function placeOrder() {
     catch (error) {
 
         console.error(
-            "ORDER CREATION FAILED:",
+            "================================"
+        );
+
+        console.error(
+            "ORDER CREATION FAILED"
+        );
+
+        console.error(
+            "================================"
+        );
+
+        console.error(
+            "Error:",
             error
+        );
+
+        console.error(
+            "Message:",
+            error?.message
+        );
+
+        console.error(
+            "Code:",
+            error?.code
+        );
+
+        console.error(
+            "Details:",
+            error?.details
+        );
+
+        console.error(
+            "Hint:",
+            error?.hint
         );
 
 
@@ -3255,35 +3573,57 @@ async function placeOrder() {
 
 
         if (
-            error?.code === "23505"
+            error?.code ===
+            "23505"
         ) {
 
             message =
                 "This order number already exists. Please try again.";
 
         }
+
+
         else if (
-            error?.code === "23502"
+            error?.code ===
+            "23502"
         ) {
 
             message =
                 "A required order field is missing. Please check your database structure.";
 
         }
+
+
         else if (
-            error?.code === "42501"
+            error?.code ===
+            "42501"
         ) {
 
             message =
-                "You do not have permission to create this order. Please check your login and Supabase RLS policies.";
+                "You do not have permission to place this order. Please check your Supabase RLS policies.";
 
         }
+
+
         else if (
-            error?.code === "23503"
+            error?.code ===
+            "23503"
         ) {
 
             message =
-                "Your account could not be linked to the order. Please log in again.";
+                "Your account could not be linked to this order. Please log in again.";
+
+        }
+
+
+        else if (
+            error?.message
+        ) {
+
+            console.error(
+                "Supabase error:",
+                error.message
+            );
 
         }
 
@@ -3332,23 +3672,7 @@ document
 
 
 // ============================================================
-// PROMO EVENTS
-// ============================================================
-
-promoToggle.addEventListener(
-    "change",
-    togglePromoSection
-);
-
-
-applyPromo.addEventListener(
-    "click",
-    applyPromoCode
-);
-
-
-// ============================================================
-// PLACE ORDER
+// PLACE ORDER EVENT
 // ============================================================
 
 placeOrderBtn.addEventListener(
@@ -3376,10 +3700,12 @@ async function init() {
             await supabaseClient.auth.getUser();
 
 
-        if (error) {
+        if (
+            error
+        ) {
 
             console.error(
-                "Auth error:",
+                "Authentication error:",
                 error
             );
 
@@ -3395,7 +3721,9 @@ async function init() {
             data?.user;
 
 
-        if (!currentUser) {
+        if (
+            !currentUser
+        ) {
 
             alert(
                 "Please log in before accessing checkout."
@@ -3407,6 +3735,12 @@ async function init() {
             return;
 
         }
+
+
+        console.log(
+            "Checkout user:",
+            currentUser.id
+        );
 
 
         // ====================================================
@@ -3442,11 +3776,26 @@ async function init() {
         cart =
             cart.map(item => {
 
+                const quantity =
+                    Math.max(
+                        1,
+                        Number(
+                            item.quantity || 1
+                        )
+                    );
+
+
                 if (
                     item.selectedPlan
                 ) {
 
-                    return item;
+                    return {
+
+                        ...item,
+
+                        quantity
+
+                    };
 
                 }
 
@@ -3454,6 +3803,8 @@ async function init() {
                 return {
 
                     ...item,
+
+                    quantity,
 
                     selectedPlan: {
 
@@ -3490,7 +3841,7 @@ async function init() {
 
 
         // ====================================================
-        // EMAIL
+        // PREFILL EMAIL
         // ====================================================
 
         const emailInput =
@@ -3544,7 +3895,7 @@ async function init() {
 
 
 // ============================================================
-// AUTH STATE
+// AUTH STATE MONITOR
 // ============================================================
 
 supabaseClient.auth.onAuthStateChange(
