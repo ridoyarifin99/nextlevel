@@ -397,7 +397,7 @@
         }
 
         .status.paid,
-        .status.approved,
+        .status.paid,
         .status.active {
             background: #f0fdf4;
             color: #15803d;
@@ -1171,11 +1171,11 @@
                 <div>
 
                     <div class="stat-label">
-                        Approved
+                        paid
                     </div>
 
                     <div
-                        id="approvedOrders"
+                        id="paidOrders"
                         class="stat-value"
                     >
                         0
@@ -1247,8 +1247,8 @@
                         Paid
                     </option>
 
-                    <option value="approved">
-                        Approved
+                    <option value="paid">
+                        paid
                     </option>
 
                     <option value="failed">
@@ -2164,7 +2164,7 @@
                 ).length;
 
 
-            const approved =
+            const paid =
                 allOrders.filter(
                     order => {
 
@@ -2176,7 +2176,7 @@
 
                         return (
                             status === "paid" ||
-                            status === "approved"
+                            status === "paid"
                         );
 
                     }
@@ -2196,7 +2196,7 @@
 
                             return (
                                 status === "paid" ||
-                                status === "approved"
+                                status === "paid"
                             );
 
                         }
@@ -2227,9 +2227,9 @@
 
 
             document.getElementById(
-                "approvedOrders"
+                "paidOrders"
             ).textContent =
-                approved;
+                paid;
 
 
             document.getElementById(
@@ -2273,7 +2273,7 @@
             if (
                 [
                     "paid",
-                    "approved",
+                    "paid",
                     "active"
                 ].includes(value)
             ) {
@@ -3168,7 +3168,7 @@
                         .update({
 
                             payment_status:
-                                "approved"
+                                "paid"
 
                         })
                         .eq(
@@ -3183,7 +3183,7 @@
 
 
                 showToast(
-                    "Payment approved successfully."
+                    "Payment paid successfully."
                 );
 
 
@@ -3755,7 +3755,7 @@
 
                 /*
                  * Automatically make sure the order
-                 * is marked as approved.
+                 * is marked as paid.
                  */
 
                 const {
@@ -3766,7 +3766,7 @@
                         .update({
 
                             payment_status:
-                                "approved"
+                                "paid"
 
                         })
                         .eq(
