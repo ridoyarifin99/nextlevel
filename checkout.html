@@ -466,7 +466,6 @@
                                     border-gray-200
                                     text-center
                                     selected
-                                    cursor-pointer
                                 "
                                 data-method="bkash"
                             >
@@ -503,7 +502,6 @@
                                     border
                                     border-gray-200
                                     text-center
-                                    cursor-pointer
                                 "
                                 data-method="nagad"
                             >
@@ -540,7 +538,6 @@
                                     border
                                     border-gray-200
                                     text-center
-                                    cursor-pointer
                                 "
                                 data-method="rocket"
                             >
@@ -577,7 +574,6 @@
                                     border
                                     border-gray-200
                                     text-center
-                                    cursor-pointer
                                 "
                                 data-method="upay"
                             >
@@ -604,7 +600,7 @@
 
 
 
-                            <!-- BANK -->
+                            <!-- BANK TRANSFER -->
 
                             <div
                                 class="
@@ -614,7 +610,6 @@
                                     border
                                     border-gray-200
                                     text-center
-                                    cursor-pointer
                                     md:col-span-2
                                 "
                                 data-method="bank_transfer"
@@ -1144,6 +1139,10 @@
 
         nagad: "01644490566",
 
+        /*
+         * Rocket number supplied by you.
+         * Keeping it exactly as provided.
+         */
         rocket: "016444905664",
 
         upay: "01590093965",
@@ -1253,7 +1252,9 @@
 
     function formatMoney(amount) {
 
-        return Number(amount || 0).toFixed(2);
+        return Number(
+            amount || 0
+        ).toFixed(2);
 
     }
 
@@ -1261,6 +1262,12 @@
 
     // =========================================================
     // GENERATE ORDER NUMBER
+    //
+    // REQUIRED because your orders.order_number
+    // column is NOT NULL.
+    //
+    // Example:
+    // NLS-20260825-483921
     // =========================================================
 
     function generateOrderNumber() {
@@ -1293,7 +1300,7 @@
 
 
     // =========================================================
-    // PAYMENT METHOD LABEL
+    // GET PAYMENT LABEL
     // =========================================================
 
     function getPaymentMethodLabel(method) {
@@ -1410,9 +1417,12 @@
                 </h3>
 
                 <p class="text-sm text-gray-600 mb-3">
+
                     Send the exact order total to the
-                    following number using ${escapeHTML(label)}
+                    following number using
+                    ${escapeHTML(label)}
                     Send Money.
+
                 </p>
 
                 <div
@@ -1426,13 +1436,18 @@
                         text-lg
                     "
                 >
+
                     ${escapeHTML(account)}
+
                 </div>
 
                 <p class="text-sm text-gray-500 mt-3">
-                    After sending the payment, enter the
-                    number you used to send the money and
-                    your transaction ID below.
+
+                    After sending the payment,
+                    enter the number you used to
+                    send the money and your
+                    transaction ID below.
+
                 </p>
 
             `;
@@ -1459,14 +1474,18 @@
             method;
 
         document
-            .querySelectorAll(".payment-method")
-            .forEach(element => {
+            .querySelectorAll(
+                ".payment-method"
+            )
+            .forEach(
+                element => {
 
-                element.classList.remove(
-                    "selected"
-                );
+                    element.classList.remove(
+                        "selected"
+                    );
 
-            });
+                }
+            );
 
         const selectedElement =
             document.querySelector(
@@ -1500,7 +1519,7 @@
 
 
     // =========================================================
-    // ORDER SUMMARY
+    // RENDER ORDER SUMMARY
     // =========================================================
 
     function renderOrderSummary() {
@@ -1587,19 +1606,22 @@
                         style="
                             background-color:
                             ${escapeHTML(
-                                item.color || "#eeeeee"
+                                item.color ||
+                                "#eeeeee"
                             )}20;
                         "
                     >
 
                         <i
                             class="${escapeHTML(
-                                item.icon || "fas fa-box"
+                                item.icon ||
+                                "fas fa-box"
                             )}"
                             style="
                                 color:
                                 ${escapeHTML(
-                                    item.color || "#555555"
+                                    item.color ||
+                                    "#555555"
                                 )};
                             "
                         ></i>
@@ -1632,16 +1654,21 @@
                         <div>
 
                             <h4 class="font-medium">
+
                                 ${escapeHTML(
                                     item.name ||
                                     "Product"
                                 )}
+
                             </h4>
 
                             <p class="text-sm text-gray-500">
+
                                 ${escapeHTML(
-                                    plan.duration || ""
+                                    plan.duration ||
+                                    ""
                                 )}
+
                             </p>
 
                         </div>
@@ -1652,11 +1679,17 @@
                     <div class="text-right">
 
                         <span class="font-medium">
-                            ৳${formatMoney(itemTotal)}
+
+                            ৳${formatMoney(
+                                itemTotal
+                            )}
+
                         </span>
 
                         <p class="text-sm text-gray-500">
+
                             Qty: ${quantity}
+
                         </p>
 
                     </div>
@@ -1786,6 +1819,21 @@
 
 
     // =========================================================
+    // SAVE CART
+    // =========================================================
+
+    function saveCart() {
+
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(cart)
+        );
+
+    }
+
+
+
+    // =========================================================
     // REMOVE ITEM
     // =========================================================
 
@@ -1797,10 +1845,7 @@
                     item.name !== name
             );
 
-        localStorage.setItem(
-            "streamHubCart",
-            JSON.stringify(cart)
-        );
+        saveCart();
 
         renderOrderSummary();
 
@@ -1836,10 +1881,7 @@
                     item.quantity || 1
                 ) + 1;
 
-            localStorage.setItem(
-                "streamHubCart",
-                JSON.stringify(cart)
-            );
+            saveCart();
 
             renderOrderSummary();
 
@@ -1875,10 +1917,7 @@
                     item.quantity
                 ) - 1;
 
-            localStorage.setItem(
-                "streamHubCart",
-                JSON.stringify(cart)
-            );
+            saveCart();
 
             renderOrderSummary();
 
@@ -1947,7 +1986,7 @@
 
 
     // =========================================================
-    // PROMO
+    // PROMO TOGGLE
     // =========================================================
 
     function togglePromoSection() {
@@ -2068,7 +2107,14 @@
 
 
 
-    function showPromoResult(text, success) {
+    // =========================================================
+    // PROMO RESULT
+    // =========================================================
+
+    function showPromoResult(
+        text,
+        success
+    ) {
 
         applyPromo.textContent =
             text;
@@ -2125,7 +2171,7 @@
 
 
     // =========================================================
-    // GET CART TOTALS
+    // CART TOTALS
     // =========================================================
 
     function getCartTotals() {
@@ -2193,6 +2239,30 @@
 
 
     // =========================================================
+    // CUSTOMER NAME
+    // =========================================================
+
+    function getCustomerName() {
+
+        const firstName =
+            document.getElementById(
+                "firstName"
+            ).value.trim();
+
+        const lastName =
+            document.getElementById(
+                "lastName"
+            ).value.trim();
+
+        return (
+            `${firstName} ${lastName}`
+        ).trim();
+
+    }
+
+
+
+    // =========================================================
     // VALIDATE CHECKOUT
     // =========================================================
 
@@ -2219,15 +2289,7 @@
 
         }
 
-        const senderNumber =
-            paymentSenderNumber.value
-                .trim();
-
-        const reference =
-            paymentReference.value
-                .trim();
-
-        if (!senderNumber) {
+        if (!paymentSenderNumber.value.trim()) {
 
             alert(
                 "Please enter the payment sender number."
@@ -2239,7 +2301,7 @@
 
         }
 
-        if (!reference) {
+        if (!paymentReference.value.trim()) {
 
             alert(
                 "Please enter the transaction ID / payment reference."
@@ -2271,31 +2333,7 @@
 
 
     // =========================================================
-    // GET CUSTOMER NAME
-    // =========================================================
-
-    function getCustomerName() {
-
-        const firstName =
-            document
-                .getElementById("firstName")
-                .value
-                .trim();
-
-        const lastName =
-            document
-                .getElementById("lastName")
-                .value
-                .trim();
-
-        return `${firstName} ${lastName}`.trim();
-
-    }
-
-
-
-    // =========================================================
-    // CREATE ORDER
+    // PLACE ORDER
     // =========================================================
 
     async function placeOrder() {
@@ -2317,8 +2355,7 @@
         const originalButtonHTML =
             placeOrderBtn.innerHTML;
 
-        placeOrderBtn.disabled =
-            true;
+        placeOrderBtn.disabled = true;
 
         placeOrderBtn.innerHTML = `
 
@@ -2329,7 +2366,7 @@
         try {
 
             // =================================================
-            // AUTHENTICATED USER
+            // GET CURRENT AUTH USER
             // =================================================
 
             const {
@@ -2349,6 +2386,10 @@
 
             if (!user) {
 
+                alert(
+                    "Your login session has expired. Please log in again."
+                );
+
                 window.location.href =
                     "login.html";
 
@@ -2360,6 +2401,11 @@
                 user;
 
 
+            console.log(
+                "Authenticated user ID:",
+                user.id
+            );
+
 
             // =================================================
             // BILLING INFORMATION
@@ -2369,39 +2415,30 @@
                 getCustomerName();
 
             const email =
-                document
-                    .getElementById("email")
-                    .value
-                    .trim();
+                document.getElementById(
+                    "email"
+                ).value.trim();
 
             const phone =
-                document
-                    .getElementById("phone")
-                    .value
-                    .trim();
+                document.getElementById(
+                    "phone"
+                ).value.trim();
 
             const address =
-                document
-                    .getElementById("address")
-                    .value
-                    .trim();
+                document.getElementById(
+                    "address"
+                ).value.trim();
 
             const notes =
-                document
-                    .getElementById("notes")
-                    .value
-                    .trim();
+                document.getElementById(
+                    "notes"
+                ).value.trim();
 
             const senderNumber =
-                paymentSenderNumber
-                    .value
-                    .trim();
+                paymentSenderNumber.value.trim();
 
             const reference =
-                paymentReference
-                    .value
-                    .trim();
-
+                paymentReference.value.trim();
 
 
             // =================================================
@@ -2412,14 +2449,11 @@
                 getCartTotals();
 
 
-
             // =================================================
-            // GENERATE REQUIRED ORDER NUMBER
+            // GENERATE ORDER NUMBER
             //
-            // THIS FIXES:
-            //
-            // null value in column "order_number"
-            //
+            // IMPORTANT:
+            // Your database requires order_number NOT NULL.
             // =================================================
 
             const orderNumber =
@@ -2432,20 +2466,19 @@
             );
 
 
-
             // =================================================
-            // ORDERS TABLE PAYLOAD
+            // ORDER PAYLOAD
             //
-            // Includes the exact fields used by your table.
+            // These match your Supabase columns.
             // =================================================
 
             const orderPayload = {
 
-                user_id:
-                    user.id,
-
                 order_number:
                     orderNumber,
+
+                user_id:
+                    user.id,
 
                 customer_name:
                     customerName,
@@ -2486,6 +2519,9 @@
                 payment_reference:
                     reference,
 
+                payment_sender_number:
+                    senderNumber,
+
                 admin_note:
                     null,
 
@@ -2502,19 +2538,15 @@
                     null,
 
                 subscription_expiry:
-                    null,
-
-                payment_sender_number:
-                    senderNumber
+                    null
 
             };
 
 
             console.log(
-                "Creating order:",
+                "Creating order payload:",
                 orderPayload
             );
-
 
 
             // =================================================
@@ -2527,7 +2559,9 @@
             } =
                 await supabaseClient
                     .from("orders")
-                    .insert(orderPayload)
+                    .insert(
+                        orderPayload
+                    )
                     .select(
                         "id, order_number"
                     )
@@ -2552,7 +2586,7 @@
             ) {
 
                 throw new Error(
-                    "The order was created but no order ID was returned."
+                    "Order was created but no order ID was returned."
                 );
 
             }
@@ -2564,22 +2598,8 @@
             );
 
 
-
             // =================================================
-            // ORDER ITEMS
-            //
-            // Exact columns:
-            //
-            // id
-            // order_id
-            // product_name
-            // product_image
-            // plan_duration
-            // price
-            // quantity
-            // created_at
-            //
-            // id and created_at use DB defaults.
+            // CREATE ORDER ITEMS
             // =================================================
 
             const orderItems =
@@ -2596,7 +2616,6 @@
                                 item.duration
 
                         };
-
 
                     return {
 
@@ -2636,7 +2655,6 @@
             );
 
 
-
             // =================================================
             // INSERT ORDER ITEMS
             // =================================================
@@ -2658,40 +2676,31 @@
                     itemsError
                 );
 
-                /*
-                 * The order itself has already been created.
-                 * Do not pretend the entire operation succeeded.
-                 */
-
                 throw itemsError;
 
             }
 
+
+            console.log(
+                "Order items created successfully."
+            );
 
 
             // =================================================
             // SUCCESS
             // =================================================
 
-            console.log(
-                "ORDER CREATION SUCCESS:",
-                createdOrder.order_number
-            );
-
-
             localStorage.removeItem(
                 "streamHubCart"
             );
 
-
             cart = [];
-
 
             updateCartCount();
 
 
             successMessage.textContent =
-                `Order #${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+                `Order ${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
 
 
             successModal.classList.remove(
@@ -2699,101 +2708,108 @@
             );
 
 
+            // Keep button disabled after success
+
+            placeOrderBtn.innerHTML = `
+
+                <i class="fas fa-check mr-2"></i>
+
+                Order Submitted
+
+            `;
+
+
         }
         catch (error) {
 
             console.error(
-                "ORDER CREATION FAILED:",
+                "===================================="
+            );
+
+            console.error(
+                "ORDER CREATION FAILED"
+            );
+
+            console.error(
+                "===================================="
+            );
+
+            console.error(
+                "Full error:",
                 error
             );
 
+            console.error(
+                "Supabase message:",
+                error?.message
+            );
 
-            if (error?.message) {
+            console.error(
+                "Supabase code:",
+                error?.code
+            );
 
-                console.error(
-                    "Supabase message:",
-                    error.message
-                );
+            console.error(
+                "Supabase details:",
+                error?.details
+            );
 
-            }
-
-
-            if (error?.code) {
-
-                console.error(
-                    "Supabase code:",
-                    error.code
-                );
-
-            }
-
-
-            if (error?.details) {
-
-                console.error(
-                    "Supabase details:",
-                    error.details
-                );
-
-            }
+            console.error(
+                "Supabase hint:",
+                error?.hint
+            );
 
 
-            if (error?.hint) {
-
-                console.error(
-                    "Supabase hint:",
-                    error.hint
-                );
-
-            }
-
-
-            let customerMessage =
+            let message =
                 "Unable to place your order. Please try again.";
 
 
-            /*
-             * Helpful messages for common database errors.
-             */
+            // ---------------------------------------------
+            // User-friendly errors
+            // ---------------------------------------------
 
             if (
+                error?.code === "23505"
+            ) {
+
+                message =
+                    "This order number already exists. Please try again.";
+
+            }
+            else if (
                 error?.code === "23502"
             ) {
 
-                customerMessage =
-                    "Some required order information is missing. Please refresh the page and try again.";
+                message =
+                    "A required order field is missing. Please check the database columns.";
 
             }
             else if (
                 error?.code === "42501"
             ) {
 
-                customerMessage =
+                message =
                     "You do not have permission to place this order. Please make sure you are logged in.";
 
             }
             else if (
-                error?.code === "23505"
+                error?.code === "23503"
             ) {
 
-                customerMessage =
-                    "This order number already exists. Please try again.";
+                message =
+                    "Your account could not be linked to this order. Please log in again.";
 
             }
 
 
-            alert(
-                customerMessage
-            );
+            alert(message);
 
 
             placeOrderBtn.innerHTML =
                 originalButtonHTML;
 
-
             placeOrderBtn.disabled =
                 false;
-
 
             isSubmitting =
                 false;
@@ -2809,21 +2825,25 @@
     // =========================================================
 
     document
-        .querySelectorAll(".payment-method")
-        .forEach(element => {
+        .querySelectorAll(
+            ".payment-method"
+        )
+        .forEach(
+            element => {
 
-            element.addEventListener(
-                "click",
-                () => {
+                element.addEventListener(
+                    "click",
+                    () => {
 
-                    selectPaymentMethod(
-                        element.dataset.method
-                    );
+                        selectPaymentMethod(
+                            element.dataset.method
+                        );
 
-                }
-            );
+                    }
+                );
 
-        });
+            }
+        );
 
 
 
@@ -2864,7 +2884,7 @@
         try {
 
             // =================================================
-            // AUTH CHECK
+            // AUTHENTICATION
             // =================================================
 
             const {
@@ -2895,6 +2915,10 @@
 
             if (!currentUser) {
 
+                alert(
+                    "Please log in before accessing checkout."
+                );
+
                 window.location.href =
                     "login.html";
 
@@ -2902,6 +2926,11 @@
 
             }
 
+
+            console.log(
+                "Checkout authenticated user:",
+                currentUser.id
+            );
 
 
             // =================================================
@@ -2930,7 +2959,6 @@
             }
 
 
-
             // =================================================
             // STANDARDIZE CART
             // =================================================
@@ -2938,12 +2966,13 @@
             cart =
                 cart.map(item => {
 
-                    if (item.selectedPlan) {
+                    if (
+                        item.selectedPlan
+                    ) {
 
                         return item;
 
                     }
-
 
                     return {
 
@@ -2967,12 +2996,13 @@
                 });
 
 
-
             // =================================================
             // EMPTY CART
             // =================================================
 
-            if (cart.length === 0) {
+            if (
+                cart.length === 0
+            ) {
 
                 window.location.href =
                     "index.html";
@@ -2982,9 +3012,8 @@
             }
 
 
-
             // =================================================
-            // PREFILL USER EMAIL
+            // PREFILL EMAIL
             // =================================================
 
             const emailInput =
@@ -3002,7 +3031,6 @@
                     currentUser.email;
 
             }
-
 
 
             // =================================================
