@@ -1,660 +1,3065 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Next Level Estore</title>
-    <link rel="stylesheet" href="./src/output.css">
-    <link rel="stylesheet" href="./src/all.min.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout - Next Level Subs</title>
+
+    <link
+        rel="stylesheet"
+        href="./src/output.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./src/all.min.css"
+    >
 
 </head>
+
+
 <body>
-    <!-- Header -->
+
+
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
+
     <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+
+        <div
+            class="container mx-auto px-4 py-3 flex items-center justify-between"
+        >
+
             <div class="flex items-center space-x-2">
-                <a href="index.html" class="flex items-center space-x-2">
-                    <img src="/images/next_level.png" alt="Next Level Estore Logo" class="logo-image">
+
+                <a
+                    href="index.html"
+                    class="flex items-center space-x-2"
+                >
+
+                    <img
+                        src="/images/next_level.png"
+                        alt="Next Level Subs Logo"
+                        class="logo-image"
+                    >
+
                     <div class="logo-text-container">
-                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Trusted</div>
-                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Cheap</div>
-                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">Secure</div>
-                        <div class="logo-text-item" style="color: var(--primary-color); font-size: 1rem;">24/7 Support</div>
+
+                        <div
+                            class="logo-text-item"
+                            style="
+                                color: var(--primary-color);
+                                font-size: 1rem;
+                            "
+                        >
+                            Trusted
+                        </div>
+
+                        <div
+                            class="logo-text-item"
+                            style="
+                                color: var(--primary-color);
+                                font-size: 1rem;
+                            "
+                        >
+                            Cheap
+                        </div>
+
+                        <div
+                            class="logo-text-item"
+                            style="
+                                color: var(--primary-color);
+                                font-size: 1rem;
+                            "
+                        >
+                            Secure
+                        </div>
+
+                        <div
+                            class="logo-text-item"
+                            style="
+                                color: var(--primary-color);
+                                font-size: 1rem;
+                            "
+                        >
+                            24/7 Support
+                        </div>
+
                     </div>
+
                 </a>
+
             </div>
-            
+
+
             <div class="flex items-center space-x-4">
-                <a href="index.html" class="text-gray-600 hover:text-blue-500 transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+
+                <a
+                    href="index.html"
+                    class="text-gray-600 hover:text-blue-500 transition-colors"
+                >
+
+                    <i class="fas fa-arrow-left mr-2"></i>
+
+                    Continue Shopping
+
                 </a>
+
+
                 <div class="relative">
-                    <a href="checkout.html" class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors">
-                        <i class="fa-solid fa-basket-shopping-simple text-2xl"></i>
-                        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+
+                    <a
+                        href="checkout.html"
+                        class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors"
+                    >
+
+                        <i
+                            class="fa-solid fa-basket-shopping-simple text-2xl"
+                        ></i>
+
+                        <span
+                            id="cartCount"
+                            class="
+                                absolute
+                                -top-1
+                                -right-1
+                                bg-red-500
+                                text-white
+                                text-xs
+                                rounded-full
+                                h-5
+                                w-5
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+                            0
+                        </span>
+
                     </a>
+
                 </div>
+
             </div>
+
         </div>
+
     </header>
-    
-    <!-- Checkout Progress -->
+
+
+
+    <!-- =========================================================
+         CHECKOUT PROGRESS
+    ========================================================== -->
+
     <section class="py-6 bg-white shadow-sm">
+
         <div class="container mx-auto px-4">
+
             <div class="flex items-center justify-center">
+
                 <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">1</div>
-                    <span class="ml-2 font-medium">Cart</span>
+
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-full
+                            bg-blue-500
+                            flex
+                            items-center
+                            justify-center
+                            text-white
+                            font-bold
+                        "
+                    >
+                        1
+                    </div>
+
+                    <span class="ml-2 font-medium">
+                        Cart
+                    </span>
+
                 </div>
-                <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+
+
+                <div
+                    class="
+                        w-16
+                        h-1
+                        bg-gray-300
+                        mx-2
+                    "
+                ></div>
+
+
                 <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">2</div>
-                    <span class="ml-2 font-medium">Details</span>
+
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-full
+                            bg-blue-500
+                            flex
+                            items-center
+                            justify-center
+                            text-white
+                            font-bold
+                        "
+                    >
+                        2
+                    </div>
+
+                    <span class="ml-2 font-medium">
+                        Details
+                    </span>
+
                 </div>
-                <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+
+
+                <div
+                    class="
+                        w-16
+                        h-1
+                        bg-gray-300
+                        mx-2
+                    "
+                ></div>
+
+
                 <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-500 font-bold">3</div>
-                    <span class="ml-2 font-medium text-gray-500">Complete</span>
+
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-full
+                            bg-gray-300
+                            flex
+                            items-center
+                            justify-center
+                            text-gray-500
+                            font-bold
+                        "
+                    >
+                        3
+                    </div>
+
+                    <span class="ml-2 font-medium text-gray-500">
+                        Complete
+                    </span>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
-    
-    <!-- Main Content -->
+
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+    ========================================================== -->
+
     <main class="py-12">
+
         <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Checkout Form -->
+
+            <div
+                class="
+                    grid
+                    grid-cols-1
+                    lg:grid-cols-3
+                    gap-8
+                "
+            >
+
+
+                <!-- =================================================
+                     CHECKOUT FORM
+                ================================================== -->
+
                 <div class="lg:col-span-2">
-                    <h2 class="text-2xl font-bold mb-6">Billing Information</h2>
-                    
-                    <form id="checkoutForm" class="bg-white rounded-xl shadow-md p-6 mb-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                    <h2 class="text-2xl font-bold mb-6">
+                        Billing Information
+                    </h2>
+
+
+                    <form
+                        id="checkoutForm"
+                        class="
+                            bg-white
+                            rounded-xl
+                            shadow-md
+                            p-6
+                            mb-8
+                        "
+                    >
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-1
+                                md:grid-cols-2
+                                gap-6
+                            "
+                        >
+
                             <div class="form-group">
-                                <label class="form-label" for="firstName">First Name</label>
-                                <input type="text" id="firstName" class="form-input" placeholder="John" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label" for="lastName">Last Name</label>
-                                <input type="text" id="lastName" class="form-input" placeholder="Doe" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="email">Email Address</label>
-                            <input type="email" id="email" class="form-input" placeholder="john@example.com" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="phone">Phone Number</label>
-                            <input type="tel" id="phone" class="form-input" placeholder="+880 1XXX XXXXXX" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="address">Address</label>
-                            <textarea id="address" class="form-input" rows="3" placeholder="123 Main Street, City, Country" required></textarea>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="notes">Order Notes (Optional)</label>
-                            <textarea id="notes" class="form-input" rows="2" placeholder="Any special instructions or notes for your order"></textarea>
-                        </div>
-                    </form>
-                    
-                    <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
-                    
-                    <div class="bg-white rounded-xl shadow-md p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="payment-method p-4 rounded-lg border border-gray-200 text-center selected" onclick="selectPaymentMethod('whatsapp')">
-                                <i class="fa-brands fa-whatsapp text-3xl text-green-500 mb-2"></i>
-                                <h3 class="font-semibold">WhatsApp</h3>
-                                <p class="text-sm text-gray-600">Pay via WhatsApp</p>
-                            </div>
-                            
-                            <div class="payment-method p-4 rounded-lg border border-gray-200 text-center" onclick="selectPaymentMethod('bank')">
-                                <i class="fas fa-university text-3xl text-blue-500 mb-2"></i>
-                                <h3 class="font-semibold">Bank Transfer</h3>
-                                <p class="text-sm text-gray-600">Direct bank transfer</p>
-                            </div>
-                        </div>
-                        
-                        <div id="paymentDetails" class="mt-6 p-4 bg-gray-50 rounded-lg">
-                            <h3 class="font-semibold mb-2">WhatsApp Payment Instructions</h3>
-                            <p class="text-sm text-gray-600">
-                                After placing your order, we'll send you a message via WhatsApp with payment instructions. 
-                                Once payment is confirmed, we'll activate your subscription.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Order Summary -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-xl shadow-md p-6 sticky top-24">
-                        <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
-                        
-                        <div id="orderSummary" class="space-y-4 mb-6">
-                            <!-- Order items will be dynamically added here -->
-                        </div>
-                        
-                        <div class="border-t border-gray-200 pt-4">
-                            <div class="flex justify-between mb-2">
-                                <span>Subtotal</span>
-                                <span id="subtotal">৳0.00</span>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <span>Tax (1.85%)</span>
-                                <span id="tax">৳0.00</span>
-                            </div>
-                            <div class="flex justify-between mb-4">
-                                <span>Discount</span>
-                                <span id="discount" class="text-green-500">-৳0.00</span>
-                            </div>
-                            <div class="flex justify-between font-bold text-lg">
-                                <span>Total</span>
-                                <span id="total">৳0.00</span>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="text-sm font-medium">Apply Promo Code</label>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="promoToggle">
-                                    <span class="slider"></span>
+
+                                <label
+                                    class="form-label"
+                                    for="firstName"
+                                >
+                                    First Name
                                 </label>
+
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    class="form-input"
+                                    placeholder="John"
+                                    required
+                                >
+
                             </div>
-                            <div id="promoCodeSection" class="hidden mt-2">
+
+
+                            <div class="form-group">
+
+                                <label
+                                    class="form-label"
+                                    for="lastName"
+                                >
+                                    Last Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    class="form-input"
+                                    placeholder="Doe"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="email"
+                            >
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                class="form-input"
+                                placeholder="john@example.com"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="phone"
+                            >
+                                Phone Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                class="form-input"
+                                placeholder="+880 1XXX XXXXXX"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="address"
+                            >
+                                Address
+                            </label>
+
+                            <textarea
+                                id="address"
+                                class="form-input"
+                                rows="3"
+                                placeholder="123 Main Street, City, Country"
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="notes"
+                            >
+                                Order Notes (Optional)
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                class="form-input"
+                                rows="2"
+                                placeholder="Any special instructions or notes for your order"
+                            ></textarea>
+
+                        </div>
+
+                    </form>
+
+
+
+                    <!-- =================================================
+                         PAYMENT METHOD
+                    ================================================== -->
+
+                    <h2 class="text-2xl font-bold mb-6">
+                        Payment Method
+                    </h2>
+
+
+                    <div class="bg-white rounded-xl shadow-md p-6">
+
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-1
+                                md:grid-cols-2
+                                gap-4
+                            "
+                        >
+
+
+                            <!-- bKASH -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                "
+                                data-payment-method="bkash"
+                                onclick="selectPaymentMethod('bkash')"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-mobile-screen-button
+                                        text-3xl
+                                        text-pink-500
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-semibold">
+                                    bKash
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Pay via bKash
+                                </p>
+
+                            </div>
+
+
+
+                            <!-- NAGAD -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                "
+                                data-payment-method="nagad"
+                                onclick="selectPaymentMethod('nagad')"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-mobile-screen-button
+                                        text-3xl
+                                        text-orange-500
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-semibold">
+                                    Nagad
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Pay via Nagad
+                                </p>
+
+                            </div>
+
+
+
+                            <!-- ROCKET -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                "
+                                data-payment-method="rocket"
+                                onclick="selectPaymentMethod('rocket')"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-rocket
+                                        text-3xl
+                                        text-purple-600
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-semibold">
+                                    Rocket
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Pay via Rocket
+                                </p>
+
+                            </div>
+
+
+
+                            <!-- UPAY -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                "
+                                data-payment-method="upay"
+                                onclick="selectPaymentMethod('upay')"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-wallet
+                                        text-3xl
+                                        text-green-600
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-semibold">
+                                    Upay
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Pay via Upay
+                                </p>
+
+                            </div>
+
+
+
+                            <!-- BANK TRANSFER -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    p-4
+                                    rounded-lg
+                                    border
+                                    border-gray-200
+                                    text-center
+                                    md:col-span-2
+                                "
+                                data-payment-method="bank_transfer"
+                                onclick="selectPaymentMethod('bank_transfer')"
+                            >
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-university
+                                        text-3xl
+                                        text-blue-500
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-semibold">
+                                    Bank Transfer
+                                </h3>
+
+                                <p class="text-sm text-gray-600">
+                                    Direct bank transfer
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             PAYMENT DETAILS
+                        ================================================== -->
+
+                        <div
+                            id="paymentDetails"
+                            class="
+                                mt-6
+                                p-4
+                                bg-gray-50
+                                rounded-lg
+                            "
+                        ></div>
+
+
+                        <!-- =================================================
+                             PAYMENT REFERENCE
+                        ================================================== -->
+
+                        <div
+                            id="paymentReferenceSection"
+                            class="mt-6"
+                        >
+
+                            <div class="form-group">
+
+                                <label
+                                    class="form-label"
+                                    for="senderNumber"
+                                >
+                                    Sender / Account Number
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="senderNumber"
+                                    class="form-input"
+                                    placeholder="Enter the number/account you paid from"
+                                >
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label
+                                    class="form-label"
+                                    for="paymentReference"
+                                >
+                                    Transaction ID / Payment Reference
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="paymentReference"
+                                    class="form-input"
+                                    placeholder="Enter your transaction ID"
+                                >
+
+                            </div>
+
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                    mt-2
+                                "
+                            >
+
+                                Please make the payment first, then enter
+                                the transaction/reference ID here.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ORDER SUMMARY
+                ================================================== -->
+
+                <div class="lg:col-span-1">
+
+                    <div
+                        class="
+                            bg-white
+                            rounded-xl
+                            shadow-md
+                            p-6
+                            sticky
+                            top-24
+                        "
+                    >
+
+                        <h2 class="text-2xl font-bold mb-4">
+                            Order Summary
+                        </h2>
+
+
+                        <div
+                            id="orderSummary"
+                            class="space-y-4 mb-6"
+                        ></div>
+
+
+                        <div
+                            class="
+                                border-t
+                                border-gray-200
+                                pt-4
+                            "
+                        >
+
+                            <div class="flex justify-between mb-2">
+
+                                <span>
+                                    Subtotal
+                                </span>
+
+                                <span id="subtotal">
+                                    ৳0.00
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex justify-between mb-2">
+
+                                <span>
+                                    Tax (1.85%)
+                                </span>
+
+                                <span id="tax">
+                                    ৳0.00
+                                </span>
+
+                            </div>
+
+
+                            <div class="flex justify-between mb-4">
+
+                                <span>
+                                    Discount
+                                </span>
+
+                                <span
+                                    id="discount"
+                                    class="text-green-500"
+                                >
+                                    -৳0.00
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="
+                                    flex
+                                    justify-between
+                                    font-bold
+                                    text-lg
+                                "
+                            >
+
+                                <span>
+                                    Total
+                                </span>
+
+                                <span id="total">
+                                    ৳0.00
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- PROMO -->
+
+                        <div class="mt-6">
+
+                            <div
+                                class="
+                                    flex
+                                    items-center
+                                    justify-between
+                                    mb-2
+                                "
+                            >
+
+                                <label class="text-sm font-medium">
+                                    Apply Promo Code
+                                </label>
+
+                                <label class="toggle-switch">
+
+                                    <input
+                                        type="checkbox"
+                                        id="promoToggle"
+                                    >
+
+                                    <span class="slider"></span>
+
+                                </label>
+
+                            </div>
+
+
+                            <div
+                                id="promoCodeSection"
+                                class="hidden mt-2"
+                            >
+
                                 <div class="flex">
-                                    <input type="text" id="promoCode" placeholder="Enter promo code" class="flex-1 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                    <button id="applyPromo" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-r-lg hover:bg-gray-300 transition-colors">Apply</button>
+
+                                    <input
+                                        type="text"
+                                        id="promoCode"
+                                        placeholder="Enter promo code"
+                                        class="
+                                            flex-1
+                                            px-4
+                                            py-2
+                                            border
+                                            border-gray-300
+                                            rounded-l-lg
+                                            focus:outline-none
+                                            focus:ring-2
+                                            focus:ring-blue-300
+                                        "
+                                    >
+
+                                    <button
+                                        id="applyPromo"
+                                        type="button"
+                                        class="
+                                            px-4
+                                            py-2
+                                            bg-gray-200
+                                            text-gray-700
+                                            rounded-r-lg
+                                            hover:bg-gray-300
+                                            transition-colors
+                                        "
+                                    >
+                                        Apply
+                                    </button>
+
                                 </div>
+
                             </div>
+
                         </div>
-                        
-                        <button id="placeOrderBtn" class="w-full mt-6 py-3 rounded-lg font-semibold text-white btn-whatsapp">
-                            <i class="fa-brands fa-whatsapp mr-2"></i>Place Order via WhatsApp
+
+
+
+                        <!-- PLACE ORDER -->
+
+                        <button
+                            id="placeOrderBtn"
+                            type="button"
+                            class="
+                                w-full
+                                mt-6
+                                py-3
+                                rounded-lg
+                                font-semibold
+                                text-white
+                                btn-primary
+                            "
+                        >
+
+                            <i class="fas fa-lock mr-2"></i>
+
+                            Submit Payment
+
                         </button>
-                        
-                        <div class="mt-4 text-center text-sm text-gray-500">
-                            <i class="fas fa-lock mr-1"></i> Secure Checkout
+
+
+                        <div
+                            class="
+                                mt-4
+                                text-center
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+
+                            <i class="fas fa-lock mr-1"></i>
+
+                            Secure Checkout
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </main>
-    
-    <!-- WhatsApp Floating Button -->
-    <div id="whatsappFab" class="whatsapp-fab" onclick="sendToWhatsApp()">
-        <i class="fa-brands fa-whatsapp"></i>
-    </div>
-    
-    <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 z-50 hidden">
-        <div class="modal-backdrop absolute inset-0"></div>
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center animate-fade-in">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-check text-3xl text-green-500 animate-checkmark"></i>
+
+
+
+    <!-- =========================================================
+         SUCCESS MODAL
+    ========================================================== -->
+
+    <div
+        id="successModal"
+        class="fixed inset-0 z-50 hidden"
+    >
+
+        <div
+            class="
+                modal-backdrop
+                absolute
+                inset-0
+            "
+        ></div>
+
+
+        <div
+            class="
+                flex
+                items-center
+                justify-center
+                min-h-screen
+                p-4
+            "
+        >
+
+            <div
+                class="
+                    bg-white
+                    rounded-xl
+                    shadow-2xl
+                    w-full
+                    max-w-md
+                    p-8
+                    text-center
+                    animate-fade-in
+                "
+            >
+
+                <div
+                    class="
+                        w-16
+                        h-16
+                        bg-green-100
+                        rounded-full
+                        flex
+                        items-center
+                        justify-center
+                        mx-auto
+                        mb-4
+                    "
+                >
+
+                    <i
+                        class="
+                            fas
+                            fa-check
+                            text-3xl
+                            text-green-500
+                            animate-checkmark
+                        "
+                    ></i>
+
                 </div>
-                <h2 class="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
-                <p class="text-gray-600 mb-6">Your order details have been sent to WhatsApp. We'll contact you soon for payment confirmation.</p>
+
+
+                <h2 class="text-2xl font-bold mb-2">
+                    Order Submitted Successfully!
+                </h2>
+
+
+                <p
+                    id="successMessage"
+                    class="text-gray-600 mb-6"
+                >
+                    Your payment information has been submitted.
+                    Your order is currently pending verification.
+                </p>
+
+
+                <div
+                    id="successOrderNumber"
+                    class="
+                        bg-gray-50
+                        rounded-lg
+                        p-3
+                        mb-6
+                        font-semibold
+                    "
+                ></div>
+
+
                 <div class="flex justify-center space-x-4">
-                    <button onclick="closeSuccessModal()" class="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors">
-                        Continue Shopping
-                    </button>
-                    <a href="index.html" class="px-6 py-2 rounded-lg font-semibold text-white btn-primary">
-                        Go to Home
+
+                    <a
+                        href="dashboard.html"
+                        class="
+                            px-6
+                            py-2
+                            rounded-lg
+                            font-semibold
+                            text-white
+                            btn-primary
+                        "
+                    >
+                        View Dashboard
                     </a>
+
+
+                    <a
+                        href="index.html"
+                        class="
+                            px-6
+                            py-2
+                            border
+                            border-gray-300
+                            rounded-lg
+                            font-medium
+                            hover:bg-gray-100
+                            transition-colors
+                        "
+                    >
+                        Home
+                    </a>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
-    
+
+
+
+    <!-- =========================================================
+         SUPABASE
+    ========================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <script
+        src="./js/supabase-config.js"
+    ></script>
+
+
+    <script
+        src="./js/nextlevel-auth.js"
+    ></script>
+
+
+
+    <!-- =========================================================
+         CHECKOUT JAVASCRIPT
+    ========================================================== -->
+
     <script>
-        // Cart state
-        let cart = [];
-        let selectedPaymentMethod = 'whatsapp';
-        let discountAmount = 0;
-        let appliedPromoCode = '';
-        
-        // DOM elements
-        const orderSummary = document.getElementById('orderSummary');
-        const subtotalEl = document.getElementById('subtotal');
-        const taxEl = document.getElementById('tax');
-        const discountEl = document.getElementById('discount');
-        const totalEl = document.getElementById('total');
-        const promoToggle = document.getElementById('promoToggle');
-        const promoCodeSection = document.getElementById('promoCodeSection');
-        const promoCode = document.getElementById('promoCode');
-        const applyPromo = document.getElementById('applyPromo');
-        const placeOrderBtn = document.getElementById('placeOrderBtn');
-        const paymentDetails = document.getElementById('paymentDetails');
-        const successModal = document.getElementById('successModal');
-        const whatsappFab = document.getElementById('whatsappFab');
-        const cartCount = document.getElementById('cartCount');
-        
-        // Initialize the page
-        function init() {
-            // Load cart from localStorage
-            cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
-            
-            // Standardize cart items to have selectedPlan
-            cart = cart.map(item => {
-                if (item.selectedPlan) {
-                    return item;
-                } else {
-                    return {
-                        ...item,
-                        selectedPlan: {
-                            price: item.price,
-                            duration: item.duration,
-                            currency: 'BDT'
+
+    "use strict";
+
+
+    // =========================================================
+    // PAYMENT ACCOUNTS
+    // =========================================================
+
+    const PAYMENT_ACCOUNTS = {
+
+        bkash: {
+            name: "bKash",
+            number: "01912261564"
+        },
+
+        nagad: {
+            name: "Nagad",
+            number: "01644490566"
+        },
+
+        rocket: {
+            name: "Rocket",
+            number: "016444905664"
+        },
+
+        upay: {
+            name: "Upay",
+            number: "01590093965"
+        },
+
+        bank_transfer: {
+
+            name: "Bank Transfer",
+
+            bankName: "City Bank",
+
+            accountNumber:
+                "2302841525001",
+
+            accountHolder:
+                "Nur Mohammad",
+
+            branch:
+                "Naogaon"
+
+        }
+
+    };
+
+
+    // =========================================================
+    // STATE
+    // =========================================================
+
+    let cart = [];
+
+    let selectedPaymentMethod =
+        "bkash";
+
+    let discountAmount = 0;
+
+    let appliedPromoCode = "";
+
+
+    // =========================================================
+    // DOM
+    // =========================================================
+
+    const orderSummary =
+        document.getElementById(
+            "orderSummary"
+        );
+
+    const subtotalEl =
+        document.getElementById(
+            "subtotal"
+        );
+
+    const taxEl =
+        document.getElementById(
+            "tax"
+        );
+
+    const discountEl =
+        document.getElementById(
+            "discount"
+        );
+
+    const totalEl =
+        document.getElementById(
+            "total"
+        );
+
+    const promoToggle =
+        document.getElementById(
+            "promoToggle"
+        );
+
+    const promoCodeSection =
+        document.getElementById(
+            "promoCodeSection"
+        );
+
+    const promoCode =
+        document.getElementById(
+            "promoCode"
+        );
+
+    const applyPromo =
+        document.getElementById(
+            "applyPromo"
+        );
+
+    const placeOrderBtn =
+        document.getElementById(
+            "placeOrderBtn"
+        );
+
+    const paymentDetails =
+        document.getElementById(
+            "paymentDetails"
+        );
+
+    const successModal =
+        document.getElementById(
+            "successModal"
+        );
+
+    const successMessage =
+        document.getElementById(
+            "successMessage"
+        );
+
+    const successOrderNumber =
+        document.getElementById(
+            "successOrderNumber"
+        );
+
+    const cartCount =
+        document.getElementById(
+            "cartCount"
+        );
+
+    const senderNumber =
+        document.getElementById(
+            "senderNumber"
+        );
+
+    const paymentReference =
+        document.getElementById(
+            "paymentReference"
+        );
+
+
+
+    // =========================================================
+    // ESCAPE HTML
+    // =========================================================
+
+    function escapeHTML(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+
+    // =========================================================
+    // INITIALIZE
+    // =========================================================
+
+    async function init() {
+
+        try {
+
+            /*
+             * Require login.
+             */
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .getUser();
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            if (!data?.user) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            /*
+             * Load cart.
+             */
+
+            cart =
+                JSON.parse(
+                    localStorage.getItem(
+                        "streamHubCart"
+                    )
+                ) || [];
+
+
+            cart =
+                cart.map(
+                    item => {
+
+                        if (
+                            item.selectedPlan
+                        ) {
+
+                            return item;
+
                         }
-                    };
-                }
-            });
-            
-            // Check if cart is empty
-            if (cart.length === 0) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Render order summary
-            renderOrderSummary();
-            
-            // Update cart count
-            updateCartCount();
-            
-           // Event listeners
-            promoToggle.addEventListener('change', togglePromoSection);
-            applyPromo.addEventListener('click', applyPromoCode);
-            placeOrderBtn.addEventListener('click', placeOrder);
-            
-            // Show/hide WhatsApp button
-            window.addEventListener('scroll', () => {
-                if (window.pageYOffset > 300) {
-                    whatsappFab.style.opacity = '1';
-                    whatsappFab.style.visibility = 'visible';
-                } else {
-                    whatsappFab.style.opacity = '0';
-                    whatsappFab.style.visibility = 'hidden';
-                }
-            });
-        }
-        
-        // Calculate tax based on price (1.85%)
-        function calculateTax(price) {
-            // Calculate 1.85% of the price
-            return price * 0.0185;
-        }
-        
-        // Render order summary
-        function renderOrderSummary() {
-            orderSummary.innerHTML = '';
-            let subtotal = 0;
-            let totalTax = 0;
-            
-            cart.forEach((item, index) => {
-                const itemTotal = item.selectedPlan.price * item.quantity;
-                subtotal += itemTotal;
-                
-                // Calculate tax for this item (1.85%)
-                const itemTax = calculateTax(itemTotal);
-                totalTax += itemTax;
-                
-                const orderItem = document.createElement('div');
-                orderItem.className = 'order-item p-3 border-b border-gray-200';
-                
-                // Create product image HTML for cart items
-                const productImageHTML = item.image 
-                    ? `<img src="${item.image}" alt="${item.name}" class="w-10 h-10 rounded-lg mr-3 object-contain">`
-                    : `<div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background-color: ${item.color}20;">
-                        <i class="${item.icon}" style="color: ${item.color};"></i>
-                      </div>`;
-                
-                orderItem.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-start">
-                            ${productImageHTML}
-                            <div>
-                                <h4 class="font-medium">${item.name}</h4>
-                                <p class="text-sm text-gray-500">${item.selectedPlan.duration}</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-medium">৳${itemTotal.toFixed(2)}</span>
-                            <p class="text-sm text-gray-500">Qty: ${item.quantity}</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <button class="remove-btn flex items-center text-sm" onclick="removeItem('${item.name}')">
-                            <i class="fas fa-trash mr-1"></i> Remove
-                        </button>
-                        <div class="quantity-control">
-                            <button class="quantity-btn" onclick="decreaseQuantity('${item.name}')">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" readonly>
-                            <button class="quantity-btn" onclick="increaseQuantity('${item.name}')">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                orderSummary.appendChild(orderItem);
-            });
-            
-            // Calculate totals
-            const total = subtotal + totalTax - discountAmount;
-            
-            // Update UI
-            subtotalEl.textContent = `৳${subtotal.toFixed(2)}`;
-            taxEl.textContent = `৳${totalTax.toFixed(2)}`;
-            discountEl.textContent = `-৳${discountAmount.toFixed(2)}`;
-            totalEl.textContent = `৳${total.toFixed(2)}`;
-        }
-        
-        // Update cart count
-        function updateCartCount() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCount.textContent = totalItems;
-        }
-        
-        // Remove item from cart
-        function removeItem(name) {
-            cart = cart.filter(item => item.name !== name);
-            localStorage.setItem('streamHubCart', JSON.stringify(cart));
-            renderOrderSummary();
-            updateCartCount();
-            
-            // If cart becomes empty, redirect to home
-            if (cart.length === 0) {
-                window.location.href = 'index.html';
-            }
-        }
-        
-        // Increase item quantity
-        function increaseQuantity(name) {
-            const item = cart.find(item => item.name === name);
-            if (item) {
-                item.quantity += 1;
-                localStorage.setItem('streamHubCart', JSON.stringify(cart));
-                renderOrderSummary();
-                updateCartCount();
-            }
-        }
-        
-        // Decrease item quantity
-        function decreaseQuantity(name) {
-            const item = cart.find(item => item.name === name);
-            if (item && item.quantity > 1) {
-                item.quantity -= 1;
-                localStorage.setItem('streamHubCart', JSON.stringify(cart));
-                renderOrderSummary();
-                updateCartCount();
-            }
-        }
-        
-        // Toggle promo code section
-        function togglePromoSection() {
-            if (promoToggle.checked) {
-                promoCodeSection.classList.remove('hidden');
-            } else {
-                promoCodeSection.classList.add('hidden');
-                // Reset discount if promo is toggled off
-                discountAmount = 0;
-                appliedPromoCode = '';
-                renderOrderSummary();
-            }
-        }
-        
-        // Apply promo code
-        function applyPromoCode() {
-            const code = promoCode.value.trim().toUpperCase();
-            
-            if (code === 'TAXFREE') {
-                // Apply tax-free discount (remove the 1.85% tax)
-                const taxAmount = parseFloat(taxEl.textContent.replace(/[^0-9.-]+/g,""));
-                discountAmount = taxAmount;
-                appliedPromoCode = 'TAXFREE';
-                
-                // Update UI
-                renderOrderSummary();
-                
-                // Show success message
-                applyPromo.textContent = 'Tax Free!';
-                applyPromo.classList.add('bg-green-500', 'text-white');
-                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
-                
-                setTimeout(() => {
-                    applyPromo.textContent = 'Apply';
-                    applyPromo.classList.remove('bg-green-500', 'text-white');
-                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
-                }, 2000);
-                
-            } else if (code === 'JULY36') {
-                // Apply 30 Taka discount
-                discountAmount = 0;
-                appliedPromoCode = 'JULY36';
-                
-                // Update UI
-                renderOrderSummary();
-                
-                // Show success message
-                applyPromo.textContent = '30 Taka Off!';
-                applyPromo.classList.add('bg-green-500', 'text-white');
-                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
-                
-                setTimeout(() => {
-                    applyPromo.textContent = 'Apply';
-                    applyPromo.classList.remove('bg-green-500', 'text-white');
-                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
-                }, 2000);
-                
-            } else if (code === 'NEXTLEVEL10') {
-                // Apply 10% discount
-                const subtotal = parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,""));
-                discountAmount = Math.round(subtotal * 0.1);
-                appliedPromoCode = 'NEXTLEVEL10';
-                
-                // Update UI
-                renderOrderSummary();
-                
-                // Show success message
-                applyPromo.textContent = '10% Off!';
-                applyPromo.classList.add('bg-green-500', 'text-white');
-                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
-                
-                setTimeout(() => {
-                    applyPromo.textContent = 'Apply';
-                    applyPromo.classList.remove('bg-green-500', 'text-white');
-                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
-                }, 2000);
-                
-            } else {
-                // Show error message
-                applyPromo.textContent = 'Invalid';
-                applyPromo.classList.add('bg-red-500', 'text-white');
-                applyPromo.classList.remove('bg-gray-200', 'text-gray-700');
-                
-                setTimeout(() => {
-                    applyPromo.textContent = 'Apply';
-                    applyPromo.classList.remove('bg-red-500', 'text-white');
-                    applyPromo.classList.add('bg-gray-200', 'text-gray-700');
-                }, 2000);
-            }
-        }
-        
-        // Select payment method
-        function selectPaymentMethod(method) {
-            selectedPaymentMethod = method;
-            
-            // Update UI
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            
-            event.currentTarget.classList.add('selected');
-            
-            // Update payment details
-            if (method === 'whatsapp') {
-                paymentDetails.innerHTML = `
-                    <h3 class="font-semibold mb-2">WhatsApp Payment Instructions</h3>
-                    <p class="text-sm text-gray-600">
-                        After placing your order, we'll send you a message via WhatsApp with payment instructions. 
-                        Once payment is confirmed, we'll activate your subscription.
-                    </p>
-                `;
-            } else if (method === 'bank') {
-                paymentDetails.innerHTML = `
-                    <h3 class="font-semibold mb-2">Bank Transfer Instructions</h3>
-                    <p class="text-sm text-gray-600">
-                        After placing your order, we'll send you our bank details via email. 
-                        Please include your order number in the payment reference.
-                    </p>
-                `;
-            }
-        }
-        
-        // Place order
-        function placeOrder() {
-            // Get form data
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const address = document.getElementById('address').value;
-            const notes = document.getElementById('notes').value;
-            const orderDate = new Date().toLocaleString("en-GB", {
-            day: "2-digit",
-            month: "long",  // 🔹 this makes it "September" instead of "09"
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true    // 🔹 gives AM/PM format
-            });
-            // Generate random 6-digit order number
-            const orderNumber = Math.floor(100000 + Math.random() * 900000);
 
-            
-            // Validate form
-            if (!firstName || !lastName || !email || !phone || !address) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            // Show loading state
-            placeOrderBtn.innerHTML = '<div class="spinner mx-auto"></div>';
-            placeOrderBtn.disabled = true;
-            
-            // Simulate order processing
-            setTimeout(() => {
-                // Create order details
-                const subtotal = parseFloat(subtotalEl.textContent.replace(/[^0-9.-]+/g,""));
-                const tax = parseFloat(taxEl.textContent.replace(/[^0-9.-]+/g,""));
-                const total = parseFloat(totalEl.textContent.replace(/[^0-9.-]+/g,""));
-                
-                // Send order to WhatsApp
-                sendOrderToWhatsApp({
-                    orderDate,
-                    orderNumber,
-                    firstName,
-                    lastName,
-                    email,
-                    phone,
-                    address,
-                    notes,
-                    subtotal,
-                    tax,
-                    discount: discountAmount,
-                    total,
-                    items: cart,
-                    promoCode: appliedPromoCode
-                });
-                
-                // Clear cart
-                localStorage.removeItem('streamHubCart');
-                
-                // Show success modal
-                successModal.classList.remove('hidden');
-                
-                // Reset button
-                placeOrderBtn.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Place Order via WhatsApp';
-                placeOrderBtn.disabled = false;
-            }, 1500);
-        }
-        
-        // Send order to WhatsApp
-        function sendOrderToWhatsApp(orderData) {
-            try {
-                // Create WhatsApp message
-                let message = `*New Order - Next Level Subs*\n`;
-                message += `*Order No:* ${orderData.orderNumber}\n\n`;
-                message += `*Date:* ${orderData.orderDate}\n\n`;
-                message += `*Customer Information:*\n`;
-                message += `Name: ${orderData.firstName} ${orderData.lastName}\n`;
-                message += `Email: ${orderData.email}\n`;
-                message += `Phone: ${orderData.phone}\n`;
-                message += `Address: ${orderData.address}\n\n`;
-                
-                if (orderData.notes) {
-                    message += `*Notes:*\n${orderData.notes}\n\n`;
-                }
-                
-                message += `*Order Items:*\n`;
-                orderData.items.forEach(item => {
-                    message += `- ${item.name} (${item.selectedPlan.duration}): ৳${item.selectedPlan.price} x ${item.quantity}\n`;
-                });
-                
-                message += `\n*Order Summary:*\n`;
-                message += `Subtotal: ৳${orderData.subtotal.toFixed(2)}\n`;
-                message += `Tax (1.85%): ৳${orderData.tax.toFixed(2)}\n`;
-                if (orderData.discount > 0) {
-                    message += `Discount: ৳${orderData.discount.toFixed(2)}`;
-                    if (orderData.promoCode) {
-                        message += ` (${orderData.promoCode})`;
+
+                        return {
+
+                            ...item,
+
+                            selectedPlan: {
+
+                                price:
+                                    Number(
+                                        item.price || 0
+                                    ),
+
+                                duration:
+                                    item.duration ||
+                                    "month",
+
+                                currency:
+                                    "BDT"
+
+                            }
+
+                        };
+
                     }
-                    message += `\n`;
-                }
-                message += `Total: ৳${orderData.total.toFixed(2)}\n\n`;
-                
-                message += `*Payment Method:*\n${selectedPaymentMethod === 'whatsapp' ? 'WhatsApp' : 'Bank Transfer'}\n\n`;
-                
-                message += `Please confirm this order and provide payment instructions. Thank you!`;
-                
-                // Encode message for URL
-                const encodedMessage = encodeURIComponent(message);
-                
-                // Create WhatsApp URL with your number
-                const whatsappURL = `https://api.whatsapp.com/send?phone=8801644490566&text=${encodedMessage}`;
+                );
 
-                
-                // Open WhatsApp in a new tab
-                window.open(whatsappURL, '_blank');
-                window.location.href = whatsappURL;
 
-                
-            } catch (error) {
-                console.error('Error sending to WhatsApp:', error);
-                alert('There was an error sending your order to WhatsApp. Please try again.');
+            if (
+                cart.length === 0
+            ) {
+
+                window.location.href =
+                    "index.html";
+
+                return;
+
             }
-        }
-        
-        // Close success modal
-        function closeSuccessModal() {
-            successModal.classList.add('hidden');
-            window.location.href = 'index.html';
-        }
-        
-        // Initialize the app
-        init();
 
-</script>
+
+            renderOrderSummary();
+
+            updateCartCount();
+
+
+            /*
+             * Default payment method.
+             */
+
+            selectPaymentMethod(
+                "bkash"
+            );
+
+
+            /*
+             * Events.
+             */
+
+            promoToggle.addEventListener(
+                "change",
+                togglePromoSection
+            );
+
+
+            applyPromo.addEventListener(
+                "click",
+                applyPromoCode
+            );
+
+
+            placeOrderBtn.addEventListener(
+                "click",
+                placeOrder
+            );
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Checkout initialization error:",
+                error
+            );
+
+
+            alert(
+                "Unable to initialize checkout. Please log in and try again."
+            );
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // TAX
+    // =========================================================
+
+    function calculateTax(
+        price
+    ) {
+
+        return Number(price || 0) *
+            0.0185;
+
+    }
+
+
+
+    // =========================================================
+    // TOTALS
+    // =========================================================
+
+    function getCartTotals() {
+
+        let subtotal = 0;
+
+        let totalTax = 0;
+
+
+        cart.forEach(
+            item => {
+
+                const price =
+                    Number(
+                        item.selectedPlan?.price ||
+                        0
+                    );
+
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const itemTotal =
+                    price *
+                    quantity;
+
+
+                subtotal +=
+                    itemTotal;
+
+
+                totalTax +=
+                    calculateTax(
+                        itemTotal
+                    );
+
+            }
+        );
+
+
+        const total =
+            subtotal +
+            totalTax -
+            Number(
+                discountAmount || 0
+            );
+
+
+        return {
+
+            subtotal,
+
+            tax:
+                totalTax,
+
+            discount:
+                Number(
+                    discountAmount || 0
+                ),
+
+            total
+
+        };
+
+    }
+
+
+
+    // =========================================================
+    // RENDER ORDER SUMMARY
+    // =========================================================
+
+    function renderOrderSummary() {
+
+        orderSummary.innerHTML = "";
+
+
+        cart.forEach(
+            (
+                item
+            ) => {
+
+                const itemTotal =
+                    Number(
+                        item.selectedPlan?.price ||
+                        0
+                    ) *
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const productImageHTML =
+                    item.image
+
+                        ? `
+
+                            <img
+                                src="${escapeHTML(
+                                    item.image
+                                )}"
+                                alt="${escapeHTML(
+                                    item.name
+                                )}"
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-lg
+                                    mr-3
+                                    object-contain
+                                "
+                            >
+
+                        `
+
+                        : `
+
+                            <div
+                                class="
+                                    w-10
+                                    h-10
+                                    rounded-lg
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                                style="
+                                    background-color:
+                                        ${escapeHTML(
+                                            item.color ||
+                                            "#eeeeee"
+                                        )}20;
+                                "
+                            >
+
+                                <i
+                                    class="${escapeHTML(
+                                        item.icon ||
+                                        "fas fa-box"
+                                    )}"
+                                    style="
+                                        color:
+                                            ${escapeHTML(
+                                                item.color ||
+                                                "#555"
+                                            )};
+                                    "
+                                ></i>
+
+                            </div>
+
+                        `;
+
+
+                const orderItem =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                orderItem.className =
+                    "order-item p-3 border-b border-gray-200";
+
+
+                orderItem.innerHTML = `
+
+                    <div
+                        class="
+                            flex
+                            justify-between
+                            items-start
+                        "
+                    >
+
+                        <div class="flex items-start">
+
+                            ${productImageHTML}
+
+                            <div>
+
+                                <h4 class="font-medium">
+
+                                    ${escapeHTML(
+                                        item.name ||
+                                        "Product"
+                                    )}
+
+                                </h4>
+
+                                <p class="text-sm text-gray-500">
+
+                                    ${escapeHTML(
+                                        item.selectedPlan?.duration ||
+                                        "month"
+                                    )}
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="text-right">
+
+                            <span class="font-medium">
+
+                                ৳${itemTotal.toFixed(2)}
+
+                            </span>
+
+                            <p class="text-sm text-gray-500">
+
+                                Qty:
+                                ${Number(
+                                    item.quantity || 1
+                                )}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            flex
+                            justify-between
+                            items-center
+                            mt-2
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            class="
+                                remove-btn
+                                flex
+                                items-center
+                                text-sm
+                            "
+                            onclick="removeItem(
+                                '${String(
+                                    item.name
+                                ).replace(
+                                    /'/g,
+                                    "\\'"
+                                )}'
+                            )"
+                        >
+
+                            <i class="fas fa-trash mr-1"></i>
+
+                            Remove
+
+                        </button>
+
+
+                        <div class="quantity-control">
+
+                            <button
+                                type="button"
+                                class="quantity-btn"
+                                onclick="decreaseQuantity(
+                                    '${String(
+                                        item.name
+                                    ).replace(
+                                        /'/g,
+                                        "\\'"
+                                    )}'
+                                )"
+                            >
+
+                                <i class="fas fa-minus"></i>
+
+                            </button>
+
+
+                            <input
+                                type="number"
+                                class="quantity-input"
+                                value="${Number(
+                                    item.quantity || 1
+                                )}"
+                                min="1"
+                                readonly
+                            >
+
+
+                            <button
+                                type="button"
+                                class="quantity-btn"
+                                onclick="increaseQuantity(
+                                    '${String(
+                                        item.name
+                                    ).replace(
+                                        /'/g,
+                                        "\\'"
+                                    )}'
+                                )"
+                            >
+
+                                <i class="fas fa-plus"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                orderSummary.appendChild(
+                    orderItem
+                );
+
+            }
+        );
+
+
+        const totals =
+            getCartTotals();
+
+
+        subtotalEl.textContent =
+            `৳${totals.subtotal.toFixed(2)}`;
+
+
+        taxEl.textContent =
+            `৳${totals.tax.toFixed(2)}`;
+
+
+        discountEl.textContent =
+            `-৳${totals.discount.toFixed(2)}`;
+
+
+        totalEl.textContent =
+            `৳${totals.total.toFixed(2)}`;
+
+    }
+
+
+
+    // =========================================================
+    // CART COUNT
+    // =========================================================
+
+    function updateCartCount() {
+
+        const totalItems =
+            cart.reduce(
+                (
+                    sum,
+                    item
+                ) =>
+                    sum +
+                    Number(
+                        item.quantity || 1
+                    ),
+                0
+            );
+
+
+        cartCount.textContent =
+            totalItems;
+
+    }
+
+
+
+    // =========================================================
+    // REMOVE
+    // =========================================================
+
+    function removeItem(
+        name
+    ) {
+
+        cart =
+            cart.filter(
+                item =>
+                    item.name !== name
+            );
+
+
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(cart)
+        );
+
+
+        if (
+            cart.length === 0
+        ) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        renderOrderSummary();
+
+        updateCartCount();
+
+    }
+
+
+
+    // =========================================================
+    // INCREASE
+    // =========================================================
+
+    function increaseQuantity(
+        name
+    ) {
+
+        const item =
+            cart.find(
+                item =>
+                    item.name === name
+            );
+
+
+        if (!item) {
+
+            return;
+
+        }
+
+
+        item.quantity =
+            Number(
+                item.quantity || 1
+            ) + 1;
+
+
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(cart)
+        );
+
+
+        renderOrderSummary();
+
+        updateCartCount();
+
+    }
+
+
+
+    // =========================================================
+    // DECREASE
+    // =========================================================
+
+    function decreaseQuantity(
+        name
+    ) {
+
+        const item =
+            cart.find(
+                item =>
+                    item.name === name
+            );
+
+
+        if (
+            !item
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            Number(
+                item.quantity || 1
+            ) <= 1
+        ) {
+
+            return;
+
+        }
+
+
+        item.quantity =
+            Number(
+                item.quantity
+            ) - 1;
+
+
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(cart)
+        );
+
+
+        renderOrderSummary();
+
+        updateCartCount();
+
+    }
+
+
+
+    // =========================================================
+    // PROMO TOGGLE
+    // =========================================================
+
+    function togglePromoSection() {
+
+        if (
+            promoToggle.checked
+        ) {
+
+            promoCodeSection.classList.remove(
+                "hidden"
+            );
+
+        }
+        else {
+
+            promoCodeSection.classList.add(
+                "hidden"
+            );
+
+
+            discountAmount = 0;
+
+            appliedPromoCode = "";
+
+
+            renderOrderSummary();
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // PROMO CODE
+    // =========================================================
+
+    function applyPromoCode() {
+
+        const code =
+            promoCode.value
+                .trim()
+                .toUpperCase();
+
+
+        const totals =
+            getCartTotals();
+
+
+        if (
+            code ===
+            "TAXFREE"
+        ) {
+
+            discountAmount =
+                totals.tax;
+
+
+            appliedPromoCode =
+                "TAXFREE";
+
+
+            renderOrderSummary();
+
+
+            showPromoSuccess(
+                "Tax Free!"
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            code ===
+            "JULY36"
+        ) {
+
+            discountAmount =
+                30;
+
+
+            appliedPromoCode =
+                "JULY36";
+
+
+            renderOrderSummary();
+
+
+            showPromoSuccess(
+                "30 Taka Off!"
+            );
+
+
+            return;
+
+        }
+
+
+        if (
+            code ===
+            "NEXTLEVEL10"
+        ) {
+
+            discountAmount =
+                Math.round(
+                    totals.subtotal *
+                    0.10
+                );
+
+
+            appliedPromoCode =
+                "NEXTLEVEL10";
+
+
+            renderOrderSummary();
+
+
+            showPromoSuccess(
+                "10% Off!"
+            );
+
+
+            return;
+
+        }
+
+
+        applyPromo.textContent =
+            "Invalid";
+
+
+        applyPromo.classList.add(
+            "bg-red-500",
+            "text-white"
+        );
+
+
+        applyPromo.classList.remove(
+            "bg-gray-200",
+            "text-gray-700"
+        );
+
+
+        setTimeout(
+            () => {
+
+                applyPromo.textContent =
+                    "Apply";
+
+
+                applyPromo.classList.remove(
+                    "bg-red-500",
+                    "text-white"
+                );
+
+
+                applyPromo.classList.add(
+                    "bg-gray-200",
+                    "text-gray-700"
+                );
+
+            },
+            2000
+        );
+
+    }
+
+
+
+    // =========================================================
+    // PROMO SUCCESS
+    // =========================================================
+
+    function showPromoSuccess(
+        message
+    ) {
+
+        applyPromo.textContent =
+            message;
+
+
+        applyPromo.classList.add(
+            "bg-green-500",
+            "text-white"
+        );
+
+
+        applyPromo.classList.remove(
+            "bg-gray-200",
+            "text-gray-700"
+        );
+
+
+        setTimeout(
+            () => {
+
+                applyPromo.textContent =
+                    "Apply";
+
+
+                applyPromo.classList.remove(
+                    "bg-green-500",
+                    "text-white"
+                );
+
+
+                applyPromo.classList.add(
+                    "bg-gray-200",
+                    "text-gray-700"
+                );
+
+            },
+            2000
+        );
+
+    }
+
+
+
+    // =========================================================
+    // SELECT PAYMENT METHOD
+    // =========================================================
+
+    function selectPaymentMethod(
+        method
+    ) {
+
+        selectedPaymentMethod =
+            method;
+
+
+        document
+            .querySelectorAll(
+                ".payment-method"
+            )
+            .forEach(
+                element => {
+
+                    element.classList.remove(
+                        "selected"
+                    );
+
+                }
+            );
+
+
+        const selectedElement =
+            document.querySelector(
+                `[data-payment-method="${method}"]`
+            );
+
+
+        if (
+            selectedElement
+        ) {
+
+            selectedElement.classList.add(
+                "selected"
+            );
+
+        }
+
+
+        renderPaymentDetails(
+            method
+        );
+
+    }
+
+
+
+    // =========================================================
+    // PAYMENT DETAILS
+    // =========================================================
+
+    function renderPaymentDetails(
+        method
+    ) {
+
+        const account =
+            PAYMENT_ACCOUNTS[
+                method
+            ];
+
+
+        if (
+            method ===
+            "bank_transfer"
+        ) {
+
+            paymentDetails.innerHTML = `
+
+                <h3 class="font-semibold mb-3">
+
+                    Bank Transfer Instructions
+
+                </h3>
+
+
+                <div
+                    class="
+                        space-y-2
+                        text-sm
+                        text-gray-700
+                    "
+                >
+
+                    <p>
+
+                        <strong>
+                            Bank:
+                        </strong>
+
+                        ${escapeHTML(
+                            account.bankName
+                        )}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Account Name:
+                        </strong>
+
+                        ${escapeHTML(
+                            account.accountHolder
+                        )}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Account Number:
+                        </strong>
+
+                        ${escapeHTML(
+                            account.accountNumber
+                        )}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>
+                            Branch:
+                        </strong>
+
+                        ${escapeHTML(
+                            account.branch
+                        )}
+
+                    </p>
+
+                </div>
+
+
+                <p
+                    class="
+                        text-sm
+                        text-gray-600
+                        mt-4
+                    "
+                >
+
+                    Transfer the exact order total to the
+                    account above, then enter your payment
+                    reference below.
+
+                </p>
+
+            `;
+
+
+            return;
+
+        }
+
+
+        paymentDetails.innerHTML = `
+
+            <h3 class="font-semibold mb-3">
+
+                ${escapeHTML(
+                    account.name
+                )}
+                Payment Instructions
+
+            </h3>
+
+
+            <div
+                class="
+                    bg-white
+                    border
+                    border-gray-200
+                    rounded-lg
+                    p-4
+                "
+            >
+
+                <p class="text-sm text-gray-600 mb-2">
+
+                    Send the exact order total to:
+
+                </p>
+
+
+                <div
+                    class="
+                        flex
+                        items-center
+                        justify-between
+                        gap-3
+                    "
+                >
+
+                    <strong
+                        class="
+                            text-xl
+                            tracking-wide
+                        "
+                    >
+
+                        ${escapeHTML(
+                            account.number
+                        )}
+
+                    </strong>
+
+
+                    <button
+                        type="button"
+                        class="
+                            px-3
+                            py-1
+                            bg-gray-200
+                            rounded-lg
+                            text-sm
+                            hover:bg-gray-300
+                        "
+                        onclick="
+                            copyPaymentNumber(
+                                '${escapeHTML(
+                                    account.number
+                                )}'
+                            )
+                        "
+                    >
+
+                        <i class="fas fa-copy"></i>
+
+                        Copy
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <p
+                class="
+                    text-sm
+                    text-gray-600
+                    mt-4
+                "
+            >
+
+                After sending the payment, enter the
+                sender number and transaction ID below.
+
+            </p>
+
+        `;
+
+    }
+
+
+
+    // =========================================================
+    // COPY PAYMENT NUMBER
+    // =========================================================
+
+    async function copyPaymentNumber(
+        number
+    ) {
+
+        try {
+
+            await navigator.clipboard.writeText(
+                number
+            );
+
+
+            alert(
+                "Payment number copied."
+            );
+
+        }
+        catch (
+            error
+        ) {
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // VALIDATE
+    // =========================================================
+
+    function validateCheckout() {
+
+        const firstName =
+            document
+                .getElementById(
+                    "firstName"
+                )
+                .value
+                .trim();
+
+
+        const lastName =
+            document
+                .getElementById(
+                    "lastName"
+                )
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById(
+                    "email"
+                )
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById(
+                    "phone"
+                )
+                .value
+                .trim();
+
+
+        const address =
+            document
+                .getElementById(
+                    "address"
+                )
+                .value
+                .trim();
+
+
+        const sender =
+            senderNumber
+                .value
+                .trim();
+
+
+        const reference =
+            paymentReference
+                .value
+                .trim();
+
+
+        if (
+            !firstName ||
+            !lastName ||
+            !email ||
+            !phone ||
+            !address
+        ) {
+
+            alert(
+                "Please fill in all required billing information."
+            );
+
+
+            return false;
+
+        }
+
+
+        if (
+            !selectedPaymentMethod
+        ) {
+
+            alert(
+                "Please select a payment method."
+            );
+
+
+            return false;
+
+        }
+
+
+        if (
+            !sender
+        ) {
+
+            alert(
+                "Please enter the sender/account number used for payment."
+            );
+
+
+            senderNumber.focus();
+
+
+            return false;
+
+        }
+
+
+        if (
+            !reference
+        ) {
+
+            alert(
+                "Please enter your transaction ID / payment reference."
+            );
+
+
+            paymentReference.focus();
+
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+
+    // =========================================================
+    // CREATE ORDER
+    // =========================================================
+
+    async function placeOrder() {
+
+        if (
+            placeOrderBtn.disabled
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !validateCheckout()
+        ) {
+
+            return;
+
+        }
+
+
+        const {
+            data: userData,
+            error: userError
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        if (
+            userError ||
+            !userData?.user
+        ) {
+
+            alert(
+                "Your login session has expired. Please log in again."
+            );
+
+
+            window.location.href =
+                "login.html";
+
+
+            return;
+
+        }
+
+
+        const user =
+            userData.user;
+
+
+        const firstName =
+            document
+                .getElementById(
+                    "firstName"
+                )
+                .value
+                .trim();
+
+
+        const lastName =
+            document
+                .getElementById(
+                    "lastName"
+                )
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById(
+                    "email"
+                )
+                .value
+                .trim();
+
+
+        const phone =
+            document
+                .getElementById(
+                    "phone"
+                )
+                .value
+                .trim();
+
+
+        const address =
+            document
+                .getElementById(
+                    "address"
+                )
+                .value
+                .trim();
+
+
+        const notes =
+            document
+                .getElementById(
+                    "notes"
+                )
+                .value
+                .trim();
+
+
+        const totals =
+            getCartTotals();
+
+
+        /*
+         * Generate a human-readable order number.
+         */
+
+        const orderNumber =
+            "NLS-" +
+            Date.now()
+                .toString()
+                .slice(-8);
+
+
+        /*
+         * Build item snapshot.
+         */
+
+        const orderItems =
+            cart.map(
+                item => ({
+
+                    name:
+                        item.name,
+
+                    quantity:
+                        Number(
+                            item.quantity || 1
+                        ),
+
+                    selectedPlan:
+                        item.selectedPlan,
+
+                    image:
+                        item.image ||
+                        null
+
+                })
+            );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * The payment is NOT considered paid here.
+         *
+         * It starts as pending until admin verifies
+         * the customer's manual payment.
+         */
+
+        const orderPayload = {
+
+            user_id:
+                user.id,
+
+            order_number:
+                orderNumber,
+
+            total:
+                Number(
+                    totals.total.toFixed(2)
+                ),
+
+            payment_method:
+                selectedPaymentMethod,
+
+            payment_status:
+                "pending",
+
+            order_status:
+                "pending",
+
+            payment_reference:
+                paymentReference.value
+                    .trim(),
+
+            admin_note:
+                null,
+
+            subscription_email:
+                null,
+
+            subscription_password:
+                null,
+
+            delivery_note:
+                null,
+
+            subscription_start:
+                null,
+
+            subscription_expiry:
+                null,
+
+            /*
+             * These are only included if your
+             * orders table contains them.
+             */
+
+            customer_name:
+                `${firstName} ${lastName}`,
+
+            customer_email:
+                email,
+
+            customer_phone:
+                phone,
+
+            customer_address:
+                address,
+
+            order_notes:
+                notes,
+
+            sender_number:
+                senderNumber.value
+                    .trim(),
+
+            promo_code:
+                appliedPromoCode ||
+                null,
+
+            discount:
+                Number(
+                    totals.discount.toFixed(2)
+                ),
+
+            tax:
+                Number(
+                    totals.tax.toFixed(2)
+                ),
+
+            subtotal:
+                Number(
+                    totals.subtotal.toFixed(2)
+                ),
+
+            items:
+                orderItems
+
+        };
+
+
+        /*
+         * Remove optional columns that may not exist
+         * in your current schema.
+         *
+         * The core fields required by your dashboard
+         * remain.
+         */
+
+        placeOrderBtn.disabled =
+            true;
+
+
+        placeOrderBtn.innerHTML = `
+
+            <i
+                class="
+                    fas
+                    fa-spinner
+                    fa-spin
+                    mr-2
+                "
+            ></i>
+
+            Submitting Order...
+
+        `;
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .from(
+                        "orders"
+                    )
+                    .insert(
+                        orderPayload
+                    )
+                    .select(
+                        "id, order_number, payment_status, order_status"
+                    )
+                    .single();
+
+
+            if (
+                error
+            ) {
+
+                throw error;
+
+            }
+
+
+            /*
+             * Order successfully created.
+             *
+             * Keep cart until the order has actually
+             * been successfully inserted.
+             */
+
+            localStorage.removeItem(
+                "streamHubCart"
+            );
+
+
+            successOrderNumber.innerHTML = `
+
+                Order Number:
+
+                <strong>
+                    ${escapeHTML(
+                        data.order_number ||
+                        orderNumber
+                    )}
+                </strong>
+
+            `;
+
+
+            successMessage.textContent =
+                "Your order has been submitted successfully. Your payment will be manually verified by our team. Once approved, your subscription/account delivery will appear in your dashboard.";
+
+
+            successModal.classList.remove(
+                "hidden"
+            );
+
+
+        }
+        catch (
+            error
+        ) {
+
+            console.error(
+                "Order creation error:",
+                error
+            );
+
+
+            alert(
+                "We couldn't submit your order. Please check your information and try again."
+            );
+
+
+            placeOrderBtn.disabled =
+                false;
+
+
+            placeOrderBtn.innerHTML = `
+
+                <i class="fas fa-lock mr-2"></i>
+
+                Submit Payment
+
+            `;
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    init();
+
+    </script>
+
 </body>
+
 </html>

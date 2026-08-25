@@ -10,30 +10,26 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>My Account — Next Level Subs</title>
+    <title>My Dashboard | NEXT LEVEL SUBS</title>
 
     <meta
         name="description"
-        content="Manage your Next Level Subs subscriptions, orders and account."
-    >
-
-    <meta
-        name="theme-color"
-        content="#6a11cb"
+        content="Manage your NEXT LEVEL SUBS subscriptions, orders and account."
     >
 
     <link
-        rel="stylesheet"
-        href="./src/output.css"
+        rel="icon"
+        href="/images/next_level.png"
     >
 
+    <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="./src/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     >
 
 
-    <style>
+ <style>
 
         /* =========================================================
            ROOT / BASE
@@ -2491,6 +2487,7 @@
 
     </style>
 
+
 </head>
 
 
@@ -2564,11 +2561,8 @@
                 href="index.html"
                 class="nav-link"
             >
-
                 <i class="fas fa-house"></i>
-
                 <span>Home</span>
-
             </a>
 
 
@@ -2576,11 +2570,8 @@
                 href="checkout.html"
                 class="nav-link"
             >
-
                 <i class="fas fa-cart-shopping"></i>
-
                 <span>Cart</span>
-
             </a>
 
 
@@ -2589,11 +2580,8 @@
                 id="logoutButton"
                 class="logout-btn"
             >
-
                 <i class="fas fa-right-from-bracket"></i>
-
                 <span>Logout</span>
-
             </button>
 
         </nav>
@@ -2627,20 +2615,14 @@
     >
 
         <a href="index.html">
-
             <i class="fas fa-house"></i>
-
             Home
-
         </a>
 
 
         <a href="checkout.html">
-
             <i class="fas fa-cart-shopping"></i>
-
             Cart
-
         </a>
 
 
@@ -2649,11 +2631,8 @@
             id="mobileLogoutButton"
             class="mobile-logout"
         >
-
             <i class="fas fa-right-from-bracket"></i>
-
             Logout
-
         </button>
 
     </div>
@@ -2670,7 +2649,7 @@
 
 
     <!-- =========================================================
-         SKELETON DASHBOARD
+         SKELETON
     ========================================================== -->
 
     <div
@@ -2694,13 +2673,13 @@
 
         <div
             class="skeleton skeleton-section"
-            style="margin-top: 24px;"
+            style="margin-top:24px;"
         ></div>
 
 
         <div
             class="skeleton skeleton-section"
-            style="margin-top: 24px;"
+            style="margin-top:24px;"
         ></div>
 
     </div>
@@ -2708,7 +2687,7 @@
 
 
     <!-- =========================================================
-         ACTUAL DASHBOARD
+         DASHBOARD
     ========================================================== -->
 
     <div id="dashboardContent">
@@ -2718,10 +2697,9 @@
              WELCOME
         ====================================================== -->
 
-        <section class="welcome-card dashboard-enter">
+        <section class="welcome-card">
 
             <div class="welcome-content">
-
 
                 <div class="welcome-copy">
 
@@ -2761,7 +2739,9 @@
 
                         <i class="fas fa-bag-shopping"></i>
 
-                        <span>Browse Subscriptions</span>
+                        <span>
+                            Browse Subscriptions
+                        </span>
 
                     </a>
 
@@ -2774,15 +2754,13 @@
 
 
         <!-- =====================================================
-             STATISTICS
+             STATS
         ====================================================== -->
 
         <section class="stats-grid">
 
 
-            <!-- ACTIVE -->
-
-            <div class="stat-card dashboard-item">
+            <div class="stat-card">
 
                 <div class="stat-content">
 
@@ -2814,9 +2792,7 @@
 
 
 
-            <!-- ORDERS -->
-
-            <div class="stat-card dashboard-item">
+            <div class="stat-card">
 
                 <div class="stat-content">
 
@@ -2848,9 +2824,7 @@
 
 
 
-            <!-- PENDING -->
-
-            <div class="stat-card dashboard-item">
+            <div class="stat-card">
 
                 <div class="stat-content">
 
@@ -2888,9 +2862,7 @@
              SUBSCRIPTIONS
         ====================================================== -->
 
-        <section
-            class="dashboard-section dashboard-item"
-        >
+        <section class="dashboard-section">
 
             <div class="section-header">
 
@@ -2930,9 +2902,7 @@
              ORDERS
         ====================================================== -->
 
-        <section
-            class="dashboard-section dashboard-item"
-        >
+        <section class="dashboard-section">
 
             <div class="section-header">
 
@@ -2969,7 +2939,6 @@
 
     </div>
 
-
 </main>
 
 
@@ -2988,84 +2957,98 @@
 ></script>
 
 
+<script
+    src="./js/nextlevel-auth.js"
+></script>
 
-<!-- =============================================================
-     DASHBOARD JAVASCRIPT
-============================================================= -->
+
 
 <script>
 
 "use strict";
 
 
-// ===============================================================
-// DOM
-// ===============================================================
+/* =============================================================
+   DOM
+============================================================= */
 
 const skeletonDashboard =
     document.getElementById(
         "skeletonDashboard"
     );
 
+
 const dashboardContent =
     document.getElementById(
         "dashboardContent"
     );
+
 
 const customerName =
     document.getElementById(
         "customerName"
     );
 
+
 const customerEmail =
     document.getElementById(
         "customerEmail"
     );
+
 
 const activeSubscriptionCount =
     document.getElementById(
         "activeSubscriptionCount"
     );
 
+
 const totalOrderCount =
     document.getElementById(
         "totalOrderCount"
     );
+
 
 const pendingOrderCount =
     document.getElementById(
         "pendingOrderCount"
     );
 
+
 const subscriptionsContainer =
     document.getElementById(
         "subscriptionsContainer"
     );
+
 
 const ordersContainer =
     document.getElementById(
         "ordersContainer"
     );
 
+
 const logoutButton =
     document.getElementById(
         "logoutButton"
     );
+
 
 const mobileLogoutButton =
     document.getElementById(
         "mobileLogoutButton"
     );
 
+
 const mobileMenuButton =
     document.getElementById(
         "mobileMenuButton"
     );
 
+
 const mobileMenu =
     document.getElementById(
         "mobileMenu"
     );
+
 
 const mobileMenuIcon =
     document.getElementById(
@@ -3073,37 +3056,46 @@ const mobileMenuIcon =
     );
 
 
-// ===============================================================
-// SAFE HTML ESCAPE
-// ===============================================================
+/* =============================================================
+   ESCAPE HTML
+============================================================= */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     if (
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
 
 
     return String(value)
+
         .replace(
             /&/g,
             "&amp;"
         )
+
         .replace(
             /</g,
             "&lt;"
         )
+
         .replace(
             />/g,
             "&gt;"
         )
+
         .replace(
             /"/g,
             "&quot;"
         )
+
         .replace(
             /'/g,
             "&#039;"
@@ -3112,9 +3104,9 @@ function escapeHTML(value) {
 }
 
 
-// ===============================================================
-// SAFE STRING
-// ===============================================================
+/* =============================================================
+   SAFE STRING
+============================================================= */
 
 function safeString(
     value,
@@ -3137,21 +3129,25 @@ function safeString(
 }
 
 
-// ===============================================================
-// FORMAT DATE
-// ===============================================================
+/* =============================================================
+   DATE
+============================================================= */
 
 function formatDate(
     dateString
 ) {
 
     if (!dateString) {
+
         return "—";
+
     }
 
 
     const date =
-        new Date(dateString);
+        new Date(
+            dateString
+        );
 
 
     if (
@@ -3168,50 +3164,44 @@ function formatDate(
     return date.toLocaleDateString(
         "en-GB",
         {
-            day:
-                "2-digit",
-
-            month:
-                "short",
-
-            year:
-                "numeric"
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
         }
     );
 
 }
 
 
-// ===============================================================
-// FORMAT CURRENCY
-// ===============================================================
+/* =============================================================
+   CURRENCY
+============================================================= */
 
 function formatCurrency(
     amount
 ) {
 
     const number =
-        Number(amount || 0);
+        Number(
+            amount || 0
+        );
 
 
     return "৳" +
         number.toLocaleString(
             "en-BD",
             {
-                minimumFractionDigits:
-                    2,
-
-                maximumFractionDigits:
-                    2
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }
         );
 
 }
 
 
-// ===============================================================
-// NORMALIZE STATUS
-// ===============================================================
+/* =============================================================
+   STATUS
+============================================================= */
 
 function normalizeStatus(
     status
@@ -3226,65 +3216,14 @@ function normalizeStatus(
 }
 
 
-// ===============================================================
-// STATUS CLASS
-// ===============================================================
-
-function getStatusClass(
-    status
-) {
-
-    const normalized =
-        normalizeStatus(
-            status
-        );
-
-
-    switch (normalized) {
-
-        case "active":
-        case "paid":
-            return "status-active";
-
-
-        case "pending":
-            return "status-pending";
-
-
-        case "processing":
-            return "status-processing";
-
-
-        case "expired":
-        case "cancelled":
-        case "failed":
-            return "status-expired";
-
-
-        default:
-            return "status-default";
-
-    }
-
-}
-
-
-// ===============================================================
-// FORMAT STATUS
-// ===============================================================
-
 function formatStatus(
     status
 ) {
 
-    const value =
-        safeString(
-            status,
-            "Unknown"
-        );
-
-
-    return value
+    return safeString(
+        status,
+        "Unknown"
+    )
         .replace(
             /[_-]+/g,
             " "
@@ -3293,92 +3232,98 @@ function formatStatus(
 }
 
 
-// ===============================================================
-// FORMAT PAYMENT METHOD
-// ===============================================================
+function getStatusClass(
+    status
+) {
+
+    switch (
+        normalizeStatus(
+            status
+        )
+    ) {
+
+        case "active":
+        case "paid":
+        case "completed":
+
+            return "status-active";
+
+
+        case "pending":
+
+            return "status-pending";
+
+
+        case "processing":
+
+            return "status-processing";
+
+
+        case "expired":
+        case "cancelled":
+        case "canceled":
+        case "failed":
+
+            return "status-expired";
+
+
+        default:
+
+            return "status-default";
+
+    }
+
+}
+
+
+/* =============================================================
+   PAYMENT METHOD
+============================================================= */
 
 function formatPaymentMethod(
     method
 ) {
 
-    const normalized =
-        String(
-            method || ""
-        )
-        .toLowerCase()
-        .trim();
+    const value =
+        normalizeStatus(
+            method
+        );
 
 
-    if (
-        normalized ===
-        "sslcommerz"
-    ) {
+    const methods = {
 
-        return "SSLCommerz";
+        sslcommerz:
+            "SSLCommerz",
 
-    }
+        bank_transfer:
+            "Bank Transfer",
 
+        whatsapp:
+            "WhatsApp",
 
-    if (
-        normalized ===
-        "bank_transfer"
-    ) {
+        bkash:
+            "bKash",
 
-        return "Bank Transfer";
+        nagad:
+            "Nagad",
 
-    }
+        rocket:
+            "Rocket"
 
-
-    if (
-        normalized ===
-        "whatsapp"
-    ) {
-
-        return "WhatsApp";
-
-    }
+    };
 
 
-    if (
-        normalized ===
-        "bkash"
-    ) {
-
-        return "bKash";
-
-    }
-
-
-    if (
-        normalized ===
-        "nagad"
-    ) {
-
-        return "Nagad";
-
-    }
-
-
-    if (
-        normalized ===
-        "rocket"
-    ) {
-
-        return "Rocket";
-
-    }
-
-
-    return formatStatus(
-        method || "Unknown"
-    );
+    return methods[value] ||
+        formatStatus(
+            method || "Unknown"
+        );
 
 }
 
 
-// ===============================================================
-// RENDER EMPTY SUBSCRIPTIONS
-// ===============================================================
+/* =============================================================
+   EMPTY SUBSCRIPTIONS
+============================================================= */
 
 function renderEmptySubscriptions() {
 
@@ -3418,9 +3363,206 @@ function renderEmptySubscriptions() {
 }
 
 
-// ===============================================================
-// RENDER SUBSCRIPTIONS
-// ===============================================================
+/* =============================================================
+   DELIVERY FIELD HELPER
+============================================================= */
+
+function deliveryField(
+    label,
+    value,
+    password = false
+) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+    ) {
+
+        return "";
+
+    }
+
+
+    let displayValue =
+        String(value);
+
+
+    if (password) {
+
+        displayValue =
+            "••••••••";
+
+    }
+
+
+    return `
+
+        <div class="delivery-item">
+
+            <span class="delivery-label">
+                ${escapeHTML(label)}
+            </span>
+
+            <span class="delivery-value">
+                ${escapeHTML(displayValue)}
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =============================================================
+   DELIVERY DETAILS
+============================================================= */
+
+function renderDeliveryDetails(
+    subscription
+) {
+
+    /*
+     * These fields are optional.
+     *
+     * If your subscriptions table contains them,
+     * they will appear automatically.
+     *
+     * If they don't exist, nothing is displayed.
+     */
+
+    const fields = [];
+
+    if (
+        subscription.account_email ||
+        subscription.email
+    ) {
+
+        fields.push(
+            deliveryField(
+                "Email",
+                subscription.account_email ||
+                subscription.email
+            )
+        );
+
+    }
+
+
+    if (
+        subscription.account_username ||
+        subscription.username
+    ) {
+
+        fields.push(
+            deliveryField(
+                "Username",
+                subscription.account_username ||
+                subscription.username
+            )
+        );
+
+    }
+
+
+    if (
+        subscription.account_password ||
+        subscription.password
+    ) {
+
+        fields.push(
+            deliveryField(
+                "Password",
+                subscription.account_password ||
+                subscription.password,
+                true
+            )
+        );
+
+    }
+
+
+    if (
+        subscription.profile_name
+    ) {
+
+        fields.push(
+            deliveryField(
+                "Profile",
+                subscription.profile_name
+            )
+        );
+
+    }
+
+
+    if (
+        subscription.pin
+    ) {
+
+        fields.push(
+            deliveryField(
+                "PIN",
+                subscription.pin
+            )
+        );
+
+    }
+
+
+    if (
+        subscription.notes
+    ) {
+
+        fields.push(
+            deliveryField(
+                "Notes",
+                subscription.notes
+            )
+        );
+
+    }
+
+
+    if (
+        fields.length === 0
+    ) {
+
+        return "";
+
+    }
+
+
+    return `
+
+        <div class="delivery-box">
+
+            <div class="delivery-title">
+
+                <i class="fas fa-key"></i>
+
+                Account Delivery
+
+            </div>
+
+
+            <div class="delivery-grid">
+
+                ${fields.join("")}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =============================================================
+   RENDER SUBSCRIPTIONS
+============================================================= */
 
 function renderSubscriptions(
     subscriptions
@@ -3444,77 +3586,100 @@ function renderSubscriptions(
 
         <div class="subscription-list">
 
-            ${subscriptions
-                .map(
-                    (
-                        subscription
-                    ) => {
+            ${subscriptions.map(
+                subscription => {
 
-                        const productName =
-                            safeString(
-                                subscription.product_name,
-                                "Subscription"
-                            );
-
-                        const status =
-                            safeString(
-                                subscription.status,
-                                "Unknown"
-                            );
-
-                        const startDate =
-                            formatDate(
-                                subscription.start_date
-                            );
-
-                        const expiryDate =
-                            formatDate(
-                                subscription.expiry_date
-                            );
-
-                        const id =
-                            safeString(
-                                subscription.id,
-                                ""
-                            );
-
-                        const shortId =
-                            id
-                                ? id.substring(
-                                    0,
-                                    8
-                                )
-                                : "—";
+                    const productName =
+                        safeString(
+                            subscription.product_name,
+                            "Subscription"
+                        );
 
 
-                        return `
+                    const status =
+                        safeString(
+                            subscription.status,
+                            "Unknown"
+                        );
 
-                            <article class="subscription-card">
 
-                                <div class="subscription-top">
+                    const startDate =
+                        formatDate(
+                            subscription.start_date
+                        );
 
-                                    <h3 class="subscription-name">
 
-                                        ${escapeHTML(
-                                            productName
+                    const expiryDate =
+                        formatDate(
+                            subscription.expiry_date
+                        );
+
+
+                    const id =
+                        subscription.id
+                            ? String(
+                                subscription.id
+                            )
+                            : "";
+
+
+                    const shortId =
+                        id
+                            ? id.substring(
+                                0,
+                                8
+                            )
+                            : "—";
+
+
+                    return `
+
+                        <article class="subscription-card">
+
+                            <div class="subscription-top">
+
+                                <h3 class="subscription-name">
+
+                                    ${escapeHTML(
+                                        productName
+                                    )}
+
+                                </h3>
+
+
+                                <span
+                                    class="
+                                        status-badge
+                                        ${getStatusClass(
+                                            status
                                         )}
+                                    "
+                                >
 
-                                    </h3>
+                                    ${escapeHTML(
+                                        formatStatus(
+                                            status
+                                        )
+                                    )}
+
+                                </span>
+
+                            </div>
 
 
-                                    <span
-                                        class="
-                                            status-badge
-                                            ${getStatusClass(
-                                                status
-                                            )}
-                                        "
-                                    >
+                            <div class="subscription-details">
+
+
+                                <div class="subscription-detail">
+
+                                    <span class="detail-label">
+                                        Started
+                                    </span>
+
+                                    <span class="detail-value">
 
                                         ${escapeHTML(
-                                            formatStatus(
-                                                status
-                                            )
+                                            startDate
                                         )}
 
                                     </span>
@@ -3522,56 +3687,46 @@ function renderSubscriptions(
                                 </div>
 
 
-                                <div class="subscription-details">
+                                <div class="subscription-detail">
 
-                                    <div class="subscription-detail">
+                                    <span class="detail-label">
+                                        Expires
+                                    </span>
 
-                                        <span class="detail-label">
-                                            Started
-                                        </span>
+                                    <span class="detail-value">
 
-                                        <span class="detail-value">
-                                            ${escapeHTML(
-                                                startDate
-                                            )}
-                                        </span>
+                                        ${escapeHTML(
+                                            expiryDate
+                                        )}
 
-                                    </div>
-
-
-                                    <div class="subscription-detail">
-
-                                        <span class="detail-label">
-                                            Expires
-                                        </span>
-
-                                        <span class="detail-value">
-                                            ${escapeHTML(
-                                                expiryDate
-                                            )}
-                                        </span>
-
-                                    </div>
+                                    </span>
 
                                 </div>
 
 
-                                <div class="subscription-id">
+                            </div>
 
-                                    ID:
-                                    ${escapeHTML(
-                                        shortId
-                                    )}
 
-                                </div>
+                            ${renderDeliveryDetails(
+                                subscription
+                            )}
 
-                            </article>
 
-                        `;
+                            <div class="subscription-id">
 
-                    }
-                )
-                .join("")}
+                                Subscription ID:
+                                ${escapeHTML(
+                                    shortId
+                                )}
+
+                            </div>
+
+                        </article>
+
+                    `;
+
+                }
+            ).join("")}
 
         </div>
 
@@ -3580,9 +3735,9 @@ function renderSubscriptions(
 }
 
 
-// ===============================================================
-// RENDER EMPTY ORDERS
-// ===============================================================
+/* =============================================================
+   EMPTY ORDERS
+============================================================= */
 
 function renderEmptyOrders() {
 
@@ -3596,13 +3751,16 @@ function renderEmptyOrders() {
 
             </div>
 
+
             <h3 class="empty-title">
                 No orders yet
             </h3>
 
+
             <p class="empty-description">
                 Your order history will appear here after your first purchase.
             </p>
+
 
             <a
                 href="index.html"
@@ -3622,9 +3780,9 @@ function renderEmptyOrders() {
 }
 
 
-// ===============================================================
-// RENDER ORDERS
-// ===============================================================
+/* =============================================================
+   RENDER ORDERS
+============================================================= */
 
 function renderOrders(
     orders
@@ -3681,123 +3839,118 @@ function renderOrders(
 
                 <tbody>
 
-                    ${orders
-                        .map(
-                            (
-                                order
-                            ) => {
+                    ${orders.map(
+                        order => {
 
-                                const orderNumber =
-                                    safeString(
-                                        order.order_number,
-                                        order.id
-                                            ? String(
-                                                order.id
-                                            ).substring(
-                                                0,
-                                                8
-                                            )
-                                            : "Order"
-                                    );
-
-                                const paymentStatus =
-                                    safeString(
-                                        order.payment_status,
-                                        order.order_status ||
-                                            "Unknown"
-                                    );
+                            const orderNumber =
+                                safeString(
+                                    order.order_number,
+                                    order.id
+                                        ? String(
+                                            order.id
+                                        ).substring(
+                                            0,
+                                            8
+                                        )
+                                        : "Order"
+                                );
 
 
-                                return `
-
-                                    <tr>
-
-                                        <td>
-
-                                            <span class="order-number">
-
-                                                ${escapeHTML(
-                                                    orderNumber
-                                                )}
-
-                                            </span>
-
-                                        </td>
+                            const paymentStatus =
+                                safeString(
+                                    order.payment_status,
+                                    order.order_status ||
+                                    "Unknown"
+                                );
 
 
-                                        <td>
+                            return `
+
+                                <tr>
+
+                                    <td>
+
+                                        <span class="order-number">
 
                                             ${escapeHTML(
-                                                formatDate(
-                                                    order.created_at
+                                                orderNumber
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${escapeHTML(
+                                            formatDate(
+                                                order.created_at
+                                            )
+                                        )}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="order-total">
+
+                                            ${escapeHTML(
+                                                formatCurrency(
+                                                    order.total
                                                 )
                                             )}
 
-                                        </td>
+                                        </span>
+
+                                    </td>
 
 
-                                        <td>
+                                    <td>
 
-                                            <span class="order-total">
+                                        <span class="payment-method">
 
-                                                ${escapeHTML(
-                                                    formatCurrency(
-                                                        order.total
-                                                    )
+                                            <i class="fas fa-credit-card"></i>
+
+                                            ${escapeHTML(
+                                                formatPaymentMethod(
+                                                    order.payment_method
+                                                )
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span
+                                            class="
+                                                status-badge
+                                                ${getStatusClass(
+                                                    paymentStatus
                                                 )}
+                                            "
+                                        >
 
-                                            </span>
+                                            ${escapeHTML(
+                                                formatStatus(
+                                                    paymentStatus
+                                                )
+                                            )}
 
-                                        </td>
+                                        </span>
 
+                                    </td>
 
-                                        <td>
+                                </tr>
 
-                                            <span class="payment-method">
+                            `;
 
-                                                <i
-                                                    class="fas fa-credit-card"
-                                                ></i>
-
-                                                ${escapeHTML(
-                                                    formatPaymentMethod(
-                                                        order.payment_method
-                                                    )
-                                                )}
-
-                                            </span>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            <span
-                                                class="
-                                                    status-badge
-                                                    ${getStatusClass(
-                                                        paymentStatus
-                                                    )}
-                                                "
-                                            >
-
-                                                ${escapeHTML(
-                                                    formatStatus(
-                                                        paymentStatus
-                                                    )
-                                                )}
-
-                                            </span>
-
-                                        </td>
-
-                                    </tr>
-
-                                `;
-
-                            }
-                        )
-                        .join("")}
+                        }
+                    ).join("")}
 
                 </tbody>
 
@@ -3810,9 +3963,9 @@ function renderOrders(
 }
 
 
-// ===============================================================
-// LOAD PROFILE
-// ===============================================================
+/* =============================================================
+   LOAD PROFILE
+============================================================= */
 
 async function loadProfile(
     user
@@ -3823,14 +3976,20 @@ async function loadProfile(
         error
     } =
         await supabaseClient
-            .from("profiles")
+
+            .from(
+                "profiles"
+            )
+
             .select(
                 "*"
             )
+
             .eq(
                 "id",
                 user.id
             )
+
             .maybeSingle();
 
 
@@ -3855,7 +4014,7 @@ async function loadProfile(
 
 
     customerName.textContent =
-        name;
+        `Welcome back, ${name}`;
 
 
     customerEmail.textContent =
@@ -3864,9 +4023,9 @@ async function loadProfile(
 }
 
 
-// ===============================================================
-// LOAD SUBSCRIPTIONS
-// ===============================================================
+/* =============================================================
+   LOAD SUBSCRIPTIONS
+============================================================= */
 
 async function loadSubscriptions(
     user
@@ -3877,17 +4036,24 @@ async function loadSubscriptions(
         error
     } =
         await supabaseClient
-            .from("subscriptions")
-            .select("*")
+
+            .from(
+                "subscriptions"
+            )
+
+            .select(
+                "*"
+            )
+
             .eq(
                 "user_id",
                 user.id
             )
+
             .order(
                 "created_at",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             );
 
@@ -3900,17 +4066,28 @@ async function loadSubscriptions(
 
 
     const subscriptions =
-        Array.isArray(data)
+        Array.isArray(
+            data
+        )
             ? data
             : [];
 
 
     const activeSubscriptions =
         subscriptions.filter(
-            subscription =>
-                normalizeStatus(
-                    subscription.status
-                ) === "active"
+            subscription => {
+
+                const status =
+                    normalizeStatus(
+                        subscription.status
+                    );
+
+
+                return (
+                    status === "active"
+                );
+
+            }
         );
 
 
@@ -3928,9 +4105,9 @@ async function loadSubscriptions(
 }
 
 
-// ===============================================================
-// LOAD ORDERS
-// ===============================================================
+/* =============================================================
+   LOAD ORDERS
+============================================================= */
 
 async function loadOrders(
     user
@@ -3941,17 +4118,24 @@ async function loadOrders(
         error
     } =
         await supabaseClient
-            .from("orders")
-            .select("*")
+
+            .from(
+                "orders"
+            )
+
+            .select(
+                "*"
+            )
+
             .eq(
                 "user_id",
                 user.id
             )
+
             .order(
                 "created_at",
                 {
-                    ascending:
-                        false
+                    ascending: false
                 }
             );
 
@@ -3964,7 +4148,9 @@ async function loadOrders(
 
 
     const orders =
-        Array.isArray(data)
+        Array.isArray(
+            data
+        )
             ? data
             : [];
 
@@ -3982,6 +4168,7 @@ async function loadOrders(
                         order.payment_status
                     );
 
+
                 const orderStatus =
                     normalizeStatus(
                         order.order_status
@@ -3989,6 +4176,7 @@ async function loadOrders(
 
 
                 return (
+
                     paymentStatus ===
                         "pending" ||
 
@@ -4000,6 +4188,7 @@ async function loadOrders(
 
                     orderStatus ===
                         "processing"
+
                 );
 
             }
@@ -4020,22 +4209,11 @@ async function loadOrders(
 }
 
 
-// ===============================================================
-// SHOW DASHBOARD
-// ===============================================================
+/* =============================================================
+   SHOW DASHBOARD
+============================================================= */
 
 function showDashboard() {
-
-    /*
-     * IMPORTANT:
-     *
-     * The skeleton is removed first.
-     * Only AFTER that do we reveal the real dashboard.
-     *
-     * This prevents the old loading animation from remaining
-     * underneath/alongside the dashboard.
-     */
-
 
     skeletonDashboard.style.display =
         "none";
@@ -4054,9 +4232,9 @@ function showDashboard() {
 }
 
 
-// ===============================================================
-// SHOW ERROR
-// ===============================================================
+/* =============================================================
+   SHOW ERROR
+============================================================= */
 
 function showError(
     message
@@ -4089,7 +4267,9 @@ function showError(
 
 
                 <h2 class="error-title">
+
                     Unable to load your account
+
                 </h2>
 
 
@@ -4097,7 +4277,7 @@ function showError(
 
                     ${escapeHTML(
                         message ||
-                        "Something went wrong while loading your dashboard. Please try again."
+                        "Something went wrong while loading your dashboard."
                     )}
 
                 </p>
@@ -4124,17 +4304,13 @@ function showError(
 }
 
 
-// ===============================================================
-// LOAD DASHBOARD
-// ===============================================================
+/* =============================================================
+   LOAD DASHBOARD
+============================================================= */
 
 async function loadDashboard() {
 
     try {
-
-        /*
-         * Get the authenticated user first.
-         */
 
         const {
             data,
@@ -4154,10 +4330,6 @@ async function loadDashboard() {
             data?.user;
 
 
-        /*
-         * User is not authenticated.
-         */
-
         if (!user) {
 
             window.location.replace(
@@ -4168,14 +4340,6 @@ async function loadDashboard() {
 
         }
 
-
-        /*
-         * Load all dashboard data BEFORE showing
-         * the real dashboard.
-         *
-         * Promise.all() means the skeleton remains
-         * visible until everything finishes.
-         */
 
         await Promise.all([
 
@@ -4194,10 +4358,6 @@ async function loadDashboard() {
         ]);
 
 
-        /*
-         * Everything successfully loaded.
-         */
-
         showDashboard();
 
     }
@@ -4209,11 +4369,6 @@ async function loadDashboard() {
         );
 
 
-        /*
-         * Do not expose raw Supabase/database
-         * errors to customers.
-         */
-
         showError(
             "We couldn't load your account information. Please refresh the page or try again."
         );
@@ -4223,9 +4378,9 @@ async function loadDashboard() {
 }
 
 
-// ===============================================================
-// MOBILE MENU
-// ===============================================================
+/* =============================================================
+   MOBILE MENU
+============================================================= */
 
 function toggleMobileMenu() {
 
@@ -4243,18 +4398,10 @@ function toggleMobileMenu() {
     );
 
 
-    if (isOpen) {
-
-        mobileMenuIcon.className =
-            "fas fa-xmark";
-
-    }
-    else {
-
-        mobileMenuIcon.className =
-            "fas fa-bars";
-
-    }
+    mobileMenuIcon.className =
+        isOpen
+            ? "fas fa-xmark"
+            : "fas fa-bars";
 
 }
 
@@ -4265,21 +4412,24 @@ mobileMenuButton.addEventListener(
 );
 
 
-// ===============================================================
-// CLOSE MOBILE MENU ON OUTSIDE CLICK
-// ===============================================================
+/* =============================================================
+   OUTSIDE CLICK
+============================================================= */
 
 document.addEventListener(
     "click",
     event => {
 
         if (
+
             !mobileMenu.contains(
                 event.target
             ) &&
+
             !mobileMenuButton.contains(
                 event.target
             )
+
         ) {
 
             mobileMenu.classList.remove(
@@ -4302,9 +4452,9 @@ document.addEventListener(
 );
 
 
-// ===============================================================
-// CLOSE MOBILE MENU AFTER LINK CLICK
-// ===============================================================
+/* =============================================================
+   MOBILE LINK CLOSE
+============================================================= */
 
 mobileMenu
     .querySelectorAll("a")
@@ -4319,6 +4469,12 @@ mobileMenu
                         "active"
                     );
 
+
+                    mobileMenuButton.setAttribute(
+                        "aria-expanded",
+                        "false"
+                    );
+
                 }
             );
 
@@ -4326,15 +4482,11 @@ mobileMenu
     );
 
 
-// ===============================================================
-// LOGOUT
-// ===============================================================
+/* =============================================================
+   LOGOUT
+============================================================= */
 
 async function logout() {
-
-    /*
-     * Prevent multiple logout requests.
-     */
 
     if (
         logoutButton.disabled
@@ -4357,7 +4509,9 @@ async function logout() {
 
         <span class="button-spinner"></span>
 
-        <span>Logging out...</span>
+        <span>
+            Logging out...
+        </span>
 
     `;
 
@@ -4411,7 +4565,9 @@ async function logout() {
 
             <i class="fas fa-right-from-bracket"></i>
 
-            <span>Logout</span>
+            <span>
+                Logout
+            </span>
 
         `;
 
@@ -4446,21 +4602,15 @@ mobileLogoutButton.addEventListener(
 );
 
 
-// ===============================================================
-// AUTH STATE MONITOR
-// ===============================================================
+/* =============================================================
+   AUTH STATE
+============================================================= */
 
 supabaseClient.auth.onAuthStateChange(
     (
         event,
         session
     ) => {
-
-        /*
-         * If Supabase detects that the user has
-         * signed out in another tab/device, return
-         * to login.
-         */
 
         if (
             event ===
@@ -4477,9 +4627,9 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
-// ===============================================================
-// START DASHBOARD
-// ===============================================================
+/* =============================================================
+   START
+============================================================= */
 
 loadDashboard();
 
