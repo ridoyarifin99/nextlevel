@@ -2973,7 +2973,7 @@
 </main>
 
 
-
+<script src="/api/product.js"></script>
 <!-- =============================================================
      SUPABASE
 ============================================================= -->
@@ -2990,48 +2990,55 @@
     src="./js/nextlevel-auth.js"
 ></script>
 
-
-
 <!-- =============================================================
      DASHBOARD JAVASCRIPT
 ============================================================= -->
+
 
 <script>
 
 "use strict";
 
-/* ===============================================================
-   NEXT LEVEL SUBS
-   CUSTOMER DASHBOARD
-   ===============================================================
+/*
+==============================================================
+ NEXT LEVEL SUBS — CUSTOMER DASHBOARD
+ COMPLETE DASHBOARD SCRIPT
+==============================================================
 
-   FEATURES
-   ---------------------------------------------------------------
-   ✓ Supabase authentication
-   ✓ Profile loading
-   ✓ Subscription loading
-   ✓ Order loading
-   ✓ Product images
-   ✓ Product name
-   ✓ Plan information
-   ✓ Subscription status
-   ✓ Start / expiry dates
-   ✓ Subscription credentials
-   ✓ Delivery notes
-   ✓ Full subscription details modal
-   ✓ Email/password copy buttons
-   ✓ Password show/hide
-   ✓ Mobile + desktop responsive modal
-   ✓ Safe HTML escaping
-   ✓ Skeleton loading
-   ✓ Logout
-   ✓ Auth state monitoring
-   =============================================================== */
+ FEATURES
+ -------------------------------------------------------------
+ ✓ Profile loading
+ ✓ Orders loading
+ ✓ Subscriptions loading
+ ✓ Product name
+ ✓ Product image
+ ✓ Product slug
+ ✓ Plan
+ ✓ Price
+ ✓ Status
+ ✓ Start / expiry
+ ✓ Subscription email
+ ✓ Subscription password
+ ✓ Delivery note
+ ✓ Payment information
+ ✓ Transaction information
+ ✓ Full subscription details modal
+ ✓ Mobile friendly
+ ✓ Copy credentials
+ ✓ Show / hide password
+ ✓ Admin panel visibility
+ ✓ Admin panel -> admin-orders.html
+ ✓ Secure HTML escaping
+ ✓ Loading skeleton
+ ✓ Error handling
+ ✓ Supabase authentication
+==============================================================
+*/
 
 
-/* ===============================================================
-   DOM
-=============================================================== */
+/* ============================================================
+   DOM ELEMENTS
+============================================================ */
 
 const skeletonDashboard =
     document.getElementById("skeletonDashboard");
@@ -3076,32 +3083,41 @@ const mobileMenuIcon =
     document.getElementById("mobileMenuIcon");
 
 
-/* ===============================================================
-   STATE
-=============================================================== */
+/* ============================================================
+   GLOBAL STATE
+============================================================ */
 
 let currentUser = null;
+
+let currentProfile = null;
 
 let currentSubscriptions = [];
 
 let currentOrders = [];
 
-let currentSubscriptionModal = null;
+let modalSubscription = null;
+
+let dashboardInitialized = false;
 
 
-/* ===============================================================
-   PRODUCT IMAGE MAP
-===============================================================
+/* ============================================================
+   PRODUCT IMAGE DATABASE
+============================================================ */
 
-   These are fallbacks.
-
-   If your database contains product_image / image_url,
-   that value will be preferred.
-
-   Otherwise the script tries to build the image path from
-   product_slug.
-
-=============================================================== */
+/*
+ * These are fallback product images.
+ *
+ * If your subscription row contains:
+ *
+ * product_image
+ * image
+ * image_url
+ *
+ * those values will be used first.
+ *
+ * Otherwise this function creates the image path from
+ * product_slug / product_name.
+ */
 
 const PRODUCT_IMAGE_MAP = {
 
@@ -3138,9 +3154,6 @@ const PRODUCT_IMAGE_MAP = {
     "hbo-max":
         "/assets/cards/hbo-max.webp",
 
-    "max":
-        "/assets/cards/hbo-max.webp",
-
     "chatgpt-plus":
         "/assets/cards/chatgpt.webp",
 
@@ -3150,30 +3163,29 @@ const PRODUCT_IMAGE_MAP = {
     "canva-pro":
         "/assets/cards/canva.webp",
 
-    "canva":
-        "/assets/cards/canva.webp",
-
-    "capcut-pro":
-        "/assets/cards/capcut.webp",
-
-    "capcut":
-        "/assets/cards/capcut.webp",
+    "google-one":
+        "/assets/cards/google-one.webp",
 
     "surfshark":
         "/assets/cards/surfshark.webp",
 
     "expressvpn":
-        "/assets/cards/expressvpn.webp",
-
-    "nordvpn":
-        "/assets/cards/nordvpn.webp"
+        "/assets/cards/expressvpn.webp"
 
 };
 
 
-/* ===============================================================
+/* ============================================================
+   PRODUCT FALLBACK IMAGE
+============================================================ */
+
+const DEFAULT_PRODUCT_IMAGE =
+    "/assets/cards/default.webp";
+
+
+/* ============================================================
    SAFE HTML ESCAPE
-=============================================================== */
+============================================================ */
 
 function escapeHTML(value) {
 
@@ -3181,22 +3193,45 @@ function escapeHTML(value) {
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
 
+
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
 
-/* ===============================================================
+/* ============================================================
    SAFE STRING
-=============================================================== */
+============================================================ */
 
 function safeString(
     value,
@@ -3205,52 +3240,207 @@ function safeString(
 
     if (
         value === null ||
-        value === undefined ||
-        String(value).trim() === ""
+        value === undefined
     ) {
+
         return fallback;
+
     }
 
-    return String(value);
+
+    const stringValue =
+        String(value).trim();
+
+
+    if (!stringValue) {
+
+        return fallback;
+
+    }
+
+
+    return stringValue;
 
 }
 
 
-/* ===============================================================
-   NORMALIZE TEXT
-=============================================================== */
+/* ============================================================
+   NORMALIZE SLUG
+============================================================ */
 
-function normalizeText(value) {
+function normalizeSlug(value) {
 
-    return String(value || "")
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
         .toLowerCase()
+
         .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+
+        .replace(
+            /[^a-z0-9]+/g,
+            "-"
+        )
+
+        .replace(
+            /^-+|-+$/g,
+            "");
 
 }
 
 
-/* ===============================================================
+/* ============================================================
+   PRODUCT IMAGE RESOLVER
+============================================================ */
+
+function getProductImage(subscription) {
+
+    /*
+     * First use an explicitly stored image.
+     */
+
+    const directImage =
+        subscription.product_image ||
+        subscription.image ||
+        subscription.image_url ||
+        subscription.product_image_url;
+
+
+    if (
+        directImage &&
+        String(directImage).trim()
+    ) {
+
+        return String(
+            directImage
+        ).trim();
+
+    }
+
+
+    /*
+     * Next use product slug.
+     */
+
+    const slug =
+        normalizeSlug(
+            subscription.product_slug ||
+            subscription.slug
+        );
+
+
+    if (
+        slug &&
+        PRODUCT_IMAGE_MAP[slug]
+    ) {
+
+        return PRODUCT_IMAGE_MAP[slug];
+
+    }
+
+
+    /*
+     * Try common generated paths.
+     */
+
+    if (slug) {
+
+        return `/assets/cards/${slug}.webp`;
+
+    }
+
+
+    /*
+     * Finally use default.
+     */
+
+    return DEFAULT_PRODUCT_IMAGE;
+
+}
+
+
+/* ============================================================
+   PRODUCT NAME
+============================================================ */
+
+function getProductName(subscription) {
+
+    return safeString(
+
+        subscription.product_name ||
+
+        subscription.name ||
+
+        subscription.product ||
+
+        subscription.service_name,
+
+        "Subscription"
+
+    );
+
+}
+
+
+/* ============================================================
+   PRODUCT PLAN
+============================================================ */
+
+function getProductPlan(subscription) {
+
+    return safeString(
+
+        subscription.plan ||
+
+        subscription.plan_name ||
+
+        subscription.package ||
+
+        subscription.duration,
+
+        "Subscription Plan"
+
+    );
+
+}
+
+
+/* ============================================================
    FORMAT DATE
-=============================================================== */
+============================================================ */
 
 function formatDate(dateString) {
 
     if (!dateString) {
+
         return "—";
+
     }
+
 
     const date =
         new Date(dateString);
+
 
     if (
         Number.isNaN(
             date.getTime()
         )
     ) {
+
         return "—";
+
     }
+
 
     return date.toLocaleDateString(
         "en-GB",
@@ -3264,14 +3454,77 @@ function formatDate(dateString) {
 }
 
 
-/* ===============================================================
+/* ============================================================
+   FORMAT DATE + TIME
+============================================================ */
+
+function formatDateTime(dateString) {
+
+    if (!dateString) {
+
+        return "—";
+
+    }
+
+
+    const date =
+        new Date(dateString);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "—";
+
+    }
+
+
+    return date.toLocaleString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* ============================================================
    FORMAT CURRENCY
-=============================================================== */
+============================================================ */
 
 function formatCurrency(amount) {
 
+    if (
+        amount === null ||
+        amount === undefined ||
+        amount === ""
+    ) {
+
+        return "৳0.00";
+
+    }
+
+
     const number =
-        Number(amount || 0);
+        Number(amount);
+
+
+    if (
+        Number.isNaN(number)
+    ) {
+
+        return "৳0.00";
+
+    }
+
 
     return "৳" +
         number.toLocaleString(
@@ -3285,48 +3538,69 @@ function formatCurrency(amount) {
 }
 
 
-/* ===============================================================
+/* ============================================================
    NORMALIZE STATUS
-=============================================================== */
+============================================================ */
 
 function normalizeStatus(status) {
 
-    return String(status || "")
+    return String(
+        status || ""
+    )
         .trim()
-        .toLowerCase();
+        .toLowerCase()
+        .replace(
+            /[\s_-]+/g,
+            "_"
+        );
 
 }
 
 
-/* ===============================================================
+/* ============================================================
    STATUS CLASS
-=============================================================== */
+============================================================ */
 
 function getStatusClass(status) {
 
     const normalized =
         normalizeStatus(status);
 
+
     switch (normalized) {
 
         case "active":
         case "paid":
         case "completed":
+        case "delivered":
+
             return "status-active";
 
+
         case "pending":
+        case "awaiting_payment":
+        case "awaiting_confirmation":
+
             return "status-pending";
 
+
         case "processing":
+        case "under_review":
+
             return "status-processing";
+
 
         case "expired":
         case "cancelled":
         case "canceled":
         case "failed":
+        case "rejected":
+
             return "status-expired";
 
+
         default:
+
             return "status-default";
 
     }
@@ -3334,231 +3608,431 @@ function getStatusClass(status) {
 }
 
 
-/* ===============================================================
+/* ============================================================
    FORMAT STATUS
-=============================================================== */
+============================================================ */
 
 function formatStatus(status) {
 
-    return safeString(
-        status,
-        "Unknown"
-    )
-        .replace(/[_-]+/g, " ")
-        .replace(/\b\w/g, letter =>
-            letter.toUpperCase()
+    const value =
+        safeString(
+            status,
+            "Unknown"
+        );
+
+
+    return value
+
+        .replace(
+            /[_-]+/g,
+            " "
+        )
+
+        .replace(
+            /\b\w/g,
+            character =>
+                character.toUpperCase()
         );
 
 }
 
 
-/* ===============================================================
-   FORMAT PAYMENT METHOD
-=============================================================== */
+/* ============================================================
+   PAYMENT METHOD
+============================================================ */
 
 function formatPaymentMethod(method) {
 
     const normalized =
-        String(method || "")
-            .toLowerCase()
-            .trim();
+        String(
+            method || ""
+        )
+        .toLowerCase()
+        .trim();
+
 
     const methods = {
 
-        sslcommerz:
+        "sslcommerz":
             "SSLCommerz",
 
-        bank_transfer:
+        "bank_transfer":
             "Bank Transfer",
 
-        whatsapp:
+        "bank":
+            "Bank Transfer",
+
+        "whatsapp":
             "WhatsApp",
 
-        bkash:
+        "bkash":
             "bKash",
 
-        nagad:
+        "nagad":
             "Nagad",
 
-        rocket:
+        "rocket":
             "Rocket",
 
-        upay:
-            "Upay"
+        "upay":
+            "Upay",
+
+        "cash":
+            "Cash"
 
     };
 
-    return methods[normalized] ||
-        formatStatus(
-            method || "Unknown"
-        );
 
-}
-
-
-/* ===============================================================
-   PRODUCT SLUG
-=============================================================== */
-
-function getProductSlug(subscription) {
-
-    return normalizeText(
-        subscription.product_slug ||
-        subscription.slug ||
-        subscription.product_name ||
-        ""
+    return methods[
+        normalized
+    ] || formatStatus(
+        method || "Unknown"
     );
 
 }
 
 
-/* ===============================================================
-   PRODUCT IMAGE
-=============================================================== */
+/* ============================================================
+   GET SUBSCRIPTION EMAIL
+============================================================ */
 
-function getProductImage(subscription) {
+function getSubscriptionEmail(subscription) {
 
-    /*
-     * First priority:
-     * database image fields.
-     */
+    return safeString(
 
-    const databaseImage =
-        subscription.product_image ||
-        subscription.image_url ||
-        subscription.image ||
-        subscription.product_image_url;
+        subscription.subscription_email ||
 
-    if (
-        databaseImage &&
-        String(databaseImage).trim()
-    ) {
+        subscription.account_email ||
 
-        return String(
-            databaseImage
-        ).trim();
+        subscription.login_email ||
 
-    }
+        subscription.email ||
 
+        subscription.username,
 
-    /*
-     * Second priority:
-     * known product map.
-     */
+        "Not provided"
 
-    const slug =
-        getProductSlug(
-            subscription
-        );
-
-    if (
-        PRODUCT_IMAGE_MAP[slug]
-    ) {
-
-        return PRODUCT_IMAGE_MAP[slug];
-
-    }
-
-
-    /*
-     * Third priority:
-     * try the normal cards/slug.webp
-     */
-
-    if (slug) {
-
-        return `/assets/cards/${slug}.webp`;
-
-    }
-
-
-    /*
-     * Final fallback.
-     */
-
-    return "/images/next_level.png";
+    );
 
 }
 
 
-/* ===============================================================
-   PRODUCT IMAGE ERROR FALLBACK
-=============================================================== */
+/* ============================================================
+   GET SUBSCRIPTION PASSWORD
+============================================================ */
 
-function productImageFallback(
-    image
+function getSubscriptionPassword(subscription) {
+
+    return safeString(
+
+        subscription.subscription_password ||
+
+        subscription.account_password ||
+
+        subscription.login_password ||
+
+        subscription.password,
+
+        "Not provided"
+
+    );
+
+}
+
+
+/* ============================================================
+   GET DELIVERY NOTE
+============================================================ */
+
+function getDeliveryNote(subscription) {
+
+    return safeString(
+
+        subscription.delivery_note ||
+
+        subscription.note ||
+
+        subscription.account_note ||
+
+        subscription.credentials_note ||
+
+        subscription.admin_note,
+
+        "No additional instructions."
+
+    );
+
+}
+
+
+/* ============================================================
+   GET PRICE
+============================================================ */
+
+function getSubscriptionPrice(subscription) {
+
+    return (
+
+        subscription.amount ??
+
+        subscription.total ??
+
+        subscription.price ??
+
+        subscription.paid_amount ??
+
+        0
+
+    );
+
+}
+
+
+/* ============================================================
+   GET START DATE
+============================================================ */
+
+function getStartDate(subscription) {
+
+    return (
+
+        subscription.subscription_start ||
+
+        subscription.start_date ||
+
+        subscription.started_at ||
+
+        subscription.start_at ||
+
+        null
+
+    );
+
+}
+
+
+/* ============================================================
+   GET EXPIRY DATE
+============================================================ */
+
+function getExpiryDate(subscription) {
+
+    return (
+
+        subscription.subscription_expiry ||
+
+        subscription.expiry_date ||
+
+        subscription.expires_at ||
+
+        subscription.end_date ||
+
+        null
+
+    );
+
+}
+
+
+/* ============================================================
+   GET ORDER NUMBER
+============================================================ */
+
+function getOrderNumber(order) {
+
+    return safeString(
+
+        order.order_number ||
+
+        order.order_id ||
+
+        order.reference ||
+
+        order.id,
+
+        "Order"
+
+    );
+
+}
+
+
+/* ============================================================
+   COPY TO CLIPBOARD
+============================================================ */
+
+async function copyToClipboard(
+    value,
+    button
 ) {
 
-    image.onerror = null;
+    if (
+        !value ||
+        value === "Not provided"
+    ) {
 
-    image.src =
-        "/images/next_level.png";
+        return;
+
+    }
+
+
+    try {
+
+        await navigator.clipboard.writeText(
+            String(value)
+        );
+
+
+        if (button) {
+
+            const originalHTML =
+                button.innerHTML;
+
+
+            button.innerHTML =
+                `<i class="fas fa-check"></i> Copied`;
+
+
+            setTimeout(
+                () => {
+
+                    button.innerHTML =
+                        originalHTML;
+
+                },
+                1400
+            );
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Clipboard error:",
+            error
+        );
+
+
+        /*
+         * Fallback for older browsers.
+         */
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+
+        textarea.value =
+            String(value);
+
+
+        textarea.style.position =
+            "fixed";
+
+        textarea.style.opacity =
+            "0";
+
+
+        document.body.appendChild(
+            textarea
+        );
+
+
+        textarea.select();
+
+
+        try {
+
+            document.execCommand(
+                "copy"
+            );
+
+        }
+        catch (copyError) {
+
+            console.error(
+                copyError
+            );
+
+        }
+
+
+        textarea.remove();
+
+
+        if (button) {
+
+            const originalHTML =
+                button.innerHTML;
+
+
+            button.innerHTML =
+                `<i class="fas fa-check"></i> Copied`;
+
+
+            setTimeout(
+                () => {
+
+                    button.innerHTML =
+                        originalHTML;
+
+                },
+                1400
+            );
+
+        }
+
+    }
 
 }
 
 
-/* ===============================================================
-   RENDER EMPTY SUBSCRIPTIONS
-=============================================================== */
+/* ============================================================
+   INJECT MODAL CSS
+============================================================ */
 
-function renderEmptySubscriptions() {
-
-    subscriptionsContainer.innerHTML = `
-
-        <div class="empty-state">
-
-            <div class="empty-icon">
-                <i class="fas fa-tv"></i>
-            </div>
-
-            <h3 class="empty-title">
-                No subscriptions yet
-            </h3>
-
-            <p class="empty-description">
-                Your subscriptions will appear here after you place an order.
-            </p>
-
-            <a
-                href="index.html"
-                class="empty-button"
-            >
-                <i class="fas fa-bag-shopping"></i>
-                Browse Subscriptions
-            </a>
-
-        </div>
-
-    `;
-
-}
-
-
-/* ===============================================================
-   INJECT SUBSCRIPTION MODAL CSS
-=============================================================== */
-
-function injectSubscriptionModalStyles() {
+function injectModalStyles() {
 
     if (
         document.getElementById(
             "subscriptionModalStyles"
         )
     ) {
+
         return;
+
     }
 
+
     const style =
-        document.createElement("style");
+        document.createElement(
+            "style"
+        );
+
 
     style.id =
         "subscriptionModalStyles";
 
+
     style.textContent = `
 
-        /* =====================================================
-           SUBSCRIPTION MODAL
-        ===================================================== */
+        .subscription-card {
+            cursor: pointer;
+        }
+
+        .subscription-card:focus-visible {
+            outline: 3px solid rgba(106,17,203,.25);
+            outline-offset: 2px;
+        }
+
+        .subscription-card-click-hint {
+            margin-top: 12px;
+            color: #6a11cb;
+            font-size: .72rem;
+            font-weight: 750;
+        }
 
         .subscription-modal-overlay {
 
@@ -3574,10 +4048,10 @@ function injectSubscriptionModalStyles() {
 
             justify-content: center;
 
-            padding: 18px;
+            padding: 16px;
 
             background:
-                rgba(15, 23, 42, .62);
+                rgba(15, 23, 42, .60);
 
             backdrop-filter:
                 blur(8px);
@@ -3592,24 +4066,24 @@ function injectSubscriptionModalStyles() {
             transition:
                 opacity .25s ease,
                 visibility .25s ease;
-        }
 
+        }
 
         .subscription-modal-overlay.active {
 
             opacity: 1;
 
             visibility: visible;
-        }
 
+        }
 
         .subscription-modal {
 
             width:
-                min(620px, 100%);
+                min(720px, 100%);
 
             max-height:
-                min(850px, 92vh);
+                min(900px, calc(100vh - 30px));
 
             overflow-y:
                 auto;
@@ -3618,21 +4092,20 @@ function injectSubscriptionModalStyles() {
                 #ffffff;
 
             border-radius:
-                24px;
+                22px;
 
             box-shadow:
                 0 30px 90px
                 rgba(0,0,0,.25);
 
             transform:
-                translateY(18px)
+                translateY(20px)
                 scale(.97);
 
             transition:
-                transform .28s
-                cubic-bezier(.2,.8,.2,1);
-        }
+                transform .25s ease;
 
+        }
 
         .subscription-modal-overlay.active
         .subscription-modal {
@@ -3640,352 +4113,327 @@ function injectSubscriptionModalStyles() {
             transform:
                 translateY(0)
                 scale(1);
-        }
 
+        }
 
         .subscription-modal-header {
 
-            position: relative;
+            position:
+                sticky;
+
+            top: 0;
+
+            z-index: 3;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                14px;
 
             padding:
-                22px 22px 20px;
+                16px 18px;
 
             background:
-                linear-gradient(
-                    135deg,
-                    #5b0db2,
-                    #6a11cb 45%,
-                    #2575fc
-                );
+                rgba(255,255,255,.96);
 
-            color: white;
+            backdrop-filter:
+                blur(14px);
+
+            border-bottom:
+                1px solid #e8eaf0;
+
         }
 
+        .subscription-modal-title-wrap {
+
+            min-width:
+                0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+        }
 
         .subscription-modal-close {
 
-            position: absolute;
+            width:
+                40px;
 
-            top: 14px;
+            height:
+                40px;
 
-            right: 14px;
+            flex:
+                0 0 40px;
 
-            width: 38px;
+            display:
+                flex;
 
-            height: 38px;
+            align-items:
+                center;
 
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            border: none;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,.14);
-
-            color: white;
-
-            cursor: pointer;
-
-            font-size: 1rem;
-
-            transition: .2s ease;
-        }
-
-
-        .subscription-modal-close:hover {
-
-            background:
-                rgba(255,255,255,.25);
-
-            transform:
-                rotate(90deg);
-        }
-
-
-        .subscription-modal-product {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 16px;
-
-            padding-right: 45px;
-        }
-
-
-        .subscription-modal-image {
-
-            width: 76px;
-
-            height: 76px;
-
-            flex: 0 0 76px;
-
-            object-fit: contain;
-
-            border-radius: 18px;
-
-            padding: 9px;
-
-            background: white;
-
-            box-shadow:
-                0 8px 24px
-                rgba(0,0,0,.16);
-        }
-
-
-        .subscription-modal-title {
-
-            margin: 0;
-
-            font-size: 1.35rem;
-
-            line-height: 1.2;
-
-            font-weight: 800;
-
-            word-break: break-word;
-        }
-
-
-        .subscription-modal-plan {
-
-            margin-top: 5px;
-
-            color:
-                rgba(255,255,255,.78);
-
-            font-size: .82rem;
-        }
-
-
-        .subscription-modal-body {
-
-            padding: 22px;
-        }
-
-
-        .subscription-modal-status-row {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 12px;
-
-            margin-bottom: 18px;
-
-            padding: 13px 15px;
-
-            border-radius: 14px;
-
-            background: #f8fafc;
-
-            border: 1px solid #eef0f4;
-        }
-
-
-        .subscription-modal-status-label {
-
-            color: #6b7280;
-
-            font-size: .78rem;
-
-            font-weight: 650;
-        }
-
-
-        .subscription-modal-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0, 1fr));
-
-            gap: 12px;
-
-        }
-
-
-        .subscription-modal-field {
-
-            padding: 14px;
-
-            border:
-                1px solid #e8eaf0;
-
-            border-radius: 14px;
-
-            background: #ffffff;
-        }
-
-
-        .subscription-modal-field.full {
-
-            grid-column: 1 / -1;
-        }
-
-
-        .subscription-modal-field-label {
-
-            display: block;
-
-            margin-bottom: 7px;
-
-            color: #9ca3af;
-
-            font-size: .67rem;
-
-            font-weight: 750;
-
-            text-transform: uppercase;
-
-            letter-spacing: .04em;
-        }
-
-
-        .subscription-modal-field-value {
-
-            color: #1f2937;
-
-            font-size: .84rem;
-
-            font-weight: 650;
-
-            line-height: 1.45;
-
-            word-break: break-word;
-        }
-
-
-        .subscription-credential {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-        }
-
-
-        .subscription-credential-value {
-
-            min-width: 0;
-
-            flex: 1;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-            font-family:
-                ui-monospace,
-                SFMono-Regular,
-                Menlo,
-                Monaco,
-                Consolas,
-                monospace;
-
-        }
-
-
-        .subscription-copy-btn,
-        .subscription-toggle-btn {
-
-            width: 34px;
-
-            height: 34px;
-
-            flex: 0 0 34px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
+            justify-content:
+                center;
 
             border:
                 1px solid #e5e7eb;
 
-            border-radius: 9px;
+            border-radius:
+                11px;
 
-            background: white;
+            background:
+                #ffffff;
 
-            color: #4b5563;
+            color:
+                #4b5563;
 
-            cursor: pointer;
+            cursor:
+                pointer;
 
-            transition: .2s ease;
+            transition:
+                all .2s ease;
+
         }
 
+        .subscription-modal-close:hover {
 
-        .subscription-copy-btn:hover,
-        .subscription-toggle-btn:hover {
+            background:
+                #f8fafc;
 
-            color: var(--primary-color);
+            color:
+                #111827;
 
-            background: #f5f3ff;
-
-            border-color:
-                rgba(106,17,203,.2);
         }
 
+        .subscription-modal-product {
 
-        .subscription-note {
+            width:
+                52px;
 
-            margin-top: 12px;
+            height:
+                52px;
 
-            padding: 14px;
+            flex:
+                0 0 52px;
 
-            border-radius: 14px;
+            border-radius:
+                13px;
 
-            background: #fffbeb;
+            object-fit:
+                cover;
+
+            background:
+                #f3f4f6;
 
             border:
-                1px solid #fde68a;
-
-            color: #92400e;
-
-            font-size: .8rem;
-
-            line-height: 1.55;
-        }
-
-
-        .subscription-modal-footer {
-
-            margin-top: 18px;
-
-            padding-top: 16px;
-
-            border-top:
-                1px solid #eef0f4;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 12px;
+                1px solid #e5e7eb;
 
         }
 
+        .subscription-modal-product-name {
 
-        .subscription-modal-id {
+            margin:
+                0;
 
-            color: #9ca3af;
+            font-size:
+                1rem;
+
+            font-weight:
+                800;
+
+            color:
+                #18212f;
+
+            word-break:
+                break-word;
+
+        }
+
+        .subscription-modal-plan {
+
+            margin:
+                3px 0 0;
+
+            font-size:
+                .76rem;
+
+            color:
+                #9ca3af;
+
+        }
+
+        .subscription-modal-body {
+
+            padding:
+                20px;
+
+        }
+
+        .subscription-modal-status-row {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                18px;
+
+        }
+
+        .subscription-modal-price {
+
+            color:
+                #18212f;
+
+            font-size:
+                1.35rem;
+
+            font-weight:
+                850;
+
+        }
+
+        .subscription-info-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0,1fr));
+
+            gap:
+                12px;
+
+        }
+
+        .subscription-info-box {
+
+            padding:
+                13px;
+
+            border:
+                1px solid #e8eaf0;
+
+            border-radius:
+                13px;
+
+            background:
+                #f8fafc;
+
+        }
+
+        .subscription-info-box.full {
+
+            grid-column:
+                1 / -1;
+
+        }
+
+        .subscription-info-label {
+
+            display:
+                block;
+
+            margin-bottom:
+                5px;
+
+            color:
+                #9ca3af;
+
+            font-size:
+                .65rem;
+
+            font-weight:
+                750;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                .035em;
+
+        }
+
+        .subscription-info-value {
+
+            display:
+                block;
+
+            color:
+                #374151;
+
+            font-size:
+                .82rem;
+
+            line-height:
+                1.45;
+
+            font-weight:
+                650;
+
+            word-break:
+                break-word;
+
+            white-space:
+                pre-wrap;
+
+        }
+
+        .credential-box {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                8px;
+
+        }
+
+        .credential-value {
+
+            flex:
+                1;
+
+            min-width:
+                0;
+
+            padding:
+                10px 11px;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                10px;
+
+            background:
+                #ffffff;
+
+            color:
+                #1f2937;
 
             font-family:
                 ui-monospace,
@@ -3995,177 +4443,243 @@ function injectSubscriptionModalStyles() {
                 Consolas,
                 monospace;
 
-            font-size: .67rem;
+            font-size:
+                .76rem;
 
-            word-break: break-all;
+            word-break:
+                break-all;
+
         }
 
+        .credential-actions {
 
-        .subscription-view-button {
+            display:
+                flex;
 
-            display: inline-flex;
+            gap:
+                6px;
 
-            align-items: center;
+            flex:
+                0 0 auto;
 
-            justify-content: center;
+        }
 
-            gap: 7px;
+        .credential-action {
 
-            margin-top: 17px;
+            min-height:
+                36px;
 
-            width: 100%;
+            padding:
+                0 10px;
 
-            min-height: 42px;
+            display:
+                inline-flex;
 
-            border: none;
+            align-items:
+                center;
 
-            border-radius: 11px;
+            justify-content:
+                center;
+
+            gap:
+                5px;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                9px;
 
             background:
-                linear-gradient(
-                    135deg,
-                    var(--primary-color),
-                    var(--secondary-color)
-                );
+                #ffffff;
 
-            color: white;
+            color:
+                #4b5563;
 
-            font-size: .78rem;
+            cursor:
+                pointer;
 
-            font-weight: 750;
+            font-size:
+                .7rem;
 
-            cursor: pointer;
+            font-weight:
+                700;
 
-            transition: .25s ease;
         }
 
+        .credential-action:hover {
 
-        .subscription-view-button:hover {
+            background:
+                #f5f3ff;
 
-            transform:
-                translateY(-2px);
+            color:
+                #6a11cb;
 
-            box-shadow:
-                0 8px 22px
-                rgba(106,17,203,.18);
         }
 
+        .subscription-modal-section-title {
+
+            margin:
+                22px 0 10px;
+
+            color:
+                #18212f;
+
+            font-size:
+                .88rem;
+
+            font-weight:
+                800;
+
+        }
+
+        .subscription-modal-footer {
+
+            padding:
+                15px 20px 20px;
+
+            color:
+                #9ca3af;
+
+            font-size:
+                .68rem;
+
+            text-align:
+                center;
+
+        }
 
         @media (max-width: 600px) {
 
             .subscription-modal-overlay {
 
-                align-items: flex-end;
+                padding:
+                    0;
 
-                padding: 0;
+                align-items:
+                    flex-end;
+
             }
-
 
             .subscription-modal {
 
-                width: 100%;
+                width:
+                    100%;
 
-                max-height: 94vh;
+                max-height:
+                    94vh;
 
                 border-radius:
-                    24px 24px 0 0;
+                    22px 22px 0 0;
+
             }
-
-
-            .subscription-modal-header {
-
-                padding:
-                    20px 18px;
-            }
-
 
             .subscription-modal-body {
 
                 padding:
-                    18px;
+                    16px;
+
             }
 
-
-            .subscription-modal-product {
-
-                gap: 12px;
-            }
-
-
-            .subscription-modal-image {
-
-                width: 64px;
-
-                height: 64px;
-
-                flex-basis: 64px;
-
-                border-radius: 15px;
-            }
-
-
-            .subscription-modal-title {
-
-                font-size:
-                    1.15rem;
-            }
-
-
-            .subscription-modal-grid {
+            .subscription-info-grid {
 
                 grid-template-columns:
                     1fr;
+
             }
 
+            .subscription-info-box.full {
 
-            .subscription-modal-field.full {
+                grid-column:
+                    auto;
 
-                grid-column: auto;
             }
 
+            .subscription-modal-status-row {
 
-            .subscription-modal-footer {
+                align-items:
+                    flex-start;
 
                 flex-direction:
                     column;
 
+            }
+
+            .credential-box {
+
                 align-items:
                     stretch;
+
+                flex-direction:
+                    column;
+
             }
+
+            .credential-actions {
+
+                width:
+                    100%;
+
+            }
+
+            .credential-action {
+
+                flex:
+                    1;
+
+            }
+
+        }
+
+        body.subscription-modal-open {
+
+            overflow:
+                hidden;
 
         }
 
     `;
 
-    document.head.appendChild(style);
+
+    document.head.appendChild(
+        style
+    );
 
 }
 
 
-/* ===============================================================
+/* ============================================================
    CREATE MODAL
-=============================================================== */
+============================================================ */
 
 function createSubscriptionModal() {
 
     if (
         document.getElementById(
-            "subscriptionModalOverlay"
+            "subscriptionDetailsModal"
         )
     ) {
+
         return;
+
     }
 
-    const overlay =
-        document.createElement("div");
 
-    overlay.id =
-        "subscriptionModalOverlay";
+    const modal =
+        document.createElement(
+            "div"
+        );
 
-    overlay.className =
+
+    modal.id =
+        "subscriptionDetailsModal";
+
+
+    modal.className =
         "subscription-modal-overlay";
 
-    overlay.innerHTML = `
+
+    modal.innerHTML = `
 
         <div
             class="subscription-modal"
@@ -4174,25 +4688,86 @@ function createSubscriptionModal() {
             aria-labelledby="subscriptionModalTitle"
         >
 
+            <div class="subscription-modal-header">
+
+                <div
+                    id="subscriptionModalTitleWrap"
+                    class="subscription-modal-title-wrap"
+                ></div>
+
+
+                <button
+                    type="button"
+                    id="subscriptionModalClose"
+                    class="subscription-modal-close"
+                    aria-label="Close subscription details"
+                >
+
+                    <i class="fas fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+
             <div
-                id="subscriptionModalContent"
+                id="subscriptionModalBody"
+                class="subscription-modal-body"
             ></div>
+
+
+            <div class="subscription-modal-footer">
+
+                Keep your subscription credentials private.
+
+            </div>
 
         </div>
 
     `;
 
+
     document.body.appendChild(
-        overlay
+        modal
     );
 
 
-    overlay.addEventListener(
+    const closeButton =
+        document.getElementById(
+            "subscriptionModalClose"
+        );
+
+
+    closeButton.addEventListener(
+        "click",
+        closeSubscriptionModal
+    );
+
+
+    modal.addEventListener(
         "click",
         event => {
 
             if (
-                event.target === overlay
+                event.target ===
+                modal
+            ) {
+
+                closeSubscriptionModal();
+
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Escape"
             ) {
 
                 closeSubscriptionModal();
@@ -4205,211 +4780,312 @@ function createSubscriptionModal() {
 }
 
 
-/* ===============================================================
-   GET SUBSCRIPTION VALUE
-=============================================================== */
+/* ============================================================
+   OPEN SUBSCRIPTION MODAL
+============================================================ */
 
-function getSubscriptionValue(
-    subscription,
-    ...keys
+function openSubscriptionModal(
+    subscription
 ) {
-
-    for (
-        const key of keys
-    ) {
-
-        const value =
-            subscription?.[key];
-
-        if (
-            value !== null &&
-            value !== undefined &&
-            String(value).trim() !== ""
-        ) {
-
-            return value;
-
-        }
-
-    }
-
-    return "";
-
-}
-
-
-/* ===============================================================
-   OPEN SUBSCRIPTION DETAILS
-=============================================================== */
-
-function openSubscriptionDetails(
-    index
-) {
-
-    const subscription =
-        currentSubscriptions[index];
 
     if (!subscription) {
-        return;
-    }
 
-    currentSubscriptionModal =
-        subscription;
+        return;
+
+    }
 
 
     createSubscriptionModal();
 
 
-    const overlay =
+    modalSubscription =
+        subscription;
+
+
+    const modal =
         document.getElementById(
-            "subscriptionModalOverlay"
+            "subscriptionDetailsModal"
         );
 
-    const content =
+
+    const titleWrap =
         document.getElementById(
-            "subscriptionModalContent"
+            "subscriptionModalTitleWrap"
+        );
+
+
+    const body =
+        document.getElementById(
+            "subscriptionModalBody"
         );
 
 
     const productName =
-        safeString(
-            getSubscriptionValue(
-                subscription,
-                "product_name",
-                "name"
-            ),
-            "Subscription"
-        );
-
-
-    const productImage =
-        getProductImage(
+        getProductName(
             subscription
         );
 
 
     const plan =
-        safeString(
-            getSubscriptionValue(
-                subscription,
-                "plan",
-                "subscription_plan",
-                "duration"
-            ),
-            "—"
+        getProductPlan(
+            subscription
+        );
+
+
+    const image =
+        getProductImage(
+            subscription
         );
 
 
     const status =
         safeString(
-            getSubscriptionValue(
-                subscription,
-                "status",
-                "subscription_status"
-            ),
+            subscription.status,
             "Unknown"
         );
 
 
-    const subscriptionEmail =
-        getSubscriptionValue(
-            subscription,
-            "subscription_email",
-            "login_email",
-            "account_email",
-            "email"
-        );
-
-
-    const subscriptionPassword =
-        getSubscriptionValue(
-            subscription,
-            "subscription_password",
-            "login_password",
-            "account_password",
-            "password"
+    const price =
+        getSubscriptionPrice(
+            subscription
         );
 
 
     const startDate =
-        getSubscriptionValue(
-            subscription,
-            "start_date",
-            "subscription_start",
-            "started_at"
+        getStartDate(
+            subscription
         );
 
 
     const expiryDate =
-        getSubscriptionValue(
-            subscription,
-            "expiry_date",
-            "subscription_expiry",
-            "expires_at"
+        getExpiryDate(
+            subscription
+        );
+
+
+    const accountEmail =
+        getSubscriptionEmail(
+            subscription
+        );
+
+
+    const accountPassword =
+        getSubscriptionPassword(
+            subscription
         );
 
 
     const deliveryNote =
-        getSubscriptionValue(
-            subscription,
-            "delivery_note",
-            "admin_note",
-            "notes",
-            "details"
+        getDeliveryNote(
+            subscription
         );
 
 
-    const id =
+    const orderId =
         safeString(
-            subscription.id,
-            "—"
+            subscription.order_id ||
+            subscription.order_number,
+            "Not linked"
+        );
+
+
+    const transactionId =
+        safeString(
+            subscription.transaction_id,
+            "Not provided"
+        );
+
+
+    const paymentReference =
+        safeString(
+            subscription.payment_reference,
+            "Not provided"
+        );
+
+
+    const paymentMethod =
+        formatPaymentMethod(
+            subscription.payment_method
         );
 
 
     const paymentStatus =
-        getSubscriptionValue(
-            subscription,
-            "payment_status"
+        safeString(
+            subscription.payment_status,
+            "Unknown"
         );
 
 
-    content.innerHTML = `
+    const orderStatus =
+        safeString(
+            subscription.order_status,
+            "Unknown"
+        );
 
-        <div class="subscription-modal-header">
 
-            <button
-                type="button"
-                class="subscription-modal-close"
-                id="subscriptionModalClose"
-                aria-label="Close subscription details"
+    const createdAt =
+        formatDateTime(
+            subscription.created_at
+        );
+
+
+    titleWrap.innerHTML = `
+
+        <img
+            src="${escapeHTML(image)}"
+            alt="${escapeHTML(productName)}"
+            class="subscription-modal-product"
+            onerror="
+                this.onerror=null;
+                this.src='${escapeHTML(DEFAULT_PRODUCT_IMAGE)}';
+            "
+        >
+
+
+        <div>
+
+            <h2
+                id="subscriptionModalTitle"
+                class="subscription-modal-product-name"
             >
-                <i class="fas fa-xmark"></i>
-            </button>
+                ${escapeHTML(productName)}
+            </h2>
+
+            <p class="subscription-modal-plan">
+                ${escapeHTML(plan)}
+            </p>
+
+        </div>
+
+    `;
 
 
-            <div class="subscription-modal-product">
+    body.innerHTML = `
 
-                <img
-                    src="${escapeHTML(productImage)}"
-                    alt="${escapeHTML(productName)}"
-                    class="subscription-modal-image"
-                    onerror="productImageFallback(this)"
-                >
+        <div class="subscription-modal-status-row">
+
+            <span
+                class="
+                    status-badge
+                    ${getStatusClass(status)}
+                "
+            >
+                ${escapeHTML(
+                    formatStatus(status)
+                )}
+            </span>
 
 
-                <div>
+            <div class="subscription-modal-price">
 
-                    <h2
-                        id="subscriptionModalTitle"
-                        class="subscription-modal-title"
+                ${escapeHTML(
+                    formatCurrency(price)
+                )}
+
+            </div>
+
+        </div>
+
+
+        <h3 class="subscription-modal-section-title">
+
+            Account Credentials
+
+        </h3>
+
+
+        <div class="subscription-info-grid">
+
+
+            <div class="
+                subscription-info-box
+                full
+            ">
+
+                <span class="subscription-info-label">
+                    Account Email
+                </span>
+
+
+                <div class="credential-box">
+
+                    <div
+                        id="subscriptionModalEmail"
+                        class="credential-value"
                     >
-                        ${escapeHTML(productName)}
-                    </h2>
+                        ${escapeHTML(accountEmail)}
+                    </div>
 
 
-                    <div class="subscription-modal-plan">
+                    <div class="credential-actions">
 
-                        ${escapeHTML(plan)}
+                        <button
+                            type="button"
+                            class="credential-action"
+                            id="copySubscriptionEmail"
+                        >
+
+                            <i class="fas fa-copy"></i>
+
+                            Copy
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="
+                subscription-info-box
+                full
+            ">
+
+                <span class="subscription-info-label">
+                    Account Password
+                </span>
+
+
+                <div class="credential-box">
+
+                    <div
+                        id="subscriptionModalPassword"
+                        class="credential-value"
+                        data-password="${escapeHTML(accountPassword)}"
+                    >
+                        ••••••••••••
+                    </div>
+
+
+                    <div class="credential-actions">
+
+                        <button
+                            type="button"
+                            class="credential-action"
+                            id="toggleSubscriptionPassword"
+                        >
+
+                            <i class="fas fa-eye"></i>
+
+                            Show
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="credential-action"
+                            id="copySubscriptionPassword"
+                        >
+
+                            <i class="fas fa-copy"></i>
+
+                            Copy
+
+                        </button>
 
                     </div>
 
@@ -4420,263 +5096,233 @@ function openSubscriptionDetails(
         </div>
 
 
-        <div class="subscription-modal-body">
+
+        <h3 class="subscription-modal-section-title">
+
+            Subscription Details
+
+        </h3>
 
 
-            <div class="subscription-modal-status-row">
+        <div class="subscription-info-grid">
 
-                <span class="subscription-modal-status-label">
-                    Subscription Status
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Product
                 </span>
 
+                <span class="subscription-info-value">
+                    ${escapeHTML(productName)}
+                </span>
 
-                <span
-                    class="
-                        status-badge
-                        ${getStatusClass(status)}
-                    "
-                >
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Plan
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(plan)}
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Started
+                </span>
+
+                <span class="subscription-info-value">
                     ${escapeHTML(
-                        formatStatus(status)
+                        formatDate(startDate)
                     )}
                 </span>
 
             </div>
 
 
-
-            <div class="subscription-modal-grid">
-
-
-                <!-- PLAN -->
-
-                <div class="subscription-modal-field">
-
-                    <span class="subscription-modal-field-label">
-                        Plan
-                    </span>
-
-                    <span class="subscription-modal-field-value">
-                        ${escapeHTML(plan)}
-                    </span>
-
-                </div>
-
-
-                <!-- PAYMENT -->
-
-                <div class="subscription-modal-field">
-
-                    <span class="subscription-modal-field-label">
-                        Payment
-                    </span>
-
-                    <span class="subscription-modal-field-value">
-
-                        ${escapeHTML(
-                            paymentStatus
-                                ? formatStatus(paymentStatus)
-                                : "—"
-                        )}
-
-                    </span>
-
-                </div>
-
-
-                <!-- START -->
-
-                <div class="subscription-modal-field">
-
-                    <span class="subscription-modal-field-label">
-                        Started
-                    </span>
-
-                    <span class="subscription-modal-field-value">
-
-                        ${escapeHTML(
-                            formatDate(startDate)
-                        )}
-
-                    </span>
-
-                </div>
-
-
-                <!-- EXPIRY -->
-
-                <div class="subscription-modal-field">
-
-                    <span class="subscription-modal-field-label">
-                        Expires
-                    </span>
-
-                    <span class="subscription-modal-field-value">
-
-                        ${escapeHTML(
-                            formatDate(expiryDate)
-                        )}
-
-                    </span>
-
-                </div>
-
-
-                <!-- EMAIL -->
-
-                <div class="subscription-modal-field full">
-
-                    <span class="subscription-modal-field-label">
-                        Subscription Email
-                    </span>
-
-
-                    <div class="subscription-credential">
-
-                        <span
-                            id="subscriptionEmailValue"
-                            class="
-                                subscription-modal-field-value
-                                subscription-credential-value
-                            "
-                        >
-                            ${escapeHTML(
-                                subscriptionEmail ||
-                                "Not provided"
-                            )}
-                        </span>
-
-
-                        ${
-                            subscriptionEmail
-                                ? `
-                                    <button
-                                        type="button"
-                                        class="subscription-copy-btn"
-                                        data-copy-value="${escapeHTML(
-                                            subscriptionEmail
-                                        )}"
-                                        aria-label="Copy subscription email"
-                                        title="Copy email"
-                                    >
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                `
-                                : ""
-                        }
-
-                    </div>
-
-                </div>
-
-
-                <!-- PASSWORD -->
-
-                <div class="subscription-modal-field full">
-
-                    <span class="subscription-modal-field-label">
-                        Subscription Password
-                    </span>
-
-
-                    <div class="subscription-credential">
-
-                        <span
-                            id="subscriptionPasswordValue"
-                            class="
-                                subscription-modal-field-value
-                                subscription-credential-value
-                            "
-                            data-password="${escapeHTML(
-                                subscriptionPassword
-                            )}"
-                        >
-                            ${
-                                subscriptionPassword
-                                    ? "••••••••••••"
-                                    : "Not provided"
-                            }
-                        </span>
-
-
-                        ${
-                            subscriptionPassword
-                                ? `
-                                    <button
-                                        type="button"
-                                        id="subscriptionPasswordToggle"
-                                        class="subscription-toggle-btn"
-                                        aria-label="Show password"
-                                        title="Show password"
-                                    >
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        class="subscription-copy-btn"
-                                        data-copy-value="${escapeHTML(
-                                            subscriptionPassword
-                                        )}"
-                                        aria-label="Copy subscription password"
-                                        title="Copy password"
-                                    >
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                `
-                                : ""
-                        }
-
-                    </div>
-
-                </div>
-
-
-                ${
-                    deliveryNote
-                        ? `
-
-                            <div
-                                class="
-                                    subscription-modal-field
-                                    full
-                                "
-                            >
-
-                                <span class="subscription-modal-field-label">
-                                    Delivery Details
-                                </span>
-
-                                <div class="subscription-modal-field-value">
-
-                                    ${escapeHTML(
-                                        deliveryNote
-                                    ).replace(
-                                        /\n/g,
-                                        "<br>"
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                        `
-                        : ""
-                }
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Expires
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(
+                        formatDate(expiryDate)
+                    )}
+                </span>
 
             </div>
 
 
+            <div class="subscription-info-box">
 
-            <div class="subscription-modal-footer">
+                <span class="subscription-info-label">
+                    Subscription ID
+                </span>
 
-                <div class="subscription-modal-id">
+                <span class="subscription-info-value">
+                    ${escapeHTML(
+                        safeString(
+                            subscription.id,
+                            "—"
+                        )
+                    )}
+                </span>
 
-                    Subscription ID:
-                    ${escapeHTML(id)}
+            </div>
 
-                </div>
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Order ID
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(orderId)}
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box full">
+
+                <span class="subscription-info-label">
+                    Delivery / Account Note
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(deliveryNote)}
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <h3 class="subscription-modal-section-title">
+
+            Payment & Order Information
+
+        </h3>
+
+
+        <div class="subscription-info-grid">
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Payment Method
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(paymentMethod)}
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Payment Status
+                </span>
+
+                <span class="subscription-info-value">
+
+                    ${escapeHTML(
+                        formatStatus(
+                            paymentStatus
+                        )
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Order Status
+                </span>
+
+                <span class="subscription-info-value">
+
+                    ${escapeHTML(
+                        formatStatus(
+                            orderStatus
+                        )
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Amount
+                </span>
+
+                <span class="subscription-info-value">
+
+                    ${escapeHTML(
+                        formatCurrency(price)
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Transaction ID
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(transactionId)}
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box">
+
+                <span class="subscription-info-label">
+                    Payment Reference
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(paymentReference)}
+                </span>
+
+            </div>
+
+
+            <div class="subscription-info-box full">
+
+                <span class="subscription-info-label">
+                    Created
+                </span>
+
+                <span class="subscription-info-value">
+                    ${escapeHTML(createdAt)}
+                </span>
 
             </div>
 
@@ -4685,300 +5331,227 @@ function openSubscriptionDetails(
     `;
 
 
-    /* ===========================================================
-       CLOSE BUTTON
-    =========================================================== */
+    /*
+     * Email copy.
+     */
 
-    const closeButton =
+    const copyEmailButton =
         document.getElementById(
-            "subscriptionModalClose"
+            "copySubscriptionEmail"
         );
 
-    closeButton.addEventListener(
+
+    copyEmailButton.addEventListener(
         "click",
-        closeSubscriptionModal
-    );
-
-
-    /* ===========================================================
-       PASSWORD TOGGLE
-    =========================================================== */
-
-    const passwordToggle =
-        document.getElementById(
-            "subscriptionPasswordToggle"
-        );
-
-    if (passwordToggle) {
-
-        passwordToggle.addEventListener(
-            "click",
-            toggleSubscriptionPassword
-        );
-
-    }
-
-
-    /* ===========================================================
-       COPY BUTTONS
-    =========================================================== */
-
-    content
-        .querySelectorAll(
-            ".subscription-copy-btn"
-        )
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    async () => {
-
-                        const value =
-                            button.getAttribute(
-                                "data-copy-value"
-                            );
-
-                        await copySubscriptionValue(
-                            value,
-                            button
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-
-    /* ===========================================================
-       SHOW MODAL
-    =========================================================== */
-
-    document.body.style.overflow =
-        "hidden";
-
-    requestAnimationFrame(
         () => {
 
-            overlay.classList.add(
-                "active"
+            copyToClipboard(
+                accountEmail,
+                copyEmailButton
             );
 
         }
     );
 
-}
 
+    /*
+     * Password copy.
+     */
 
-/* ===============================================================
-   CLOSE MODAL
-=============================================================== */
-
-function closeSubscriptionModal() {
-
-    const overlay =
+    const copyPasswordButton =
         document.getElementById(
-            "subscriptionModalOverlay"
+            "copySubscriptionPassword"
         );
 
-    if (!overlay) {
-        return;
-    }
+
+    copyPasswordButton.addEventListener(
+        "click",
+        () => {
+
+            copyToClipboard(
+                accountPassword,
+                copyPasswordButton
+            );
+
+        }
+    );
 
 
-    overlay.classList.remove(
+    /*
+     * Password visibility.
+     */
+
+    const togglePasswordButton =
+        document.getElementById(
+            "toggleSubscriptionPassword"
+        );
+
+
+    const passwordElement =
+        document.getElementById(
+            "subscriptionModalPassword"
+        );
+
+
+    let passwordVisible =
+        false;
+
+
+    togglePasswordButton.addEventListener(
+        "click",
+        () => {
+
+            passwordVisible =
+                !passwordVisible;
+
+
+            if (passwordVisible) {
+
+                passwordElement.textContent =
+                    accountPassword;
+
+
+                togglePasswordButton.innerHTML =
+                    `
+                        <i class="fas fa-eye-slash"></i>
+                        Hide
+                    `;
+
+            }
+            else {
+
+                passwordElement.textContent =
+                    "••••••••••••";
+
+
+                togglePasswordButton.innerHTML =
+                    `
+                        <i class="fas fa-eye"></i>
+                        Show
+                    `;
+
+            }
+
+        }
+    );
+
+
+    modal.classList.add(
         "active"
     );
 
 
-    document.body.style.overflow =
-        "";
+    document.body.classList.add(
+        "subscription-modal-open"
+    );
 
 
-    currentSubscriptionModal =
+    /*
+     * Prevent page from scrolling behind modal.
+     */
+
+    setTimeout(
+        () => {
+
+            document.getElementById(
+                "subscriptionModalClose"
+            )?.focus();
+
+        },
+        50
+    );
+
+}
+
+
+/* ============================================================
+   CLOSE SUBSCRIPTION MODAL
+============================================================ */
+
+function closeSubscriptionModal() {
+
+    const modal =
+        document.getElementById(
+            "subscriptionDetailsModal"
+        );
+
+
+    if (!modal) {
+
+        return;
+
+    }
+
+
+    modal.classList.remove(
+        "active"
+    );
+
+
+    document.body.classList.remove(
+        "subscription-modal-open"
+    );
+
+
+    modalSubscription =
         null;
 
 }
 
 
-/* ===============================================================
-   PASSWORD TOGGLE
-=============================================================== */
+/* ============================================================
+   RENDER EMPTY SUBSCRIPTIONS
+============================================================ */
 
-function toggleSubscriptionPassword() {
+function renderEmptySubscriptions() {
 
-    const valueElement =
-        document.getElementById(
-            "subscriptionPasswordValue"
-        );
+    subscriptionsContainer.innerHTML = `
 
-    const toggleButton =
-        document.getElementById(
-            "subscriptionPasswordToggle"
-        );
+        <div class="empty-state">
 
+            <div class="empty-icon">
 
-    if (
-        !valueElement ||
-        !toggleButton
-    ) {
-        return;
-    }
+                <i class="fas fa-tv"></i>
+
+            </div>
 
 
-    const password =
-        valueElement.getAttribute(
-            "data-password"
-        );
+            <h3 class="empty-title">
+
+                No subscriptions yet
+
+            </h3>
 
 
-    const isHidden =
-        valueElement.textContent
-            .includes("•");
+            <p class="empty-description">
+
+                Your subscriptions will appear here after you
+                place an order.
+
+            </p>
 
 
-    if (isHidden) {
+            <a
+                href="index.html"
+                class="empty-button"
+            >
 
-        valueElement.textContent =
-            password;
+                <i class="fas fa-bag-shopping"></i>
 
-        toggleButton.innerHTML =
-            '<i class="fas fa-eye-slash"></i>';
+                Browse Subscriptions
 
-        toggleButton.setAttribute(
-            "aria-label",
-            "Hide password"
-        );
+            </a>
 
-        toggleButton.setAttribute(
-            "title",
-            "Hide password"
-        );
+        </div>
 
-    }
-    else {
-
-        valueElement.textContent =
-            "••••••••••••";
-
-        toggleButton.innerHTML =
-            '<i class="fas fa-eye"></i>';
-
-        toggleButton.setAttribute(
-            "aria-label",
-            "Show password"
-        );
-
-        toggleButton.setAttribute(
-            "title",
-            "Show password"
-        );
-
-    }
+    `;
 
 }
 
 
-/* ===============================================================
-   COPY SUBSCRIPTION VALUE
-=============================================================== */
-
-async function copySubscriptionValue(
-    value,
-    button
-) {
-
-    if (!value) {
-        return;
-    }
-
-
-    try {
-
-        await navigator.clipboard.writeText(
-            value
-        );
-
-
-        const original =
-            button.innerHTML;
-
-
-        button.innerHTML =
-            '<i class="fas fa-check"></i>';
-
-
-        button.style.color =
-            "#16a34a";
-
-
-        setTimeout(
-            () => {
-
-                button.innerHTML =
-                    original;
-
-                button.style.color =
-                    "";
-
-            },
-            1200
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "Copy failed:",
-            error
-        );
-
-
-        /*
-         * Fallback for browsers where
-         * Clipboard API is unavailable.
-         */
-
-        const textarea =
-            document.createElement(
-                "textarea"
-            );
-
-        textarea.value =
-            value;
-
-        textarea.style.position =
-            "fixed";
-
-        textarea.style.opacity =
-            "0";
-
-        document.body.appendChild(
-            textarea
-        );
-
-        textarea.select();
-
-        try {
-
-            document.execCommand(
-                "copy"
-            );
-
-        }
-        catch (_) {}
-
-        textarea.remove();
-
-    }
-
-}
-
-
-/* ===============================================================
+/* ============================================================
    RENDER SUBSCRIPTIONS
-=============================================================== */
+============================================================ */
 
 function renderSubscriptions(
     subscriptions
@@ -5002,171 +5575,220 @@ function renderSubscriptions(
 
         <div class="subscription-list">
 
-            ${
-                subscriptions
-                    .map(
-                        (
-                            subscription,
-                            index
-                        ) => {
+            ${subscriptions
+                .map(
+                    (
+                        subscription,
+                        index
+                    ) => {
 
-                            const productName =
-                                safeString(
-                                    getSubscriptionValue(
-                                        subscription,
-                                        "product_name",
-                                        "name"
-                                    ),
-                                    "Subscription"
-                                );
+                        const productName =
+                            getProductName(
+                                subscription
+                            );
 
 
-                            const status =
-                                safeString(
-                                    getSubscriptionValue(
-                                        subscription,
-                                        "status",
-                                        "subscription_status"
-                                    ),
-                                    "Unknown"
-                                );
+                        const productPlan =
+                            getProductPlan(
+                                subscription
+                            );
 
 
-                            const plan =
-                                safeString(
-                                    getSubscriptionValue(
-                                        subscription,
-                                        "plan",
-                                        "subscription_plan",
-                                        "duration"
-                                    ),
-                                    "—"
-                                );
+                        const image =
+                            getProductImage(
+                                subscription
+                            );
 
 
-                            const startDate =
-                                getSubscriptionValue(
-                                    subscription,
-                                    "start_date",
-                                    "subscription_start",
-                                    "started_at"
-                                );
+                        const status =
+                            safeString(
+                                subscription.status,
+                                "Unknown"
+                            );
 
 
-                            const expiryDate =
-                                getSubscriptionValue(
-                                    subscription,
-                                    "expiry_date",
-                                    "subscription_expiry",
-                                    "expires_at"
-                                );
-
-
-                            const productImage =
-                                getProductImage(
+                        const startDate =
+                            formatDate(
+                                getStartDate(
                                     subscription
-                                );
+                                )
+                            );
 
 
-                            const id =
-                                safeString(
-                                    subscription.id,
-                                    ""
-                                );
+                        const expiryDate =
+                            formatDate(
+                                getExpiryDate(
+                                    subscription
+                                )
+                            );
 
 
-                            const shortId =
-                                id
-                                    ? String(
-                                        id
-                                    ).substring(
-                                        0,
-                                        8
-                                    )
-                                    : "—";
+                        const price =
+                            getSubscriptionPrice(
+                                subscription
+                            );
 
 
-                            return `
+                        const subscriptionId =
+                            safeString(
+                                subscription.id,
+                                ""
+                            );
 
-                                <article
-                                    class="subscription-card"
-                                    data-subscription-index="${index}"
+
+                        const shortId =
+                            subscriptionId
+                                ? String(
+                                    subscriptionId
+                                ).substring(
+                                    0,
+                                    8
+                                )
+                                : "—";
+
+
+                        return `
+
+                            <article
+                                class="subscription-card"
+                                tabindex="0"
+                                role="button"
+                                data-subscription-index="${index}"
+                                aria-label="View details for ${escapeHTML(productName)}"
+                            >
+
+                                <div
+                                    style="
+                                        display:flex;
+                                        align-items:center;
+                                        gap:13px;
+                                        min-width:0;
+                                    "
                                 >
 
-                                    <div
+                                    <img
+                                        src="${escapeHTML(image)}"
+                                        alt="${escapeHTML(productName)}"
                                         style="
-                                            display:flex;
-                                            align-items:center;
-                                            gap:14px;
-                                            margin-bottom:16px;
+                                            width:58px;
+                                            height:58px;
+                                            flex:0 0 58px;
+                                            object-fit:cover;
+                                            border-radius:14px;
+                                            background:#f3f4f6;
+                                            border:1px solid #e5e7eb;
+                                        "
+                                        loading="lazy"
+                                        onerror="
+                                            this.onerror=null;
+                                            this.src='${escapeHTML(DEFAULT_PRODUCT_IMAGE)}';
                                         "
                                     >
 
-                                        <img
-                                            src="${escapeHTML(
-                                                productImage
-                                            )}"
-                                            alt="${escapeHTML(
-                                                productName
-                                            )}"
-                                            style="
-                                                width:58px;
-                                                height:58px;
-                                                flex:0 0 58px;
-                                                object-fit:contain;
-                                                border-radius:14px;
-                                                padding:7px;
-                                                background:#fff;
-                                                border:1px solid #eef0f4;
-                                            "
-                                            onerror="productImageFallback(this)"
-                                        >
 
+                                    <div style="min-width:0; flex:1;">
 
                                         <div
+                                            class="subscription-top"
                                             style="
-                                                min-width:0;
-                                                flex:1;
+                                                align-items:flex-start;
                                             "
                                         >
 
                                             <h3
                                                 class="subscription-name"
-                                                style="margin:0;"
                                             >
+
                                                 ${escapeHTML(
                                                     productName
                                                 )}
+
                                             </h3>
 
 
-                                            <div
-                                                style="
-                                                    margin-top:4px;
-                                                    color:#9ca3af;
-                                                    font-size:.72rem;
-                                                    font-weight:650;
+                                            <span
+                                                class="
+                                                    status-badge
+                                                    ${getStatusClass(
+                                                        status
+                                                    )}
                                                 "
                                             >
+
                                                 ${escapeHTML(
-                                                    plan
+                                                    formatStatus(
+                                                        status
+                                                    )
                                                 )}
-                                            </div>
+
+                                            </span>
 
                                         </div>
 
 
-                                        <span
-                                            class="
-                                                status-badge
-                                                ${getStatusClass(
-                                                    status
-                                                )}
+                                        <div
+                                            style="
+                                                margin-top:4px;
+                                                color:#9ca3af;
+                                                font-size:.72rem;
+                                                font-weight:650;
                                             "
                                         >
+
                                             ${escapeHTML(
-                                                formatStatus(
-                                                    status
+                                                productPlan
+                                            )}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="subscription-details">
+
+                                    <div class="subscription-detail">
+
+                                        <span class="detail-label">
+                                            Started
+                                        </span>
+
+                                        <span class="detail-value">
+                                            ${escapeHTML(
+                                                startDate
+                                            )}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="subscription-detail">
+
+                                        <span class="detail-label">
+                                            Expires
+                                        </span>
+
+                                        <span class="detail-value">
+                                            ${escapeHTML(
+                                                expiryDate
+                                            )}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="subscription-detail">
+
+                                        <span class="detail-label">
+                                            Price
+                                        </span>
+
+                                        <span class="detail-value">
+                                            ${escapeHTML(
+                                                formatCurrency(
+                                                    price
                                                 )
                                             )}
                                         </span>
@@ -5174,75 +5796,52 @@ function renderSubscriptions(
                                     </div>
 
 
+                                    <div class="subscription-detail">
 
-                                    <div class="subscription-details">
+                                        <span class="detail-label">
+                                            Account
+                                        </span>
 
-                                        <div class="subscription-detail">
-
-                                            <span class="detail-label">
-                                                Started
-                                            </span>
-
-                                            <span class="detail-value">
-                                                ${escapeHTML(
-                                                    formatDate(
-                                                        startDate
-                                                    )
-                                                )}
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="subscription-detail">
-
-                                            <span class="detail-label">
-                                                Expires
-                                            </span>
-
-                                            <span class="detail-value">
-                                                ${escapeHTML(
-                                                    formatDate(
-                                                        expiryDate
-                                                    )
-                                                )}
-                                            </span>
-
-                                        </div>
+                                        <span class="detail-value">
+                                            ${escapeHTML(
+                                                getSubscriptionEmail(
+                                                    subscription
+                                                )
+                                            )}
+                                        </span>
 
                                     </div>
 
-
-                                    <div class="subscription-id">
-
-                                        ID:
-                                        ${escapeHTML(
-                                            shortId
-                                        )}
-
-                                    </div>
+                                </div>
 
 
-                                    <button
-                                        type="button"
-                                        class="subscription-view-button"
-                                        data-view-subscription="${index}"
-                                    >
+                                <div class="subscription-id">
 
-                                        <i class="fas fa-eye"></i>
+                                    ID:
+                                    ${escapeHTML(
+                                        shortId
+                                    )}
 
-                                        View Full Subscription Details
+                                </div>
 
-                                    </button>
 
-                                </article>
+                                <div
+                                    class="subscription-card-click-hint"
+                                >
 
-                            `;
+                                    <i class="fas fa-arrow-up-right-from-square"></i>
 
-                        }
-                    )
-                    .join("")
-            }
+                                    Tap / click to view full details
+
+                                </div>
+
+                            </article>
+
+                        `;
+
+                    }
+                )
+                .join("")}
 
         </div>
 
@@ -5250,79 +5849,53 @@ function renderSubscriptions(
 
 
     /*
-     * Add click/tap events.
+     * Add click + keyboard support.
      */
 
     subscriptionsContainer
         .querySelectorAll(
-            "[data-view-subscription]"
+            ".subscription-card"
         )
         .forEach(
-            button => {
+            card => {
 
-                button.addEventListener(
+                const index =
+                    Number(
+                        card.dataset.subscriptionIndex
+                    );
+
+
+                card.addEventListener(
                     "click",
-                    event => {
+                    () => {
 
-                        event.stopPropagation();
-
-                        const index =
-                            Number(
-                                button.getAttribute(
-                                    "data-view-subscription"
-                                )
-                            );
-
-                        openSubscriptionDetails(
-                            index
+                        openSubscriptionModal(
+                            subscriptions[index]
                         );
 
                     }
                 );
 
-            }
-        );
-
-
-    /*
-     * Make the entire subscription card clickable too.
-     */
-
-    subscriptionsContainer
-        .querySelectorAll(
-            "[data-subscription-index]"
-        )
-        .forEach(
-            card => {
-
-                card.style.cursor =
-                    "pointer";
-
 
                 card.addEventListener(
-                    "click",
+                    "keydown",
                     event => {
 
                         if (
-                            event.target.closest(
-                                "button"
-                            )
+                            event.key ===
+                                "Enter" ||
+                            event.key ===
+                                " "
                         ) {
-                            return;
-                        }
+
+                            event.preventDefault();
 
 
-                        const index =
-                            Number(
-                                card.getAttribute(
-                                    "data-subscription-index"
-                                )
+                            openSubscriptionModal(
+                                subscriptions[index]
                             );
 
-
-                        openSubscriptionDetails(
-                            index
-                        );
+                        }
 
                     }
                 );
@@ -5333,9 +5906,9 @@ function renderSubscriptions(
 }
 
 
-/* ===============================================================
-   RENDER EMPTY ORDERS
-=============================================================== */
+/* ============================================================
+   EMPTY ORDERS
+============================================================ */
 
 function renderEmptyOrders() {
 
@@ -5344,23 +5917,36 @@ function renderEmptyOrders() {
         <div class="empty-state">
 
             <div class="empty-icon">
+
                 <i class="fas fa-receipt"></i>
+
             </div>
 
+
             <h3 class="empty-title">
+
                 No orders yet
+
             </h3>
 
+
             <p class="empty-description">
-                Your order history will appear here after your first purchase.
+
+                Your order history will appear here after
+                your first purchase.
+
             </p>
+
 
             <a
                 href="index.html"
                 class="empty-button"
             >
+
                 <i class="fas fa-shopping-bag"></i>
+
                 Browse Products
+
             </a>
 
         </div>
@@ -5370,9 +5956,9 @@ function renderEmptyOrders() {
 }
 
 
-/* ===============================================================
+/* ============================================================
    RENDER ORDERS
-=============================================================== */
+============================================================ */
 
 function renderOrders(
     orders
@@ -5402,15 +5988,25 @@ function renderOrders(
 
                     <tr>
 
-                        <th>Order</th>
+                        <th>
+                            Order
+                        </th>
 
-                        <th>Date</th>
+                        <th>
+                            Date
+                        </th>
 
-                        <th>Total</th>
+                        <th>
+                            Total
+                        </th>
 
-                        <th>Payment</th>
+                        <th>
+                            Payment
+                        </th>
 
-                        <th>Status</th>
+                        <th>
+                            Status
+                        </th>
 
                     </tr>
 
@@ -5419,127 +6015,125 @@ function renderOrders(
 
                 <tbody>
 
-                    ${
-                        orders
-                            .map(
-                                order => {
+                    ${orders
+                        .map(
+                            order => {
 
-                                    const orderNumber =
-                                        safeString(
-                                            order.order_number,
-                                            order.id
-                                                ? String(
-                                                    order.id
-                                                ).substring(
-                                                    0,
-                                                    8
-                                                )
-                                                : "Order"
-                                        );
+                                const orderNumber =
+                                    getOrderNumber(
+                                        order
+                                    );
 
 
-                                    const paymentStatus =
-                                        safeString(
-                                            order.payment_status,
-                                            order.order_status ||
-                                            "Unknown"
-                                        );
+                                const paymentStatus =
+                                    safeString(
+
+                                        order.payment_status ||
+
+                                        order.order_status ||
+
+                                        "Unknown",
+
+                                        "Unknown"
+
+                                    );
 
 
-                                    const total =
-                                        order.total ??
-                                        order.amount ??
-                                        order.subtotal ??
-                                        0;
+                                const total =
+                                    order.total ??
+                                    order.amount ??
+                                    order.paid_amount ??
+                                    0;
 
 
-                                    return `
+                                return `
 
-                                        <tr>
+                                    <tr>
 
-                                            <td>
+                                        <td>
 
-                                                <span class="order-number">
-                                                    ${escapeHTML(
-                                                        orderNumber
-                                                    )}
-                                                </span>
-
-                                            </td>
-
-
-                                            <td>
+                                            <span class="order-number">
 
                                                 ${escapeHTML(
-                                                    formatDate(
-                                                        order.created_at
+                                                    orderNumber
+                                                )}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            ${escapeHTML(
+                                                formatDate(
+                                                    order.created_at
+                                                )
+                                            )}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span class="order-total">
+
+                                                ${escapeHTML(
+                                                    formatCurrency(
+                                                        total
                                                     )
                                                 )}
 
-                                            </td>
+                                            </span>
+
+                                        </td>
 
 
-                                            <td>
+                                        <td>
 
-                                                <span class="order-total">
+                                            <span class="payment-method">
 
-                                                    ${escapeHTML(
-                                                        formatCurrency(
-                                                            total
-                                                        )
+                                                <i class="fas fa-credit-card"></i>
+
+                                                ${escapeHTML(
+                                                    formatPaymentMethod(
+                                                        order.payment_method
+                                                    )
+                                                )}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span
+                                                class="
+                                                    status-badge
+                                                    ${getStatusClass(
+                                                        paymentStatus
                                                     )}
+                                                "
+                                            >
 
-                                                </span>
+                                                ${escapeHTML(
+                                                    formatStatus(
+                                                        paymentStatus
+                                                    )
+                                                )}
 
-                                            </td>
+                                            </span>
 
+                                        </td>
 
-                                            <td>
+                                    </tr>
 
-                                                <span class="payment-method">
+                                `;
 
-                                                    <i class="fas fa-credit-card"></i>
-
-                                                    ${escapeHTML(
-                                                        formatPaymentMethod(
-                                                            order.payment_method
-                                                        )
-                                                    )}
-
-                                                </span>
-
-                                            </td>
-
-
-                                            <td>
-
-                                                <span
-                                                    class="
-                                                        status-badge
-                                                        ${getStatusClass(
-                                                            paymentStatus
-                                                        )}
-                                                    "
-                                                >
-
-                                                    ${escapeHTML(
-                                                        formatStatus(
-                                                            paymentStatus
-                                                        )
-                                                    )}
-
-                                                </span>
-
-                                            </td>
-
-                                        </tr>
-
-                                    `;
-
-                                }
-                            )
-                            .join("")
-                    }
+                            }
+                        )
+                        .join("")}
 
                 </tbody>
 
@@ -5552,9 +6146,9 @@ function renderOrders(
 }
 
 
-/* ===============================================================
+/* ============================================================
    LOAD PROFILE
-=============================================================== */
+============================================================ */
 
 async function loadProfile(
     user
@@ -5575,20 +6169,31 @@ async function loadProfile(
 
 
     if (error) {
+
         throw error;
+
     }
+
+
+    currentProfile =
+        data || null;
 
 
     const name =
         data?.full_name ||
+
         user.user_metadata?.full_name ||
+
         user.user_metadata?.name ||
+
         "Customer";
 
 
     const email =
         data?.email ||
+
         user.email ||
+
         "";
 
 
@@ -5599,12 +6204,253 @@ async function loadProfile(
     customerEmail.textContent =
         email;
 
+
+    /*
+     * Check admin status.
+     */
+
+    updateAdminPanelVisibility(
+        user,
+        data
+    );
+
+
+    return data;
+
 }
 
 
-/* ===============================================================
+/* ============================================================
+   ADMIN DETECTION
+============================================================ */
+
+function isAdminUser(
+    user,
+    profile
+) {
+
+    /*
+     * Profile role.
+     *
+     * Recommended:
+     *
+     * profiles.role = "admin"
+     */
+
+    const profileRole =
+        String(
+            profile?.role || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    if (
+        profileRole === "admin" ||
+        profileRole === "super_admin"
+    ) {
+
+        return true;
+
+    }
+
+
+    /*
+     * Profile is_admin boolean.
+     */
+
+    if (
+        profile?.is_admin === true
+    ) {
+
+        return true;
+
+    }
+
+
+    /*
+     * Metadata fallback.
+     */
+
+    const metadataRole =
+        String(
+            user?.user_metadata?.role || ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    if (
+        metadataRole === "admin" ||
+        metadataRole === "super_admin"
+    ) {
+
+        return true;
+
+    }
+
+
+    if (
+        user?.user_metadata?.is_admin === true
+    ) {
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* ============================================================
+   ADMIN PANEL BUTTON
+============================================================ */
+
+function updateAdminPanelVisibility(
+    user,
+    profile
+) {
+
+    /*
+     * Find existing admin links/buttons first.
+     */
+
+    const existingAdminElements =
+        document.querySelectorAll(
+            "[data-admin-panel]"
+        );
+
+
+    existingAdminElements.forEach(
+        element => {
+
+            element.remove();
+
+        }
+    );
+
+
+    /*
+     * NORMAL USER:
+     *
+     * Nothing is added.
+     *
+     * Therefore the admin panel is completely hidden.
+     */
+
+    if (
+        !isAdminUser(
+            user,
+            profile
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * ADMIN:
+     *
+     * Create desktop admin button.
+     */
+
+    const desktopNav =
+        document.querySelector(
+            ".desktop-nav"
+        );
+
+
+    if (desktopNav) {
+
+        const adminButton =
+            document.createElement(
+                "a"
+            );
+
+
+        adminButton.href =
+            "admin-orders.html";
+
+
+        adminButton.className =
+            "nav-link";
+
+
+        adminButton.dataset.adminPanel =
+            "true";
+
+
+        adminButton.innerHTML = `
+
+            <i class="fas fa-shield-halved"></i>
+
+            <span>Admin Panel</span>
+
+        `;
+
+
+        /*
+         * Put admin panel before logout.
+         */
+
+        desktopNav.insertBefore(
+            adminButton,
+            logoutButton
+        );
+
+    }
+
+
+    /*
+     * Create mobile admin button.
+     */
+
+    if (mobileMenu) {
+
+        const mobileAdmin =
+            document.createElement(
+                "a"
+            );
+
+
+        mobileAdmin.href =
+            "admin-orders.html";
+
+
+        mobileAdmin.dataset.adminPanel =
+            "true";
+
+
+        mobileAdmin.innerHTML = `
+
+            <i class="fas fa-shield-halved"></i>
+
+            Admin Panel
+
+        `;
+
+
+        /*
+         * Insert before logout button.
+         */
+
+        mobileMenu.insertBefore(
+            mobileAdmin,
+            mobileLogoutButton
+        );
+
+    }
+
+}
+
+
+/* ============================================================
    LOAD SUBSCRIPTIONS
-=============================================================== */
+============================================================ */
 
 async function loadSubscriptions(
     user
@@ -5630,22 +6476,24 @@ async function loadSubscriptions(
 
 
     if (error) {
+
         throw error;
+
     }
 
 
-    const subscriptions =
+    currentSubscriptions =
         Array.isArray(data)
             ? data
             : [];
 
 
-    currentSubscriptions =
-        subscriptions;
-
+    /*
+     * Active subscription count.
+     */
 
     const activeSubscriptions =
-        subscriptions.filter(
+        currentSubscriptions.filter(
             subscription => {
 
                 const status =
@@ -5667,18 +6515,18 @@ async function loadSubscriptions(
 
 
     renderSubscriptions(
-        subscriptions
+        currentSubscriptions
     );
 
 
-    return subscriptions;
+    return currentSubscriptions;
 
 }
 
 
-/* ===============================================================
+/* ============================================================
    LOAD ORDERS
-=============================================================== */
+============================================================ */
 
 async function loadOrders(
     user
@@ -5704,32 +6552,31 @@ async function loadOrders(
 
 
     if (error) {
+
         throw error;
+
     }
 
 
-    const orders =
+    currentOrders =
         Array.isArray(data)
             ? data
             : [];
 
 
-    currentOrders =
-        orders;
-
-
     totalOrderCount.textContent =
-        orders.length;
+        currentOrders.length;
 
 
     const pendingOrders =
-        orders.filter(
+        currentOrders.filter(
             order => {
 
                 const paymentStatus =
                     normalizeStatus(
                         order.payment_status
                     );
+
 
                 const orderStatus =
                     normalizeStatus(
@@ -5738,10 +6585,25 @@ async function loadOrders(
 
 
                 return (
-                    paymentStatus === "pending" ||
-                    paymentStatus === "processing" ||
-                    orderStatus === "pending" ||
-                    orderStatus === "processing"
+
+                    paymentStatus ===
+                        "pending" ||
+
+                    paymentStatus ===
+                        "processing" ||
+
+                    paymentStatus ===
+                        "awaiting_payment" ||
+
+                    paymentStatus ===
+                        "awaiting_confirmation" ||
+
+                    orderStatus ===
+                        "pending" ||
+
+                    orderStatus ===
+                        "processing"
+
                 );
 
             }
@@ -5753,18 +6615,18 @@ async function loadOrders(
 
 
     renderOrders(
-        orders
+        currentOrders
     );
 
 
-    return orders;
+    return currentOrders;
 
 }
 
 
-/* ===============================================================
+/* ============================================================
    SHOW DASHBOARD
-=============================================================== */
+============================================================ */
 
 function showDashboard() {
 
@@ -5782,12 +6644,16 @@ function showDashboard() {
         "ready"
     );
 
+
+    dashboardInitialized =
+        true;
+
 }
 
 
-/* ===============================================================
+/* ============================================================
    SHOW ERROR
-=============================================================== */
+============================================================ */
 
 function showError(
     message
@@ -5820,7 +6686,9 @@ function showError(
 
 
                 <h2 class="error-title">
+
                     Unable to load your account
+
                 </h2>
 
 
@@ -5855,89 +6723,18 @@ function showError(
 }
 
 
-/* ===============================================================
-   LOAD DASHBOARD
-=============================================================== */
-
-async function loadDashboard() {
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient.auth.getUser();
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        const user =
-            data?.user;
-
-
-        if (!user) {
-
-            window.location.replace(
-                "login.html"
-            );
-
-            return;
-
-        }
-
-
-        currentUser =
-            user;
-
-
-        /*
-         * Inject modal CSS before anything
-         * tries to open it.
-         */
-
-        injectSubscriptionModalStyles();
-
-
-        await Promise.all([
-
-            loadProfile(user),
-
-            loadSubscriptions(user),
-
-            loadOrders(user)
-
-        ]);
-
-
-        showDashboard();
-
-    }
-    catch (error) {
-
-        console.error(
-            "Dashboard loading error:",
-            error
-        );
-
-
-        showError(
-            "We couldn't load your account information. Please refresh the page or try again."
-        );
-
-    }
-
-}
-
-
-/* ===============================================================
+/* ============================================================
    MOBILE MENU
-=============================================================== */
+============================================================ */
 
 function toggleMobileMenu() {
+
+    if (!mobileMenu) {
+
+        return;
+
+    }
+
 
     const isOpen =
         mobileMenu.classList.toggle(
@@ -5959,19 +6756,33 @@ function toggleMobileMenu() {
 }
 
 
-mobileMenuButton.addEventListener(
-    "click",
-    toggleMobileMenu
-);
+if (mobileMenuButton) {
+
+    mobileMenuButton.addEventListener(
+        "click",
+        toggleMobileMenu
+    );
+
+}
 
 
-/* ===============================================================
+/* ============================================================
    CLOSE MOBILE MENU OUTSIDE
-=============================================================== */
+============================================================ */
 
 document.addEventListener(
     "click",
     event => {
+
+        if (
+            !mobileMenu ||
+            !mobileMenuButton
+        ) {
+
+            return;
+
+        }
+
 
         if (
             !mobileMenu.contains(
@@ -6002,75 +6813,62 @@ document.addEventListener(
 );
 
 
-/* ===============================================================
+/* ============================================================
    CLOSE MOBILE MENU AFTER LINK
-=============================================================== */
+============================================================ */
 
-mobileMenu
-    .querySelectorAll("a")
-    .forEach(
-        link => {
+if (mobileMenu) {
 
-            link.addEventListener(
-                "click",
-                () => {
+    mobileMenu
+        .querySelectorAll("a")
+        .forEach(
+            link => {
 
-                    mobileMenu.classList.remove(
-                        "active"
-                    );
+                link.addEventListener(
+                    "click",
+                    () => {
 
-
-                    mobileMenuButton.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
+                        mobileMenu.classList.remove(
+                            "active"
+                        );
 
 
-                    mobileMenuIcon.className =
-                        "fas fa-bars";
-
-                }
-            );
-
-        }
-    );
+                        mobileMenuButton.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
 
 
-/* ===============================================================
-   ESCAPE KEY
-=============================================================== */
+                        mobileMenuIcon.className =
+                            "fas fa-bars";
 
-document.addEventListener(
-    "keydown",
-    event => {
+                    }
+                );
 
-        if (
-            event.key === "Escape"
-        ) {
+            }
+        );
 
-            closeSubscriptionModal();
-
-        }
-
-    }
-);
+}
 
 
-/* ===============================================================
+/* ============================================================
    LOGOUT
-=============================================================== */
+============================================================ */
 
 async function logout() {
 
     if (
         logoutButton.disabled
     ) {
+
         return;
+
     }
 
 
     logoutButton.disabled =
         true;
+
 
     mobileLogoutButton.disabled =
         true;
@@ -6099,11 +6897,15 @@ async function logout() {
         const {
             error
         } =
-            await supabaseClient.auth.signOut();
+            await supabaseClient
+                .auth
+                .signOut();
 
 
         if (error) {
+
             throw error;
+
         }
 
 
@@ -6122,6 +6924,7 @@ async function logout() {
 
         logoutButton.disabled =
             false;
+
 
         mobileLogoutButton.disabled =
             false;
@@ -6154,21 +6957,29 @@ async function logout() {
 }
 
 
-logoutButton.addEventListener(
-    "click",
-    logout
-);
+if (logoutButton) {
+
+    logoutButton.addEventListener(
+        "click",
+        logout
+    );
+
+}
 
 
-mobileLogoutButton.addEventListener(
-    "click",
-    logout
-);
+if (mobileLogoutButton) {
+
+    mobileLogoutButton.addEventListener(
+        "click",
+        logout
+    );
+
+}
 
 
-/* ===============================================================
+/* ============================================================
    AUTH STATE MONITOR
-=============================================================== */
+============================================================ */
 
 supabaseClient.auth.onAuthStateChange(
     (
@@ -6191,13 +7002,266 @@ supabaseClient.auth.onAuthStateChange(
 );
 
 
-/* ===============================================================
+/* ============================================================
+   REAL-TIME SUBSCRIPTION UPDATE
+============================================================ */
+
+function subscribeToSubscriptionChanges(
+    user
+) {
+
+    try {
+
+        const channel =
+            supabaseClient
+                .channel(
+                    `customer-subscriptions-${user.id}`
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "*",
+                        schema: "public",
+                        table: "subscriptions",
+                        filter:
+                            `user_id=eq.${user.id}`
+                    },
+                    () => {
+
+                        /*
+                         * Refresh subscription data
+                         * when admin changes credentials,
+                         * status, expiry etc.
+                         */
+
+                        loadSubscriptions(
+                            user
+                        )
+                        .catch(
+                            error => {
+
+                                console.error(
+                                    "Subscription realtime refresh error:",
+                                    error
+                                );
+
+                            }
+                        );
+
+                    }
+                )
+                .subscribe();
+
+
+        return channel;
+
+    }
+    catch (error) {
+
+        console.error(
+            "Realtime subscription error:",
+            error
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+/* ============================================================
+   REAL-TIME ORDER UPDATE
+============================================================ */
+
+function subscribeToOrderChanges(
+    user
+) {
+
+    try {
+
+        const channel =
+            supabaseClient
+                .channel(
+                    `customer-orders-${user.id}`
+                )
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "*",
+                        schema: "public",
+                        table: "orders",
+                        filter:
+                            `user_id=eq.${user.id}`
+                    },
+                    () => {
+
+                        loadOrders(
+                            user
+                        )
+                        .catch(
+                            error => {
+
+                                console.error(
+                                    "Order realtime refresh error:",
+                                    error
+                                );
+
+                            }
+                        );
+
+                    }
+                )
+                .subscribe();
+
+
+        return channel;
+
+    }
+    catch (error) {
+
+        console.error(
+            "Order realtime error:",
+            error
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+/* ============================================================
+   LOAD DASHBOARD
+============================================================ */
+
+async function loadDashboard() {
+
+    try {
+
+        /*
+         * First make sure Supabase has an authenticated user.
+         */
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        const user =
+            data?.user;
+
+
+        currentUser =
+            user || null;
+
+
+        /*
+         * Not logged in.
+         */
+
+        if (!user) {
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Load everything before revealing
+         * the dashboard.
+         */
+
+        await Promise.all([
+
+            loadProfile(
+                user
+            ),
+
+            loadSubscriptions(
+                user
+            ),
+
+            loadOrders(
+                user
+            )
+
+        ]);
+
+
+        /*
+         * Add modal functionality.
+         */
+
+        injectModalStyles();
+
+        createSubscriptionModal();
+
+
+        /*
+         * Reveal dashboard.
+         */
+
+        showDashboard();
+
+
+        /*
+         * Enable realtime updates.
+         */
+
+        subscribeToSubscriptionChanges(
+            user
+        );
+
+
+        subscribeToOrderChanges(
+            user
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Dashboard loading error:",
+            error
+        );
+
+
+        showError(
+            "We couldn't load your account information. Please refresh the page or try again."
+        );
+
+    }
+
+}
+
+
+/* ============================================================
    START
-=============================================================== */
+============================================================ */
 
 loadDashboard();
 
 </script>
+
 
 
 
