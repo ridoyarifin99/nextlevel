@@ -10,7 +10,12 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Checkout - NEXT LEVEL SUBS</title>
+    <meta
+        name="theme-color"
+        content="#2563eb"
+    >
+
+    <title>Checkout - Next Level Subs</title>
 
     <link
         rel="stylesheet"
@@ -24,73 +29,1031 @@
 
     <style>
 
-        .payment-method {
-            cursor: pointer;
-            transition: all 0.2s ease;
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --text: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --surface: #ffffff;
+            --background: #f8fafc;
         }
+
+
+        /* =========================================================
+           BODY
+        ========================================================= */
+
+        body {
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(37, 99, 235, 0.08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(99, 102, 241, 0.06),
+                    transparent 30%
+                ),
+                #f8fafc;
+
+            color: var(--text);
+
+            min-height: 100vh;
+
+            -webkit-font-smoothing: antialiased;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        header {
+            backdrop-filter: blur(14px);
+
+            background: rgba(
+                255,
+                255,
+                255,
+                0.88
+            ) !important;
+
+            border-bottom: 1px solid rgba(
+                229,
+                231,
+                235,
+                0.8
+            );
+        }
+
+
+        .logo-image {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+
+        .logo-text-container {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+            gap: 2px;
+        }
+
+
+        .logo-text-item {
+            font-weight: 700;
+            font-size: 0.75rem !important;
+        }
+
+
+        /* =========================================================
+           HEADER BUTTONS
+        ========================================================= */
+
+        .header-link {
+            transition:
+                transform 0.25s ease,
+                color 0.25s ease;
+        }
+
+
+        .header-link:hover {
+            transform: translateX(-2px);
+        }
+
+
+        .cart-button {
+            width: 44px;
+            height: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background: #f1f5f9;
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease;
+        }
+
+
+        .cart-button:hover {
+            transform: translateY(-2px);
+            background: #e0e7ff;
+        }
+
+
+        #cartCount {
+            box-shadow:
+                0 3px 8px rgba(
+                    220,
+                    38,
+                    38,
+                    0.3
+                );
+        }
+
+
+        /* =========================================================
+           PROGRESS
+        ========================================================= */
+
+        .progress-wrapper {
+            position: relative;
+        }
+
+
+        .progress-line {
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb 0%,
+                    #2563eb 48%,
+                    #dbeafe 48%,
+                    #dbeafe 100%
+                );
+
+            border-radius: 999px;
+        }
+
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 0.875rem;
+
+            font-weight: 600;
+        }
+
+
+        .progress-number {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .progress-number.active {
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            color: white;
+
+            box-shadow:
+                0 8px 20px rgba(
+                    37,
+                    99,
+                    235,
+                    0.28
+                );
+        }
+
+
+        .progress-number.active:hover {
+            transform: scale(1.08);
+        }
+
+
+        .progress-number.inactive {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+
+        /* =========================================================
+           CARD
+        ========================================================= */
+
+        .modern-card {
+            background: rgba(
+                255,
+                255,
+                255,
+                0.94
+            );
+
+            border: 1px solid rgba(
+                229,
+                231,
+                235,
+                0.9
+            );
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 10px 30px rgba(
+                    15,
+                    23,
+                    42,
+                    0.06
+                );
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .modern-card:hover {
+            box-shadow:
+                0 16px 40px rgba(
+                    15,
+                    23,
+                    42,
+                    0.09
+                );
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-size: 0.875rem;
+
+            font-weight: 600;
+
+            color: #374151;
+        }
+
+
+        .form-input {
+            width: 100%;
+
+            padding:
+                13px
+                15px;
+
+            border:
+                1px solid
+                #d1d5db;
+
+            border-radius: 12px;
+
+            background: #ffffff;
+
+            outline: none;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .form-input:hover {
+            border-color: #9ca3af;
+        }
+
+
+        .form-input:focus {
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.1
+                );
+
+            transform: translateY(-1px);
+        }
+
+
+        textarea.form-input {
+            resize: vertical;
+        }
+
+
+        /* =========================================================
+           PAYMENT METHODS
+        ========================================================= */
+
+        .payment-method {
+            position: relative;
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                #e5e7eb !important;
+
+            background: #ffffff;
+
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
+        }
+
+
+        .payment-method::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 3px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #2563eb,
+                    #6366f1
+                );
+
+            transform: scaleX(0);
+
+            transform-origin: left;
+
+            transition:
+                transform 0.3s ease;
+        }
+
 
         .payment-method:hover {
-            transform: translateY(-2px);
-            border-color: #93c5fd;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transform: translateY(-3px);
+
+            border-color:
+                #93c5fd !important;
+
+            box-shadow:
+                0 10px 25px rgba(
+                    37,
+                    99,
+                    235,
+                    0.09
+                );
         }
+
 
         .payment-method.selected {
-            border-color: #3b82f6;
-            background: #eff6ff;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+            border-color:
+                #2563eb !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #eff6ff,
+                    #ffffff
+                );
+
+            box-shadow:
+                0 8px 24px rgba(
+                    37,
+                    99,
+                    235,
+                    0.12
+                );
+
+            transform: translateY(-2px);
         }
 
-        .payment-method.selected .payment-check {
+
+        .payment-method.selected::before {
+            transform: scaleX(1);
+        }
+
+
+        .payment-method .payment-icon {
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .payment-method:hover .payment-icon,
+        .payment-method.selected .payment-icon {
+            transform: scale(1.12);
+        }
+
+
+        /* =========================================================
+           PAYMENT DETAILS
+        ========================================================= */
+
+        #paymentDetails {
+            animation:
+                slideUp 0.3s ease;
+        }
+
+
+        .payment-account {
             display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            background: white;
+
+            border:
+                1px solid
+                #e5e7eb;
+
+            border-radius: 14px;
+
+            padding: 14px 16px;
+
+            box-shadow:
+                0 4px 12px rgba(
+                    15,
+                    23,
+                    42,
+                    0.04
+                );
         }
 
-        .payment-check {
-            display: none;
+
+        .account-number {
+            font-size: 1.1rem;
+
+            font-weight: 800;
+
+            letter-spacing: 0.04em;
+
+            color: #111827;
         }
 
-        .payment-number {
-            letter-spacing: 0.5px;
+
+        /* =========================================================
+           ORDER ITEMS
+        ========================================================= */
+
+        .order-item {
+            border-bottom:
+                1px solid
+                #eef2f7;
+
+            padding-bottom: 16px;
+
+            margin-bottom: 16px;
+
+            animation:
+                fadeIn 0.35s ease;
         }
+
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+
+        .quantity-control {
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+        }
+
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: #f1f5f9;
+
+            color: #374151;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .quantity-btn:hover {
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            transform: scale(1.06);
+        }
+
+
+        .quantity-input {
+            width: 35px;
+
+            text-align: center;
+
+            font-weight: 700;
+
+            border: none;
+
+            background: transparent;
+
+            outline: none;
+        }
+
+
+        .remove-btn {
+            color: #ef4444;
+
+            cursor: pointer;
+
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .remove-btn:hover {
+            color: #b91c1c;
+
+            transform: translateX(2px);
+        }
+
+
+        /* =========================================================
+           PROMO
+        ========================================================= */
+
+        .toggle-switch {
+            position: relative;
+
+            width: 48px;
+            height: 26px;
+
+            display: inline-block;
+        }
+
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+
+        .slider {
+            position: absolute;
+
+            cursor: pointer;
+
+            inset: 0;
+
+            background: #d1d5db;
+
+            border-radius: 999px;
+
+            transition: 0.3s;
+        }
+
+
+        .slider::before {
+            content: "";
+
+            position: absolute;
+
+            width: 20px;
+            height: 20px;
+
+            left: 3px;
+            top: 3px;
+
+            background: white;
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 2px 5px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+
+            transition: 0.3s;
+        }
+
+
+        .toggle-switch input:checked + .slider {
+            background: #2563eb;
+        }
+
+
+        .toggle-switch input:checked + .slider::before {
+            transform: translateX(22px);
+        }
+
+
+        /* =========================================================
+           PRIMARY BUTTON
+        ========================================================= */
+
+        .btn-primary {
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #4f46e5
+                );
+
+            box-shadow:
+                0 10px 22px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.2
+                );
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                opacity 0.25s ease;
+        }
+
+
+        .btn-primary::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 60%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(
+                        255,
+                        255,
+                        255,
+                        0.25
+                    ),
+                    transparent
+                );
+
+            transform: skewX(-20deg);
+
+            transition:
+                left 0.6s ease;
+        }
+
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 14px 28px
+                rgba(
+                    37,
+                    99,
+                    235,
+                    0.28
+                );
+        }
+
+
+        .btn-primary:hover::before {
+            left: 130%;
+        }
+
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+
+        .btn-primary:disabled {
+            opacity: 0.7;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        /* =========================================================
+           SPINNER
+        ========================================================= */
 
         .spinner {
             width: 22px;
             height: 22px;
-            border: 3px solid rgba(255,255,255,0.35);
+
+            border:
+                3px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.35
+                );
+
             border-top-color: white;
+
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+
+            animation:
+                spin 0.8s linear infinite;
         }
 
+
+        /* =========================================================
+           SUCCESS MODAL
+        ========================================================= */
+
+        #successModal {
+            z-index: 99999;
+
+            pointer-events: none;
+        }
+
+
+        #successModal:not(.hidden) {
+            pointer-events: auto;
+        }
+
+
+        .modal-backdrop {
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                rgba(
+                    15,
+                    23,
+                    42,
+                    0.65
+                );
+
+            backdrop-filter:
+                blur(8px);
+
+            pointer-events: auto;
+
+            animation:
+                modalBackdropIn 0.25s ease;
+        }
+
+
+        .success-modal-container {
+            position: relative;
+
+            z-index: 2;
+
+            pointer-events: auto;
+
+            animation:
+                modalIn 0.35s
+                cubic-bezier(
+                    0.16,
+                    1,
+                    0.3,
+                    1
+                );
+        }
+
+
+        .success-icon {
+            animation:
+                successPop 0.55s
+                cubic-bezier(
+                    0.16,
+                    1,
+                    0.3,
+                    1
+                );
+        }
+
+
+        .success-check {
+            animation:
+                checkDraw 0.45s ease
+                0.25s both;
+        }
+
+
+        .modal-action {
+            position: relative;
+
+            z-index: 5;
+
+            pointer-events: auto;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .modal-action:hover {
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        @keyframes slideUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
         @keyframes spin {
+
             to {
                 transform: rotate(360deg);
             }
+
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.25s ease-out;
-        }
 
-        @keyframes fadeIn {
+        @keyframes modalBackdropIn {
+
             from {
                 opacity: 0;
-                transform: scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+            }
+
+        }
+
+
+        @keyframes modalIn {
+
+            from {
+                opacity: 0;
+                transform:
+                    translateY(30px)
+                    scale(0.94);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+
+        @keyframes successPop {
+
+            0% {
+                opacity: 0;
+                transform: scale(0.4);
+            }
+
+            70% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+
+        @keyframes checkDraw {
+
+            from {
+                opacity: 0;
+                transform: scale(0.5);
             }
 
             to {
                 opacity: 1;
                 transform: scale(1);
             }
+
         }
 
-        .copy-btn {
-            transition: all 0.2s ease;
-        }
 
-        .copy-btn.copied {
-            background: #16a34a !important;
-            color: white !important;
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 640px) {
+
+            .progress-step span {
+                display: none;
+            }
+
+            .progress-number {
+                width: 34px;
+                height: 34px;
+            }
+
+            .progress-line {
+                width: 38px !important;
+            }
+
+            .modern-card {
+                border-radius: 16px;
+            }
+
+            .success-modal-container {
+                margin: 12px;
+            }
+
         }
 
     </style>
@@ -98,86 +1061,92 @@
 </head>
 
 
-<body class="bg-gray-50">
+<body>
 
 
 <!-- =========================================================
      HEADER
-========================================================== -->
+========================================================= -->
 
-<header class="bg-white shadow-md sticky top-0 z-50">
+<header class="sticky top-0 z-50">
 
     <div
-        class="container mx-auto px-4 py-3 flex items-center justify-between"
+        class="
+            container
+            mx-auto
+            px-4
+            py-3
+            flex
+            items-center
+            justify-between
+        "
     >
 
-        <div class="flex items-center space-x-2">
+        <a
+            href="index.html"
+            class="
+                flex
+                items-center
+                space-x-2
+                flex-shrink-0
+            "
+        >
 
-            <a
-                href="index.html"
-                class="flex items-center space-x-2"
+            <img
+                src="/images/next_level.png"
+                alt="Next Level Subs"
+                class="logo-image"
             >
 
-                <img
-                    src="/images/next_level.png"
-                    alt="NEXT LEVEL SUBS Logo"
-                    class="logo-image"
+            <div class="logo-text-container">
+
+                <div
+                    class="logo-text-item"
+                    style="color: var(--primary);"
                 >
-
-                <div class="logo-text-container">
-
-                    <div
-                        class="logo-text-item"
-                        style="
-                            color: var(--primary-color);
-                            font-size: 1rem;
-                        "
-                    >
-                        Trusted
-                    </div>
-
-                    <div
-                        class="logo-text-item"
-                        style="
-                            color: var(--primary-color);
-                            font-size: 1rem;
-                        "
-                    >
-                        Cheap
-                    </div>
-
-                    <div
-                        class="logo-text-item"
-                        style="
-                            color: var(--primary-color);
-                            font-size: 1rem;
-                        "
-                    >
-                        Secure
-                    </div>
-
-                    <div
-                        class="logo-text-item"
-                        style="
-                            color: var(--primary-color);
-                            font-size: 1rem;
-                        "
-                    >
-                        24/7 Support
-                    </div>
-
+                    Trusted
                 </div>
 
-            </a>
+                <div
+                    class="logo-text-item"
+                    style="color: var(--primary);"
+                >
+                    Cheap
+                </div>
 
-        </div>
+                <div
+                    class="logo-text-item"
+                    style="color: var(--primary);"
+                >
+                    Secure
+                </div>
+
+                <div
+                    class="logo-text-item"
+                    style="color: var(--primary);"
+                >
+                    24/7 Support
+                </div>
+
+            </div>
+
+        </a>
 
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center gap-3">
 
             <a
                 href="index.html"
-                class="text-gray-600 hover:text-blue-500 transition-colors"
+                class="
+                    header-link
+                    hidden
+                    sm:inline-flex
+                    items-center
+                    text-gray-600
+                    hover:text-blue-600
+                    font-medium
+                    text-sm
+                "
             >
 
                 <i class="fas fa-arrow-left mr-2"></i>
@@ -187,40 +1156,44 @@
             </a>
 
 
-            <div class="relative">
+            <a
+                href="checkout.html"
+                class="cart-button relative"
+                aria-label="Cart"
+            >
 
-                <a
-                    href="checkout.html"
-                    class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors"
+                <i
+                    class="
+                        fa-solid
+                        fa-basket-shopping
+                        text-xl
+                        text-gray-700
+                    "
+                ></i>
+
+
+                <span
+                    id="cartCount"
+                    class="
+                        absolute
+                        -top-1
+                        -right-1
+                        bg-red-500
+                        text-white
+                        text-xs
+                        rounded-full
+                        h-5
+                        w-5
+                        flex
+                        items-center
+                        justify-center
+                        font-bold
+                    "
                 >
+                    0
+                </span>
 
-                    <i
-                        class="fa-solid fa-basket-shopping-simple text-2xl"
-                    ></i>
-
-                    <span
-                        id="cartCount"
-                        class="
-                            absolute
-                            -top-1
-                            -right-1
-                            bg-red-500
-                            text-white
-                            text-xs
-                            rounded-full
-                            h-5
-                            w-5
-                            flex
-                            items-center
-                            justify-center
-                        "
-                    >
-                        0
-                    </span>
-
-                </a>
-
-            </div>
+            </a>
 
         </div>
 
@@ -231,90 +1204,76 @@
 
 
 <!-- =========================================================
-     CHECKOUT PROGRESS
-========================================================== -->
+     PROGRESS
+========================================================= -->
 
-<section class="py-6 bg-white shadow-sm">
+<section
+    class="
+        bg-white
+        border-b
+        border-gray-100
+        py-5
+    "
+>
 
     <div class="container mx-auto px-4">
 
-        <div class="flex items-center justify-center">
+        <div
+            class="
+                flex
+                items-center
+                justify-center
+            "
+        >
 
-            <div class="flex items-center">
+            <div class="progress-step">
 
-                <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-full
-                        bg-blue-500
-                        flex
-                        items-center
-                        justify-center
-                        text-white
-                        font-bold
-                    "
-                >
-                    1
+                <div class="progress-number active">
+                    <i class="fas fa-shopping-cart text-sm"></i>
                 </div>
 
-                <span class="ml-2 font-medium">
-                    Cart
-                </span>
+                <span>Cart</span>
 
             </div>
 
 
-            <div class="w-16 h-1 bg-blue-500 mx-2"></div>
+            <div
+                class="
+                    progress-line
+                    w-16
+                    mx-3
+                "
+            ></div>
 
 
-            <div class="flex items-center">
+            <div class="progress-step">
 
-                <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-full
-                        bg-blue-500
-                        flex
-                        items-center
-                        justify-center
-                        text-white
-                        font-bold
-                    "
-                >
-                    2
+                <div class="progress-number active">
+                    <i class="fas fa-user text-sm"></i>
                 </div>
 
-                <span class="ml-2 font-medium">
-                    Payment
-                </span>
+                <span>Details</span>
 
             </div>
 
 
-            <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+            <div
+                class="
+                    progress-line
+                    w-16
+                    mx-3
+                    opacity-60
+                "
+            ></div>
 
 
-            <div class="flex items-center">
+            <div class="progress-step">
 
-                <div
-                    class="
-                        w-10
-                        h-10
-                        rounded-full
-                        bg-gray-300
-                        flex
-                        items-center
-                        justify-center
-                        text-gray-500
-                        font-bold
-                    "
-                >
-                    3
+                <div class="progress-number inactive">
+                    <i class="fas fa-check text-sm"></i>
                 </div>
 
-                <span class="ml-2 font-medium text-gray-500">
+                <span class="text-gray-400">
                     Complete
                 </span>
 
@@ -330,9 +1289,9 @@
 
 <!-- =========================================================
      MAIN
-========================================================== -->
+========================================================= -->
 
-<main class="py-12">
+<main class="py-8 md:py-12">
 
     <div class="container mx-auto px-4">
 
@@ -353,645 +1312,593 @@
             <div class="lg:col-span-2">
 
 
-                <!-- =============================================
-                     BILLING INFORMATION
-                ============================================== -->
+                <!-- BILLING -->
 
-                <h2 class="text-2xl font-bold mb-6">
-                    Customer Information
-                </h2>
+                <div class="mb-8">
 
-
-                <form
-                    id="checkoutForm"
-                    class="
-                        bg-white
-                        rounded-xl
-                        shadow-md
-                        p-6
-                        mb-8
-                    "
-                >
-
-                    <div
-                        class="
-                            grid
-                            grid-cols-1
-                            md:grid-cols-2
-                            gap-6
-                        "
-                    >
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="firstName"
-                            >
-                                First Name
-                            </label>
-
-                            <input
-                                type="text"
-                                id="firstName"
-                                class="form-input w-full"
-                                placeholder="John"
-                                autocomplete="given-name"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="lastName"
-                            >
-                                Last Name
-                            </label>
-
-                            <input
-                                type="text"
-                                id="lastName"
-                                class="form-input w-full"
-                                placeholder="Doe"
-                                autocomplete="family-name"
-                                required
-                            >
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label
-                            class="form-label"
-                            for="email"
-                        >
-                            Email Address
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            class="form-input w-full"
-                            placeholder="john@example.com"
-                            autocomplete="email"
-                            required
-                        >
-
-                        <p class="text-xs text-gray-500 mt-1">
-                            Your order and subscription information will be
-                            associated with this account.
-                        </p>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label
-                            class="form-label"
-                            for="phone"
-                        >
-                            Phone Number
-                        </label>
-
-                        <input
-                            type="tel"
-                            id="phone"
-                            class="form-input w-full"
-                            placeholder="01XXXXXXXXX"
-                            autocomplete="tel"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label
-                            class="form-label"
-                            for="address"
-                        >
-                            Address
-                        </label>
-
-                        <textarea
-                            id="address"
-                            class="form-input w-full"
-                            rows="3"
-                            placeholder="Your address"
-                            autocomplete="street-address"
-                            required
-                        ></textarea>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label
-                            class="form-label"
-                            for="notes"
-                        >
-                            Order Notes
-                            <span class="text-gray-400">
-                                (Optional)
-                            </span>
-                        </label>
-
-                        <textarea
-                            id="notes"
-                            class="form-input w-full"
-                            rows="2"
-                            placeholder="Any special instructions..."
-                        ></textarea>
-
-                    </div>
-
-                </form>
-
-
-
-                <!-- =============================================
-                     PAYMENT METHOD
-                ============================================== -->
-
-                <h2 class="text-2xl font-bold mb-6">
-                    Payment Method
-                </h2>
-
-
-                <div class="bg-white rounded-xl shadow-md p-6">
-
-                    <div class="mb-6">
+                    <div class="flex items-center mb-5">
 
                         <div
                             class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-blue-100
+                                text-blue-600
                                 flex
-                                items-start
-                                gap-3
-                                p-4
-                                bg-blue-50
-                                border
-                                border-blue-100
-                                rounded-lg
+                                items-center
+                                justify-center
+                                mr-3
                             "
                         >
 
-                            <i
+                            <i class="fas fa-user"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
                                 class="
-                                    fas
-                                    fa-circle-info
-                                    text-blue-500
-                                    mt-1
+                                    text-xl
+                                    md:text-2xl
+                                    font-bold
                                 "
-                            ></i>
+                            >
+                                Billing Information
+                            </h2>
 
-                            <div>
+                            <p class="text-sm text-gray-500">
+                                Enter your contact information
+                            </p>
 
-                                <h3 class="font-semibold text-blue-800">
-                                    Manual Payment
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        id="checkoutForm"
+                        class="modern-card p-5 md:p-7"
+                    >
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-1
+                                md:grid-cols-2
+                                gap-5
+                            "
+                        >
+
+                            <div class="form-group mb-0">
+
+                                <label
+                                    class="form-label"
+                                    for="firstName"
+                                >
+                                    First Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    class="form-input"
+                                    placeholder="John"
+                                    autocomplete="given-name"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="form-group mb-0">
+
+                                <label
+                                    class="form-label"
+                                    for="lastName"
+                                >
+                                    Last Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    class="form-input"
+                                    placeholder="Doe"
+                                    autocomplete="family-name"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group mt-5">
+
+                            <label
+                                class="form-label"
+                                for="email"
+                            >
+                                Email Address
+                            </label>
+
+                            <div class="relative">
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-envelope
+                                        absolute
+                                        left-4
+                                        top-1/2
+                                        -translate-y-1/2
+                                        text-gray-400
+                                    "
+                                ></i>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    class="form-input pl-11"
+                                    placeholder="john@example.com"
+                                    autocomplete="email"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="phone"
+                            >
+                                Phone Number
+                            </label>
+
+                            <div class="relative">
+
+                                <i
+                                    class="
+                                        fas
+                                        fa-phone
+                                        absolute
+                                        left-4
+                                        top-1/2
+                                        -translate-y-1/2
+                                        text-gray-400
+                                    "
+                                ></i>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    class="form-input pl-11"
+                                    placeholder="01XXXXXXXXX"
+                                    autocomplete="tel"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="address"
+                            >
+                                Address
+                            </label>
+
+                            <textarea
+                                id="address"
+                                class="form-input"
+                                rows="3"
+                                placeholder="Your address"
+                                autocomplete="street-address"
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="form-group mb-0">
+
+                            <label
+                                class="form-label"
+                                for="notes"
+                            >
+                                Order Notes
+                                <span
+                                    class="
+                                        font-normal
+                                        text-gray-400
+                                    "
+                                >
+                                    (Optional)
+                                </span>
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                class="form-input"
+                                rows="2"
+                                placeholder="Any special instructions..."
+                            ></textarea>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+
+                <!-- PAYMENT -->
+
+                <div>
+
+                    <div class="flex items-center mb-5">
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-indigo-100
+                                text-indigo-600
+                                flex
+                                items-center
+                                justify-center
+                                mr-3
+                            "
+                        >
+
+                            <i class="fas fa-credit-card"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
+                                class="
+                                    text-xl
+                                    md:text-2xl
+                                    font-bold
+                                "
+                            >
+                                Payment Method
+                            </h2>
+
+                            <p class="text-sm text-gray-500">
+                                Choose how you want to pay
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="modern-card p-5 md:p-7">
+
+
+                        <!-- PAYMENT GRID -->
+
+                        <div
+                            class="
+                                grid
+                                grid-cols-2
+                                md:grid-cols-4
+                                gap-3
+                            "
+                        >
+
+
+                            <!-- BKASH -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                    selected
+                                "
+                                data-method="bkash"
+                            >
+
+                                <i
+                                    class="
+                                        payment-icon
+                                        fas
+                                        fa-mobile-screen-button
+                                        text-3xl
+                                        text-pink-500
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-bold text-sm">
+                                    bKash
                                 </h3>
 
-                                <p class="text-sm text-blue-700 mt-1">
+                                <p class="text-xs text-gray-500">
+                                    Send Money
+                                </p>
 
-                                    Select your payment method, send the exact
-                                    total shown below, then enter your sender
-                                    number and Transaction ID.
+                            </div>
 
+
+                            <!-- NAGAD -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                "
+                                data-method="nagad"
+                            >
+
+                                <i
+                                    class="
+                                        payment-icon
+                                        fas
+                                        fa-wallet
+                                        text-3xl
+                                        text-orange-500
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-bold text-sm">
+                                    Nagad
+                                </h3>
+
+                                <p class="text-xs text-gray-500">
+                                    Send Money
+                                </p>
+
+                            </div>
+
+
+                            <!-- ROCKET -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                "
+                                data-method="rocket"
+                            >
+
+                                <i
+                                    class="
+                                        payment-icon
+                                        fas
+                                        fa-mobile-screen-button
+                                        text-3xl
+                                        text-purple-600
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-bold text-sm">
+                                    Rocket
+                                </h3>
+
+                                <p class="text-xs text-gray-500">
+                                    Send Money
+                                </p>
+
+                            </div>
+
+
+                            <!-- UPAY -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                "
+                                data-method="upay"
+                            >
+
+                                <i
+                                    class="
+                                        payment-icon
+                                        fas
+                                        fa-money-bill-transfer
+                                        text-3xl
+                                        text-green-600
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-bold text-sm">
+                                    Upay
+                                </h3>
+
+                                <p class="text-xs text-gray-500">
+                                    Send Money
+                                </p>
+
+                            </div>
+
+
+                            <!-- BANK -->
+
+                            <div
+                                class="
+                                    payment-method
+                                    rounded-xl
+                                    p-4
+                                    text-center
+                                    col-span-2
+                                    md:col-span-4
+                                "
+                                data-method="bank_transfer"
+                            >
+
+                                <i
+                                    class="
+                                        payment-icon
+                                        fas
+                                        fa-building-columns
+                                        text-3xl
+                                        text-blue-600
+                                        mb-2
+                                    "
+                                ></i>
+
+                                <h3 class="font-bold text-sm">
+                                    Bank Transfer
+                                </h3>
+
+                                <p class="text-xs text-gray-500">
+                                    Direct bank transfer
                                 </p>
 
                             </div>
 
                         </div>
 
-                    </div>
 
 
-
-                    <!-- PAYMENT METHODS -->
-
-                    <div
-                        class="
-                            grid
-                            grid-cols-1
-                            md:grid-cols-2
-                            gap-4
-                        "
-                    >
-
-
-                        <!-- BKASH -->
+                        <!-- PAYMENT DETAILS -->
 
                         <div
+                            id="paymentDetails"
                             class="
-                                payment-method
-                                relative
-                                p-4
-                                rounded-lg
+                                mt-6
+                                p-5
+                                bg-slate-50
+                                rounded-2xl
                                 border
-                                border-gray-200
-                                text-center
-                                selected
+                                border-slate-200
                             "
-                            data-method="bkash"
+                        ></div>
+
+
+
+                        <!-- PAYMENT PROOF -->
+
+                        <div
+                            id="paymentProofSection"
+                            class="
+                                mt-6
+                                p-5
+                                rounded-2xl
+                                bg-blue-50/60
+                                border
+                                border-blue-100
+                            "
                         >
 
                             <div
                                 class="
-                                    payment-check
-                                    absolute
-                                    top-2
-                                    right-2
-                                    w-6
-                                    h-6
-                                    rounded-full
-                                    bg-blue-500
-                                    text-white
-                                    items-center
-                                    justify-center
+                                    flex
+                                    items-start
+                                    gap-3
+                                    mb-5
                                 "
                             >
-                                <i class="fas fa-check text-xs"></i>
+
+                                <div
+                                    class="
+                                        w-9
+                                        h-9
+                                        rounded-lg
+                                        bg-blue-100
+                                        text-blue-600
+                                        flex
+                                        items-center
+                                        justify-center
+                                        flex-shrink-0
+                                    "
+                                >
+
+                                    <i class="fas fa-receipt"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <h3 class="font-bold">
+                                        Payment Verification
+                                    </h3>
+
+                                    <p
+                                        class="
+                                            text-sm
+                                            text-gray-500
+                                            mt-1
+                                        "
+                                    >
+                                        Enter the payment details so we can verify your transaction.
+                                    </p>
+
+                                </div>
+
                             </div>
 
-                            <i
-                                class="
-                                    fas
-                                    fa-mobile-screen-button
-                                    text-3xl
-                                    text-pink-500
-                                    mb-2
-                                "
-                            ></i>
 
-                            <h3 class="font-semibold">
-                                bKash
-                            </h3>
+                            <div class="form-group">
 
-                            <p class="text-sm text-gray-600">
-                                Send Money
-                            </p>
+                                <label
+                                    class="form-label"
+                                    for="paymentSenderNumber"
+                                >
+                                    Payment Sender Number
+                                    <span class="text-red-500">*</span>
+                                </label>
 
-                        </div>
+                                <input
+                                    type="tel"
+                                    id="paymentSenderNumber"
+                                    class="form-input"
+                                    placeholder="01XXXXXXXXX"
+                                    required
+                                >
 
-
-
-                        <!-- NAGAD -->
-
-                        <div
-                            class="
-                                payment-method
-                                relative
-                                p-4
-                                rounded-lg
-                                border
-                                border-gray-200
-                                text-center
-                            "
-                            data-method="nagad"
-                        >
-
-                            <div
-                                class="
-                                    payment-check
-                                    absolute
-                                    top-2
-                                    right-2
-                                    w-6
-                                    h-6
-                                    rounded-full
-                                    bg-blue-500
-                                    text-white
-                                    items-center
-                                    justify-center
-                                "
-                            >
-                                <i class="fas fa-check text-xs"></i>
                             </div>
 
-                            <i
-                                class="
-                                    fas
-                                    fa-wallet
-                                    text-3xl
-                                    text-orange-500
-                                    mb-2
-                                "
-                            ></i>
 
-                            <h3 class="font-semibold">
-                                Nagad
-                            </h3>
+                            <div class="form-group mb-0">
 
-                            <p class="text-sm text-gray-600">
-                                Send Money
-                            </p>
+                                <label
+                                    class="form-label"
+                                    for="paymentReference"
+                                >
+                                    Transaction ID / Payment Reference
+                                    <span class="text-red-500">*</span>
+                                </label>
 
-                        </div>
+                                <input
+                                    type="text"
+                                    id="paymentReference"
+                                    class="form-input"
+                                    placeholder="Enter transaction ID"
+                                    required
+                                >
 
-
-
-                        <!-- ROCKET -->
-
-                        <div
-                            class="
-                                payment-method
-                                relative
-                                p-4
-                                rounded-lg
-                                border
-                                border-gray-200
-                                text-center
-                            "
-                            data-method="rocket"
-                        >
-
-                            <div
-                                class="
-                                    payment-check
-                                    absolute
-                                    top-2
-                                    right-2
-                                    w-6
-                                    h-6
-                                    rounded-full
-                                    bg-blue-500
-                                    text-white
-                                    items-center
-                                    justify-center
-                                "
-                            >
-                                <i class="fas fa-check text-xs"></i>
                             </div>
-
-                            <i
-                                class="
-                                    fas
-                                    fa-mobile-screen-button
-                                    text-3xl
-                                    text-purple-600
-                                    mb-2
-                                "
-                            ></i>
-
-                            <h3 class="font-semibold">
-                                Rocket
-                            </h3>
-
-                            <p class="text-sm text-gray-600">
-                                Send Money
-                            </p>
-
-                        </div>
-
-
-
-                        <!-- UPAY -->
-
-                        <div
-                            class="
-                                payment-method
-                                relative
-                                p-4
-                                rounded-lg
-                                border
-                                border-gray-200
-                                text-center
-                            "
-                            data-method="upay"
-                        >
-
-                            <div
-                                class="
-                                    payment-check
-                                    absolute
-                                    top-2
-                                    right-2
-                                    w-6
-                                    h-6
-                                    rounded-full
-                                    bg-blue-500
-                                    text-white
-                                    items-center
-                                    justify-center
-                                "
-                            >
-                                <i class="fas fa-check text-xs"></i>
-                            </div>
-
-                            <i
-                                class="
-                                    fas
-                                    fa-money-bill-transfer
-                                    text-3xl
-                                    text-green-600
-                                    mb-2
-                                "
-                            ></i>
-
-                            <h3 class="font-semibold">
-                                Upay
-                            </h3>
-
-                            <p class="text-sm text-gray-600">
-                                Send Money
-                            </p>
-
-                        </div>
-
-
-
-                        <!-- BANK -->
-
-                        <div
-                            class="
-                                payment-method
-                                relative
-                                p-4
-                                rounded-lg
-                                border
-                                border-gray-200
-                                text-center
-                                md:col-span-2
-                            "
-                            data-method="bank_transfer"
-                        >
-
-                            <div
-                                class="
-                                    payment-check
-                                    absolute
-                                    top-2
-                                    right-2
-                                    w-6
-                                    h-6
-                                    rounded-full
-                                    bg-blue-500
-                                    text-white
-                                    items-center
-                                    justify-center
-                                "
-                            >
-                                <i class="fas fa-check text-xs"></i>
-                            </div>
-
-                            <i
-                                class="
-                                    fas
-                                    fa-university
-                                    text-3xl
-                                    text-blue-500
-                                    mb-2
-                                "
-                            ></i>
-
-                            <h3 class="font-semibold">
-                                Bank Transfer
-                            </h3>
-
-                            <p class="text-sm text-gray-600">
-                                Direct bank transfer
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- =============================================
-                         PAYMENT INSTRUCTIONS
-                    ============================================== -->
-
-                    <div
-                        id="paymentDetails"
-                        class="
-                            mt-6
-                            p-5
-                            bg-gray-50
-                            rounded-lg
-                            border
-                            border-gray-200
-                        "
-                    ></div>
-
-
-
-                    <!-- =============================================
-                         PAYMENT PROOF
-                    ============================================== -->
-
-                    <div
-                        id="paymentProofSection"
-                        class="
-                            mt-6
-                            border-t
-                            border-gray-200
-                            pt-6
-                        "
-                    >
-
-                        <h3 class="text-lg font-semibold mb-4">
-                            Payment Verification Information
-                        </h3>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="paymentSenderNumber"
-                            >
-
-                                Sender Number / Account
-
-                                <span class="text-red-500">
-                                    *
-                                </span>
-
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="paymentSenderNumber"
-                                class="form-input w-full"
-                                placeholder="01XXXXXXXXX"
-                                autocomplete="off"
-                                required
-                            >
-
-                            <p class="text-sm text-gray-500 mt-1">
-
-                                Enter the mobile number or bank account
-                                you used to send the payment.
-
-                            </p>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="paymentReference"
-                            >
-
-                                Transaction ID / Reference
-
-                                <span class="text-red-500">
-                                    *
-                                </span>
-
-                            </label>
-
-                            <input
-                                type="text"
-                                id="paymentReference"
-                                class="form-input w-full"
-                                placeholder="Enter transaction ID"
-                                autocomplete="off"
-                                required
-                            >
-
-                            <p class="text-sm text-gray-500 mt-1">
-
-                                Enter the exact transaction ID shown in your
-                                payment confirmation.
-
-                            </p>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                mt-4
-                                p-3
-                                bg-yellow-50
-                                border
-                                border-yellow-100
-                                rounded-lg
-                            "
-                        >
-
-                            <p class="text-sm text-yellow-800">
-
-                                <i class="fas fa-shield-halved mr-1"></i>
-
-                                Your payment will remain
-                                <strong>Pending</strong>
-                                until an administrator verifies it.
-
-                            </p>
 
                         </div>
 
@@ -1011,43 +1918,97 @@
 
                 <div
                     class="
-                        bg-white
-                        rounded-xl
-                        shadow-md
-                        p-6
-                        sticky
-                        top-24
+                        modern-card
+                        p-5
+                        md:p-6
+                        lg:sticky
+                        lg:top-24
                     "
                 >
 
-                    <h2 class="text-2xl font-bold mb-4">
-                        Order Summary
-                    </h2>
+                    <div
+                        class="
+                            flex
+                            items-center
+                            justify-between
+                            mb-5
+                        "
+                    >
+
+                        <div>
+
+                            <h2
+                                class="
+                                    text-xl
+                                    font-bold
+                                "
+                            >
+                                Order Summary
+                            </h2>
+
+                            <p
+                                class="
+                                    text-sm
+                                    text-gray-500
+                                "
+                            >
+                                Review your order
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-xl
+                                bg-blue-100
+                                text-blue-600
+                                flex
+                                items-center
+                                justify-center
+                            "
+                        >
+
+                            <i class="fas fa-bag-shopping"></i>
+
+                        </div>
+
+                    </div>
 
 
                     <div
                         id="orderSummary"
-                        class="space-y-4 mb-6"
+                        class="space-y-2 mb-5"
                     ></div>
 
+
+                    <!-- TOTALS -->
 
                     <div
                         class="
                             border-t
                             border-gray-200
-                            pt-4
+                            pt-5
                         "
                     >
 
                         <div
-                            class="flex justify-between mb-2"
+                            class="
+                                flex
+                                justify-between
+                                mb-3
+                                text-gray-600
+                            "
                         >
 
-                            <span>
-                                Subtotal
-                            </span>
+                            <span>Subtotal</span>
 
-                            <span id="subtotal">
+                            <span
+                                id="subtotal"
+                                class="font-medium text-gray-900"
+                            >
                                 ৳0.00
                             </span>
 
@@ -1055,14 +2016,20 @@
 
 
                         <div
-                            class="flex justify-between mb-2"
+                            class="
+                                flex
+                                justify-between
+                                mb-3
+                                text-gray-600
+                            "
                         >
 
-                            <span>
-                                Tax (1.85%)
-                            </span>
+                            <span>Tax (1.85%)</span>
 
-                            <span id="tax">
+                            <span
+                                id="tax"
+                                class="font-medium text-gray-900"
+                            >
                                 ৳0.00
                             </span>
 
@@ -1070,16 +2037,22 @@
 
 
                         <div
-                            class="flex justify-between mb-4"
+                            class="
+                                flex
+                                justify-between
+                                mb-4
+                                text-gray-600
+                            "
                         >
 
-                            <span>
-                                Discount
-                            </span>
+                            <span>Discount</span>
 
                             <span
                                 id="discount"
-                                class="text-green-500"
+                                class="
+                                    font-medium
+                                    text-green-600
+                                "
                             >
                                 -৳0.00
                             </span>
@@ -1091,18 +2064,31 @@
                             class="
                                 flex
                                 justify-between
-                                font-bold
-                                text-lg
-                                border-t
+                                items-center
                                 pt-4
+                                border-t
+                                border-dashed
+                                border-gray-300
                             "
                         >
 
-                            <span>
+                            <span
+                                class="
+                                    font-bold
+                                    text-lg
+                                "
+                            >
                                 Total
                             </span>
 
-                            <span id="total">
+                            <span
+                                id="total"
+                                class="
+                                    font-extrabold
+                                    text-2xl
+                                    text-blue-600
+                                "
+                            >
                                 ৳0.00
                             </span>
 
@@ -1112,9 +2098,7 @@
 
 
 
-                    <!-- =============================================
-                         PROMO
-                    ============================================== -->
+                    <!-- PROMO -->
 
                     <div class="mt-6">
 
@@ -1123,13 +2107,22 @@
                                 flex
                                 items-center
                                 justify-between
-                                mb-2
+                                mb-3
                             "
                         >
 
-                            <label class="text-sm font-medium">
-                                Apply Promo Code
-                            </label>
+                            <div>
+
+                                <p class="font-semibold text-sm">
+                                    Have a promo code?
+                                </p>
+
+                                <p class="text-xs text-gray-500">
+                                    Apply your discount
+                                </p>
+
+                            </div>
+
 
                             <label class="toggle-switch">
 
@@ -1147,7 +2140,7 @@
 
                         <div
                             id="promoCodeSection"
-                            class="hidden mt-2"
+                            class="hidden"
                         >
 
                             <div class="flex">
@@ -1155,17 +2148,15 @@
                                 <input
                                     type="text"
                                     id="promoCode"
-                                    placeholder="Enter promo code"
+                                    placeholder="Promo code"
                                     class="
                                         flex-1
                                         px-4
-                                        py-2
+                                        py-3
                                         border
                                         border-gray-300
-                                        rounded-l-lg
+                                        rounded-l-xl
                                         focus:outline-none
-                                        focus:ring-2
-                                        focus:ring-blue-300
                                     "
                                 >
 
@@ -1174,12 +2165,12 @@
                                     type="button"
                                     class="
                                         px-4
-                                        py-2
+                                        py-3
                                         bg-gray-200
                                         text-gray-700
-                                        rounded-r-lg
-                                        hover:bg-gray-300
-                                        transition-colors
+                                        rounded-r-xl
+                                        font-semibold
+                                        transition
                                     "
                                 >
                                     Apply
@@ -1193,69 +2184,29 @@
 
 
 
-                    <!-- =============================================
-                         PAYMENT STATUS
-                    ============================================== -->
-
-                    <div
-                        class="
-                            mt-6
-                            p-4
-                            bg-gray-50
-                            rounded-lg
-                            text-sm
-                        "
-                    >
-
-                        <div class="flex items-center mb-2">
-
-                            <i
-                                class="
-                                    fas
-                                    fa-clock
-                                    text-yellow-500
-                                    mr-2
-                                "
-                            ></i>
-
-                            <strong>
-                                Payment Verification
-                            </strong>
-
-                        </div>
-
-                        <p class="text-gray-600">
-
-                            After submitting your order, your payment will be
-                            reviewed by our team.
-
-                        </p>
-
-                    </div>
-
-
-
-                    <!-- =============================================
-                         PLACE ORDER
-                    ============================================== -->
+                    <!-- PLACE ORDER -->
 
                     <button
                         id="placeOrderBtn"
                         type="button"
                         class="
+                            btn-primary
                             w-full
                             mt-6
-                            py-3
-                            rounded-lg
-                            font-semibold
+                            py-4
+                            rounded-xl
+                            font-bold
                             text-white
-                            btn-primary
                         "
                     >
 
-                        <i class="fas fa-lock mr-2"></i>
+                        <span class="relative z-10">
 
-                        Place Order
+                            <i class="fas fa-lock mr-2"></i>
+
+                            Place Order
+
+                        </span>
 
                     </button>
 
@@ -1263,15 +2214,47 @@
                     <div
                         class="
                             mt-4
-                            text-center
-                            text-sm
+                            flex
+                            items-center
+                            justify-center
+                            gap-2
+                            text-xs
                             text-gray-500
                         "
                     >
 
-                        <i class="fas fa-shield-halved mr-1"></i>
+                        <i class="fas fa-shield-halved text-green-500"></i>
 
-                        Secure Checkout
+                        Secure & encrypted checkout
+
+                    </div>
+
+
+                    <div
+                        class="
+                            mt-4
+                            p-3
+                            rounded-xl
+                            bg-green-50
+                            border
+                            border-green-100
+                            text-center
+                        "
+                    >
+
+                        <p
+                            class="
+                                text-xs
+                                text-green-700
+                                font-medium
+                            "
+                        >
+
+                            <i class="fas fa-headset mr-1"></i>
+
+                            Need help? Contact our 24/7 support.
+
+                        </p>
 
                     </div>
 
@@ -1289,25 +2272,32 @@
 
 <!-- =========================================================
      SUCCESS MODAL
-========================================================== -->
+========================================================= -->
 
 <div
     id="successModal"
-    class="fixed inset-0 z-50 hidden"
+    class="fixed inset-0 hidden"
+    aria-hidden="true"
 >
+
+    <!-- BACKDROP -->
 
     <div
         class="
+            modal-backdrop
             absolute
             inset-0
-            bg-black
-            bg-opacity-50
         "
+        id="successBackdrop"
     ></div>
 
 
+    <!-- MODAL -->
+
     <div
         class="
+            relative
+            z-10
             flex
             items-center
             justify-center
@@ -1318,104 +2308,187 @@
 
         <div
             class="
+                success-modal-container
                 bg-white
-                rounded-xl
+                rounded-3xl
                 shadow-2xl
                 w-full
                 max-w-md
-                p-8
+                p-7
+                md:p-9
                 text-center
-                animate-fade-in
             "
         >
 
+            <!-- SUCCESS ICON -->
+
             <div
                 class="
-                    w-16
-                    h-16
-                    bg-green-100
+                    success-icon
+                    w-20
+                    h-20
                     rounded-full
+                    bg-green-100
                     flex
                     items-center
                     justify-center
                     mx-auto
-                    mb-4
+                    mb-6
                 "
             >
 
-                <i
+                <div
                     class="
-                        fas
-                        fa-check
-                        text-3xl
-                        text-green-500
+                        w-14
+                        h-14
+                        rounded-full
+                        bg-green-500
+                        text-white
+                        flex
+                        items-center
+                        justify-center
                     "
-                ></i>
+                >
+
+                    <i
+                        class="
+                            success-check
+                            fas
+                            fa-check
+                            text-2xl
+                        "
+                    ></i>
+
+                </div>
 
             </div>
 
 
-            <h2 class="text-2xl font-bold mb-2">
-                Order Submitted!
+            <div
+                class="
+                    inline-flex
+                    items-center
+                    gap-2
+                    px-3
+                    py-1
+                    rounded-full
+                    bg-green-50
+                    text-green-700
+                    text-xs
+                    font-bold
+                    mb-4
+                "
+            >
+
+                <i class="fas fa-circle-check"></i>
+
+                ORDER SUBMITTED
+
+            </div>
+
+
+            <h2
+                class="
+                    text-2xl
+                    md:text-3xl
+                    font-extrabold
+                    mb-3
+                    text-gray-900
+                "
+            >
+                Payment Submitted!
             </h2>
 
 
             <p
                 id="successMessage"
-                class="text-gray-600 mb-6"
+                class="
+                    text-gray-600
+                    leading-relaxed
+                    mb-7
+                "
             >
                 Your order has been submitted successfully.
             </p>
 
 
+            <!-- ACTIONS -->
+
             <div
                 class="
-                    flex
-                    flex-col
-                    sm:flex-row
-                    justify-center
+                    grid
+                    grid-cols-1
+                    sm:grid-cols-2
                     gap-3
                 "
             >
 
                 <a
-                    href="dashboard.html"
+                    id="dashboardButton"
+                    href="./dashboard.html"
                     class="
-                        px-6
-                        py-2
-                        rounded-lg
-                        font-semibold
-                        text-white
+                        modal-action
                         btn-primary
+                        py-3
+                        px-5
+                        rounded-xl
+                        font-bold
+                        text-white
+                        inline-flex
+                        items-center
+                        justify-center
                     "
                 >
 
-                    <i class="fas fa-user mr-2"></i>
+                    <span class="relative z-10">
 
-                    Go to Dashboard
+                        <i class="fas fa-gauge-high mr-2"></i>
+
+                        Dashboard
+
+                    </span>
 
                 </a>
 
 
                 <a
-                    href="index.html"
+                    id="homeButton"
+                    href="./index.html"
                     class="
-                        px-6
-                        py-2
-                        border
-                        border-gray-300
-                        rounded-lg
-                        font-medium
-                        hover:bg-gray-100
-                        transition-colors
+                        modal-action
+                        py-3
+                        px-5
+                        rounded-xl
+                        font-bold
+                        text-gray-700
+                        bg-gray-100
+                        hover:bg-gray-200
+                        inline-flex
+                        items-center
+                        justify-center
                     "
                 >
 
-                    Continue Shopping
+                    <i class="fas fa-house mr-2"></i>
+
+                    Home
 
                 </a>
 
             </div>
+
+
+            <p
+                class="
+                    text-xs
+                    text-gray-400
+                    mt-5
+                "
+            >
+
+                You can track your order status from your dashboard.
+
+            </p>
 
         </div>
 
@@ -1427,21 +2500,16 @@
 
 <!-- =========================================================
      SUPABASE
-========================================================== -->
+========================================================= -->
 
 <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
 ></script>
 
 
-<script
-    src="./js/supabase-config.js"
-></script>
+<script src="./js/supabase-config.js"></script>
 
-
-<script
-    src="./js/nextlevel-auth.js"
-></script>
+<script src="./js/nextlevel-auth.js"></script>
 
 
 
@@ -1470,41 +2538,18 @@ let isSubmitting = false;
 // ============================================================
 // PAYMENT ACCOUNTS
 // ============================================================
-//
-// IMPORTANT:
-// These are the accounts displayed to customers.
-// Change them here if your payment numbers change.
-// ============================================================
 
 const PAYMENT_ACCOUNTS = {
 
-    bkash: {
-        type: "mobile",
-        number: "01912261564",
-        label: "bKash"
-    },
+    bkash: "01912261564",
 
-    nagad: {
-        type: "mobile",
-        number: "01644490566",
-        label: "Nagad"
-    },
+    nagad: "01644490566",
 
-    rocket: {
-        type: "mobile",
-        number: "016444905664",
-        label: "Rocket"
-    },
+    rocket: "016444905664",
 
-    upay: {
-        type: "mobile",
-        number: "01590093965",
-        label: "Upay"
-    },
+    upay: "01590093965",
 
     bank_transfer: {
-
-        type: "bank",
 
         bankName: "City Bank",
 
@@ -1574,6 +2619,15 @@ const successMessage =
 const cartCount =
     document.getElementById("cartCount");
 
+const dashboardButton =
+    document.getElementById("dashboardButton");
+
+const homeButton =
+    document.getElementById("homeButton");
+
+const successBackdrop =
+    document.getElementById("successBackdrop");
+
 
 // ============================================================
 // ESCAPE HTML
@@ -1585,7 +2639,9 @@ function escapeHTML(value) {
         value === null ||
         value === undefined
     ) {
+
         return "";
+
     }
 
     return String(value)
@@ -1604,8 +2660,9 @@ function escapeHTML(value) {
 
 function formatMoney(amount) {
 
-    return Number(amount || 0)
-        .toFixed(2);
+    return Number(
+        amount || 0
+    ).toFixed(2);
 
 }
 
@@ -1631,18 +2688,13 @@ function generateOrderNumber() {
             now.getDate()
         ).padStart(2, "0");
 
-    const timestamp =
-        Date.now()
-            .toString()
-            .slice(-6);
-
     const random =
         Math.floor(
-            100 +
-            Math.random() * 900
+            100000 +
+            Math.random() * 900000
         );
 
-    return `NLS-${year}${month}${day}-${timestamp}${random}`;
+    return `NLS-${year}${month}${day}-${random}`;
 
 }
 
@@ -1653,76 +2705,21 @@ function generateOrderNumber() {
 
 function getPaymentMethodLabel(method) {
 
-    const account =
-        PAYMENT_ACCOUNTS[method];
+    const labels = {
 
-    if (
-        account &&
-        account.label
-    ) {
-        return account.label;
-    }
+        bkash: "bKash",
 
-    if (
-        method === "bank_transfer"
-    ) {
-        return "Bank Transfer";
-    }
+        nagad: "Nagad",
 
-    return "Unknown";
+        rocket: "Rocket",
 
-}
+        upay: "Upay",
 
+        bank_transfer: "Bank Transfer"
 
-// ============================================================
-// COPY TO CLIPBOARD
-// ============================================================
+    };
 
-async function copyPaymentNumber(
-    number,
-    button
-) {
-
-    try {
-
-        await navigator.clipboard.writeText(
-            number
-        );
-
-        const original =
-            button.innerHTML;
-
-        button.innerHTML =
-            '<i class="fas fa-check mr-1"></i> Copied';
-
-        button.classList.add(
-            "copied"
-        );
-
-        setTimeout(() => {
-
-            button.innerHTML =
-                original;
-
-            button.classList.remove(
-                "copied"
-            );
-
-        }, 1500);
-
-    }
-    catch (error) {
-
-        console.error(
-            "Copy failed:",
-            error
-        );
-
-        alert(
-            "Unable to copy automatically. Please copy the number manually."
-        );
-
-    }
+    return labels[method] || "Unknown";
 
 }
 
@@ -1733,102 +2730,128 @@ async function copyPaymentNumber(
 
 function renderPaymentDetails() {
 
+    paymentDetails.style.animation = "none";
+
+    void paymentDetails.offsetWidth;
+
+    paymentDetails.style.animation =
+        "slideUp 0.3s ease";
+
+
     if (
         selectedPaymentMethod ===
         "bank_transfer"
     ) {
 
-        const bank =
-            PAYMENT_ACCOUNTS.bank_transfer;
-
         paymentDetails.innerHTML = `
 
-            <h3 class="font-semibold text-lg mb-4">
+            <div class="flex items-start gap-3 mb-4">
 
-                <i
+                <div
                     class="
-                        fas
-                        fa-university
-                        text-blue-500
-                        mr-2
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-blue-100
+                        text-blue-600
+                        flex
+                        items-center
+                        justify-center
+                        flex-shrink-0
                     "
-                ></i>
+                >
 
-                Bank Transfer Instructions
-
-            </h3>
-
-
-            <div class="space-y-3 text-sm">
-
-                <div class="flex justify-between gap-4">
-
-                    <span class="text-gray-500">
-                        Bank
-                    </span>
-
-                    <strong>
-                        ${escapeHTML(bank.bankName)}
-                    </strong>
+                    <i class="fas fa-building-columns"></i>
 
                 </div>
 
+                <div>
 
-                <div class="flex justify-between gap-4">
+                    <h3 class="font-bold text-gray-900">
 
-                    <span class="text-gray-500">
-                        Account Name
-                    </span>
+                        Bank Transfer Instructions
 
-                    <strong>
-                        ${escapeHTML(bank.accountHolder)}
-                    </strong>
+                    </h3>
 
-                </div>
+                    <p class="text-sm text-gray-500 mt-1">
 
+                        Transfer the exact total to this account.
 
-                <div class="flex justify-between gap-4">
-
-                    <span class="text-gray-500">
-                        Account Number
-                    </span>
-
-                    <strong class="payment-number">
-                        ${escapeHTML(bank.accountNumber)}
-                    </strong>
-
-                </div>
-
-
-                <div class="flex justify-between gap-4">
-
-                    <span class="text-gray-500">
-                        Branch
-                    </span>
-
-                    <strong>
-                        ${escapeHTML(bank.branch)}
-                    </strong>
+                    </p>
 
                 </div>
 
             </div>
 
 
-            <div
-                class="
-                    mt-4
-                    p-3
-                    bg-blue-50
-                    rounded-lg
-                    text-sm
-                    text-blue-800
-                "
-            >
+            <div class="space-y-3 text-sm">
 
-                <i class="fas fa-info-circle mr-1"></i>
+                <div class="payment-account">
 
-                Transfer the exact order total to the account above.
+                    <span class="text-gray-500">
+                        Bank
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .bankName
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-account">
+
+                    <span class="text-gray-500">
+                        Account Name
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .accountHolder
+                        )}
+                    </strong>
+
+                </div>
+
+
+                <div class="payment-account">
+
+                    <span class="text-gray-500">
+                        Account Number
+                    </span>
+
+                    <span class="account-number">
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .accountNumber
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="payment-account">
+
+                    <span class="text-gray-500">
+                        Branch
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .branch
+                        )}
+                    </strong>
+
+                </div>
 
             </div>
 
@@ -1840,159 +2863,147 @@ function renderPaymentDetails() {
         paymentReference.placeholder =
             "Enter bank transaction/reference number";
 
-        return;
-
     }
 
+    else {
 
-    const account =
-        PAYMENT_ACCOUNTS[
-            selectedPaymentMethod
-        ];
+        const account =
+            PAYMENT_ACCOUNTS[
+                selectedPaymentMethod
+            ];
 
-    if (!account) {
-        return;
-    }
+        const label =
+            getPaymentMethodLabel(
+                selectedPaymentMethod
+            );
 
-    const label =
-        getPaymentMethodLabel(
-            selectedPaymentMethod
-        );
+        paymentDetails.innerHTML = `
+
+            <div class="flex items-start gap-3 mb-4">
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-xl
+                        bg-blue-100
+                        text-blue-600
+                        flex
+                        items-center
+                        justify-center
+                        flex-shrink-0
+                    "
+                >
+
+                    <i class="fas fa-mobile-screen-button"></i>
+
+                </div>
+
+                <div>
+
+                    <h3 class="font-bold text-gray-900">
+
+                        ${escapeHTML(label)}
+                        Payment Instructions
+
+                    </h3>
+
+                    <p class="text-sm text-gray-500 mt-1">
+
+                        Send the exact order total using
+                        ${escapeHTML(label)} Send Money.
+
+                    </p>
+
+                </div>
+
+            </div>
 
 
-    paymentDetails.innerHTML = `
+            <div class="payment-account">
 
-        <h3 class="font-semibold text-lg mb-4">
+                <div>
 
-            <i
+                    <p
+                        class="
+                            text-xs
+                            text-gray-500
+                            mb-1
+                        "
+                    >
+                        ${escapeHTML(label)} Number
+                    </p>
+
+                    <div class="account-number">
+
+                        ${escapeHTML(account)}
+
+                    </div>
+
+                </div>
+
+
+                <i
+                    class="
+                        fas
+                        fa-copy
+                        text-gray-400
+                    "
+                ></i>
+
+            </div>
+
+
+            <div
                 class="
-                    fas
-                    fa-mobile-screen-button
-                    text-blue-500
-                    mr-2
-                "
-            ></i>
-
-            ${escapeHTML(label)}
-            Payment Instructions
-
-        </h3>
-
-
-        <p class="text-sm text-gray-600 mb-3">
-
-            Send the exact order total using
-            <strong>
-                ${escapeHTML(label)}
-            </strong>
-            Send Money.
-
-        </p>
-
-
-        <div
-            class="
-                flex
-                items-center
-                justify-between
-                gap-3
-                bg-white
-                border
-                border-gray-200
-                rounded-lg
-                p-3
-            "
-        >
-
-            <span
-                class="
-                    payment-number
-                    font-bold
-                    text-xl
-                "
-            >
-                ${escapeHTML(account.number)}
-            </span>
-
-
-            <button
-                type="button"
-                class="
-                    copy-btn
-                    shrink-0
-                    px-3
-                    py-2
-                    bg-gray-100
-                    text-gray-700
-                    rounded-lg
+                    mt-4
+                    flex
+                    items-start
+                    gap-2
                     text-sm
-                    hover:bg-gray-200
+                    text-gray-500
                 "
-                data-copy-number="${escapeHTML(account.number)}"
             >
 
-                <i class="fas fa-copy mr-1"></i>
+                <i
+                    class="
+                        fas
+                        fa-circle-info
+                        text-blue-500
+                        mt-0.5
+                    "
+                ></i>
 
-                Copy
+                <span>
 
-            </button>
+                    After sending the payment, enter the
+                    sender number and transaction ID below.
 
-        </div>
+                </span>
 
+            </div>
 
-        <div
-            class="
-                mt-4
-                p-3
-                bg-yellow-50
-                rounded-lg
-                text-sm
-                text-yellow-800
-            "
-        >
+        `;
 
-            <i class="fas fa-triangle-exclamation mr-1"></i>
+        paymentSenderNumber.placeholder =
+            "01XXXXXXXXX";
 
-            Please send the exact total shown in
-            <strong>Order Summary</strong>.
+        paymentReference.placeholder =
+            "Enter transaction ID";
 
-        </div>
-
-
-        <p class="text-sm text-gray-500 mt-3">
-
-            After payment, enter the number you used to send
-            the money and your Transaction ID below.
-
-        </p>
-
-    `;
-
-
-    paymentSenderNumber.placeholder =
-        "01XXXXXXXXX";
-
-    paymentReference.placeholder =
-        "Enter transaction ID";
+    }
 
 }
 
 
 // ============================================================
-// PAYMENT METHOD SELECTION
+// PAYMENT METHOD
 // ============================================================
 
 function selectPaymentMethod(method) {
 
-    if (
-        !PAYMENT_ACCOUNTS[method]
-    ) {
-        return;
-    }
-
     selectedPaymentMethod =
         method;
-
 
     document
         .querySelectorAll(
@@ -2006,12 +3017,10 @@ function selectPaymentMethod(method) {
 
         });
 
-
     const selected =
         document.querySelector(
             `.payment-method[data-method="${method}"]`
         );
-
 
     if (selected) {
 
@@ -2020,7 +3029,6 @@ function selectPaymentMethod(method) {
         );
 
     }
-
 
     renderPaymentDetails();
 
@@ -2031,9 +3039,9 @@ function selectPaymentMethod(method) {
 // TAX
 // ============================================================
 
-function calculateTax(amount) {
+function calculateTax(price) {
 
-    return Number(amount || 0) * 0.0185;
+    return Number(price || 0) * 0.0185;
 
 }
 
@@ -2057,29 +3065,15 @@ function getCartTotals() {
                 price: item.price
             };
 
-
-        const quantity =
-            Math.max(
-                1,
-                Number(
-                    item.quantity || 1
-                )
-            );
-
-
-        const price =
+        const itemTotal =
             Number(
                 plan.price || 0
+            ) *
+            Number(
+                item.quantity || 1
             );
 
-
-        const itemTotal =
-            price * quantity;
-
-
-        subtotal +=
-            itemTotal;
-
+        subtotal += itemTotal;
 
         tax +=
             calculateTax(
@@ -2114,10 +3108,7 @@ function getCartTotals() {
 
         total:
             Number(
-                Math.max(
-                    0,
-                    total
-                ).toFixed(2)
+                total.toFixed(2)
             )
 
     };
@@ -2126,13 +3117,12 @@ function getCartTotals() {
 
 
 // ============================================================
-// RENDER ORDER SUMMARY
+// RENDER SUMMARY
 // ============================================================
 
 function renderOrderSummary() {
 
     orderSummary.innerHTML = "";
-
 
     let subtotal = 0;
 
@@ -2145,56 +3135,40 @@ function renderOrderSummary() {
             item.selectedPlan ||
             {
                 price: item.price,
-                duration: item.duration,
-                currency: "BDT"
+                duration: item.duration
             };
 
-
         const quantity =
-            Math.max(
-                1,
-                Number(
-                    item.quantity || 1
-                )
+            Number(
+                item.quantity || 1
             );
-
 
         const price =
             Number(
                 plan.price || 0
             );
 
-
         const itemTotal =
             price * quantity;
 
-
-        subtotal +=
-            itemTotal;
-
+        subtotal += itemTotal;
 
         totalTax +=
-            calculateTax(
-                itemTotal
-            );
+            calculateTax(itemTotal);
 
 
         const orderItem =
-            document.createElement(
-                "div"
-            );
-
+            document.createElement("div");
 
         orderItem.className =
-            "order-item p-3 border-b border-gray-200";
+            "order-item";
 
 
-        let productImageHTML = "";
-
+        let imageHTML = "";
 
         if (item.image) {
 
-            productImageHTML = `
+            imageHTML = `
 
                 <img
                     src="${escapeHTML(item.image)}"
@@ -2204,50 +3178,52 @@ function renderOrderSummary() {
                     class="
                         w-12
                         h-12
-                        rounded-lg
-                        mr-3
+                        rounded-xl
                         object-contain
                         bg-gray-50
+                        p-1
+                        mr-3
                     "
                 >
 
             `;
 
         }
+
         else {
 
-            const icon =
-                item.icon ||
-                "fas fa-box";
-
-            const color =
-                item.color ||
-                "#555555";
-
-
-            productImageHTML = `
+            imageHTML = `
 
                 <div
                     class="
                         w-12
                         h-12
-                        rounded-lg
+                        rounded-xl
                         flex
                         items-center
                         justify-center
                         mr-3
                     "
                     style="
-                        background-color:
-                        ${escapeHTML(color)}20;
+                        background:
+                        ${escapeHTML(
+                            item.color ||
+                            "#eeeeee"
+                        )}20;
                     "
                 >
 
                     <i
-                        class="${escapeHTML(icon)}"
+                        class="${escapeHTML(
+                            item.icon ||
+                            "fas fa-box"
+                        )}"
                         style="
                             color:
-                            ${escapeHTML(color)};
+                            ${escapeHTML(
+                                item.color ||
+                                "#555555"
+                            )};
                         "
                     ></i>
 
@@ -2260,28 +3236,21 @@ function renderOrderSummary() {
 
         orderItem.innerHTML = `
 
-            <div
-                class="
-                    flex
-                    justify-between
-                    items-start
-                    gap-3
-                "
-            >
+            <div class="flex justify-between items-start">
 
-                <div
-                    class="
-                        flex
-                        items-start
-                        min-w-0
-                    "
-                >
+                <div class="flex items-start min-w-0">
 
-                    ${productImageHTML}
+                    ${imageHTML}
 
                     <div class="min-w-0">
 
-                        <h4 class="font-medium truncate">
+                        <h4
+                            class="
+                                font-semibold
+                                text-sm
+                                truncate
+                            "
+                        >
 
                             ${escapeHTML(
                                 item.name ||
@@ -2290,8 +3259,7 @@ function renderOrderSummary() {
 
                         </h4>
 
-
-                        <p class="text-sm text-gray-500">
+                        <p class="text-xs text-gray-500 mt-1">
 
                             ${escapeHTML(
                                 plan.duration ||
@@ -2305,18 +3273,17 @@ function renderOrderSummary() {
                 </div>
 
 
-                <div class="text-right shrink-0">
+                <div class="text-right ml-3">
 
-                    <span class="font-medium">
+                    <span class="font-bold text-sm">
 
                         ৳${formatMoney(itemTotal)}
 
                     </span>
 
+                    <p class="text-xs text-gray-400 mt-1">
 
-                    <p class="text-sm text-gray-500">
-
-                        Qty: ${quantity}
+                        Qty ${quantity}
 
                     </p>
 
@@ -2336,14 +3303,7 @@ function renderOrderSummary() {
 
                 <button
                     type="button"
-                    class="
-                        remove-btn
-                        flex
-                        items-center
-                        text-sm
-                        text-red-500
-                        hover:text-red-700
-                    "
+                    class="remove-btn text-xs font-medium"
                     data-product-name="${escapeHTML(
                         item.name
                     )}"
@@ -2356,26 +3316,11 @@ function renderOrderSummary() {
                 </button>
 
 
-                <div
-                    class="
-                        flex
-                        items-center
-                        border
-                        border-gray-200
-                        rounded-lg
-                        overflow-hidden
-                    "
-                >
+                <div class="quantity-control">
 
                     <button
                         type="button"
-                        class="
-                            quantity-btn
-                            decrease-btn
-                            px-3
-                            py-1
-                            hover:bg-gray-100
-                        "
+                        class="quantity-btn decrease-btn"
                         data-product-name="${escapeHTML(
                             item.name
                         )}"
@@ -2386,27 +3331,17 @@ function renderOrderSummary() {
                     </button>
 
 
-                    <span
-                        class="
-                            px-3
-                            py-1
-                            text-sm
-                            font-medium
-                        "
+                    <input
+                        type="number"
+                        class="quantity-input"
+                        value="${quantity}"
+                        readonly
                     >
-                        ${quantity}
-                    </span>
 
 
                     <button
                         type="button"
-                        class="
-                            quantity-btn
-                            increase-btn
-                            px-3
-                            py-1
-                            hover:bg-gray-100
-                        "
+                        class="quantity-btn increase-btn"
                         data-product-name="${escapeHTML(
                             item.name
                         )}"
@@ -2431,25 +3366,19 @@ function renderOrderSummary() {
 
 
     const total =
-        Math.max(
-            0,
-            subtotal +
-            totalTax -
-            discountAmount
-        );
+        subtotal +
+        totalTax -
+        discountAmount;
 
 
     subtotalEl.textContent =
         `৳${formatMoney(subtotal)}`;
 
-
     taxEl.textContent =
         `৳${formatMoney(totalTax)}`;
 
-
     discountEl.textContent =
         `-৳${formatMoney(discountAmount)}`;
-
 
     totalEl.textContent =
         `৳${formatMoney(total)}`;
@@ -2467,15 +3396,11 @@ function updateCartCount() {
         cart.reduce(
             (sum, item) =>
                 sum +
-                Math.max(
-                    0,
-                    Number(
-                        item.quantity || 0
-                    )
+                Number(
+                    item.quantity || 0
                 ),
             0
         );
-
 
     cartCount.textContent =
         totalItems;
@@ -2509,7 +3434,6 @@ function removeItem(name) {
                 item.name !== name
         );
 
-
     saveCart();
 
     renderOrderSummary();
@@ -2517,12 +3441,10 @@ function removeItem(name) {
     updateCartCount();
 
 
-    if (
-        cart.length === 0
-    ) {
+    if (cart.length === 0) {
 
         window.location.href =
-            "index.html";
+            "./index.html";
 
     }
 
@@ -2541,20 +3463,16 @@ function increaseQuantity(name) {
                 item.name === name
         );
 
-
     if (!item) {
+
         return;
+
     }
 
-
     item.quantity =
-        Math.max(
-            1,
-            Number(
-                item.quantity || 1
-            )
+        Number(
+            item.quantity || 1
         ) + 1;
-
 
     saveCart();
 
@@ -2577,28 +3495,21 @@ function decreaseQuantity(name) {
                 item.name === name
         );
 
-
-    if (!item) {
-        return;
-    }
-
-
-    const currentQuantity =
+    if (
+        !item ||
         Number(
             item.quantity || 1
-        );
-
-
-    if (
-        currentQuantity <= 1
+        ) <= 1
     ) {
+
         return;
+
     }
 
-
     item.quantity =
-        currentQuantity - 1;
-
+        Number(
+            item.quantity
+        ) - 1;
 
     saveCart();
 
@@ -2610,7 +3521,7 @@ function decreaseQuantity(name) {
 
 
 // ============================================================
-// CART EVENTS
+// ORDER SUMMARY EVENTS
 // ============================================================
 
 orderSummary.addEventListener(
@@ -2621,7 +3532,6 @@ orderSummary.addEventListener(
             event.target.closest(
                 ".remove-btn"
             );
-
 
         if (removeButton) {
 
@@ -2639,7 +3549,6 @@ orderSummary.addEventListener(
                 ".increase-btn"
             );
 
-
         if (increaseButton) {
 
             increaseQuantity(
@@ -2656,7 +3565,6 @@ orderSummary.addEventListener(
                 ".decrease-btn"
             );
 
-
         if (decreaseButton) {
 
             decreaseQuantity(
@@ -2670,43 +3578,6 @@ orderSummary.addEventListener(
 
 
 // ============================================================
-// PAYMENT COPY EVENT
-// ============================================================
-
-paymentDetails.addEventListener(
-    "click",
-    event => {
-
-        const button =
-            event.target.closest(
-                ".copy-btn"
-            );
-
-
-        if (!button) {
-            return;
-        }
-
-
-        const number =
-            button.dataset.copyNumber;
-
-
-        if (!number) {
-            return;
-        }
-
-
-        copyPaymentNumber(
-            number,
-            button
-        );
-
-    }
-);
-
-
-// ============================================================
 // PROMO TOGGLE
 // ============================================================
 
@@ -2714,15 +3585,14 @@ promoToggle.addEventListener(
     "change",
     () => {
 
-        if (
-            promoToggle.checked
-        ) {
+        if (promoToggle.checked) {
 
             promoCodeSection.classList.remove(
                 "hidden"
             );
 
         }
+
         else {
 
             promoCodeSection.classList.add(
@@ -2767,108 +3637,108 @@ function applyPromoCode() {
     }
 
 
-    const totals =
-        getCartTotals();
+    if (code === "TAXFREE") {
 
-
-    if (
-        code === "TAXFREE"
-    ) {
+        const totals =
+            getCartTotals();
 
         discountAmount =
             totals.tax;
 
-
         appliedPromoCode =
             "TAXFREE";
 
-
         renderOrderSummary();
-
 
         showPromoResult(
             "Tax Free!",
             true
         );
 
-
-        return;
-
     }
 
 
-    if (
-        code === "JULY36"
-    ) {
+    else if (code === "JULY36") {
 
         discountAmount =
             30;
 
-
         appliedPromoCode =
             "JULY36";
 
-
         renderOrderSummary();
-
 
         showPromoResult(
             "30 Taka Off!",
             true
         );
 
-
-        return;
-
     }
 
 
-    if (
-        code === "NEXTLEVEL10"
-    ) {
+    else if (code === "NEXTLEVEL10") {
+
+        let subtotal = 0;
+
+
+        cart.forEach(item => {
+
+            const plan =
+                item.selectedPlan ||
+                {
+                    price: item.price
+                };
+
+            subtotal +=
+                Number(
+                    plan.price || 0
+                ) *
+                Number(
+                    item.quantity || 1
+                );
+
+        });
+
 
         discountAmount =
-            Number(
-                (
-                    totals.subtotal *
-                    0.10
-                ).toFixed(2)
+            Math.round(
+                subtotal * 0.1
             );
-
 
         appliedPromoCode =
             "NEXTLEVEL10";
 
-
         renderOrderSummary();
-
 
         showPromoResult(
             "10% Off!",
             true
         );
 
-
-        return;
-
     }
 
 
-    discountAmount = 0;
+    else {
 
-    appliedPromoCode = "";
+        discountAmount = 0;
 
+        appliedPromoCode = "";
 
-    renderOrderSummary();
+        renderOrderSummary();
 
+        showPromoResult(
+            "Invalid",
+            false
+        );
 
-    showPromoResult(
-        "Invalid",
-        false
-    );
+    }
 
 }
 
+
+// ============================================================
+// PROMO RESULT
+// ============================================================
 
 function showPromoResult(
     text,
@@ -2896,6 +3766,7 @@ function showPromoResult(
         );
 
     }
+
     else {
 
         applyPromo.classList.add(
@@ -2911,13 +3782,11 @@ function showPromoResult(
         applyPromo.textContent =
             "Apply";
 
-
         applyPromo.classList.remove(
             "bg-green-500",
             "bg-red-500",
             "text-white"
         );
-
 
         applyPromo.classList.add(
             "bg-gray-200",
@@ -2942,16 +3811,16 @@ applyPromo.addEventListener(
 function getCustomerName() {
 
     const firstName =
-        document.getElementById(
-            "firstName"
-        ).value.trim();
-
+        document
+            .getElementById("firstName")
+            .value
+            .trim();
 
     const lastName =
-        document.getElementById(
-            "lastName"
-        ).value.trim();
-
+        document
+            .getElementById("lastName")
+            .value
+            .trim();
 
     return (
         `${firstName} ${lastName}`
@@ -2961,27 +3830,7 @@ function getCustomerName() {
 
 
 // ============================================================
-// VALIDATE BANGLADESHI MOBILE NUMBER
-// ============================================================
-
-function isValidMobileNumber(number) {
-
-    const normalized =
-        String(number || "")
-            .replace(
-                /[\s-]/g,
-                ""
-            );
-
-
-    return /^(\+880|880|0)1[3-9]\d{8}$/
-        .test(normalized);
-
-}
-
-
-// ============================================================
-// VALIDATE CHECKOUT
+// VALIDATE
 // ============================================================
 
 function validateCheckout() {
@@ -2993,7 +3842,16 @@ function validateCheckout() {
         );
 
         window.location.href =
-            "login.html";
+            "./login.html";
+
+        return false;
+
+    }
+
+
+    if (!checkoutForm.checkValidity()) {
+
+        checkoutForm.reportValidity();
 
         return false;
 
@@ -3001,10 +3859,29 @@ function validateCheckout() {
 
 
     if (
-        !checkoutForm.checkValidity()
+        !paymentSenderNumber.value.trim()
     ) {
 
-        checkoutForm.reportValidity();
+        alert(
+            "Please enter the payment sender number."
+        );
+
+        paymentSenderNumber.focus();
+
+        return false;
+
+    }
+
+
+    if (
+        !paymentReference.value.trim()
+    ) {
+
+        alert(
+            "Please enter the transaction ID / payment reference."
+        );
+
+        paymentReference.focus();
 
         return false;
 
@@ -3020,100 +3897,7 @@ function validateCheckout() {
         );
 
         window.location.href =
-            "index.html";
-
-        return false;
-
-    }
-
-
-    const senderNumber =
-        paymentSenderNumber.value.trim();
-
-
-    if (!senderNumber) {
-
-        alert(
-            "Please enter the payment sender number."
-        );
-
-        paymentSenderNumber.focus();
-
-        return false;
-
-    }
-
-
-    if (
-        selectedPaymentMethod !==
-        "bank_transfer"
-    ) {
-
-        if (
-            !isValidMobileNumber(
-                senderNumber
-            )
-        ) {
-
-            alert(
-                "Please enter a valid Bangladeshi mobile number."
-            );
-
-            paymentSenderNumber.focus();
-
-            return false;
-
-        }
-
-    }
-
-
-    const reference =
-        paymentReference.value.trim();
-
-
-    if (!reference) {
-
-        alert(
-            "Please enter the transaction ID / payment reference."
-        );
-
-        paymentReference.focus();
-
-        return false;
-
-    }
-
-
-    if (
-        reference.length < 4
-    ) {
-
-        alert(
-            "The transaction ID appears to be too short."
-        );
-
-        paymentReference.focus();
-
-        return false;
-
-    }
-
-
-    const totals =
-        getCartTotals();
-
-
-    if (
-        !Number.isFinite(
-            totals.total
-        ) ||
-        totals.total <= 0
-    ) {
-
-        alert(
-            "Invalid order total."
-        );
+            "./index.html";
 
         return false;
 
@@ -3126,22 +3910,22 @@ function validateCheckout() {
 
 
 // ============================================================
-// CREATE ORDER
+// PLACE ORDER
 // ============================================================
 
 async function placeOrder() {
 
-    if (
-        isSubmitting
-    ) {
+    if (isSubmitting) {
+
         return;
+
     }
 
 
-    if (
-        !validateCheckout()
-    ) {
+    if (!validateCheckout()) {
+
         return;
+
     }
 
 
@@ -3152,22 +3936,28 @@ async function placeOrder() {
         placeOrderBtn.innerHTML;
 
 
-    placeOrderBtn.disabled =
-        true;
+    placeOrderBtn.disabled = true;
 
 
     placeOrderBtn.innerHTML = `
 
-        <div class="spinner mx-auto"></div>
+        <span class="relative z-10 flex items-center justify-center gap-2">
+
+            <div class="spinner"></div>
+
+            Processing Order...
+
+        </span>
 
     `;
 
 
     try {
 
-        // ====================================================
-        // AUTH USER
-        // ====================================================
+
+        // -----------------------------------------------------
+        // AUTH
+        // -----------------------------------------------------
 
         const {
             data: authData,
@@ -3176,10 +3966,10 @@ async function placeOrder() {
             await supabaseClient.auth.getUser();
 
 
-        if (
-            authError
-        ) {
+        if (authError) {
+
             throw authError;
+
         }
 
 
@@ -3194,7 +3984,7 @@ async function placeOrder() {
             );
 
             window.location.href =
-                "login.html";
+                "./login.html";
 
             return;
 
@@ -3205,71 +3995,67 @@ async function placeOrder() {
             user;
 
 
-        // ====================================================
-        // CUSTOMER DATA
-        // ====================================================
+        // -----------------------------------------------------
+        // BILLING
+        // -----------------------------------------------------
 
         const customerName =
             getCustomerName();
 
-
         const email =
-            document.getElementById(
-                "email"
-            ).value.trim();
-
+            document
+                .getElementById("email")
+                .value
+                .trim();
 
         const phone =
-            document.getElementById(
-                "phone"
-            ).value.trim();
-
+            document
+                .getElementById("phone")
+                .value
+                .trim();
 
         const address =
-            document.getElementById(
-                "address"
-            ).value.trim();
-
+            document
+                .getElementById("address")
+                .value
+                .trim();
 
         const notes =
-            document.getElementById(
-                "notes"
-            ).value.trim();
-
+            document
+                .getElementById("notes")
+                .value
+                .trim();
 
         const senderNumber =
-            paymentSenderNumber.value.trim();
-
+            paymentSenderNumber
+                .value
+                .trim();
 
         const reference =
-            paymentReference.value.trim();
+            paymentReference
+                .value
+                .trim();
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // TOTALS
-        // ====================================================
+        // -----------------------------------------------------
 
         const totals =
             getCartTotals();
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // ORDER NUMBER
-        // ====================================================
+        // -----------------------------------------------------
 
         const orderNumber =
             generateOrderNumber();
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // ORDER PAYLOAD
-        // ====================================================
-        //
-        // Payment remains pending until admin verification.
-        //
-        // Subscription credentials remain NULL until
-        // the administrator delivers the subscription.
-        // ====================================================
+        // -----------------------------------------------------
 
         const orderPayload = {
 
@@ -3307,8 +4093,7 @@ async function placeOrder() {
                 totals.total,
 
             promo_code:
-                appliedPromoCode ||
-                null,
+                appliedPromoCode || null,
 
             payment_method:
                 selectedPaymentMethod,
@@ -3349,9 +4134,9 @@ async function placeOrder() {
         );
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // INSERT ORDER
-        // ====================================================
+        // -----------------------------------------------------
 
         const {
             data: createdOrder,
@@ -3368,12 +4153,10 @@ async function placeOrder() {
                 .single();
 
 
-        if (
-            orderError
-        ) {
+        if (orderError) {
 
             console.error(
-                "Order INSERT error:",
+                "Orders INSERT error:",
                 orderError
             );
 
@@ -3388,15 +4171,15 @@ async function placeOrder() {
         ) {
 
             throw new Error(
-                "Order was created but no order ID was returned."
+                "Order created but no order ID was returned."
             );
 
         }
 
 
-        // ====================================================
-        // CREATE ORDER ITEMS
-        // ====================================================
+        // -----------------------------------------------------
+        // ORDER ITEMS
+        // -----------------------------------------------------
 
         const orderItems =
             cart.map(item => {
@@ -3404,11 +4187,13 @@ async function placeOrder() {
                 const plan =
                     item.selectedPlan ||
                     {
+
                         price:
                             item.price,
 
                         duration:
                             item.duration
+
                     };
 
 
@@ -3435,21 +4220,14 @@ async function placeOrder() {
                         ),
 
                     quantity:
-                        Math.max(
-                            1,
-                            Number(
-                                item.quantity || 1
-                            )
+                        Number(
+                            item.quantity || 1
                         )
 
                 };
 
             });
 
-
-        // ====================================================
-        // INSERT ORDER ITEMS
-        // ====================================================
 
         const {
             error: itemsError
@@ -3461,9 +4239,7 @@ async function placeOrder() {
                 );
 
 
-        if (
-            itemsError
-        ) {
+        if (itemsError) {
 
             console.error(
                 "Order items INSERT error:",
@@ -3475,14 +4251,13 @@ async function placeOrder() {
         }
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // SUCCESS
-        // ====================================================
+        // -----------------------------------------------------
 
         localStorage.removeItem(
             "streamHubCart"
         );
-
 
         cart = [];
 
@@ -3490,44 +4265,45 @@ async function placeOrder() {
         updateCartCount();
 
 
-        successMessage.innerHTML = `
+        successMessage.textContent =
+            `Order ${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
 
-            <strong>
-                Order ${escapeHTML(
-                    createdOrder.order_number
-                )}
-            </strong>
-            has been submitted successfully.
 
-            <br><br>
-
-            Your payment is now
-            <strong>pending verification</strong>.
-
-            <br><br>
-
-            Once your payment is verified,
-            your subscription/account details will
-            appear in your dashboard.
-
-        `;
-
+        // -----------------------------------------------------
+        // SHOW SUCCESS MODAL
+        // -----------------------------------------------------
 
         successModal.classList.remove(
             "hidden"
         );
 
+        successModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+
+        // Prevent background scroll
+
+        document.body.style.overflow =
+            "hidden";
+
 
         placeOrderBtn.innerHTML = `
 
-            <i class="fas fa-check mr-2"></i>
+            <span class="relative z-10">
 
-            Order Submitted
+                <i class="fas fa-check mr-2"></i>
+
+                Order Submitted
+
+            </span>
 
         `;
 
 
     }
+
     catch (error) {
 
         console.error(
@@ -3543,28 +4319,7 @@ async function placeOrder() {
         );
 
         console.error(
-            "Error:",
             error
-        );
-
-        console.error(
-            "Message:",
-            error?.message
-        );
-
-        console.error(
-            "Code:",
-            error?.code
-        );
-
-        console.error(
-            "Details:",
-            error?.details
-        );
-
-        console.error(
-            "Hint:",
-            error?.hint
         );
 
 
@@ -3573,8 +4328,7 @@ async function placeOrder() {
 
 
         if (
-            error?.code ===
-            "23505"
+            error?.code === "23505"
         ) {
 
             message =
@@ -3582,21 +4336,17 @@ async function placeOrder() {
 
         }
 
-
         else if (
-            error?.code ===
-            "23502"
+            error?.code === "23502"
         ) {
 
             message =
-                "A required order field is missing. Please check your database structure.";
+                "A required order field is missing. Please check your database columns.";
 
         }
 
-
         else if (
-            error?.code ===
-            "42501"
+            error?.code === "42501"
         ) {
 
             message =
@@ -3604,26 +4354,12 @@ async function placeOrder() {
 
         }
 
-
         else if (
-            error?.code ===
-            "23503"
+            error?.code === "23503"
         ) {
 
             message =
                 "Your account could not be linked to this order. Please log in again.";
-
-        }
-
-
-        else if (
-            error?.message
-        ) {
-
-            console.error(
-                "Supabase error:",
-                error.message
-            );
 
         }
 
@@ -3634,10 +4370,8 @@ async function placeOrder() {
         placeOrderBtn.innerHTML =
             originalButtonHTML;
 
-
         placeOrderBtn.disabled =
             false;
-
 
         isSubmitting =
             false;
@@ -3648,7 +4382,7 @@ async function placeOrder() {
 
 
 // ============================================================
-// PAYMENT METHOD EVENTS
+// PAYMENT EVENTS
 // ============================================================
 
 document
@@ -3682,6 +4416,50 @@ placeOrderBtn.addEventListener(
 
 
 // ============================================================
+// MODAL LINK SAFETY
+// ============================================================
+
+dashboardButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        window.location.href =
+            "./dashboard.html";
+
+    }
+);
+
+
+homeButton.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+        window.location.href =
+            "./index.html";
+
+    }
+);
+
+
+// ============================================================
+// PREVENT BACKDROP FROM BLOCKING MODAL
+// ============================================================
+
+successBackdrop.addEventListener(
+    "click",
+    event => {
+
+        event.stopPropagation();
+
+    }
+);
+
+
+// ============================================================
 // INITIALIZE
 // ============================================================
 
@@ -3689,9 +4467,10 @@ async function init() {
 
     try {
 
-        // ====================================================
+
+        // -----------------------------------------------------
         // AUTH
-        // ====================================================
+        // -----------------------------------------------------
 
         const {
             data,
@@ -3700,9 +4479,7 @@ async function init() {
             await supabaseClient.auth.getUser();
 
 
-        if (
-            error
-        ) {
+        if (error) {
 
             console.error(
                 "Authentication error:",
@@ -3710,7 +4487,7 @@ async function init() {
             );
 
             window.location.href =
-                "login.html";
+                "./login.html";
 
             return;
 
@@ -3721,31 +4498,23 @@ async function init() {
             data?.user;
 
 
-        if (
-            !currentUser
-        ) {
+        if (!currentUser) {
 
             alert(
                 "Please log in before accessing checkout."
             );
 
             window.location.href =
-                "login.html";
+                "./login.html";
 
             return;
 
         }
 
 
-        console.log(
-            "Checkout user:",
-            currentUser.id
-        );
-
-
-        // ====================================================
+        // -----------------------------------------------------
         // LOAD CART
-        // ====================================================
+        // -----------------------------------------------------
 
         try {
 
@@ -3757,6 +4526,7 @@ async function init() {
                 ) || [];
 
         }
+
         catch (error) {
 
             console.error(
@@ -3769,33 +4539,18 @@ async function init() {
         }
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // STANDARDIZE CART
-        // ====================================================
+        // -----------------------------------------------------
 
         cart =
             cart.map(item => {
-
-                const quantity =
-                    Math.max(
-                        1,
-                        Number(
-                            item.quantity || 1
-                        )
-                    );
-
 
                 if (
                     item.selectedPlan
                 ) {
 
-                    return {
-
-                        ...item,
-
-                        quantity
-
-                    };
+                    return item;
 
                 }
 
@@ -3803,8 +4558,6 @@ async function init() {
                 return {
 
                     ...item,
-
-                    quantity,
 
                     selectedPlan: {
 
@@ -3824,25 +4577,25 @@ async function init() {
             });
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // EMPTY CART
-        // ====================================================
+        // -----------------------------------------------------
 
         if (
             cart.length === 0
         ) {
 
             window.location.href =
-                "index.html";
+                "./index.html";
 
             return;
 
         }
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // PREFILL EMAIL
-        // ====================================================
+        // -----------------------------------------------------
 
         const emailInput =
             document.getElementById(
@@ -3861,9 +4614,9 @@ async function init() {
         }
 
 
-        // ====================================================
+        // -----------------------------------------------------
         // RENDER
-        // ====================================================
+        // -----------------------------------------------------
 
         renderOrderSummary();
 
@@ -3871,8 +4624,8 @@ async function init() {
 
         renderPaymentDetails();
 
-
     }
+
     catch (error) {
 
         console.error(
@@ -3880,14 +4633,12 @@ async function init() {
             error
         );
 
-
         alert(
             "Unable to load checkout. Please log in again."
         );
 
-
         window.location.href =
-            "login.html";
+            "./login.html";
 
     }
 
@@ -3895,7 +4646,7 @@ async function init() {
 
 
 // ============================================================
-// AUTH STATE MONITOR
+// AUTH STATE
 // ============================================================
 
 supabaseClient.auth.onAuthStateChange(
@@ -3910,7 +4661,7 @@ supabaseClient.auth.onAuthStateChange(
         ) {
 
             window.location.href =
-                "login.html";
+                "./login.html";
 
         }
 
@@ -3925,6 +4676,7 @@ supabaseClient.auth.onAuthStateChange(
 init();
 
 </script>
+
 
 </body>
 
