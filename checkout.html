@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Checkout - Next Level Subs</title>
+    <title>Checkout - Next Level Estore</title>
 
     <link
         rel="stylesheet"
@@ -26,6 +26,7 @@
 
 
 <body>
+
 
     <!-- =========================================================
          HEADER
@@ -46,7 +47,7 @@
 
                     <img
                         src="/images/next_level.png"
-                        alt="Next Level Subs Logo"
+                        alt="Next Level Estore Logo"
                         class="logo-image"
                     >
 
@@ -123,7 +124,6 @@
                         <i
                             class="fa-solid fa-basket-shopping-simple text-2xl"
                         ></i>
-
 
                         <span
                             id="cartCount"
@@ -443,14 +443,7 @@
                     </h2>
 
 
-                    <div
-                        class="
-                            bg-white
-                            rounded-xl
-                            shadow-md
-                            p-6
-                        "
-                    >
+                    <div class="bg-white rounded-xl shadow-md p-6">
 
                         <div
                             class="
@@ -474,8 +467,7 @@
                                     text-center
                                     selected
                                 "
-                                data-payment-method="bkash"
-                                onclick="selectPaymentMethod('bkash', this)"
+                                data-method="bkash"
                             >
 
                                 <i
@@ -493,7 +485,7 @@
                                 </h3>
 
                                 <p class="text-sm text-gray-600">
-                                    Pay via bKash
+                                    Send Money
                                 </p>
 
                             </div>
@@ -511,14 +503,13 @@
                                     border-gray-200
                                     text-center
                                 "
-                                data-payment-method="nagad"
-                                onclick="selectPaymentMethod('nagad', this)"
+                                data-method="nagad"
                             >
 
                                 <i
                                     class="
                                         fas
-                                        fa-mobile-screen-button
+                                        fa-wallet
                                         text-3xl
                                         text-orange-500
                                         mb-2
@@ -530,7 +521,7 @@
                                 </h3>
 
                                 <p class="text-sm text-gray-600">
-                                    Pay via Nagad
+                                    Send Money
                                 </p>
 
                             </div>
@@ -548,8 +539,7 @@
                                     border-gray-200
                                     text-center
                                 "
-                                data-payment-method="rocket"
-                                onclick="selectPaymentMethod('rocket', this)"
+                                data-method="rocket"
                             >
 
                                 <i
@@ -567,7 +557,7 @@
                                 </h3>
 
                                 <p class="text-sm text-gray-600">
-                                    Pay via Rocket
+                                    Send Money
                                 </p>
 
                             </div>
@@ -585,16 +575,15 @@
                                     border-gray-200
                                     text-center
                                 "
-                                data-payment-method="upay"
-                                onclick="selectPaymentMethod('upay', this)"
+                                data-method="upay"
                             >
 
                                 <i
                                     class="
                                         fas
-                                        fa-mobile-screen-button
+                                        fa-money-bill-transfer
                                         text-3xl
-                                        text-blue-600
+                                        text-green-600
                                         mb-2
                                     "
                                 ></i>
@@ -604,7 +593,7 @@
                                 </h3>
 
                                 <p class="text-sm text-gray-600">
-                                    Pay via Upay
+                                    Send Money
                                 </p>
 
                             </div>
@@ -623,8 +612,7 @@
                                     text-center
                                     md:col-span-2
                                 "
-                                data-payment-method="bank_transfer"
-                                onclick="selectPaymentMethod('bank_transfer', this)"
+                                data-method="bank_transfer"
                             >
 
                                 <i
@@ -651,9 +639,7 @@
 
 
 
-                        <!-- =================================================
-                             PAYMENT DETAILS
-                        ================================================== -->
+                        <!-- PAYMENT DETAILS -->
 
                         <div
                             id="paymentDetails"
@@ -667,23 +653,23 @@
 
 
 
-                        <!-- =================================================
-                             SENDER INFORMATION
-                        ================================================== -->
+                        <!-- PAYMENT PROOF -->
 
                         <div
-                            id="senderInformation"
+                            id="paymentProofSection"
                             class="mt-6"
                         >
 
                             <div class="form-group">
 
                                 <label
-                                    id="senderNumberLabel"
                                     class="form-label"
                                     for="paymentSenderNumber"
                                 >
                                     Payment Sender Number
+                                    <span class="text-red-500">
+                                        *
+                                    </span>
                                 </label>
 
                                 <input
@@ -694,30 +680,30 @@
                                     required
                                 >
 
-                                <p
-                                    id="senderHelp"
-                                    class="text-sm text-gray-500 mt-1"
-                                >
-                                    Enter the mobile number you used to send the payment.
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Enter the mobile number/account you used to send the payment.
                                 </p>
 
                             </div>
 
 
-                            <div class="form-group mt-4">
+                            <div class="form-group">
 
                                 <label
                                     class="form-label"
                                     for="paymentReference"
                                 >
                                     Transaction ID / Payment Reference
+                                    <span class="text-red-500">
+                                        *
+                                    </span>
                                 </label>
 
                                 <input
                                     type="text"
                                     id="paymentReference"
                                     class="form-input"
-                                    placeholder="Enter transaction ID"
+                                    placeholder="Enter transaction ID or payment reference"
                                     required
                                 >
 
@@ -767,7 +753,9 @@
                             "
                         >
 
-                            <div class="flex justify-between mb-2">
+                            <div
+                                class="flex justify-between mb-2"
+                            >
 
                                 <span>
                                     Subtotal
@@ -780,7 +768,9 @@
                             </div>
 
 
-                            <div class="flex justify-between mb-2">
+                            <div
+                                class="flex justify-between mb-2"
+                            >
 
                                 <span>
                                     Tax (1.85%)
@@ -793,7 +783,9 @@
                             </div>
 
 
-                            <div class="flex justify-between mb-4">
+                            <div
+                                class="flex justify-between mb-4"
+                            >
 
                                 <span>
                                     Discount
@@ -845,10 +837,11 @@
                                 "
                             >
 
-                                <label class="text-sm font-medium">
+                                <label
+                                    class="text-sm font-medium"
+                                >
                                     Apply Promo Code
                                 </label>
-
 
                                 <label class="toggle-switch">
 
@@ -888,10 +881,9 @@
                                         "
                                     >
 
-
                                     <button
-                                        type="button"
                                         id="applyPromo"
+                                        type="button"
                                         class="
                                             px-4
                                             py-2
@@ -916,8 +908,8 @@
                         <!-- PLACE ORDER -->
 
                         <button
-                            type="button"
                             id="placeOrderBtn"
+                            type="button"
                             class="
                                 w-full
                                 mt-6
@@ -929,9 +921,7 @@
                             "
                         >
 
-                            <i
-                                class="fas fa-lock mr-2"
-                            ></i>
+                            <i class="fas fa-lock mr-2"></i>
 
                             Place Order
 
@@ -947,9 +937,7 @@
                             "
                         >
 
-                            <i
-                                class="fas fa-lock mr-1"
-                            ></i>
+                            <i class="fas fa-lock mr-1"></i>
 
                             Secure Checkout
 
@@ -1036,7 +1024,7 @@
 
 
                 <h2 class="text-2xl font-bold mb-2">
-                    Order Placed Successfully!
+                    Order Submitted Successfully!
                 </h2>
 
 
@@ -1044,16 +1032,12 @@
                     id="successMessage"
                     class="text-gray-600 mb-6"
                 >
-                    Your order has been received and is waiting for payment verification.
+                    Your payment information has been submitted. Your order is now pending payment verification.
                 </p>
 
 
                 <div
-                    class="
-                        flex
-                        justify-center
-                        space-x-4
-                    "
+                    class="flex justify-center space-x-4"
                 >
 
                     <a
@@ -1067,9 +1051,8 @@
                             btn-primary
                         "
                     >
-                        View Dashboard
+                        Go to Dashboard
                     </a>
-
 
                     <a
                         href="index.html"
@@ -1084,7 +1067,7 @@
                             transition-colors
                         "
                     >
-                        Home
+                        Continue Shopping
                     </a>
 
                 </div>
@@ -1101,11 +1084,19 @@
          SUPABASE
     ========================================================== -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
 
-    <script src="./js/supabase-config.js"></script>
 
-    <script src="./js/nextlevel-auth.js"></script>
+    <script
+        src="./js/supabase-config.js"
+    ></script>
+
+
+    <script
+        src="./js/nextlevel-auth.js"
+    ></script>
 
 
 
@@ -1115,707 +1106,614 @@
 
     <script>
 
-        "use strict";
+    "use strict";
 
 
-        // =========================================================
-        // CART STATE
-        // =========================================================
+    // =========================================================
+    // STATE
+    // =========================================================
 
-        let cart = [];
+    let cart = [];
 
-        let selectedPaymentMethod = "bkash";
+    let selectedPaymentMethod = "bkash";
 
-        let discountAmount = 0;
+    let discountAmount = 0;
 
-        let appliedPromoCode = "";
+    let appliedPromoCode = "";
 
+    let currentUser = null;
 
-        // =========================================================
-        // PAYMENT NUMBERS
-        // =========================================================
+    let isSubmitting = false;
 
-        const PAYMENT_ACCOUNTS = {
 
-            bkash:
-                "01912261564",
 
-            nagad:
-                "01644490566",
+    // =========================================================
+    // PAYMENT NUMBERS
+    // =========================================================
 
-            rocket:
-                "016444905664",
+    const PAYMENT_ACCOUNTS = {
 
-            upay:
-                "01590093965"
+        bkash: "01912261564",
 
-        };
+        nagad: "01644490566",
 
+        rocket: "016444905664",
 
-        // =========================================================
-        // DOM
-        // =========================================================
+        upay: "01590093965",
 
-        const checkoutForm =
-            document.getElementById(
-                "checkoutForm"
-            );
+        bank_transfer: {
 
+            bankName:
+                "City Bank",
 
-        const orderSummary =
-            document.getElementById(
-                "orderSummary"
-            );
+            accountNumber:
+                "2302841525001",
 
+            accountHolder:
+                "Nur Mohammad",
 
-        const subtotalEl =
-            document.getElementById(
-                "subtotal"
-            );
-
-
-        const taxEl =
-            document.getElementById(
-                "tax"
-            );
-
-
-        const discountEl =
-            document.getElementById(
-                "discount"
-            );
-
-
-        const totalEl =
-            document.getElementById(
-                "total"
-            );
-
-
-        const promoToggle =
-            document.getElementById(
-                "promoToggle"
-            );
-
-
-        const promoCodeSection =
-            document.getElementById(
-                "promoCodeSection"
-            );
-
-
-        const promoCode =
-            document.getElementById(
-                "promoCode"
-            );
-
-
-        const applyPromo =
-            document.getElementById(
-                "applyPromo"
-            );
-
-
-        const placeOrderBtn =
-            document.getElementById(
-                "placeOrderBtn"
-            );
-
-
-        const paymentDetails =
-            document.getElementById(
-                "paymentDetails"
-            );
-
-
-        const paymentSenderNumber =
-            document.getElementById(
-                "paymentSenderNumber"
-            );
-
-
-        const paymentReference =
-            document.getElementById(
-                "paymentReference"
-            );
-
-
-        const senderNumberLabel =
-            document.getElementById(
-                "senderNumberLabel"
-            );
-
-
-        const senderHelp =
-            document.getElementById(
-                "senderHelp"
-            );
-
-
-        const successModal =
-            document.getElementById(
-                "successModal"
-            );
-
-
-        const successMessage =
-            document.getElementById(
-                "successMessage"
-            );
-
-
-        const cartCount =
-            document.getElementById(
-                "cartCount"
-            );
-
-
-
-        // =========================================================
-        // SAFE HTML
-        // =========================================================
-
-        function escapeHTML(value) {
-
-            if (
-                value === null ||
-                value === undefined
-            ) {
-
-                return "";
-
-            }
-
-
-            return String(value)
-
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
+            branch:
+                "Naogaon"
 
         }
 
+    };
 
 
-        // =========================================================
-        // INITIALIZE
-        // =========================================================
 
-        async function init() {
+    // =========================================================
+    // DOM
+    // =========================================================
 
-            try {
+    const checkoutForm =
+        document.getElementById(
+            "checkoutForm"
+        );
 
-                // ---------------------------------------------
-                // Check authentication
-                // ---------------------------------------------
 
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth.getUser();
+    const orderSummary =
+        document.getElementById(
+            "orderSummary"
+        );
 
 
-                if (error) {
+    const subtotalEl =
+        document.getElementById(
+            "subtotal"
+        );
 
-                    console.error(
-                        "Authentication error:",
-                        error
-                    );
 
-                    window.location.replace(
-                        "login.html"
-                    );
+    const taxEl =
+        document.getElementById(
+            "tax"
+        );
 
-                    return;
 
-                }
+    const discountEl =
+        document.getElementById(
+            "discount"
+        );
 
 
-                const user =
-                    data?.user;
+    const totalEl =
+        document.getElementById(
+            "total"
+        );
 
 
-                if (!user) {
+    const promoToggle =
+        document.getElementById(
+            "promoToggle"
+        );
 
-                    window.location.replace(
-                        "login.html"
-                    );
 
-                    return;
+    const promoCodeSection =
+        document.getElementById(
+            "promoCodeSection"
+        );
 
-                }
 
+    const promoCode =
+        document.getElementById(
+            "promoCode"
+        );
 
-                // ---------------------------------------------
-                // Load cart
-                // ---------------------------------------------
 
-                cart =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "streamHubCart"
-                        )
-                    ) || [];
+    const applyPromo =
+        document.getElementById(
+            "applyPromo"
+        );
 
 
-                cart =
-                    cart.map(
-                        item => {
+    const placeOrderBtn =
+        document.getElementById(
+            "placeOrderBtn"
+        );
 
-                            if (
-                                item.selectedPlan
-                            ) {
 
-                                return item;
+    const paymentDetails =
+        document.getElementById(
+            "paymentDetails"
+        );
 
-                            }
 
+    const paymentSenderNumber =
+        document.getElementById(
+            "paymentSenderNumber"
+        );
 
-                            return {
 
-                                ...item,
+    const paymentReference =
+        document.getElementById(
+            "paymentReference"
+        );
 
-                                selectedPlan: {
 
-                                    price:
-                                        Number(
-                                            item.price || 0
-                                        ),
+    const successModal =
+        document.getElementById(
+            "successModal"
+        );
 
-                                    duration:
-                                        item.duration ||
-                                        "month",
 
-                                    currency:
-                                        "BDT"
+    const successMessage =
+        document.getElementById(
+            "successMessage"
+        );
 
-                                }
 
-                            };
+    const cartCount =
+        document.getElementById(
+            "cartCount"
+        );
 
-                        }
-                    );
 
 
-                if (
-                    cart.length === 0
-                ) {
+    // =========================================================
+    // ESCAPE HTML
+    // =========================================================
 
-                    window.location.href =
-                        "index.html";
+    function escapeHTML(value) {
 
-                    return;
-
-                }
-
-
-                // ---------------------------------------------
-                // Prefill account information
-                // ---------------------------------------------
-
-                await loadCustomerInformation(
-                    user
-                );
-
-
-                // ---------------------------------------------
-                // Render
-                // ---------------------------------------------
-
-                renderOrderSummary();
-
-                updateCartCount();
-
-                updatePaymentUI();
-
-
-                // ---------------------------------------------
-                // Events
-                // ---------------------------------------------
-
-                checkoutForm.addEventListener(
-                    "submit",
-                    event => {
-
-                        event.preventDefault();
-
-                        placeOrder();
-
-                    }
-                );
-
-
-                promoToggle.addEventListener(
-                    "change",
-                    togglePromoSection
-                );
-
-
-                applyPromo.addEventListener(
-                    "click",
-                    applyPromoCode
-                );
-
-
-                placeOrderBtn.addEventListener(
-                    "click",
-                    placeOrder
-                );
-
-
-                // ---------------------------------------------
-                // Mobile / desktop scroll behavior
-                // ---------------------------------------------
-
-                window.addEventListener(
-                    "scroll",
-                    () => {
-
-                        // Intentionally kept without
-                        // WhatsApp floating button.
-
-                    }
-                );
-
-            }
-            catch (error) {
-
-                console.error(
-                    "Checkout initialization error:",
-                    error
-                );
-
-                alert(
-                    "Unable to load checkout. Please refresh the page."
-                );
-
-            }
-
-        }
-
-
-
-        // =========================================================
-        // LOAD CUSTOMER INFORMATION
-        // =========================================================
-
-        async function loadCustomerInformation(
-            user
+        if (
+            value === null ||
+            value === undefined
         ) {
 
-            try {
+            return "";
 
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
+        }
 
-                        .from(
-                            "profiles"
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+
+    // =========================================================
+    // FORMAT MONEY
+    // =========================================================
+
+    function formatMoney(
+        amount
+    ) {
+
+        return Number(
+            amount || 0
+        ).toFixed(2);
+
+    }
+
+
+
+    // =========================================================
+    // GET SELECTED PAYMENT LABEL
+    // =========================================================
+
+    function getPaymentMethodLabel(
+        method
+    ) {
+
+        switch (method) {
+
+            case "bkash":
+                return "bKash";
+
+            case "nagad":
+                return "Nagad";
+
+            case "rocket":
+                return "Rocket";
+
+            case "upay":
+                return "Upay";
+
+            case "bank_transfer":
+                return "Bank Transfer";
+
+            default:
+                return "Unknown";
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // PAYMENT DETAILS
+    // =========================================================
+
+    function renderPaymentDetails() {
+
+        if (
+            selectedPaymentMethod ===
+            "bank_transfer"
+        ) {
+
+            paymentDetails.innerHTML = `
+
+                <h3 class="font-semibold mb-3">
+                    Bank Transfer Instructions
+                </h3>
+
+                <div class="text-sm text-gray-600 space-y-1">
+
+                    <p>
+                        <strong>Bank:</strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS.bank_transfer.bankName
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Account Name:</strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS.bank_transfer.accountHolder
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Account Number:</strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS.bank_transfer.accountNumber
+                        )}
+                    </p>
+
+                    <p>
+                        <strong>Branch:</strong>
+                        ${escapeHTML(
+                            PAYMENT_ACCOUNTS.bank_transfer.branch
+                        )}
+                    </p>
+
+                </div>
+
+            `;
+
+            paymentSenderNumber.placeholder =
+                "Enter your bank account number";
+
+            paymentReference.placeholder =
+                "Enter bank transaction/reference number";
+
+        }
+        else {
+
+            const account =
+                PAYMENT_ACCOUNTS[
+                    selectedPaymentMethod
+                ];
+
+
+            paymentDetails.innerHTML = `
+
+                <h3 class="font-semibold mb-3">
+                    ${escapeHTML(
+                        getPaymentMethodLabel(
+                            selectedPaymentMethod
                         )
+                    )} Payment Instructions
+                </h3>
 
-                        .select(
-                            "full_name,email"
+                <p class="text-sm text-gray-600 mb-3">
+                    Send the exact order total to the following
+                    number using ${escapeHTML(
+                        getPaymentMethodLabel(
+                            selectedPaymentMethod
                         )
+                    )} Send Money.
+                </p>
 
-                        .eq(
-                            "id",
-                            user.id
-                        )
+                <div
+                    class="
+                        bg-white
+                        border
+                        border-gray-200
+                        rounded-lg
+                        p-3
+                        font-semibold
+                        text-lg
+                    "
+                >
+                    ${escapeHTML(account)}
+                </div>
 
-                        .maybeSingle();
+                <p class="text-sm text-gray-500 mt-3">
+                    After sending the payment, enter the number
+                    you used to send the money and your transaction ID below.
+                </p>
+
+            `;
+
+            paymentSenderNumber.placeholder =
+                "01XXXXXXXXX";
+
+            paymentReference.placeholder =
+                "Enter transaction ID";
+
+        }
+
+    }
 
 
-                if (error) {
 
-                    console.warn(
-                        "Profile loading warning:",
-                        error
+    // =========================================================
+    // SELECT PAYMENT METHOD
+    // =========================================================
+
+    function selectPaymentMethod(
+        method
+    ) {
+
+        selectedPaymentMethod =
+            method;
+
+
+        document
+            .querySelectorAll(
+                ".payment-method"
+            )
+            .forEach(
+                element => {
+
+                    element.classList.remove(
+                        "selected"
                     );
 
                 }
+            );
 
 
-                const fullName =
-                    data?.full_name ||
-                    user.user_metadata?.full_name ||
-                    user.user_metadata?.name ||
+        const selectedElement =
+            document.querySelector(
+                `.payment-method[data-method="${method}"]`
+            );
+
+
+        if (selectedElement) {
+
+            selectedElement.classList.add(
+                "selected"
+            );
+
+        }
+
+
+        renderPaymentDetails();
+
+    }
+
+
+
+    // =========================================================
+    // CALCULATE TAX
+    // =========================================================
+
+    function calculateTax(
+        price
+    ) {
+
+        return Number(price || 0) *
+            0.0185;
+
+    }
+
+
+
+    // =========================================================
+    // RENDER ORDER SUMMARY
+    // =========================================================
+
+    function renderOrderSummary() {
+
+        orderSummary.innerHTML =
+            "";
+
+        let subtotal = 0;
+
+        let totalTax = 0;
+
+
+        cart.forEach(
+            (
+                item
+            ) => {
+
+                const plan =
+                    item.selectedPlan ||
+                    {
+
+                        price:
+                            item.price,
+
+                        duration:
+                            item.duration,
+
+                        currency:
+                            "BDT"
+
+                    };
+
+
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const price =
+                    Number(
+                        plan.price || 0
+                    );
+
+
+                const itemTotal =
+                    price *
+                    quantity;
+
+
+                subtotal +=
+                    itemTotal;
+
+
+                const itemTax =
+                    calculateTax(
+                        itemTotal
+                    );
+
+
+                totalTax +=
+                    itemTax;
+
+
+                const orderItem =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                orderItem.className =
+                    "order-item p-3 border-b border-gray-200";
+
+
+                let productImageHTML =
                     "";
 
 
-                const nameParts =
-                    fullName
-                        .trim()
-                        .split(
-                            /\s+/
-                        );
+                if (item.image) {
 
+                    productImageHTML = `
 
-                if (
-                    nameParts.length > 0 &&
-                    nameParts[0]
-                ) {
+                        <img
+                            src="${escapeHTML(item.image)}"
+                            alt="${escapeHTML(item.name || "Product")}"
+                            class="
+                                w-10
+                                h-10
+                                rounded-lg
+                                mr-3
+                                object-contain
+                            "
+                        >
 
-                    document.getElementById(
-                        "firstName"
-                    ).value =
-                        nameParts[0];
+                    `;
+
+                }
+                else {
+
+                    productImageHTML = `
+
+                        <div
+                            class="
+                                w-10
+                                h-10
+                                rounded-lg
+                                flex
+                                items-center
+                                justify-center
+                                mr-3
+                            "
+                            style="
+                                background-color:
+                                ${escapeHTML(
+                                    item.color || "#eeeeee"
+                                )}20;
+                            "
+                        >
+
+                            <i
+                                class="${escapeHTML(
+                                    item.icon || "fas fa-box"
+                                )}"
+                                style="
+                                    color:
+                                    ${escapeHTML(
+                                        item.color || "#555555"
+                                    )};
+                                "
+                            ></i>
+
+                        </div>
+
+                    `;
 
                 }
 
 
-                if (
-                    nameParts.length > 1
-                ) {
+                orderItem.innerHTML = `
 
-                    document.getElementById(
-                        "lastName"
-                    ).value =
-                        nameParts
-                            .slice(1)
-                            .join(" ");
-
-                }
-
-
-                document.getElementById(
-                    "email"
-                ).value =
-                    data?.email ||
-                    user.email ||
-                    "";
-
-            }
-            catch (error) {
-
-                console.warn(
-                    "Unable to prefill customer information:",
-                    error
-                );
-
-            }
-
-        }
-
-
-
-        // =========================================================
-        // CALCULATE TAX
-        // =========================================================
-
-        function calculateTax(
-            price
-        ) {
-
-            return Number(
-                price || 0
-            ) * 0.0185;
-
-        }
-
-
-
-        // =========================================================
-        // RENDER ORDER SUMMARY
-        // =========================================================
-
-        function renderOrderSummary() {
-
-            orderSummary.innerHTML =
-                "";
-
-            let subtotal =
-                0;
-
-            let totalTax =
-                0;
-
-
-            cart.forEach(
-                (
-                    item
-                ) => {
-
-                    const price =
-                        Number(
-                            item.selectedPlan?.price ||
-                            item.price ||
-                            0
-                        );
-
-
-                    const quantity =
-                        Number(
-                            item.quantity || 1
-                        );
-
-
-                    const itemTotal =
-                        price *
-                        quantity;
-
-
-                    subtotal +=
-                        itemTotal;
-
-
-                    totalTax +=
-                        calculateTax(
-                            itemTotal
-                        );
-
-
-                    const orderItem =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    orderItem.className =
-                        "order-item p-3 border-b border-gray-200";
-
-
-                    const imageHTML =
-                        item.image
-
-                            ? `
-
-                                <img
-                                    src="${escapeHTML(item.image)}"
-                                    alt="${escapeHTML(item.name || "Product")}"
-                                    class="
-                                        w-10
-                                        h-10
-                                        rounded-lg
-                                        mr-3
-                                        object-contain
-                                    "
-                                >
-
-                            `
-
-                            : `
-
-                                <div
-                                    class="
-                                        w-10
-                                        h-10
-                                        rounded-lg
-                                        flex
-                                        items-center
-                                        justify-center
-                                    "
-                                    style="
-                                        background-color:
-                                        ${escapeHTML(item.color || "#3b82f6")}20;
-                                    "
-                                >
-
-                                    <i
-                                        class="${escapeHTML(item.icon || "fas fa-box")}"
-                                        style="
-                                            color:
-                                            ${escapeHTML(item.color || "#3b82f6")};
-                                        "
-                                    ></i>
-
-                                </div>
-
-                            `;
-
-
-                    orderItem.innerHTML = `
+                    <div
+                        class="
+                            flex
+                            justify-between
+                            items-start
+                        "
+                    >
 
                         <div
                             class="
                                 flex
-                                justify-between
                                 items-start
                             "
                         >
 
-                            <div
-                                class="
-                                    flex
-                                    items-start
-                                "
-                            >
+                            ${productImageHTML}
 
-                                ${imageHTML}
+                            <div>
 
-                                <div>
+                                <h4 class="font-medium">
+                                    ${escapeHTML(
+                                        item.name ||
+                                        "Product"
+                                    )}
+                                </h4>
 
-                                    <h4 class="font-medium">
-
-                                        ${escapeHTML(
-                                            item.name ||
-                                            "Subscription"
-                                        )}
-
-                                    </h4>
-
-                                    <p
-                                        class="
-                                            text-sm
-                                            text-gray-500
-                                        "
-                                    >
-
-                                        ${escapeHTML(
-                                            item.selectedPlan?.duration ||
-                                            item.duration ||
-                                            "month"
-                                        )}
-
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="text-right">
-
-                                <span class="font-medium">
-
-                                    ৳${itemTotal.toFixed(2)}
-
-                                </span>
-
-
-                                <p
-                                    class="
-                                        text-sm
-                                        text-gray-500
-                                    "
-                                >
-
-                                    Qty:
-                                    ${quantity}
-
+                                <p class="text-sm text-gray-500">
+                                    ${escapeHTML(
+                                        plan.duration ||
+                                        ""
+                                    )}
                                 </p>
 
                             </div>
@@ -1823,176 +1721,224 @@
                         </div>
 
 
-                        <div
+                        <div class="text-right">
+
+                            <span class="font-medium">
+                                ৳${formatMoney(itemTotal)}
+                            </span>
+
+                            <p class="text-sm text-gray-500">
+                                Qty: ${quantity}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="
+                            flex
+                            justify-between
+                            items-center
+                            mt-2
+                        "
+                    >
+
+                        <button
+                            type="button"
                             class="
+                                remove-btn
                                 flex
-                                justify-between
                                 items-center
-                                mt-2
+                                text-sm
                             "
+                            data-product-name="${escapeHTML(
+                                item.name
+                            )}"
                         >
+
+                            <i class="fas fa-trash mr-1"></i>
+
+                            Remove
+
+                        </button>
+
+
+                        <div class="quantity-control">
 
                             <button
                                 type="button"
-                                class="
-                                    remove-btn
-                                    flex
-                                    items-center
-                                    text-sm
-                                "
-                                onclick="
-                                    removeItem(
-                                        ${JSON.stringify(item.name)}
-                                    )
-                                "
+                                class="quantity-btn decrease-btn"
+                                data-product-name="${escapeHTML(
+                                    item.name
+                                )}"
                             >
 
-                                <i
-                                    class="
-                                        fas
-                                        fa-trash
-                                        mr-1
-                                    "
-                                ></i>
-
-                                Remove
+                                <i class="fas fa-minus"></i>
 
                             </button>
 
 
-                            <div
-                                class="quantity-control"
+                            <input
+                                type="number"
+                                class="quantity-input"
+                                value="${quantity}"
+                                min="1"
+                                readonly
                             >
 
-                                <button
-                                    type="button"
-                                    class="quantity-btn"
-                                    onclick="
-                                        decreaseQuantity(
-                                            ${JSON.stringify(item.name)}
-                                        )
-                                    "
-                                >
 
-                                    <i
-                                        class="fas fa-minus"
-                                    ></i>
+                            <button
+                                type="button"
+                                class="quantity-btn increase-btn"
+                                data-product-name="${escapeHTML(
+                                    item.name
+                                )}"
+                            >
 
-                                </button>
+                                <i class="fas fa-plus"></i>
 
-
-                                <input
-                                    type="number"
-                                    class="
-                                        quantity-input
-                                    "
-                                    value="${quantity}"
-                                    min="1"
-                                    readonly
-                                >
-
-
-                                <button
-                                    type="button"
-                                    class="quantity-btn"
-                                    onclick="
-                                        increaseQuantity(
-                                            ${JSON.stringify(item.name)}
-                                        )
-                                    "
-                                >
-
-                                    <i
-                                        class="fas fa-plus"
-                                    ></i>
-
-                                </button>
-
-                            </div>
+                            </button>
 
                         </div>
 
-                    `;
+                    </div>
+
+                `;
 
 
-                    orderSummary.appendChild(
-                        orderItem
-                    );
+                orderSummary.appendChild(
+                    orderItem
+                );
 
-                }
+            }
+        );
+
+
+        const total =
+            subtotal +
+            totalTax -
+            discountAmount;
+
+
+        subtotalEl.textContent =
+            `৳${formatMoney(subtotal)}`;
+
+
+        taxEl.textContent =
+            `৳${formatMoney(totalTax)}`;
+
+
+        discountEl.textContent =
+            `-৳${formatMoney(discountAmount)}`;
+
+
+        totalEl.textContent =
+            `৳${formatMoney(total)}`;
+
+    }
+
+
+
+    // =========================================================
+    // CART COUNT
+    // =========================================================
+
+    function updateCartCount() {
+
+        const totalItems =
+            cart.reduce(
+                (
+                    sum,
+                    item
+                ) =>
+                    sum +
+                    Number(
+                        item.quantity || 0
+                    ),
+                0
             );
 
 
-            const total =
-                subtotal +
-                totalTax -
-                discountAmount;
+        cartCount.textContent =
+            totalItems;
 
-
-            subtotalEl.textContent =
-                `৳${subtotal.toFixed(2)}`;
-
-
-            taxEl.textContent =
-                `৳${totalTax.toFixed(2)}`;
-
-
-            discountEl.textContent =
-                `-৳${discountAmount.toFixed(2)}`;
-
-
-            totalEl.textContent =
-                `৳${Math.max(total, 0).toFixed(2)}`;
-
-        }
+    }
 
 
 
-        // =========================================================
-        // CART COUNT
-        // =========================================================
+    // =========================================================
+    // REMOVE ITEM
+    // =========================================================
 
-        function updateCartCount() {
+    function removeItem(
+        name
+    ) {
 
-            const totalItems =
-                cart.reduce(
-                    (
-                        sum,
-                        item
-                    ) =>
-                        sum +
-                        Number(
-                            item.quantity || 1
-                        ),
-                    0
-                );
+        cart =
+            cart.filter(
+                item =>
+                    item.name !==
+                    name
+            );
 
 
-            cartCount.textContent =
-                totalItems;
+        localStorage.setItem(
+            "streamHubCart",
+            JSON.stringify(
+                cart
+            )
+        );
 
-        }
+
+        renderOrderSummary();
+
+        updateCartCount();
 
 
-
-        // =========================================================
-        // REMOVE ITEM
-        // =========================================================
-
-        function removeItem(
-            name
+        if (
+            cart.length === 0
         ) {
 
-            cart =
-                cart.filter(
-                    item =>
-                        item.name !== name
-                );
+            window.location.href =
+                "index.html";
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // INCREASE QUANTITY
+    // =========================================================
+
+    function increaseQuantity(
+        name
+    ) {
+
+        const item =
+            cart.find(
+                item =>
+                    item.name ===
+                    name
+            );
+
+
+        if (item) {
+
+            item.quantity =
+                Number(
+                    item.quantity || 1
+                ) + 1;
 
 
             localStorage.setItem(
                 "streamHubCart",
-                JSON.stringify(cart)
+                JSON.stringify(
+                    cart
+                )
             );
 
 
@@ -2000,721 +1946,621 @@
 
             updateCartCount();
 
-
-            if (
-                cart.length === 0
-            ) {
-
-                window.location.href =
-                    "index.html";
-
-            }
-
         }
 
+    }
 
 
-        // =========================================================
-        // INCREASE
-        // =========================================================
 
-        function increaseQuantity(
-            name
+    // =========================================================
+    // DECREASE QUANTITY
+    // =========================================================
+
+    function decreaseQuantity(
+        name
+    ) {
+
+        const item =
+            cart.find(
+                item =>
+                    item.name ===
+                    name
+            );
+
+
+        if (
+            item &&
+            Number(
+                item.quantity || 1
+            ) > 1
         ) {
 
-            const item =
-                cart.find(
-                    item =>
-                        item.name === name
-                );
-
-
-            if (item) {
-
-                item.quantity =
-                    Number(
-                        item.quantity || 1
-                    ) + 1;
-
-
-                localStorage.setItem(
-                    "streamHubCart",
-                    JSON.stringify(cart)
-                );
-
-
-                renderOrderSummary();
-
-                updateCartCount();
-
-            }
-
-        }
-
-
-
-        // =========================================================
-        // DECREASE
-        // =========================================================
-
-        function decreaseQuantity(
-            name
-        ) {
-
-            const item =
-                cart.find(
-                    item =>
-                        item.name === name
-                );
-
-
-            if (
-                item &&
+            item.quantity =
                 Number(
-                    item.quantity || 1
-                ) > 1
-            ) {
-
-                item.quantity =
-                    Number(
-                        item.quantity
-                    ) - 1;
+                    item.quantity
+                ) - 1;
 
 
-                localStorage.setItem(
-                    "streamHubCart",
-                    JSON.stringify(cart)
-                );
+            localStorage.setItem(
+                "streamHubCart",
+                JSON.stringify(
+                    cart
+                )
+            );
 
 
-                renderOrderSummary();
+            renderOrderSummary();
 
-                updateCartCount();
-
-            }
+            updateCartCount();
 
         }
 
+    }
 
 
-        // =========================================================
-        // PROMO
-        // =========================================================
 
-        function togglePromoSection() {
+    // =========================================================
+    // ORDER SUMMARY CLICK EVENTS
+    // =========================================================
 
-            if (
-                promoToggle.checked
-            ) {
+    orderSummary.addEventListener(
+        "click",
+        event => {
 
-                promoCodeSection.classList.remove(
-                    "hidden"
-                );
-
-            }
-            else {
-
-                promoCodeSection.classList.add(
-                    "hidden"
+            const removeButton =
+                event.target.closest(
+                    ".remove-btn"
                 );
 
 
-                discountAmount =
-                    0;
+            if (removeButton) {
 
-
-                appliedPromoCode =
-                    "";
-
-
-                renderOrderSummary();
-
-            }
-
-        }
-
-
-
-        // =========================================================
-        // PROMO CODE
-        // =========================================================
-
-        function applyPromoCode() {
-
-            const code =
-                promoCode.value
-                    .trim()
-                    .toUpperCase();
-
-
-            if (
-                code ===
-                "TAXFREE"
-            ) {
-
-                const taxAmount =
-                    parseFloat(
-                        taxEl.textContent
-                            .replace(
-                                /[^0-9.-]+/g,
-                                ""
-                            )
-                    ) || 0;
-
-
-                discountAmount =
-                    taxAmount;
-
-
-                appliedPromoCode =
-                    "TAXFREE";
-
-
-                showPromoResult(
-                    "Tax Free!",
-                    "success"
+                removeItem(
+                    removeButton.dataset.productName
                 );
 
-
-                renderOrderSummary();
+                return;
 
             }
 
 
-            else if (
-                code ===
-                "JULY36"
-            ) {
-
-                discountAmount =
-                    30;
-
-
-                appliedPromoCode =
-                    "JULY36";
-
-
-                showPromoResult(
-                    "30 Taka Off!",
-                    "success"
+            const increaseButton =
+                event.target.closest(
+                    ".increase-btn"
                 );
 
 
-                renderOrderSummary();
+            if (increaseButton) {
+
+                increaseQuantity(
+                    increaseButton.dataset.productName
+                );
+
+                return;
 
             }
 
 
-            else if (
-                code ===
-                "NEXTLEVEL10"
-            ) {
-
-                const subtotal =
-                    parseFloat(
-                        subtotalEl.textContent
-                            .replace(
-                                /[^0-9.-]+/g,
-                                ""
-                            )
-                    ) || 0;
-
-
-                discountAmount =
-                    Math.round(
-                        subtotal *
-                        0.10
-                    );
-
-
-                appliedPromoCode =
-                    "NEXTLEVEL10";
-
-
-                showPromoResult(
-                    "10% Off!",
-                    "success"
+            const decreaseButton =
+                event.target.closest(
+                    ".decrease-btn"
                 );
 
 
-                renderOrderSummary();
+            if (decreaseButton) {
 
-            }
-
-
-            else {
-
-                discountAmount =
-                    0;
-
-
-                appliedPromoCode =
-                    "";
-
-
-                showPromoResult(
-                    "Invalid",
-                    "error"
+                decreaseQuantity(
+                    decreaseButton.dataset.productName
                 );
 
             }
 
         }
+    );
 
 
 
-        // =========================================================
-        // PROMO RESULT
-        // =========================================================
+    // =========================================================
+    // PROMO
+    // =========================================================
 
-        function showPromoResult(
-            text,
-            type
+    function togglePromoSection() {
+
+        if (
+            promoToggle.checked
         ) {
 
-            applyPromo.textContent =
-                text;
+            promoCodeSection.classList.remove(
+                "hidden"
+            );
+
+        }
+        else {
+
+            promoCodeSection.classList.add(
+                "hidden"
+            );
 
 
-            if (
-                type ===
-                "success"
-            ) {
+            discountAmount =
+                0;
 
-                applyPromo.classList.add(
-                    "bg-green-500",
-                    "text-white"
+
+            appliedPromoCode =
+                "";
+
+
+            renderOrderSummary();
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // APPLY PROMO
+    // =========================================================
+
+    function applyPromoCode() {
+
+        const code =
+            promoCode.value
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            code ===
+            "TAXFREE"
+        ) {
+
+            const taxAmount =
+                parseFloat(
+                    taxEl.textContent
+                        .replace(
+                            /[^0-9.-]+/g,
+                            ""
+                        )
+                ) || 0;
+
+
+            discountAmount =
+                taxAmount;
+
+
+            appliedPromoCode =
+                "TAXFREE";
+
+
+            renderOrderSummary();
+
+
+            showPromoResult(
+                "Tax Free!",
+                true
+            );
+
+        }
+        else if (
+            code ===
+            "JULY36"
+        ) {
+
+            discountAmount =
+                30;
+
+
+            appliedPromoCode =
+                "JULY36";
+
+
+            renderOrderSummary();
+
+
+            showPromoResult(
+                "30 Taka Off!",
+                true
+            );
+
+        }
+        else if (
+            code ===
+            "NEXTLEVEL10"
+        ) {
+
+            const subtotal =
+                parseFloat(
+                    subtotalEl.textContent
+                        .replace(
+                            /[^0-9.-]+/g,
+                            ""
+                        )
+                ) || 0;
+
+
+            discountAmount =
+                Math.round(
+                    subtotal * 0.1
                 );
 
 
-                applyPromo.classList.remove(
-                    "bg-gray-200",
-                    "text-gray-700",
-                    "bg-red-500"
-                );
-
-            }
-            else {
-
-                applyPromo.classList.add(
-                    "bg-red-500",
-                    "text-white"
-                );
+            appliedPromoCode =
+                "NEXTLEVEL10";
 
 
-                applyPromo.classList.remove(
-                    "bg-gray-200",
-                    "text-gray-700",
-                    "bg-green-500"
-                );
-
-            }
+            renderOrderSummary();
 
 
-            setTimeout(
-                () => {
+            showPromoResult(
+                "10% Off!",
+                true
+            );
 
-                    applyPromo.textContent =
-                        "Apply";
+        }
+        else {
+
+            showPromoResult(
+                "Invalid",
+                false
+            );
+
+        }
+
+    }
 
 
-                    applyPromo.classList.remove(
-                        "bg-green-500",
-                        "text-white",
-                        "bg-red-500"
-                    );
+
+    function showPromoResult(
+        text,
+        success
+    ) {
+
+        applyPromo.textContent =
+            text;
 
 
-                    applyPromo.classList.add(
-                        "bg-gray-200",
-                        "text-gray-700"
-                    );
+        if (success) {
 
-                },
-                2000
+            applyPromo.classList.add(
+                "bg-green-500",
+                "text-white"
+            );
+
+            applyPromo.classList.remove(
+                "bg-gray-200",
+                "text-gray-700",
+                "bg-red-500"
+            );
+
+        }
+        else {
+
+            applyPromo.classList.add(
+                "bg-red-500",
+                "text-white"
+            );
+
+            applyPromo.classList.remove(
+                "bg-gray-200",
+                "text-gray-700",
+                "bg-green-500"
             );
 
         }
 
 
+        setTimeout(
+            () => {
 
-        // =========================================================
-        // SELECT PAYMENT METHOD
-        // =========================================================
-
-        function selectPaymentMethod(
-            method,
-            element
-        ) {
-
-            selectedPaymentMethod =
-                method;
+                applyPromo.textContent =
+                    "Apply";
 
 
-            document
-                .querySelectorAll(
-                    ".payment-method"
-                )
-                .forEach(
-                    paymentElement => {
-
-                        paymentElement.classList.remove(
-                            "selected"
-                        );
-
-                    }
+                applyPromo.classList.remove(
+                    "bg-green-500",
+                    "text-white",
+                    "bg-red-500"
                 );
 
 
-            if (element) {
-
-                element.classList.add(
-                    "selected"
+                applyPromo.classList.add(
+                    "bg-gray-200",
+                    "text-gray-700"
                 );
 
-            }
+            },
+            2000
+        );
+
+    }
 
 
-            updatePaymentUI();
 
-        }
+    // =========================================================
+    // GET CART TOTALS
+    // =========================================================
 
+    function getCartTotals() {
 
-
-        // =========================================================
-        // UPDATE PAYMENT UI
-        // =========================================================
-
-        function updatePaymentUI() {
-
-            if (
-                selectedPaymentMethod ===
-                "bank_transfer"
-            ) {
-
-                paymentDetails.innerHTML = `
-
-                    <h3 class="font-semibold mb-2">
-
-                        Bank Transfer Instructions
-
-                    </h3>
+        let subtotal =
+            0;
 
 
-                    <p
-                        class="
-                            text-sm
-                            text-gray-600
-                            mb-3
-                        "
-                    >
-
-                        Please transfer the exact order
-                        amount to the following bank account.
-
-                    </p>
+        let tax =
+            0;
 
 
-                    <div
-                        class="
-                            text-sm
-                            text-gray-700
-                            space-y-1
-                        "
-                    >
+        cart.forEach(
+            item => {
 
-                        <p>
-                            <strong>Bank:</strong>
-                            City Bank
-                        </p>
-
-                        <p>
-                            <strong>Account Number:</strong>
-                            2302841525001
-                        </p>
-
-                        <p>
-                            <strong>Account Holder:</strong>
-                            Nur Mohammad
-                        </p>
-
-                        <p>
-                            <strong>Branch:</strong>
-                            Naogaon
-                        </p>
-
-                    </div>
-
-                `;
+                const plan =
+                    item.selectedPlan ||
+                    {
+                        price:
+                            item.price
+                    };
 
 
-                senderNumberLabel.textContent =
-                    "Sender Name";
-
-
-                paymentSenderNumber.type =
-                    "text";
-
-
-                paymentSenderNumber.placeholder =
-                    "Enter sender/account name";
-
-
-                senderHelp.textContent =
-                    "Enter the name of the person/account used to make the bank transfer.";
-
-
-                paymentReference.placeholder =
-                    "Enter bank transaction/reference number";
-
-            }
-
-
-            else {
-
-                const accountNumber =
-                    PAYMENT_ACCOUNTS[
-                        selectedPaymentMethod
-                    ] || "";
-
-
-                const methodName =
-                    getPaymentMethodName(
-                        selectedPaymentMethod
+                const itemTotal =
+                    Number(
+                        plan.price || 0
+                    ) *
+                    Number(
+                        item.quantity || 1
                     );
 
 
-                paymentDetails.innerHTML = `
-
-                    <h3 class="font-semibold mb-2">
-
-                        ${escapeHTML(
-                            methodName
-                        )} Payment Instructions
-
-                    </h3>
+                subtotal +=
+                    itemTotal;
 
 
-                    <p
-                        class="
-                            text-sm
-                            text-gray-600
-                            mb-3
-                        "
-                    >
-
-                        Send the exact order amount to:
-
-                    </p>
-
-
-                    <div
-                        class="
-                            flex
-                            items-center
-                            justify-between
-                            bg-white
-                            border
-                            border-gray-200
-                            rounded-lg
-                            px-4
-                            py-3
-                        "
-                    >
-
-                        <strong>
-
-                            ${escapeHTML(
-                                accountNumber
-                            )}
-
-                        </strong>
-
-
-                        <button
-                            type="button"
-                            class="
-                                text-blue-500
-                                hover:text-blue-700
-                            "
-                            onclick="
-                                copyPaymentNumber()
-                            "
-                        >
-
-                            <i
-                                class="fas fa-copy"
-                            ></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <p
-                        class="
-                            text-xs
-                            text-gray-500
-                            mt-3
-                        "
-                    >
-
-                        After sending the payment,
-                        enter your sender number and
-                        transaction ID below.
-
-                    </p>
-
-                `;
-
-
-                senderNumberLabel.textContent =
-                    "Payment Sender Number";
-
-
-                paymentSenderNumber.type =
-                    "tel";
-
-
-                paymentSenderNumber.placeholder =
-                    "01XXXXXXXXX";
-
-
-                senderHelp.textContent =
-                    "Enter the mobile number you used to send the payment.";
-
-
-                paymentReference.placeholder =
-                    "Enter transaction ID";
+                tax +=
+                    calculateTax(
+                        itemTotal
+                    );
 
             }
+        );
+
+
+        const total =
+            subtotal +
+            tax -
+            discountAmount;
+
+
+        return {
+
+            subtotal:
+                Number(
+                    subtotal.toFixed(2)
+                ),
+
+            tax:
+                Number(
+                    tax.toFixed(2)
+                ),
+
+            discount:
+                Number(
+                    discountAmount.toFixed(2)
+                ),
+
+            total:
+                Number(
+                    total.toFixed(2)
+                )
+
+        };
+
+    }
+
+
+
+    // =========================================================
+    // VALIDATE FORM
+    // =========================================================
+
+    function validateCheckout() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please log in before placing your order."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return false;
 
         }
 
 
-
-        // =========================================================
-        // PAYMENT METHOD NAME
-        // =========================================================
-
-        function getPaymentMethodName(
-            method
+        if (
+            !checkoutForm.checkValidity()
         ) {
 
-            switch (method) {
+            checkoutForm.reportValidity();
 
-                case "bkash":
-                    return "bKash";
-
-                case "nagad":
-                    return "Nagad";
-
-                case "rocket":
-                    return "Rocket";
-
-                case "upay":
-                    return "Upay";
-
-                case "bank_transfer":
-                    return "Bank Transfer";
-
-                default:
-                    return "Payment";
-
-            }
+            return false;
 
         }
 
 
-
-        // =========================================================
-        // COPY PAYMENT NUMBER
-        // =========================================================
-
-        async function copyPaymentNumber() {
-
-            const number =
-                PAYMENT_ACCOUNTS[
-                    selectedPaymentMethod
-                ];
+        const senderNumber =
+            paymentSenderNumber.value
+                .trim();
 
 
-            if (!number) {
-
-                return;
-
-            }
+        const reference =
+            paymentReference.value
+                .trim();
 
 
-            try {
+        if (!senderNumber) {
 
-                await navigator.clipboard.writeText(
-                    number
-                );
+            alert(
+                "Please enter the payment sender number."
+            );
 
+            paymentSenderNumber.focus();
 
-                alert(
-                    "Payment number copied."
-                );
-
-            }
-            catch (error) {
-
-                console.error(
-                    "Copy error:",
-                    error
-                );
-
-            }
+            return false;
 
         }
 
 
+        if (!reference) {
 
-        // =========================================================
-        // PLACE ORDER
-        // =========================================================
+            alert(
+                "Please enter the transaction ID / payment reference."
+            );
 
-        async function placeOrder() {
+            paymentReference.focus();
 
-            // ---------------------------------------------
-            // Prevent duplicate submissions
-            // ---------------------------------------------
+            return false;
 
-            if (
-                placeOrderBtn.disabled
-            ) {
+        }
+
+
+        if (
+            cart.length === 0
+        ) {
+
+            alert(
+                "Your cart is empty."
+            );
+
+            window.location.href =
+                "index.html";
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+
+    // =========================================================
+    // GET CUSTOMER NAME
+    // =========================================================
+
+    function getCustomerName() {
+
+        const firstName =
+            document.getElementById(
+                "firstName"
+            ).value.trim();
+
+
+        const lastName =
+            document.getElementById(
+                "lastName"
+            ).value.trim();
+
+
+        return (
+            `${firstName} ${lastName}`
+        ).trim();
+
+    }
+
+
+
+    // =========================================================
+    // CREATE ORDER
+    // =========================================================
+
+    async function placeOrder() {
+
+        if (
+            isSubmitting
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !validateCheckout()
+        ) {
+
+            return;
+
+        }
+
+
+        isSubmitting =
+            true;
+
+
+        const originalButtonHTML =
+            placeOrderBtn.innerHTML;
+
+
+        placeOrderBtn.disabled =
+            true;
+
+
+        placeOrderBtn.innerHTML = `
+
+            <div class="spinner mx-auto"></div>
+
+        `;
+
+
+        try {
+
+            // -------------------------------------------------
+            // Confirm current authenticated user
+            // -------------------------------------------------
+
+            const {
+                data: authData,
+                error: authError
+            } =
+                await supabaseClient.auth.getUser();
+
+
+            if (authError) {
+
+                throw authError;
+
+            }
+
+
+            const user =
+                authData?.user;
+
+
+            if (!user) {
+
+                window.location.href =
+                    "login.html";
 
                 return;
 
             }
 
 
-            // ---------------------------------------------
-            // Validate form
-            // ---------------------------------------------
-
-            if (
-                !checkoutForm.checkValidity()
-            ) {
-
-                checkoutForm.reportValidity();
-
-                return;
-
-            }
+            currentUser =
+                user;
 
 
-            const firstName =
-                document.getElementById(
-                    "firstName"
-                ).value.trim();
 
+            // -------------------------------------------------
+            // Read billing information
+            // -------------------------------------------------
 
-            const lastName =
-                document.getElementById(
-                    "lastName"
-                ).value.trim();
+            const customerName =
+                getCustomerName();
 
 
             const email =
@@ -2742,379 +2588,663 @@
 
 
             const senderNumber =
-                paymentSenderNumber
-                    .value
+                paymentSenderNumber.value
                     .trim();
 
 
             const reference =
-                paymentReference
-                    .value
+                paymentReference.value
                     .trim();
 
 
+
+            // -------------------------------------------------
+            // Calculate totals
+            // -------------------------------------------------
+
+            const totals =
+                getCartTotals();
+
+
+
+            // -------------------------------------------------
+            // Exact orders columns
+            //
+            // Fields intentionally left NULL:
+            //
+            // admin_note
+            // subscription_email
+            // subscription_password
+            // delivery_note
+            // subscription_start
+            // subscription_expiry
+            //
+            // These are filled later by your admin/delivery
+            // process.
+            // -------------------------------------------------
+
+            const orderPayload = {
+
+                user_id:
+                    user.id,
+
+                customer_name:
+                    customerName,
+
+                email:
+                    email,
+
+                phone:
+                    phone,
+
+                address:
+                    address,
+
+                notes:
+                    notes || null,
+
+                subtotal:
+                    totals.subtotal,
+
+                tax:
+                    totals.tax,
+
+                discount:
+                    totals.discount,
+
+                total:
+                    totals.total,
+
+                promo_code:
+                    appliedPromoCode || null,
+
+                payment_method:
+                    selectedPaymentMethod,
+
+                payment_status:
+                    "pending",
+
+                payment_reference:
+                    reference,
+
+                admin_note:
+                    null,
+
+                subscription_email:
+                    null,
+
+                subscription_password:
+                    null,
+
+                delivery_note:
+                    null,
+
+                subscription_start:
+                    null,
+
+                subscription_expiry:
+                    null,
+
+                payment_sender_number:
+                    senderNumber
+
+            };
+
+
+
+            console.log(
+                "Creating order:",
+                orderPayload
+            );
+
+
+
+            // -------------------------------------------------
+            // INSERT ORDER
+            // -------------------------------------------------
+
+            const {
+                data: createdOrder,
+                error: orderError
+            } =
+                await supabaseClient
+                    .from("orders")
+                    .insert(
+                        orderPayload
+                    )
+                    .select(
+                        "id"
+                    )
+                    .single();
+
+
+            if (orderError) {
+
+                console.error(
+                    "Supabase orders INSERT error:",
+                    orderError
+                );
+
+                throw orderError;
+
+            }
+
+
             if (
-                !senderNumber ||
-                !reference
+                !createdOrder ||
+                !createdOrder.id
             ) {
 
-                alert(
-                    "Please enter the payment sender information and transaction/reference ID."
+                throw new Error(
+                    "The order was created but no order ID was returned."
                 );
 
-                return;
-
             }
 
 
-            // ---------------------------------------------
-            // Get authenticated user
-            // ---------------------------------------------
 
-            let user;
+            // -------------------------------------------------
+            // CREATE ORDER ITEMS
+            //
+            // Exact order_items columns:
+            //
+            // id
+            // order_id
+            // product_name
+            // product_image
+            // plan_duration
+            // price
+            // quantity
+            // created_at
+            //
+            // id and created_at are omitted so Supabase
+            // can use their database defaults.
+            // -------------------------------------------------
+
+            const orderItems =
+                cart.map(
+                    item => {
+
+                        const plan =
+                            item.selectedPlan ||
+                            {
+
+                                price:
+                                    item.price,
+
+                                duration:
+                                    item.duration
+
+                            };
 
 
-            try {
+                        return {
 
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient.auth.getUser();
+                            order_id:
+                                createdOrder.id,
+
+                            product_name:
+                                item.name ||
+                                "Product",
+
+                            product_image:
+                                item.image ||
+                                null,
+
+                            plan_duration:
+                                plan.duration ||
+                                null,
+
+                            price:
+                                Number(
+                                    plan.price || 0
+                                ),
+
+                            quantity:
+                                Number(
+                                    item.quantity || 1
+                                )
+
+                        };
+
+                    }
+                );
 
 
-                if (error) {
 
-                    throw error;
-
-                }
-
-
-                user =
-                    data?.user;
+            console.log(
+                "Creating order items:",
+                orderItems
+            );
 
 
-                if (!user) {
 
-                    window.location.replace(
-                        "login.html"
+            // -------------------------------------------------
+            // INSERT ORDER ITEMS
+            // -------------------------------------------------
+
+            const {
+                error: itemsError
+            } =
+                await supabaseClient
+                    .from("order_items")
+                    .insert(
+                        orderItems
                     );
 
-                    return;
 
-                }
-
-            }
-            catch (error) {
+            if (itemsError) {
 
                 console.error(
-                    "User authentication error:",
-                    error
+                    "Supabase order_items INSERT error:",
+                    itemsError
                 );
-
-
-                alert(
-                    "Your login session has expired. Please log in again."
-                );
-
-
-                window.location.replace(
-                    "login.html"
-                );
-
-
-                return;
-
-            }
-
-
-
-            // ---------------------------------------------
-            // Calculate totals
-            // ---------------------------------------------
-
-            const subtotal =
-                parseFloat(
-                    subtotalEl.textContent
-                        .replace(
-                            /[^0-9.-]+/g,
-                            ""
-                        )
-                ) || 0;
-
-
-            const tax =
-                parseFloat(
-                    taxEl.textContent
-                        .replace(
-                            /[^0-9.-]+/g,
-                            ""
-                        )
-                ) || 0;
-
-
-            const total =
-                parseFloat(
-                    totalEl.textContent
-                        .replace(
-                            /[^0-9.-]+/g,
-                            ""
-                        )
-                ) || 0;
-
-
-
-            // ---------------------------------------------
-            // Customer name
-            // ---------------------------------------------
-
-            const customerName =
-                `${firstName} ${lastName}`.trim();
-
-
-
-            // ---------------------------------------------
-            // Disable button
-            // ---------------------------------------------
-
-            placeOrderBtn.disabled =
-                true;
-
-
-            placeOrderBtn.innerHTML = `
-
-                <div
-                    class="
-                        spinner
-                        mx-auto
-                    "
-                ></div>
-
-            `;
-
-
-
-            try {
-
-                // -----------------------------------------
-                // Insert ONLY customer-order fields.
-                //
-                // Subscription fields are intentionally
-                // left NULL until admin delivers the order.
-                // -----------------------------------------
-
-                const orderPayload = {
-
-                    user_id:
-                        user.id,
-
-                    customer_name:
-                        customerName,
-
-                    email:
-                        email,
-
-                    phone:
-                        phone,
-
-                    address:
-                        address,
-
-                    notes:
-                        notes || null,
-
-                    subtotal:
-                        subtotal,
-
-                    tax:
-                        tax,
-
-                    discount:
-                        discountAmount,
-
-                    total:
-                        total,
-
-                    promo_code:
-                        appliedPromoCode || null,
-
-                    payment_method:
-                        selectedPaymentMethod,
-
-                    payment_sender_number:
-                        senderNumber,
-
-                    payment_reference:
-                        reference,
-
-                    payment_status:
-                        "pending"
-
-                };
-
-
-                console.log(
-                    "Creating order:",
-                    orderPayload
-                );
-
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-
-                        .from(
-                            "orders"
-                        )
-
-                        .insert(
-                            orderPayload
-                        )
-
-                        .select(
-                            "id"
-                        )
-
-                        .single();
-
-
-                if (error) {
-
-                    console.error(
-                        "Supabase order insert error:",
-                        error
-                    );
-
-
-                    throw error;
-
-                }
-
-
-                if (!data?.id) {
-
-                    throw new Error(
-                        "Order was not created."
-                    );
-
-                }
-
-
-                // -----------------------------------------
-                // Clear cart only after successful insert
-                // -----------------------------------------
-
-                localStorage.removeItem(
-                    "streamHubCart"
-                );
-
-
-                // -----------------------------------------
-                // Success
-                // -----------------------------------------
-
-                successMessage.textContent =
-                    `Order #${String(data.id).substring(0, 8)}
-                     has been received. Your payment is
-                     pending verification.`;
-
-
-                successModal.classList.remove(
-                    "hidden"
-                );
-
-
-                // -----------------------------------------
-                // Restore button
-                // -----------------------------------------
-
-                placeOrderBtn.disabled =
-                    false;
-
-
-                placeOrderBtn.innerHTML = `
-
-                    <i
-                        class="fas fa-lock mr-2"
-                    ></i>
-
-                    Place Order
-
-                `;
-
-            }
-            catch (error) {
-
-                console.error(
-                    "Order creation failed:",
-                    error
-                );
-
-
-                placeOrderBtn.disabled =
-                    false;
-
-
-                placeOrderBtn.innerHTML = `
-
-                    <i
-                        class="fas fa-lock mr-2"
-                    ></i>
-
-                    Place Order
-
-                `;
 
 
                 /*
-                 * Customer sees a clean message.
-                 * Detailed Supabase error is available
-                 * in the browser console.
+                 * We do not silently pretend everything
+                 * worked. The order exists, but its items
+                 * failed, so notify the customer.
+                 *
+                 * The order remains in Supabase and can
+                 * be identified from the browser console.
                  */
 
-                alert(
-                    "Unable to place your order. Please try again."
+                throw itemsError;
+
+            }
+
+
+
+            // -------------------------------------------------
+            // SUCCESS
+            // -------------------------------------------------
+
+            localStorage.removeItem(
+                "streamHubCart"
+            );
+
+
+            cart = [];
+
+
+            updateCartCount();
+
+
+            successMessage.textContent =
+                `Order #${String(
+                    createdOrder.id
+                ).substring(
+                    0,
+                    8
+                )} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+
+
+            successModal.classList.remove(
+                "hidden"
+            );
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "ORDER CREATION FAILED:",
+                error
+            );
+
+
+            let message =
+                "Unable to place your order. Please try again.";
+
+
+            /*
+             * Give useful browser-console information
+             * without exposing database errors directly
+             * to customers.
+             */
+
+            if (
+                error?.message
+            ) {
+
+                console.error(
+                    "Supabase message:",
+                    error.message
                 );
 
             }
 
+
+            if (
+                error?.code
+            ) {
+
+                console.error(
+                    "Supabase code:",
+                    error.code
+                );
+
+            }
+
+
+            alert(
+                message
+            );
+
+
+            placeOrderBtn.innerHTML =
+                originalButtonHTML;
+
+
+            placeOrderBtn.disabled =
+                false;
+
+
+            isSubmitting =
+                false;
+
         }
 
+    }
 
 
-        // =========================================================
-        // AUTH STATE MONITOR
-        // =========================================================
 
-        supabaseClient.auth.onAuthStateChange(
-            (
-                event,
-                session
-            ) => {
+    // =========================================================
+    // PAYMENT METHOD CLICK EVENTS
+    // =========================================================
 
-                if (
-                    event ===
-                    "SIGNED_OUT"
-                ) {
+    document
+        .querySelectorAll(
+            ".payment-method"
+        )
+        .forEach(
+            element => {
 
-                    window.location.replace(
-                        "login.html"
-                    );
+                element.addEventListener(
+                    "click",
+                    () => {
 
-                }
+                        selectPaymentMethod(
+                            element.dataset.method
+                        );
+
+                    }
+                );
 
             }
         );
 
 
 
-        // =========================================================
-        // START
-        // =========================================================
+    // =========================================================
+    // PROMO EVENTS
+    // =========================================================
 
-        init();
+    promoToggle.addEventListener(
+        "change",
+        togglePromoSection
+    );
+
+
+    applyPromo.addEventListener(
+        "click",
+        applyPromoCode
+    );
+
+
+
+    // =========================================================
+    // PLACE ORDER EVENT
+    // =========================================================
+
+    placeOrderBtn.addEventListener(
+        "click",
+        placeOrder
+    );
+
+
+
+    // =========================================================
+    // INITIALIZE
+    // =========================================================
+
+    async function init() {
+
+        try {
+
+            // ---------------------------------------------
+            // AUTH CHECK
+            // ---------------------------------------------
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.getUser();
+
+
+            if (error) {
+
+                console.error(
+                    "Authentication error:",
+                    error
+                );
+
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            currentUser =
+                data?.user;
+
+
+            if (!currentUser) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+
+            // ---------------------------------------------
+            // LOAD CART
+            // ---------------------------------------------
+
+            try {
+
+                cart =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "streamHubCart"
+                        )
+                    ) || [];
+
+            }
+            catch (cartError) {
+
+                console.error(
+                    "Cart parsing error:",
+                    cartError
+                );
+
+
+                cart = [];
+
+            }
+
+
+
+            // ---------------------------------------------
+            // STANDARDIZE CART
+            // ---------------------------------------------
+
+            cart =
+                cart.map(
+                    item => {
+
+                        if (
+                            item.selectedPlan
+                        ) {
+
+                            return item;
+
+                        }
+
+
+                        return {
+
+                            ...item,
+
+                            selectedPlan: {
+
+                                price:
+                                    item.price,
+
+                                duration:
+                                    item.duration,
+
+                                currency:
+                                    "BDT"
+
+                            }
+
+                        };
+
+                    }
+                );
+
+
+
+            // ---------------------------------------------
+            // EMPTY CART
+            // ---------------------------------------------
+
+            if (
+                cart.length === 0
+            ) {
+
+                window.location.href =
+                    "index.html";
+
+                return;
+
+            }
+
+
+
+            // ---------------------------------------------
+            // PREFILL EMAIL
+            // ---------------------------------------------
+
+            const emailInput =
+                document.getElementById(
+                    "email"
+                );
+
+
+            if (
+                emailInput &&
+                currentUser.email
+            ) {
+
+                emailInput.value =
+                    currentUser.email;
+
+            }
+
+
+
+            // ---------------------------------------------
+            // RENDER
+            // ---------------------------------------------
+
+            renderOrderSummary();
+
+            updateCartCount();
+
+            renderPaymentDetails();
+
+
+
+            // ---------------------------------------------
+            // SCROLL BUTTON EFFECT
+            // ---------------------------------------------
+
+            window.addEventListener(
+                "scroll",
+                () => {
+
+                    /*
+                     * No WhatsApp floating button anymore.
+                     * Kept intentionally empty so the existing
+                     * page has no floating WhatsApp behavior.
+                     */
+
+                }
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Checkout initialization error:",
+                error
+            );
+
+
+            alert(
+                "Unable to load checkout. Please log in again."
+            );
+
+
+            window.location.href =
+                "login.html";
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // AUTH STATE MONITOR
+    // =========================================================
+
+    supabaseClient.auth.onAuthStateChange(
+        (
+            event,
+            session
+        ) => {
+
+            if (
+                event ===
+                "SIGNED_OUT"
+            ) {
+
+                window.location.href =
+                    "login.html";
+
+            }
+
+        }
+    );
+
+
+
+    // =========================================================
+    // START
+    // =========================================================
+
+    init();
 
     </script>
 
