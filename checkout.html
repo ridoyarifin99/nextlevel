@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Checkout - Next Level Estore</title>
+    <title>Checkout - Next Level Subs</title>
 
     <link
         rel="stylesheet"
@@ -22,1055 +22,1174 @@
         href="./src/all.min.css"
     >
 
+    <style>
+
+        .payment-method {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .payment-method:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+        }
+
+        .payment-method.selected {
+            border-color: #3b82f6 !important;
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.12);
+        }
+
+        .payment-method.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .payment-number {
+            user-select: all;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-button {
+            cursor: pointer;
+        }
+
+        .payment-warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.35);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.55);
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .remove-btn {
+            color: #ef4444;
+        }
+
+        .remove-btn:hover {
+            color: #dc2626;
+        }
+
+    </style>
+
 </head>
 
 
-<body>
+<body class="bg-gray-50">
 
 
-    <!-- =========================================================
-         HEADER
-    ========================================================== -->
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-
-        <div
-            class="container mx-auto px-4 py-3 flex items-center justify-between"
-        >
-
-            <div class="flex items-center space-x-2">
-
-                <a
-                    href="index.html"
-                    class="flex items-center space-x-2"
-                >
-
-                    <img
-                        src="/images/next_level.png"
-                        alt="Next Level Estore Logo"
-                        class="logo-image"
-                    >
-
-                    <div class="logo-text-container">
-
-                        <div
-                            class="logo-text-item"
-                            style="
-                                color: var(--primary-color);
-                                font-size: 1rem;
-                            "
-                        >
-                            Trusted
-                        </div>
-
-                        <div
-                            class="logo-text-item"
-                            style="
-                                color: var(--primary-color);
-                                font-size: 1rem;
-                            "
-                        >
-                            Cheap
-                        </div>
-
-                        <div
-                            class="logo-text-item"
-                            style="
-                                color: var(--primary-color);
-                                font-size: 1rem;
-                            "
-                        >
-                            Secure
-                        </div>
-
-                        <div
-                            class="logo-text-item"
-                            style="
-                                color: var(--primary-color);
-                                font-size: 1rem;
-                            "
-                        >
-                            24/7 Support
-                        </div>
-
-                    </div>
-
-                </a>
-
-            </div>
-
-
-            <div class="flex items-center space-x-4">
-
-                <a
-                    href="index.html"
-                    class="text-gray-600 hover:text-blue-500 transition-colors"
-                >
-
-                    <i class="fas fa-arrow-left mr-2"></i>
-
-                    Continue Shopping
-
-                </a>
-
-
-                <div class="relative">
-
-                    <a
-                        href="checkout.html"
-                        class="relative p-2 text-gray-700 hover:text-blue-500 transition-colors"
-                    >
-
-                        <i
-                            class="fa-solid fa-basket-shopping-simple text-2xl"
-                        ></i>
-
-                        <span
-                            id="cartCount"
-                            class="
-                                absolute
-                                -top-1
-                                -right-1
-                                bg-red-500
-                                text-white
-                                text-xs
-                                rounded-full
-                                h-5
-                                w-5
-                                flex
-                                items-center
-                                justify-center
-                            "
-                        >
-                            0
-                        </span>
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
-
-    <!-- =========================================================
-         CHECKOUT PROGRESS
-    ========================================================== -->
-
-    <section class="py-6 bg-white shadow-sm">
-
-        <div class="container mx-auto px-4">
-
-            <div class="flex items-center justify-center">
-
-                <div class="flex items-center">
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-full
-                            bg-blue-500
-                            flex
-                            items-center
-                            justify-center
-                            text-white
-                            font-bold
-                        "
-                    >
-                        1
-                    </div>
-
-                    <span class="ml-2 font-medium">
-                        Cart
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="w-16 h-1 bg-gray-300 mx-2"
-                ></div>
-
-
-                <div class="flex items-center">
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-full
-                            bg-blue-500
-                            flex
-                            items-center
-                            justify-center
-                            text-white
-                            font-bold
-                        "
-                    >
-                        2
-                    </div>
-
-                    <span class="ml-2 font-medium">
-                        Details
-                    </span>
-
-                </div>
-
-
-                <div
-                    class="w-16 h-1 bg-gray-300 mx-2"
-                ></div>
-
-
-                <div class="flex items-center">
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-full
-                            bg-gray-300
-                            flex
-                            items-center
-                            justify-center
-                            text-gray-500
-                            font-bold
-                        "
-                    >
-                        3
-                    </div>
-
-                    <span
-                        class="ml-2 font-medium text-gray-500"
-                    >
-                        Complete
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =========================================================
-         MAIN CONTENT
-    ========================================================== -->
-
-    <main class="py-12">
-
-        <div class="container mx-auto px-4">
-
-            <div
-                class="
-                    grid
-                    grid-cols-1
-                    lg:grid-cols-3
-                    gap-8
-                "
-            >
-
-
-                <!-- =================================================
-                     CHECKOUT FORM
-                ================================================== -->
-
-                <div class="lg:col-span-2">
-
-                    <h2 class="text-2xl font-bold mb-6">
-                        Billing Information
-                    </h2>
-
-
-                    <form
-                        id="checkoutForm"
-                        class="
-                            bg-white
-                            rounded-xl
-                            shadow-md
-                            p-6
-                            mb-8
-                        "
-                    >
-
-                        <div
-                            class="
-                                grid
-                                grid-cols-1
-                                md:grid-cols-2
-                                gap-6
-                            "
-                        >
-
-                            <div class="form-group">
-
-                                <label
-                                    class="form-label"
-                                    for="firstName"
-                                >
-                                    First Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    class="form-input"
-                                    placeholder="John"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label
-                                    class="form-label"
-                                    for="lastName"
-                                >
-                                    Last Name
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    class="form-input"
-                                    placeholder="Doe"
-                                    required
-                                >
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="email"
-                            >
-                                Email Address
-                            </label>
-
-                            <input
-                                type="email"
-                                id="email"
-                                class="form-input"
-                                placeholder="john@example.com"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="phone"
-                            >
-                                Phone Number
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="phone"
-                                class="form-input"
-                                placeholder="+880 1XXX XXXXXX"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="address"
-                            >
-                                Address
-                            </label>
-
-                            <textarea
-                                id="address"
-                                class="form-input"
-                                rows="3"
-                                placeholder="123 Main Street, City, Country"
-                                required
-                            ></textarea>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label
-                                class="form-label"
-                                for="notes"
-                            >
-                                Order Notes (Optional)
-                            </label>
-
-                            <textarea
-                                id="notes"
-                                class="form-input"
-                                rows="2"
-                                placeholder="Any special instructions or notes for your order"
-                            ></textarea>
-
-                        </div>
-
-                    </form>
-
-
-
-                    <!-- =================================================
-                         PAYMENT METHOD
-                    ================================================== -->
-
-                    <h2 class="text-2xl font-bold mb-6">
-                        Payment Method
-                    </h2>
-
-
-                    <div class="bg-white rounded-xl shadow-md p-6">
-
-                        <div
-                            class="
-                                grid
-                                grid-cols-1
-                                md:grid-cols-2
-                                gap-4
-                            "
-                        >
-
-
-                            <!-- BKASH -->
-
-                            <div
-                                class="
-                                    payment-method
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                    selected
-                                "
-                                data-method="bkash"
-                            >
-
-                                <i
-                                    class="
-                                        fas
-                                        fa-mobile-screen-button
-                                        text-3xl
-                                        text-pink-500
-                                        mb-2
-                                    "
-                                ></i>
-
-                                <h3 class="font-semibold">
-                                    bKash
-                                </h3>
-
-                                <p class="text-sm text-gray-600">
-                                    Send Money
-                                </p>
-
-                            </div>
-
-
-
-                            <!-- NAGAD -->
-
-                            <div
-                                class="
-                                    payment-method
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                "
-                                data-method="nagad"
-                            >
-
-                                <i
-                                    class="
-                                        fas
-                                        fa-wallet
-                                        text-3xl
-                                        text-orange-500
-                                        mb-2
-                                    "
-                                ></i>
-
-                                <h3 class="font-semibold">
-                                    Nagad
-                                </h3>
-
-                                <p class="text-sm text-gray-600">
-                                    Send Money
-                                </p>
-
-                            </div>
-
-
-
-                            <!-- ROCKET -->
-
-                            <div
-                                class="
-                                    payment-method
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                "
-                                data-method="rocket"
-                            >
-
-                                <i
-                                    class="
-                                        fas
-                                        fa-mobile-screen-button
-                                        text-3xl
-                                        text-purple-600
-                                        mb-2
-                                    "
-                                ></i>
-
-                                <h3 class="font-semibold">
-                                    Rocket
-                                </h3>
-
-                                <p class="text-sm text-gray-600">
-                                    Send Money
-                                </p>
-
-                            </div>
-
-
-
-                            <!-- UPAY -->
-
-                            <div
-                                class="
-                                    payment-method
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                "
-                                data-method="upay"
-                            >
-
-                                <i
-                                    class="
-                                        fas
-                                        fa-money-bill-transfer
-                                        text-3xl
-                                        text-green-600
-                                        mb-2
-                                    "
-                                ></i>
-
-                                <h3 class="font-semibold">
-                                    Upay
-                                </h3>
-
-                                <p class="text-sm text-gray-600">
-                                    Send Money
-                                </p>
-
-                            </div>
-
-
-
-                            <!-- BANK TRANSFER -->
-
-                            <div
-                                class="
-                                    payment-method
-                                    p-4
-                                    rounded-lg
-                                    border
-                                    border-gray-200
-                                    text-center
-                                    md:col-span-2
-                                "
-                                data-method="bank_transfer"
-                            >
-
-                                <i
-                                    class="
-                                        fas
-                                        fa-university
-                                        text-3xl
-                                        text-blue-500
-                                        mb-2
-                                    "
-                                ></i>
-
-                                <h3 class="font-semibold">
-                                    Bank Transfer
-                                </h3>
-
-                                <p class="text-sm text-gray-600">
-                                    Direct bank transfer
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- PAYMENT DETAILS -->
-
-                        <div
-                            id="paymentDetails"
-                            class="
-                                mt-6
-                                p-4
-                                bg-gray-50
-                                rounded-lg
-                            "
-                        ></div>
-
-
-
-                        <!-- PAYMENT PROOF -->
-
-                        <div
-                            id="paymentProofSection"
-                            class="mt-6"
-                        >
-
-                            <div class="form-group">
-
-                                <label
-                                    class="form-label"
-                                    for="paymentSenderNumber"
-                                >
-                                    Payment Sender Number
-                                    <span class="text-red-500">
-                                        *
-                                    </span>
-                                </label>
-
-                                <input
-                                    type="tel"
-                                    id="paymentSenderNumber"
-                                    class="form-input"
-                                    placeholder="01XXXXXXXXX"
-                                    required
-                                >
-
-                                <p class="text-sm text-gray-500 mt-1">
-                                    Enter the mobile number or bank account
-                                    you used to send the payment.
-                                </p>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label
-                                    class="form-label"
-                                    for="paymentReference"
-                                >
-                                    Transaction ID / Payment Reference
-                                    <span class="text-red-500">
-                                        *
-                                    </span>
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="paymentReference"
-                                    class="form-input"
-                                    placeholder="Enter transaction ID or payment reference"
-                                    required
-                                >
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- =================================================
-                     ORDER SUMMARY
-                ================================================== -->
-
-                <div class="lg:col-span-1">
-
-                    <div
-                        class="
-                            bg-white
-                            rounded-xl
-                            shadow-md
-                            p-6
-                            sticky
-                            top-24
-                        "
-                    >
-
-                        <h2 class="text-2xl font-bold mb-4">
-                            Order Summary
-                        </h2>
-
-
-                        <div
-                            id="orderSummary"
-                            class="space-y-4 mb-6"
-                        ></div>
-
-
-                        <div
-                            class="
-                                border-t
-                                border-gray-200
-                                pt-4
-                            "
-                        >
-
-                            <div
-                                class="flex justify-between mb-2"
-                            >
-
-                                <span>
-                                    Subtotal
-                                </span>
-
-                                <span id="subtotal">
-                                    ৳0.00
-                                </span>
-
-                            </div>
-
-
-                            <div
-                                class="flex justify-between mb-2"
-                            >
-
-                                <span>
-                                    Tax (1.85%)
-                                </span>
-
-                                <span id="tax">
-                                    ৳0.00
-                                </span>
-
-                            </div>
-
-
-                            <div
-                                class="flex justify-between mb-4"
-                            >
-
-                                <span>
-                                    Discount
-                                </span>
-
-                                <span
-                                    id="discount"
-                                    class="text-green-500"
-                                >
-                                    -৳0.00
-                                </span>
-
-                            </div>
-
-
-                            <div
-                                class="
-                                    flex
-                                    justify-between
-                                    font-bold
-                                    text-lg
-                                "
-                            >
-
-                                <span>
-                                    Total
-                                </span>
-
-                                <span id="total">
-                                    ৳0.00
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- PROMO -->
-
-                        <div class="mt-6">
-
-                            <div
-                                class="
-                                    flex
-                                    items-center
-                                    justify-between
-                                    mb-2
-                                "
-                            >
-
-                                <label
-                                    class="text-sm font-medium"
-                                >
-                                    Apply Promo Code
-                                </label>
-
-                                <label class="toggle-switch">
-
-                                    <input
-                                        type="checkbox"
-                                        id="promoToggle"
-                                    >
-
-                                    <span class="slider"></span>
-
-                                </label>
-
-                            </div>
-
-
-                            <div
-                                id="promoCodeSection"
-                                class="hidden mt-2"
-                            >
-
-                                <div class="flex">
-
-                                    <input
-                                        type="text"
-                                        id="promoCode"
-                                        placeholder="Enter promo code"
-                                        class="
-                                            flex-1
-                                            px-4
-                                            py-2
-                                            border
-                                            border-gray-300
-                                            rounded-l-lg
-                                            focus:outline-none
-                                            focus:ring-2
-                                            focus:ring-blue-300
-                                        "
-                                    >
-
-                                    <button
-                                        id="applyPromo"
-                                        type="button"
-                                        class="
-                                            px-4
-                                            py-2
-                                            bg-gray-200
-                                            text-gray-700
-                                            rounded-r-lg
-                                            hover:bg-gray-300
-                                            transition-colors
-                                        "
-                                    >
-                                        Apply
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- PLACE ORDER -->
-
-                        <button
-                            id="placeOrderBtn"
-                            type="button"
-                            class="
-                                w-full
-                                mt-6
-                                py-3
-                                rounded-lg
-                                font-semibold
-                                text-white
-                                btn-primary
-                            "
-                        >
-
-                            <i class="fas fa-lock mr-2"></i>
-
-                            Place Order
-
-                        </button>
-
-
-                        <div
-                            class="
-                                mt-4
-                                text-center
-                                text-sm
-                                text-gray-500
-                            "
-                        >
-
-                            <i class="fas fa-lock mr-1"></i>
-
-                            Secure Checkout
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-
-
-    <!-- =========================================================
-         SUCCESS MODAL
-    ========================================================== -->
+<header class="bg-white shadow-md sticky top-0 z-50">
 
     <div
-        id="successModal"
-        class="fixed inset-0 z-50 hidden"
+        class="
+            container
+            mx-auto
+            px-4
+            py-3
+            flex
+            items-center
+            justify-between
+        "
     >
 
-        <div
-            class="
-                modal-backdrop
-                absolute
-                inset-0
-            "
-        ></div>
-
-
-        <div
-            class="
-                flex
-                items-center
-                justify-center
-                min-h-screen
-                p-4
-            "
+        <a
+            href="index.html"
+            class="flex items-center space-x-2"
         >
 
-            <div
+            <img
+                src="/images/next_level.png"
+                alt="Next Level Subs Logo"
+                class="logo-image"
+            >
+
+            <div class="logo-text-container">
+
+                <div
+                    class="logo-text-item"
+                    style="
+                        color: var(--primary-color);
+                        font-size: 1rem;
+                    "
+                >
+                    Trusted
+                </div>
+
+                <div
+                    class="logo-text-item"
+                    style="
+                        color: var(--primary-color);
+                        font-size: 1rem;
+                    "
+                >
+                    Cheap
+                </div>
+
+                <div
+                    class="logo-text-item"
+                    style="
+                        color: var(--primary-color);
+                        font-size: 1rem;
+                    "
+                >
+                    Secure
+                </div>
+
+                <div
+                    class="logo-text-item"
+                    style="
+                        color: var(--primary-color);
+                        font-size: 1rem;
+                    "
+                >
+                    24/7 Support
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <div class="flex items-center space-x-4">
+
+            <a
+                href="index.html"
                 class="
-                    bg-white
-                    rounded-xl
-                    shadow-2xl
-                    w-full
-                    max-w-md
-                    p-8
-                    text-center
-                    animate-fade-in
+                    text-gray-600
+                    hover:text-blue-500
+                    transition-colors
                 "
             >
 
-                <div
+                <i class="fas fa-arrow-left mr-2"></i>
+
+                Continue Shopping
+
+            </a>
+
+
+            <div class="relative">
+
+                <a
+                    href="checkout.html"
                     class="
-                        w-16
-                        h-16
-                        bg-green-100
-                        rounded-full
-                        flex
-                        items-center
-                        justify-center
-                        mx-auto
-                        mb-4
+                        relative
+                        p-2
+                        text-gray-700
+                        hover:text-blue-500
+                        transition-colors
                     "
                 >
 
                     <i
                         class="
-                            fas
-                            fa-check
-                            text-3xl
-                            text-green-500
-                            animate-checkmark
+                            fa-solid
+                            fa-basket-shopping-simple
+                            text-2xl
                         "
                     ></i>
 
+                    <span
+                        id="cartCount"
+                        class="
+                            absolute
+                            -top-1
+                            -right-1
+                            bg-red-500
+                            text-white
+                            text-xs
+                            rounded-full
+                            h-5
+                            w-5
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        0
+                    </span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     CHECKOUT PROGRESS
+========================================================= -->
+
+<section class="py-6 bg-white shadow-sm">
+
+    <div class="container mx-auto px-4">
+
+        <div class="flex items-center justify-center">
+
+            <div class="flex items-center">
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-blue-500
+                        flex
+                        items-center
+                        justify-center
+                        text-white
+                        font-bold
+                    "
+                >
+                    1
                 </div>
 
+                <span class="ml-2 font-medium">
+                    Cart
+                </span>
 
-                <h2 class="text-2xl font-bold mb-2">
-                    Order Submitted Successfully!
+            </div>
+
+
+            <div class="w-16 h-1 bg-blue-500 mx-2"></div>
+
+
+            <div class="flex items-center">
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-blue-500
+                        flex
+                        items-center
+                        justify-center
+                        text-white
+                        font-bold
+                    "
+                >
+                    2
+                </div>
+
+                <span class="ml-2 font-medium">
+                    Payment
+                </span>
+
+            </div>
+
+
+            <div class="w-16 h-1 bg-gray-300 mx-2"></div>
+
+
+            <div class="flex items-center">
+
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-gray-300
+                        flex
+                        items-center
+                        justify-center
+                        text-gray-500
+                        font-bold
+                    "
+                >
+                    3
+                </div>
+
+                <span class="ml-2 font-medium text-gray-500">
+                    Complete
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="py-10">
+
+    <div class="container mx-auto px-4">
+
+        <div
+            class="
+                grid
+                grid-cols-1
+                lg:grid-cols-3
+                gap-8
+            "
+        >
+
+
+            <!-- =================================================
+                 LEFT
+            ================================================== -->
+
+            <div class="lg:col-span-2">
+
+
+                <!-- =================================================
+                     BILLING
+                ================================================== -->
+
+                <h2 class="text-2xl font-bold mb-5">
+                    Customer Information
                 </h2>
 
 
-                <p
-                    id="successMessage"
-                    class="text-gray-600 mb-6"
+                <form
+                    id="checkoutForm"
+                    class="
+                        bg-white
+                        rounded-xl
+                        shadow-md
+                        p-6
+                        mb-8
+                    "
                 >
-                    Your payment information has been submitted.
-                    Your order is now pending payment verification.
-                </p>
+
+                    <div
+                        class="
+                            grid
+                            grid-cols-1
+                            md:grid-cols-2
+                            gap-5
+                        "
+                    >
+
+                        <div>
+
+                            <label
+                                for="firstName"
+                                class="form-label"
+                            >
+                                First Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="firstName"
+                                class="form-input"
+                                placeholder="John"
+                                autocomplete="given-name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div>
+
+                            <label
+                                for="lastName"
+                                class="form-label"
+                            >
+                                Last Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="lastName"
+                                class="form-input"
+                                placeholder="Doe"
+                                autocomplete="family-name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="email"
+                            class="form-label"
+                        >
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            class="form-input"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="phone"
+                            class="form-label"
+                        >
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            class="form-input"
+                            placeholder="01XXXXXXXXX"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="address"
+                            class="form-label"
+                        >
+                            Address
+                        </label>
+
+                        <textarea
+                            id="address"
+                            class="form-input"
+                            rows="3"
+                            placeholder="Your address"
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label
+                            for="notes"
+                            class="form-label"
+                        >
+                            Order Notes
+                            <span class="text-gray-400">
+                                (Optional)
+                            </span>
+                        </label>
+
+                        <textarea
+                            id="notes"
+                            class="form-input"
+                            rows="2"
+                            placeholder="Any special instructions..."
+                        ></textarea>
+
+                    </div>
+
+                </form>
+
+
+
+                <!-- =================================================
+                     PAYMENT
+                ================================================== -->
+
+                <h2 class="text-2xl font-bold mb-5">
+                    Choose Payment Method
+                </h2>
 
 
                 <div
-                    class="flex justify-center space-x-4"
+                    class="
+                        bg-white
+                        rounded-xl
+                        shadow-md
+                        p-6
+                        mb-8
+                    "
                 >
 
-                    <a
-                        href="dashboard.html"
+
+                    <!-- PAYMENT METHODS -->
+
+                    <div
                         class="
-                            px-6
-                            py-2
+                            grid
+                            grid-cols-1
+                            sm:grid-cols-2
+                            gap-4
+                        "
+                    >
+
+
+                        <!-- BKASH -->
+
+                        <div
+                            class="
+                                payment-method
+                                p-5
+                                rounded-xl
+                                border
+                                border-gray-200
+                                text-center
+                                selected
+                            "
+                            data-method="bkash"
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-mobile-screen-button
+                                    text-3xl
+                                    text-pink-500
+                                    mb-2
+                                "
+                            ></i>
+
+                            <h3 class="font-bold text-lg">
+                                bKash
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Send Money
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- NAGAD -->
+
+                        <div
+                            class="
+                                payment-method
+                                p-5
+                                rounded-xl
+                                border
+                                border-gray-200
+                                text-center
+                            "
+                            data-method="nagad"
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-wallet
+                                    text-3xl
+                                    text-orange-500
+                                    mb-2
+                                "
+                            ></i>
+
+                            <h3 class="font-bold text-lg">
+                                Nagad
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Send Money
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- ROCKET -->
+
+                        <div
+                            class="
+                                payment-method
+                                p-5
+                                rounded-xl
+                                border
+                                border-gray-200
+                                text-center
+                            "
+                            data-method="rocket"
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-mobile-screen-button
+                                    text-3xl
+                                    text-purple-600
+                                    mb-2
+                                "
+                            ></i>
+
+                            <h3 class="font-bold text-lg">
+                                Rocket
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Send Money
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- UPAY -->
+
+                        <div
+                            class="
+                                payment-method
+                                p-5
+                                rounded-xl
+                                border
+                                border-gray-200
+                                text-center
+                            "
+                            data-method="upay"
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-money-bill-transfer
+                                    text-3xl
+                                    text-green-600
+                                    mb-2
+                                "
+                            ></i>
+
+                            <h3 class="font-bold text-lg">
+                                Upay
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                Send Money
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- BANK -->
+
+                        <div
+                            class="
+                                payment-method
+                                p-5
+                                rounded-xl
+                                border
+                                border-gray-200
+                                text-center
+                                sm:col-span-2
+                            "
+                            data-method="bank_transfer"
+                        >
+
+                            <i
+                                class="
+                                    fas
+                                    fa-university
+                                    text-3xl
+                                    text-blue-500
+                                    mb-2
+                                "
+                            ></i>
+
+                            <h3 class="font-bold text-lg">
+                                Bank Transfer
+                            </h3>
+
+                            <p class="text-sm text-gray-500">
+                                City Bank
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PAYMENT INSTRUCTIONS
+                    ================================================== -->
+
+                    <div
+                        id="paymentDetails"
+                        class="
+                            mt-6
+                            p-5
+                            bg-gray-50
+                            rounded-xl
+                            border
+                            border-gray-200
+                        "
+                    ></div>
+
+
+
+                    <!-- =================================================
+                         PAYMENT WARNING
+                    ================================================== -->
+
+                    <div
+                        class="
+                            payment-warning
+                            bg-yellow-50
+                            p-4
+                            rounded-lg
+                            mt-5
+                        "
+                    >
+
+                        <div class="flex items-start">
+
+                            <i
+                                class="
+                                    fas
+                                    fa-triangle-exclamation
+                                    text-yellow-600
+                                    mt-1
+                                    mr-3
+                                "
+                            ></i>
+
+                            <div>
+
+                                <p
+                                    class="
+                                        font-semibold
+                                        text-yellow-800
+                                    "
+                                >
+                                    Important
+                                </p>
+
+                                <p
+                                    class="
+                                        text-sm
+                                        text-yellow-700
+                                        mt-1
+                                    "
+                                >
+                                    Send the exact total amount shown
+                                    in the order summary. After payment,
+                                    enter your sender number and
+                                    transaction ID correctly.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PAYMENT PROOF
+                    ================================================== -->
+
+                    <div class="mt-6">
+
+                        <h3 class="text-lg font-bold mb-4">
+                            Payment Verification Details
+                        </h3>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="paymentSenderNumber"
+                                class="form-label"
+                            >
+
+                                Payment Sender Number
+
+                                <span class="text-red-500">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="paymentSenderNumber"
+                                class="form-input"
+                                placeholder="01XXXXXXXXX"
+                                required
+                            >
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                    mt-1
+                                "
+                            >
+                                Enter the mobile number or bank account
+                                from which you sent the payment.
+                            </p>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                for="paymentReference"
+                                class="form-label"
+                            >
+
+                                Transaction ID / Reference
+
+                                <span class="text-red-500">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="paymentReference"
+                                class="form-input"
+                                placeholder="Example: 8A7B6C5D"
+                                required
+                            >
+
+                            <p
+                                class="
+                                    text-xs
+                                    text-gray-500
+                                    mt-1
+                                "
+                            >
+                                Enter the transaction ID exactly as
+                                shown by your payment provider.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RIGHT — ORDER SUMMARY
+            ================================================== -->
+
+            <div class="lg:col-span-1">
+
+                <div
+                    class="
+                        bg-white
+                        rounded-xl
+                        shadow-md
+                        p-6
+                        sticky
+                        top-24
+                    "
+                >
+
+                    <h2 class="text-2xl font-bold mb-5">
+                        Order Summary
+                    </h2>
+
+
+                    <div
+                        id="orderSummary"
+                        class="space-y-3 mb-6"
+                    ></div>
+
+
+                    <div
+                        class="
+                            border-t
+                            border-gray-200
+                            pt-4
+                        "
+                    >
+
+                        <div class="flex justify-between mb-2">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <span id="subtotal">
+                                ৳0.00
+                            </span>
+
+                        </div>
+
+
+                        <div class="flex justify-between mb-2">
+
+                            <span>
+                                Tax (1.85%)
+                            </span>
+
+                            <span id="tax">
+                                ৳0.00
+                            </span>
+
+                        </div>
+
+
+                        <div class="flex justify-between mb-4">
+
+                            <span>
+                                Discount
+                            </span>
+
+                            <span
+                                id="discount"
+                                class="text-green-600"
+                            >
+                                -৳0.00
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="
+                                flex
+                                justify-between
+                                font-bold
+                                text-xl
+                                border-t
+                                pt-4
+                            "
+                        >
+
+                            <span>
+                                Total
+                            </span>
+
+                            <span id="total">
+                                ৳0.00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PROMO
+                    ================================================== -->
+
+                    <div class="mt-6">
+
+                        <div
+                            class="
+                                flex
+                                items-center
+                                justify-between
+                                mb-2
+                            "
+                        >
+
+                            <label class="text-sm font-medium">
+                                Promo Code
+                            </label>
+
+                            <label class="toggle-switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="promoToggle"
+                                >
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div
+                            id="promoCodeSection"
+                            class="hidden mt-2"
+                        >
+
+                            <div class="flex">
+
+                                <input
+                                    type="text"
+                                    id="promoCode"
+                                    placeholder="Enter promo code"
+                                    class="
+                                        flex-1
+                                        px-4
+                                        py-2
+                                        border
+                                        border-gray-300
+                                        rounded-l-lg
+                                        focus:outline-none
+                                        focus:ring-2
+                                        focus:ring-blue-300
+                                    "
+                                >
+
+                                <button
+                                    id="applyPromo"
+                                    type="button"
+                                    class="
+                                        px-4
+                                        py-2
+                                        bg-gray-200
+                                        text-gray-700
+                                        rounded-r-lg
+                                    "
+                                >
+                                    Apply
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         PLACE ORDER
+                    ================================================== -->
+
+                    <button
+                        id="placeOrderBtn"
+                        type="button"
+                        class="
+                            w-full
+                            mt-6
+                            py-3
                             rounded-lg
                             font-semibold
                             text-white
                             btn-primary
+                            flex
+                            items-center
+                            justify-center
                         "
                     >
-                        Go to Dashboard
-                    </a>
 
-                    <a
-                        href="index.html"
+                        <i class="fas fa-lock mr-2"></i>
+
+                        Submit Order
+
+                    </button>
+
+
+                    <div
                         class="
-                            px-6
-                            py-2
-                            border
-                            border-gray-300
-                            rounded-lg
-                            font-medium
-                            hover:bg-gray-100
-                            transition-colors
+                            mt-4
+                            text-center
+                            text-sm
+                            text-gray-500
                         "
                     >
-                        Continue Shopping
-                    </a>
+
+                        <i class="fas fa-shield-halved mr-1"></i>
+
+                        Secure Checkout
+
+                    </div>
+
+
+                    <div
+                        class="
+                            mt-4
+                            text-center
+                            text-xs
+                            text-gray-400
+                        "
+                    >
+
+                        Payment is manually verified before
+                        subscription delivery.
+
+                    </div>
 
                 </div>
 
@@ -1080,616 +1199,1006 @@
 
     </div>
 
-
-
-    <!-- =========================================================
-         SUPABASE
-    ========================================================== -->
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
-
-
-    <script
-        src="./js/supabase-config.js"
-    ></script>
-
-
-    <script
-        src="./js/nextlevel-auth.js"
-    ></script>
+</main>
 
 
 
-    <!-- =========================================================
-         CHECKOUT JAVASCRIPT
-    ========================================================== -->
+<!-- =========================================================
+     SUCCESS MODAL
+========================================================= -->
 
-    <script>
+<div
+    id="successModal"
+    class="fixed inset-0 z-50 hidden"
+>
 
-    "use strict";
-
-
-    // =========================================================
-    // STATE
-    // =========================================================
-
-    let cart = [];
-
-    let selectedPaymentMethod = "bkash";
-
-    let discountAmount = 0;
-
-    let appliedPromoCode = "";
-
-    let currentUser = null;
-
-    let isSubmitting = false;
+    <div
+        class="
+            modal-backdrop
+            absolute
+            inset-0
+        "
+    ></div>
 
 
+    <div
+        class="
+            flex
+            items-center
+            justify-center
+            min-h-screen
+            p-4
+        "
+    >
 
-    // =========================================================
-    // PAYMENT ACCOUNTS
-    // =========================================================
+        <div
+            class="
+                bg-white
+                rounded-xl
+                shadow-2xl
+                w-full
+                max-w-md
+                p-8
+                text-center
+                animate-fade-in
+            "
+        >
 
-    const PAYMENT_ACCOUNTS = {
+            <div
+                class="
+                    w-16
+                    h-16
+                    bg-green-100
+                    rounded-full
+                    flex
+                    items-center
+                    justify-center
+                    mx-auto
+                    mb-4
+                "
+            >
 
-        bkash: "01912261564",
+                <i
+                    class="
+                        fas
+                        fa-check
+                        text-3xl
+                        text-green-500
+                    "
+                ></i>
 
-        nagad: "01644490566",
+            </div>
 
-        /*
-         * Rocket number supplied by you.
-         * Keeping it exactly as provided.
-         */
-        rocket: "016444905664",
 
-        upay: "01590093965",
+            <h2 class="text-2xl font-bold mb-2">
+                Order Submitted!
+            </h2>
 
-        bank_transfer: {
 
-            bankName: "City Bank",
+            <p
+                id="successMessage"
+                class="text-gray-600 mb-6"
+            >
+                Your order has been submitted and is awaiting
+                payment verification.
+            </p>
 
-            accountNumber: "2302841525001",
 
-            accountHolder: "Nur Mohammad",
+            <div class="flex justify-center gap-3">
 
-            branch: "Naogaon"
+                <a
+                    href="dashboard.html"
+                    class="
+                        px-6
+                        py-2
+                        rounded-lg
+                        font-semibold
+                        text-white
+                        btn-primary
+                    "
+                >
+                    Go to Dashboard
+                </a>
 
-        }
+
+                <a
+                    href="index.html"
+                    class="
+                        px-6
+                        py-2
+                        border
+                        border-gray-300
+                        rounded-lg
+                        font-medium
+                        hover:bg-gray-100
+                    "
+                >
+                    Continue Shopping
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     SUPABASE
+========================================================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+<script
+    src="./js/supabase-config.js"
+></script>
+
+<script
+    src="./js/nextlevel-auth.js"
+></script>
+
+
+
+<script>
+
+"use strict";
+
+
+// ============================================================
+// STATE
+// ============================================================
+
+let cart = [];
+
+let selectedPaymentMethod = "bkash";
+
+let discountAmount = 0;
+
+let appliedPromoCode = "";
+
+let currentUser = null;
+
+let isSubmitting = false;
+
+
+// ============================================================
+// PAYMENT ACCOUNTS
+//
+// IMPORTANT:
+// These are public payment receiving details.
+// Do NOT put Supabase service_role keys here.
+// ============================================================
+
+const PAYMENT_ACCOUNTS = {
+
+    bkash: {
+        number: "01912261564",
+        type: "Personal",
+        instruction: "Use bKash Send Money."
+    },
+
+    nagad: {
+        number: "01644490566",
+        type: "Personal",
+        instruction: "Use Nagad Send Money."
+    },
+
+    rocket: {
+        number: "016444905664",
+        type: "Personal",
+        instruction: "Use Rocket Send Money."
+    },
+
+    upay: {
+        number: "01590093965",
+        type: "Personal",
+        instruction: "Use Upay Send Money."
+    },
+
+    bank_transfer: {
+
+        bankName: "City Bank",
+
+        accountNumber: "2302841525001",
+
+        accountHolder: "Nur Mohammad",
+
+        branch: "Naogaon"
+
+    }
+
+};
+
+
+// ============================================================
+// DOM
+// ============================================================
+
+const checkoutForm =
+    document.getElementById("checkoutForm");
+
+const orderSummary =
+    document.getElementById("orderSummary");
+
+const subtotalEl =
+    document.getElementById("subtotal");
+
+const taxEl =
+    document.getElementById("tax");
+
+const discountEl =
+    document.getElementById("discount");
+
+const totalEl =
+    document.getElementById("total");
+
+const promoToggle =
+    document.getElementById("promoToggle");
+
+const promoCodeSection =
+    document.getElementById("promoCodeSection");
+
+const promoCodeInput =
+    document.getElementById("promoCode");
+
+const applyPromo =
+    document.getElementById("applyPromo");
+
+const placeOrderBtn =
+    document.getElementById("placeOrderBtn");
+
+const paymentDetails =
+    document.getElementById("paymentDetails");
+
+const paymentSenderNumber =
+    document.getElementById("paymentSenderNumber");
+
+const paymentReference =
+    document.getElementById("paymentReference");
+
+const successModal =
+    document.getElementById("successModal");
+
+const successMessage =
+    document.getElementById("successMessage");
+
+const cartCount =
+    document.getElementById("cartCount");
+
+
+// ============================================================
+// HTML ESCAPE
+// ============================================================
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ============================================================
+// MONEY
+// ============================================================
+
+function formatMoney(amount) {
+
+    return Number(amount || 0)
+        .toFixed(2);
+
+}
+
+
+// ============================================================
+// ORDER NUMBER
+// ============================================================
+
+function generateOrderNumber() {
+
+    const now = new Date();
+
+    const year =
+        now.getFullYear();
+
+    const month =
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+    const random =
+        Math.floor(
+            100000 +
+            Math.random() * 900000
+        );
+
+    return `NLS-${year}${month}${day}-${random}`;
+
+}
+
+
+// ============================================================
+// PAYMENT LABEL
+// ============================================================
+
+function getPaymentMethodLabel(method) {
+
+    const labels = {
+
+        bkash: "bKash",
+
+        nagad: "Nagad",
+
+        rocket: "Rocket",
+
+        upay: "Upay",
+
+        bank_transfer: "Bank Transfer"
 
     };
 
+    return labels[method] || "Payment";
+
+}
 
 
-    // =========================================================
-    // DOM
-    // =========================================================
+// ============================================================
+// COPY PAYMENT NUMBER
+// ============================================================
 
-    const checkoutForm =
-        document.getElementById("checkoutForm");
+async function copyPaymentNumber() {
 
-    const orderSummary =
-        document.getElementById("orderSummary");
+    const account =
+        PAYMENT_ACCOUNTS[
+            selectedPaymentMethod
+        ];
 
-    const subtotalEl =
-        document.getElementById("subtotal");
+    if (
+        !account ||
+        !account.number
+    ) {
 
-    const taxEl =
-        document.getElementById("tax");
-
-    const discountEl =
-        document.getElementById("discount");
-
-    const totalEl =
-        document.getElementById("total");
-
-    const promoToggle =
-        document.getElementById("promoToggle");
-
-    const promoCodeSection =
-        document.getElementById("promoCodeSection");
-
-    const promoCode =
-        document.getElementById("promoCode");
-
-    const applyPromo =
-        document.getElementById("applyPromo");
-
-    const placeOrderBtn =
-        document.getElementById("placeOrderBtn");
-
-    const paymentDetails =
-        document.getElementById("paymentDetails");
-
-    const paymentSenderNumber =
-        document.getElementById("paymentSenderNumber");
-
-    const paymentReference =
-        document.getElementById("paymentReference");
-
-    const successModal =
-        document.getElementById("successModal");
-
-    const successMessage =
-        document.getElementById("successMessage");
-
-    const cartCount =
-        document.getElementById("cartCount");
-
-
-
-    // =========================================================
-    // ESCAPE HTML
-    // =========================================================
-
-    function escapeHTML(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return;
 
     }
 
+    try {
 
+        await navigator.clipboard.writeText(
+            account.number
+        );
 
-    // =========================================================
-    // FORMAT MONEY
-    // =========================================================
-
-    function formatMoney(amount) {
-
-        return Number(
-            amount || 0
-        ).toFixed(2);
-
-    }
-
-
-
-    // =========================================================
-    // GENERATE ORDER NUMBER
-    //
-    // REQUIRED because your orders.order_number
-    // column is NOT NULL.
-    //
-    // Example:
-    // NLS-20260825-483921
-    // =========================================================
-
-    function generateOrderNumber() {
-
-        const now = new Date();
-
-        const year =
-            now.getFullYear();
-
-        const month =
-            String(
-                now.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                now.getDate()
-            ).padStart(2, "0");
-
-        const random =
-            Math.floor(
-                100000 +
-                Math.random() * 900000
+        const button =
+            document.getElementById(
+                "copyPaymentNumber"
             );
 
-        return `NLS-${year}${month}${day}-${random}`;
+        if (button) {
 
-    }
+            button.innerHTML =
+                '<i class="fas fa-check mr-1"></i> Copied';
 
+            setTimeout(() => {
 
+                button.innerHTML =
+                    '<i class="fas fa-copy mr-1"></i> Copy';
 
-    // =========================================================
-    // GET PAYMENT LABEL
-    // =========================================================
-
-    function getPaymentMethodLabel(method) {
-
-        switch (method) {
-
-            case "bkash":
-                return "bKash";
-
-            case "nagad":
-                return "Nagad";
-
-            case "rocket":
-                return "Rocket";
-
-            case "upay":
-                return "Upay";
-
-            case "bank_transfer":
-                return "Bank Transfer";
-
-            default:
-                return "Unknown";
+            }, 1500);
 
         }
 
     }
+    catch (error) {
+
+        console.error(
+            "Copy failed:",
+            error
+        );
+
+    }
+
+}
 
 
+// ============================================================
+// PAYMENT DETAILS
+// ============================================================
 
-    // =========================================================
-    // PAYMENT DETAILS
-    // =========================================================
+function renderPaymentDetails() {
 
-    function renderPaymentDetails() {
+    if (
+        selectedPaymentMethod ===
+        "bank_transfer"
+    ) {
 
-        if (
-            selectedPaymentMethod ===
-            "bank_transfer"
-        ) {
+        const bank =
+            PAYMENT_ACCOUNTS.bank_transfer;
 
-            paymentDetails.innerHTML = `
+        paymentDetails.innerHTML = `
 
-                <h3 class="font-semibold mb-3">
-                    Bank Transfer Instructions
-                </h3>
+            <div class="flex items-center mb-4">
 
-                <div class="text-sm text-gray-600 space-y-1">
+                <div
+                    class="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-blue-100
+                        flex
+                        items-center
+                        justify-center
+                        mr-3
+                    "
+                >
 
-                    <p>
-                        <strong>Bank:</strong>
-                        ${escapeHTML(
-                            PAYMENT_ACCOUNTS
-                                .bank_transfer
-                                .bankName
-                        )}
-                    </p>
+                    <i
+                        class="
+                            fas
+                            fa-university
+                            text-blue-600
+                        "
+                    ></i>
 
-                    <p>
-                        <strong>Account Name:</strong>
-                        ${escapeHTML(
-                            PAYMENT_ACCOUNTS
-                                .bank_transfer
-                                .accountHolder
-                        )}
-                    </p>
+                </div>
 
-                    <p>
-                        <strong>Account Number:</strong>
-                        ${escapeHTML(
-                            PAYMENT_ACCOUNTS
-                                .bank_transfer
-                                .accountNumber
-                        )}
-                    </p>
+                <div>
 
-                    <p>
-                        <strong>Branch:</strong>
-                        ${escapeHTML(
-                            PAYMENT_ACCOUNTS
-                                .bank_transfer
-                                .branch
-                        )}
+                    <h3 class="font-bold">
+                        Bank Transfer
+                    </h3>
+
+                    <p class="text-xs text-gray-500">
+                        Transfer to the account below
                     </p>
 
                 </div>
 
+            </div>
+
+
+            <div class="space-y-3 text-sm">
+
+                <div class="flex justify-between">
+
+                    <span class="text-gray-500">
+                        Bank
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(bank.bankName)}
+                    </strong>
+
+                </div>
+
+
+                <div class="flex justify-between">
+
+                    <span class="text-gray-500">
+                        Account Name
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(bank.accountHolder)}
+                    </strong>
+
+                </div>
+
+
+                <div class="flex justify-between">
+
+                    <span class="text-gray-500">
+                        Account Number
+                    </span>
+
+                    <strong class="payment-number">
+                        ${escapeHTML(bank.accountNumber)}
+                    </strong>
+
+                </div>
+
+
+                <div class="flex justify-between">
+
+                    <span class="text-gray-500">
+                        Branch
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(bank.branch)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        `;
+
+        paymentSenderNumber.placeholder =
+            "Your bank account number";
+
+        paymentReference.placeholder =
+            "Bank transaction/reference number";
+
+        return;
+
+    }
+
+
+    const account =
+        PAYMENT_ACCOUNTS[
+            selectedPaymentMethod
+        ];
+
+    const label =
+        getPaymentMethodLabel(
+            selectedPaymentMethod
+        );
+
+
+    paymentDetails.innerHTML = `
+
+        <div class="flex items-center mb-4">
+
+            <div
+                class="
+                    w-10
+                    h-10
+                    rounded-full
+                    bg-blue-100
+                    flex
+                    items-center
+                    justify-center
+                    mr-3
+                "
+            >
+
+                <i
+                    class="
+                        fas
+                        fa-mobile-screen-button
+                        text-blue-600
+                    "
+                ></i>
+
+            </div>
+
+
+            <div>
+
+                <h3 class="font-bold">
+                    ${escapeHTML(label)} Payment
+                </h3>
+
+                <p class="text-xs text-gray-500">
+                    ${escapeHTML(account.type)}
+                    account
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <p class="text-sm text-gray-600 mb-3">
+
+            Send the exact total amount shown below
+            using ${escapeHTML(label)}.
+
+        </p>
+
+
+        <div
+            class="
+                flex
+                items-center
+                justify-between
+                bg-white
+                border
+                border-gray-200
+                rounded-lg
+                p-4
+            "
+        >
+
+            <div>
+
+                <p class="text-xs text-gray-500 mb-1">
+                    ${escapeHTML(label)} Number
+                </p>
+
+                <strong
+                    class="
+                        payment-number
+                        text-xl
+                    "
+                >
+                    ${escapeHTML(account.number)}
+                </strong>
+
+            </div>
+
+
+            <button
+                type="button"
+                id="copyPaymentNumber"
+                onclick="copyPaymentNumber()"
+                class="
+                    copy-button
+                    px-3
+                    py-2
+                    bg-gray-100
+                    rounded-lg
+                    text-sm
+                    hover:bg-gray-200
+                "
+            >
+
+                <i class="fas fa-copy mr-1"></i>
+
+                Copy
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="
+                mt-4
+                text-sm
+                text-gray-600
+            "
+        >
+
+            <p>
+                <strong>Step 1:</strong>
+                Send the exact amount.
+            </p>
+
+            <p>
+                <strong>Step 2:</strong>
+                Keep your transaction ID.
+            </p>
+
+            <p>
+                <strong>Step 3:</strong>
+                Enter your sender number and transaction ID below.
+            </p>
+
+        </div>
+
+    `;
+
+
+    paymentSenderNumber.placeholder =
+        "01XXXXXXXXX";
+
+    paymentReference.placeholder =
+        "Enter transaction ID";
+
+}
+
+
+// ============================================================
+// PAYMENT SELECTION
+// ============================================================
+
+function selectPaymentMethod(method) {
+
+    if (
+        !PAYMENT_ACCOUNTS[method]
+    ) {
+
+        return;
+
+    }
+
+    selectedPaymentMethod =
+        method;
+
+
+    document
+        .querySelectorAll(
+            ".payment-method"
+        )
+        .forEach(element => {
+
+            element.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    const selected =
+        document.querySelector(
+            `.payment-method[data-method="${method}"]`
+        );
+
+
+    if (selected) {
+
+        selected.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    renderPaymentDetails();
+
+}
+
+
+// ============================================================
+// TAX
+// ============================================================
+
+function calculateTax(amount) {
+
+    return Number(amount || 0) * 0.0185;
+
+}
+
+
+// ============================================================
+// CART TOTALS
+// ============================================================
+
+function getCartTotals() {
+
+    let subtotal = 0;
+
+    let tax = 0;
+
+
+    cart.forEach(item => {
+
+        const plan =
+            item.selectedPlan || {
+
+                price:
+                    item.price || 0
+
+            };
+
+
+        const quantity =
+            Number(
+                item.quantity || 1
+            );
+
+
+        const itemTotal =
+            Number(
+                plan.price || 0
+            ) *
+            quantity;
+
+
+        subtotal +=
+            itemTotal;
+
+
+        tax +=
+            calculateTax(
+                itemTotal
+            );
+
+    });
+
+
+    const total =
+        subtotal +
+        tax -
+        discountAmount;
+
+
+    return {
+
+        subtotal:
+            Number(
+                subtotal.toFixed(2)
+            ),
+
+        tax:
+            Number(
+                tax.toFixed(2)
+            ),
+
+        discount:
+            Number(
+                discountAmount.toFixed(2)
+            ),
+
+        total:
+            Number(
+                total.toFixed(2)
+            )
+
+    };
+
+}
+
+
+// ============================================================
+// RENDER ORDER SUMMARY
+// ============================================================
+
+function renderOrderSummary() {
+
+    orderSummary.innerHTML = "";
+
+    let subtotal = 0;
+
+    let totalTax = 0;
+
+
+    cart.forEach(item => {
+
+        const plan =
+            item.selectedPlan || {
+
+                price:
+                    item.price,
+
+                duration:
+                    item.duration,
+
+                currency:
+                    "BDT"
+
+            };
+
+
+        const quantity =
+            Number(
+                item.quantity || 1
+            );
+
+
+        const price =
+            Number(
+                plan.price || 0
+            );
+
+
+        const itemTotal =
+            price * quantity;
+
+
+        subtotal +=
+            itemTotal;
+
+
+        totalTax +=
+            calculateTax(
+                itemTotal
+            );
+
+
+        const orderItem =
+            document.createElement(
+                "div"
+            );
+
+
+        orderItem.className =
+            "order-item p-3 border-b border-gray-200";
+
+
+        let imageHTML = "";
+
+
+        if (item.image) {
+
+            imageHTML = `
+
+                <img
+                    src="${escapeHTML(item.image)}"
+                    alt="${escapeHTML(
+                        item.name || "Product"
+                    )}"
+                    class="
+                        w-11
+                        h-11
+                        rounded-lg
+                        mr-3
+                        object-contain
+                    "
+                >
+
             `;
-
-            paymentSenderNumber.placeholder =
-                "Enter your bank account number";
-
-            paymentReference.placeholder =
-                "Enter bank transaction/reference number";
 
         }
         else {
 
-            const account =
-                PAYMENT_ACCOUNTS[
-                    selectedPaymentMethod
-                ];
-
-            const label =
-                getPaymentMethodLabel(
-                    selectedPaymentMethod
-                );
-
-            paymentDetails.innerHTML = `
-
-                <h3 class="font-semibold mb-3">
-                    ${escapeHTML(label)}
-                    Payment Instructions
-                </h3>
-
-                <p class="text-sm text-gray-600 mb-3">
-
-                    Send the exact order total to the
-                    following number using
-                    ${escapeHTML(label)}
-                    Send Money.
-
-                </p>
+            imageHTML = `
 
                 <div
                     class="
-                        bg-white
-                        border
-                        border-gray-200
+                        w-11
+                        h-11
                         rounded-lg
-                        p-3
-                        font-semibold
-                        text-lg
+                        flex
+                        items-center
+                        justify-center
+                        mr-3
+                    "
+                    style="
+                        background:
+                        ${escapeHTML(
+                            item.color ||
+                            "#eeeeee"
+                        )}20;
                     "
                 >
 
-                    ${escapeHTML(account)}
+                    <i
+                        class="${escapeHTML(
+                            item.icon ||
+                            "fas fa-box"
+                        )}"
+                    ></i>
 
                 </div>
 
-                <p class="text-sm text-gray-500 mt-3">
-
-                    After sending the payment,
-                    enter the number you used to
-                    send the money and your
-                    transaction ID below.
-
-                </p>
-
             `;
 
-            paymentSenderNumber.placeholder =
-                "01XXXXXXXXX";
-
-            paymentReference.placeholder =
-                "Enter transaction ID";
-
         }
 
-    }
 
+        orderItem.innerHTML = `
 
+            <div
+                class="
+                    flex
+                    justify-between
+                    items-start
+                "
+            >
 
-    // =========================================================
-    // SELECT PAYMENT METHOD
-    // =========================================================
+                <div class="flex items-start">
 
-    function selectPaymentMethod(method) {
+                    ${imageHTML}
 
-        selectedPaymentMethod =
-            method;
+                    <div>
 
-        document
-            .querySelectorAll(
-                ".payment-method"
-            )
-            .forEach(
-                element => {
-
-                    element.classList.remove(
-                        "selected"
-                    );
-
-                }
-            );
-
-        const selectedElement =
-            document.querySelector(
-                `.payment-method[data-method="${method}"]`
-            );
-
-        if (selectedElement) {
-
-            selectedElement.classList.add(
-                "selected"
-            );
-
-        }
-
-        renderPaymentDetails();
-
-    }
-
-
-
-    // =========================================================
-    // TAX
-    // =========================================================
-
-    function calculateTax(price) {
-
-        return Number(price || 0) * 0.0185;
-
-    }
-
-
-
-    // =========================================================
-    // RENDER ORDER SUMMARY
-    // =========================================================
-
-    function renderOrderSummary() {
-
-        orderSummary.innerHTML = "";
-
-        let subtotal = 0;
-
-        let totalTax = 0;
-
-        cart.forEach(item => {
-
-            const plan =
-                item.selectedPlan ||
-                {
-                    price: item.price,
-                    duration: item.duration,
-                    currency: "BDT"
-                };
-
-            const quantity =
-                Number(
-                    item.quantity || 1
-                );
-
-            const price =
-                Number(
-                    plan.price || 0
-                );
-
-            const itemTotal =
-                price * quantity;
-
-            subtotal += itemTotal;
-
-            const itemTax =
-                calculateTax(itemTotal);
-
-            totalTax += itemTax;
-
-            const orderItem =
-                document.createElement("div");
-
-            orderItem.className =
-                "order-item p-3 border-b border-gray-200";
-
-            let productImageHTML = "";
-
-            if (item.image) {
-
-                productImageHTML = `
-
-                    <img
-                        src="${escapeHTML(item.image)}"
-                        alt="${escapeHTML(
-                            item.name || "Product"
-                        )}"
-                        class="
-                            w-10
-                            h-10
-                            rounded-lg
-                            mr-3
-                            object-contain
-                        "
-                    >
-
-                `;
-
-            }
-            else {
-
-                productImageHTML = `
-
-                    <div
-                        class="
-                            w-10
-                            h-10
-                            rounded-lg
-                            flex
-                            items-center
-                            justify-center
-                            mr-3
-                        "
-                        style="
-                            background-color:
+                        <h4 class="font-semibold">
                             ${escapeHTML(
-                                item.color ||
-                                "#eeeeee"
-                            )}20;
-                        "
-                    >
-
-                        <i
-                            class="${escapeHTML(
-                                item.icon ||
-                                "fas fa-box"
-                            )}"
-                            style="
-                                color:
-                                ${escapeHTML(
-                                    item.color ||
-                                    "#555555"
-                                )};
-                            "
-                        ></i>
-
-                    </div>
-
-                `;
-
-            }
-
-            orderItem.innerHTML = `
-
-                <div
-                    class="
-                        flex
-                        justify-between
-                        items-start
-                    "
-                >
-
-                    <div
-                        class="
-                            flex
-                            items-start
-                        "
-                    >
-
-                        ${productImageHTML}
-
-                        <div>
-
-                            <h4 class="font-medium">
-
-                                ${escapeHTML(
-                                    item.name ||
-                                    "Product"
-                                )}
-
-                            </h4>
-
-                            <p class="text-sm text-gray-500">
-
-                                ${escapeHTML(
-                                    plan.duration ||
-                                    ""
-                                )}
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="text-right">
-
-                        <span class="font-medium">
-
-                            ৳${formatMoney(
-                                itemTotal
+                                item.name ||
+                                "Product"
                             )}
+                        </h4>
 
-                        </span>
-
-                        <p class="text-sm text-gray-500">
-
-                            Qty: ${quantity}
-
+                        <p class="text-xs text-gray-500">
+                            ${escapeHTML(
+                                plan.duration ||
+                                ""
+                            )}
                         </p>
 
                     </div>
@@ -1697,1363 +2206,1357 @@
                 </div>
 
 
-                <div
+                <div class="text-right">
+
+                    <span class="font-semibold">
+                        ৳${formatMoney(itemTotal)}
+                    </span>
+
+                    <p class="text-xs text-gray-500">
+                        Qty: ${quantity}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="
+                    flex
+                    justify-between
+                    items-center
+                    mt-3
+                "
+            >
+
+                <button
+                    type="button"
                     class="
-                        flex
-                        justify-between
-                        items-center
-                        mt-2
+                        remove-btn
+                        text-sm
                     "
+                    data-product-name="${escapeHTML(
+                        item.name
+                    )}"
                 >
+
+                    <i class="fas fa-trash mr-1"></i>
+
+                    Remove
+
+                </button>
+
+
+                <div class="flex items-center gap-2">
 
                     <button
                         type="button"
-                        class="
-                            remove-btn
-                            flex
-                            items-center
-                            text-sm
-                        "
+                        class="quantity-btn decrease-btn"
                         data-product-name="${escapeHTML(
                             item.name
                         )}"
                     >
-
-                        <i class="fas fa-trash mr-1"></i>
-
-                        Remove
-
+                        <i class="fas fa-minus"></i>
                     </button>
 
 
-                    <div class="quantity-control">
-
-                        <button
-                            type="button"
-                            class="quantity-btn decrease-btn"
-                            data-product-name="${escapeHTML(
-                                item.name
-                            )}"
-                        >
-
-                            <i class="fas fa-minus"></i>
-
-                        </button>
+                    <span
+                        class="
+                            min-w-[25px]
+                            text-center
+                            text-sm
+                            font-medium
+                        "
+                    >
+                        ${quantity}
+                    </span>
 
 
-                        <input
-                            type="number"
-                            class="quantity-input"
-                            value="${quantity}"
-                            min="1"
-                            readonly
-                        >
-
-
-                        <button
-                            type="button"
-                            class="quantity-btn increase-btn"
-                            data-product-name="${escapeHTML(
-                                item.name
-                            )}"
-                        >
-
-                            <i class="fas fa-plus"></i>
-
-                        </button>
-
-                    </div>
+                    <button
+                        type="button"
+                        class="quantity-btn increase-btn"
+                        data-product-name="${escapeHTML(
+                            item.name
+                        )}"
+                    >
+                        <i class="fas fa-plus"></i>
+                    </button>
 
                 </div>
 
-            `;
+            </div>
 
-            orderSummary.appendChild(
-                orderItem
-            );
+        `;
 
-        });
 
-        const total =
-            subtotal +
-            totalTax -
-            discountAmount;
+        orderSummary.appendChild(
+            orderItem
+        );
 
-        subtotalEl.textContent =
-            `৳${formatMoney(subtotal)}`;
+    });
 
-        taxEl.textContent =
-            `৳${formatMoney(totalTax)}`;
 
-        discountEl.textContent =
-            `-৳${formatMoney(discountAmount)}`;
+    const total =
+        subtotal +
+        totalTax -
+        discountAmount;
 
-        totalEl.textContent =
-            `৳${formatMoney(total)}`;
+
+    subtotalEl.textContent =
+        `৳${formatMoney(subtotal)}`;
+
+
+    taxEl.textContent =
+        `৳${formatMoney(totalTax)}`;
+
+
+    discountEl.textContent =
+        `-৳${formatMoney(discountAmount)}`;
+
+
+    totalEl.textContent =
+        `৳${formatMoney(total)}`;
+
+}
+
+
+// ============================================================
+// CART COUNT
+// ============================================================
+
+function updateCartCount() {
+
+    const count =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                Number(
+                    item.quantity || 0
+                ),
+            0
+        );
+
+
+    cartCount.textContent =
+        count;
+
+}
+
+
+// ============================================================
+// SAVE CART
+// ============================================================
+
+function saveCart() {
+
+    localStorage.setItem(
+        "streamHubCart",
+        JSON.stringify(cart)
+    );
+
+}
+
+
+// ============================================================
+// REMOVE
+// ============================================================
+
+function removeItem(name) {
+
+    cart =
+        cart.filter(
+            item =>
+                item.name !== name
+        );
+
+
+    saveCart();
+
+    renderOrderSummary();
+
+    updateCartCount();
+
+
+    if (
+        cart.length === 0
+    ) {
+
+        window.location.href =
+            "index.html";
+
+    }
+
+}
+
+
+// ============================================================
+// QUANTITY
+// ============================================================
+
+function increaseQuantity(name) {
+
+    const item =
+        cart.find(
+            item =>
+                item.name === name
+        );
+
+
+    if (!item) {
+
+        return;
 
     }
 
 
+    item.quantity =
+        Number(
+            item.quantity || 1
+        ) + 1;
 
-    // =========================================================
-    // CART COUNT
-    // =========================================================
 
-    function updateCartCount() {
+    saveCart();
 
-        const totalItems =
-            cart.reduce(
-                (sum, item) =>
-                    sum +
-                    Number(
-                        item.quantity || 0
-                    ),
-                0
-            );
+    renderOrderSummary();
 
-        cartCount.textContent =
-            totalItems;
+    updateCartCount();
+
+}
+
+
+function decreaseQuantity(name) {
+
+    const item =
+        cart.find(
+            item =>
+                item.name === name
+        );
+
+
+    if (
+        !item ||
+        Number(
+            item.quantity || 1
+        ) <= 1
+    ) {
+
+        return;
 
     }
 
 
+    item.quantity =
+        Number(
+            item.quantity
+        ) - 1;
 
-    // =========================================================
-    // SAVE CART
-    // =========================================================
 
-    function saveCart() {
+    saveCart();
 
-        localStorage.setItem(
-            "streamHubCart",
-            JSON.stringify(cart)
+    renderOrderSummary();
+
+    updateCartCount();
+
+}
+
+
+// ============================================================
+// ORDER SUMMARY EVENTS
+// ============================================================
+
+orderSummary.addEventListener(
+    "click",
+    event => {
+
+        const remove =
+            event.target.closest(
+                ".remove-btn"
+            );
+
+
+        if (remove) {
+
+            removeItem(
+                remove.dataset.productName
+            );
+
+            return;
+
+        }
+
+
+        const increase =
+            event.target.closest(
+                ".increase-btn"
+            );
+
+
+        if (increase) {
+
+            increaseQuantity(
+                increase.dataset.productName
+            );
+
+            return;
+
+        }
+
+
+        const decrease =
+            event.target.closest(
+                ".decrease-btn"
+            );
+
+
+        if (decrease) {
+
+            decreaseQuantity(
+                decrease.dataset.productName
+            );
+
+        }
+
+    }
+);
+
+
+// ============================================================
+// PROMO
+// ============================================================
+
+function togglePromoSection() {
+
+    if (
+        promoToggle.checked
+    ) {
+
+        promoCodeSection.classList.remove(
+            "hidden"
+        );
+
+    }
+    else {
+
+        promoCodeSection.classList.add(
+            "hidden"
+        );
+
+        discountAmount = 0;
+
+        appliedPromoCode = "";
+
+        renderOrderSummary();
+
+    }
+
+}
+
+
+function showPromoResult(
+    text,
+    success
+) {
+
+    applyPromo.textContent =
+        text;
+
+
+    applyPromo.classList.remove(
+        "bg-gray-200",
+        "text-gray-700",
+        "bg-green-500",
+        "bg-red-500",
+        "text-white"
+    );
+
+
+    if (success) {
+
+        applyPromo.classList.add(
+            "bg-green-500",
+            "text-white"
+        );
+
+    }
+    else {
+
+        applyPromo.classList.add(
+            "bg-red-500",
+            "text-white"
         );
 
     }
 
 
+    setTimeout(() => {
 
-    // =========================================================
-    // REMOVE ITEM
-    // =========================================================
+        applyPromo.textContent =
+            "Apply";
 
-    function removeItem(name) {
+        applyPromo.classList.remove(
+            "bg-green-500",
+            "bg-red-500",
+            "text-white"
+        );
 
-        cart =
-            cart.filter(
-                item =>
-                    item.name !== name
+        applyPromo.classList.add(
+            "bg-gray-200",
+            "text-gray-700"
+        );
+
+    }, 1800);
+
+}
+
+
+function applyPromoCode() {
+
+    const code =
+        promoCodeInput.value
+            .trim()
+            .toUpperCase();
+
+
+    const totals =
+        getCartTotals();
+
+
+    if (
+        code === "TAXFREE"
+    ) {
+
+        discountAmount =
+            totals.tax;
+
+        appliedPromoCode =
+            "TAXFREE";
+
+
+        renderOrderSummary();
+
+
+        showPromoResult(
+            "Tax Free!",
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        code === "JULY36"
+    ) {
+
+        discountAmount = 30;
+
+        appliedPromoCode =
+            "JULY36";
+
+
+        renderOrderSummary();
+
+
+        showPromoResult(
+            "30 Taka Off!",
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        code === "NEXTLEVEL10"
+    ) {
+
+        discountAmount =
+            Math.round(
+                totals.subtotal * 0.10
             );
 
-        saveCart();
+
+        appliedPromoCode =
+            "NEXTLEVEL10";
+
+
+        renderOrderSummary();
+
+
+        showPromoResult(
+            "10% Off!",
+            true
+        );
+
+
+        return;
+
+    }
+
+
+    discountAmount = 0;
+
+    appliedPromoCode = "";
+
+
+    renderOrderSummary();
+
+
+    showPromoResult(
+        "Invalid",
+        false
+    );
+
+}
+
+
+// ============================================================
+// CUSTOMER NAME
+// ============================================================
+
+function getCustomerName() {
+
+    const first =
+        document.getElementById(
+            "firstName"
+        ).value.trim();
+
+
+    const last =
+        document.getElementById(
+            "lastName"
+        ).value.trim();
+
+
+    return `${first} ${last}`.trim();
+
+}
+
+
+// ============================================================
+// VALIDATE BANGLADESH PHONE
+// ============================================================
+
+function validatePhoneNumber(value) {
+
+    const normalized =
+        String(value)
+            .replace(
+                /[\s-]/g,
+                ""
+            );
+
+
+    return /^(?:\+?880|0)1[3-9]\d{8}$/
+        .test(normalized);
+
+}
+
+
+// ============================================================
+// VALIDATE CHECKOUT
+// ============================================================
+
+function validateCheckout() {
+
+    if (!currentUser) {
+
+        alert(
+            "Please log in before placing your order."
+        );
+
+        window.location.href =
+            "login.html";
+
+        return false;
+
+    }
+
+
+    if (
+        !checkoutForm.checkValidity()
+    ) {
+
+        checkoutForm.reportValidity();
+
+        return false;
+
+    }
+
+
+    const phone =
+        document.getElementById(
+            "phone"
+        ).value.trim();
+
+
+    if (
+        !validatePhoneNumber(phone)
+    ) {
+
+        alert(
+            "Please enter a valid Bangladesh mobile number."
+        );
+
+        document
+            .getElementById("phone")
+            .focus();
+
+        return false;
+
+    }
+
+
+    if (
+        !paymentSenderNumber.value.trim()
+    ) {
+
+        alert(
+            "Please enter the payment sender number."
+        );
+
+        paymentSenderNumber.focus();
+
+        return false;
+
+    }
+
+
+    if (
+        !paymentReference.value.trim()
+    ) {
+
+        alert(
+            "Please enter the transaction ID / reference."
+        );
+
+        paymentReference.focus();
+
+        return false;
+
+    }
+
+
+    if (
+        cart.length === 0
+    ) {
+
+        alert(
+            "Your cart is empty."
+        );
+
+        window.location.href =
+            "index.html";
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+// ============================================================
+// PLACE ORDER
+// ============================================================
+
+async function placeOrder() {
+
+    if (isSubmitting) {
+
+        return;
+
+    }
+
+
+    if (
+        !validateCheckout()
+    ) {
+
+        return;
+
+    }
+
+
+    isSubmitting = true;
+
+
+    const originalButtonHTML =
+        placeOrderBtn.innerHTML;
+
+
+    placeOrderBtn.disabled =
+        true;
+
+
+    placeOrderBtn.innerHTML = `
+
+        <div class="spinner"></div>
+
+    `;
+
+
+    try {
+
+        // ====================================================
+        // AUTH USER
+        // ====================================================
+
+        const {
+            data: authData,
+            error: authError
+        } =
+            await supabaseClient.auth.getUser();
+
+
+        if (authError) {
+
+            throw authError;
+
+        }
+
+
+        const user =
+            authData?.user;
+
+
+        if (!user) {
+
+            alert(
+                "Your login session has expired. Please log in again."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        // ====================================================
+        // CUSTOMER INFORMATION
+        // ====================================================
+
+        const customerName =
+            getCustomerName();
+
+
+        const email =
+            document.getElementById(
+                "email"
+            ).value.trim();
+
+
+        const phone =
+            document.getElementById(
+                "phone"
+            ).value.trim();
+
+
+        const address =
+            document.getElementById(
+                "address"
+            ).value.trim();
+
+
+        const notes =
+            document.getElementById(
+                "notes"
+            ).value.trim();
+
+
+        const senderNumber =
+            paymentSenderNumber.value.trim();
+
+
+        const reference =
+            paymentReference.value.trim();
+
+
+        // ====================================================
+        // TOTALS
+        // ====================================================
+
+        const totals =
+            getCartTotals();
+
+
+        if (
+            totals.total <= 0
+        ) {
+
+            throw new Error(
+                "Invalid order total."
+            );
+
+        }
+
+
+        // ====================================================
+        // ORDER NUMBER
+        // ====================================================
+
+        const orderNumber =
+            generateOrderNumber();
+
+
+        // ====================================================
+        // ORDER
+        // ====================================================
+
+        const orderPayload = {
+
+            order_number:
+                orderNumber,
+
+            user_id:
+                user.id,
+
+            customer_name:
+                customerName,
+
+            email:
+                email,
+
+            phone:
+                phone,
+
+            address:
+                address,
+
+            notes:
+                notes || null,
+
+            subtotal:
+                totals.subtotal,
+
+            tax:
+                totals.tax,
+
+            discount:
+                totals.discount,
+
+            total:
+                totals.total,
+
+            promo_code:
+                appliedPromoCode ||
+                null,
+
+            payment_method:
+                selectedPaymentMethod,
+
+            payment_status:
+                "pending",
+
+            payment_reference:
+                reference,
+
+            payment_sender_number:
+                senderNumber,
+
+            admin_note:
+                null,
+
+            subscription_email:
+                null,
+
+            subscription_password:
+                null,
+
+            delivery_note:
+                null,
+
+            subscription_start:
+                null,
+
+            subscription_expiry:
+                null
+
+        };
+
+
+        console.log(
+            "Creating order:",
+            orderPayload
+        );
+
+
+        // ====================================================
+        // INSERT ORDER
+        // ====================================================
+
+        const {
+            data: createdOrder,
+            error: orderError
+        } =
+            await supabaseClient
+                .from("orders")
+                .insert(
+                    orderPayload
+                )
+                .select(
+                    "id, order_number"
+                )
+                .single();
+
+
+        if (orderError) {
+
+            throw orderError;
+
+        }
+
+
+        if (
+            !createdOrder?.id
+        ) {
+
+            throw new Error(
+                "Order ID was not returned."
+            );
+
+        }
+
+
+        // ====================================================
+        // ORDER ITEMS
+        // ====================================================
+
+        const orderItems =
+            cart.map(item => {
+
+                const plan =
+                    item.selectedPlan || {
+
+                        price:
+                            item.price,
+
+                        duration:
+                            item.duration
+
+                    };
+
+
+                return {
+
+                    order_id:
+                        createdOrder.id,
+
+                    product_name:
+                        item.name ||
+                        "Product",
+
+                    product_image:
+                        item.image ||
+                        null,
+
+                    plan_duration:
+                        plan.duration ||
+                        null,
+
+                    price:
+                        Number(
+                            plan.price || 0
+                        ),
+
+                    quantity:
+                        Number(
+                            item.quantity || 1
+                        )
+
+                };
+
+            });
+
+
+        const {
+            error: itemError
+        } =
+            await supabaseClient
+                .from("order_items")
+                .insert(
+                    orderItems
+                );
+
+
+        if (itemError) {
+
+            // Important:
+            // The order exists, but items failed.
+            // Do not pretend checkout succeeded.
+
+            console.error(
+                "Order item insert failed:",
+                itemError
+            );
+
+            throw itemError;
+
+        }
+
+
+        // ====================================================
+        // SUCCESS
+        // ====================================================
+
+        localStorage.removeItem(
+            "streamHubCart"
+        );
+
+
+        cart = [];
+
+
+        updateCartCount();
+
+
+        successMessage.textContent =
+            `Order ${createdOrder.order_number} has been submitted successfully. Your payment is now pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+
+
+        successModal.classList.remove(
+            "hidden"
+        );
+
+
+        placeOrderBtn.innerHTML = `
+
+            <i class="fas fa-check mr-2"></i>
+
+            Order Submitted
+
+        `;
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "ORDER CREATION FAILED:",
+            error
+        );
+
+
+        let message =
+            "Unable to place your order. Please try again.";
+
+
+        if (
+            error?.code === "23505"
+        ) {
+
+            message =
+                "This order number already exists. Please try again.";
+
+        }
+        else if (
+            error?.code === "23502"
+        ) {
+
+            message =
+                "A required order field is missing. Please check your database structure.";
+
+        }
+        else if (
+            error?.code === "42501"
+        ) {
+
+            message =
+                "You do not have permission to create this order. Please check your login and Supabase RLS policies.";
+
+        }
+        else if (
+            error?.code === "23503"
+        ) {
+
+            message =
+                "Your account could not be linked to the order. Please log in again.";
+
+        }
+
+
+        alert(message);
+
+
+        placeOrderBtn.innerHTML =
+            originalButtonHTML;
+
+
+        placeOrderBtn.disabled =
+            false;
+
+
+        isSubmitting =
+            false;
+
+    }
+
+}
+
+
+// ============================================================
+// PAYMENT METHOD EVENTS
+// ============================================================
+
+document
+    .querySelectorAll(
+        ".payment-method"
+    )
+    .forEach(element => {
+
+        element.addEventListener(
+            "click",
+            () => {
+
+                selectPaymentMethod(
+                    element.dataset.method
+                );
+
+            }
+        );
+
+    });
+
+
+// ============================================================
+// PROMO EVENTS
+// ============================================================
+
+promoToggle.addEventListener(
+    "change",
+    togglePromoSection
+);
+
+
+applyPromo.addEventListener(
+    "click",
+    applyPromoCode
+);
+
+
+// ============================================================
+// PLACE ORDER
+// ============================================================
+
+placeOrderBtn.addEventListener(
+    "click",
+    placeOrder
+);
+
+
+// ============================================================
+// INITIALIZE
+// ============================================================
+
+async function init() {
+
+    try {
+
+        // ====================================================
+        // AUTH
+        // ====================================================
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.auth.getUser();
+
+
+        if (error) {
+
+            console.error(
+                "Auth error:",
+                error
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        currentUser =
+            data?.user;
+
+
+        if (!currentUser) {
+
+            alert(
+                "Please log in before accessing checkout."
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        // ====================================================
+        // LOAD CART
+        // ====================================================
+
+        try {
+
+            cart =
+                JSON.parse(
+                    localStorage.getItem(
+                        "streamHubCart"
+                    )
+                ) || [];
+
+        }
+        catch (error) {
+
+            console.error(
+                "Cart parsing error:",
+                error
+            );
+
+            cart = [];
+
+        }
+
+
+        // ====================================================
+        // STANDARDIZE CART
+        // ====================================================
+
+        cart =
+            cart.map(item => {
+
+                if (
+                    item.selectedPlan
+                ) {
+
+                    return item;
+
+                }
+
+
+                return {
+
+                    ...item,
+
+                    selectedPlan: {
+
+                        price:
+                            item.price,
+
+                        duration:
+                            item.duration,
+
+                        currency:
+                            "BDT"
+
+                    }
+
+                };
+
+            });
+
+
+        // ====================================================
+        // EMPTY CART
+        // ====================================================
+
+        if (
+            cart.length === 0
+        ) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        // ====================================================
+        // EMAIL
+        // ====================================================
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+
+        if (
+            emailInput &&
+            currentUser.email
+        ) {
+
+            emailInput.value =
+                currentUser.email;
+
+        }
+
+
+        // ====================================================
+        // RENDER
+        // ====================================================
 
         renderOrderSummary();
 
         updateCartCount();
 
-        if (cart.length === 0) {
+        renderPaymentDetails();
 
-            window.location.href =
-                "index.html";
-
-        }
 
     }
-
-
-
-    // =========================================================
-    // INCREASE QUANTITY
-    // =========================================================
-
-    function increaseQuantity(name) {
-
-        const item =
-            cart.find(
-                item =>
-                    item.name === name
-            );
-
-        if (item) {
-
-            item.quantity =
-                Number(
-                    item.quantity || 1
-                ) + 1;
-
-            saveCart();
-
-            renderOrderSummary();
-
-            updateCartCount();
-
-        }
-
-    }
-
-
-
-    // =========================================================
-    // DECREASE QUANTITY
-    // =========================================================
-
-    function decreaseQuantity(name) {
-
-        const item =
-            cart.find(
-                item =>
-                    item.name === name
-            );
-
-        if (
-            item &&
-            Number(
-                item.quantity || 1
-            ) > 1
-        ) {
-
-            item.quantity =
-                Number(
-                    item.quantity
-                ) - 1;
-
-            saveCart();
-
-            renderOrderSummary();
-
-            updateCartCount();
-
-        }
-
-    }
-
-
-
-    // =========================================================
-    // ORDER SUMMARY EVENTS
-    // =========================================================
-
-    orderSummary.addEventListener(
-        "click",
-        event => {
-
-            const removeButton =
-                event.target.closest(
-                    ".remove-btn"
-                );
-
-            if (removeButton) {
-
-                removeItem(
-                    removeButton.dataset.productName
-                );
-
-                return;
-
-            }
-
-            const increaseButton =
-                event.target.closest(
-                    ".increase-btn"
-                );
-
-            if (increaseButton) {
-
-                increaseQuantity(
-                    increaseButton.dataset.productName
-                );
-
-                return;
-
-            }
-
-            const decreaseButton =
-                event.target.closest(
-                    ".decrease-btn"
-                );
-
-            if (decreaseButton) {
-
-                decreaseQuantity(
-                    decreaseButton.dataset.productName
-                );
-
-            }
-
-        }
-    );
-
-
-
-    // =========================================================
-    // PROMO TOGGLE
-    // =========================================================
-
-    function togglePromoSection() {
-
-        if (promoToggle.checked) {
-
-            promoCodeSection.classList.remove(
-                "hidden"
-            );
-
-        }
-        else {
-
-            promoCodeSection.classList.add(
-                "hidden"
-            );
-
-            discountAmount = 0;
-
-            appliedPromoCode = "";
-
-            renderOrderSummary();
-
-        }
-
-    }
-
-
-
-    // =========================================================
-    // APPLY PROMO
-    // =========================================================
-
-    function applyPromoCode() {
-
-        const code =
-            promoCode.value
-                .trim()
-                .toUpperCase();
-
-        if (code === "TAXFREE") {
-
-            const taxAmount =
-                parseFloat(
-                    taxEl.textContent
-                        .replace(
-                            /[^0-9.-]+/g,
-                            ""
-                        )
-                ) || 0;
-
-            discountAmount =
-                taxAmount;
-
-            appliedPromoCode =
-                "TAXFREE";
-
-            renderOrderSummary();
-
-            showPromoResult(
-                "Tax Free!",
-                true
-            );
-
-        }
-        else if (code === "JULY36") {
-
-            discountAmount = 30;
-
-            appliedPromoCode =
-                "JULY36";
-
-            renderOrderSummary();
-
-            showPromoResult(
-                "30 Taka Off!",
-                true
-            );
-
-        }
-        else if (code === "NEXTLEVEL10") {
-
-            const subtotal =
-                parseFloat(
-                    subtotalEl.textContent
-                        .replace(
-                            /[^0-9.-]+/g,
-                            ""
-                        )
-                ) || 0;
-
-            discountAmount =
-                Math.round(
-                    subtotal * 0.1
-                );
-
-            appliedPromoCode =
-                "NEXTLEVEL10";
-
-            renderOrderSummary();
-
-            showPromoResult(
-                "10% Off!",
-                true
-            );
-
-        }
-        else {
-
-            showPromoResult(
-                "Invalid",
-                false
-            );
-
-        }
-
-    }
-
-
-
-    // =========================================================
-    // PROMO RESULT
-    // =========================================================
-
-    function showPromoResult(
-        text,
-        success
-    ) {
-
-        applyPromo.textContent =
-            text;
-
-        if (success) {
-
-            applyPromo.classList.add(
-                "bg-green-500",
-                "text-white"
-            );
-
-            applyPromo.classList.remove(
-                "bg-gray-200",
-                "text-gray-700",
-                "bg-red-500"
-            );
-
-        }
-        else {
-
-            applyPromo.classList.add(
-                "bg-red-500",
-                "text-white"
-            );
-
-            applyPromo.classList.remove(
-                "bg-gray-200",
-                "text-gray-700",
-                "bg-green-500"
-            );
-
-        }
-
-        setTimeout(() => {
-
-            applyPromo.textContent =
-                "Apply";
-
-            applyPromo.classList.remove(
-                "bg-green-500",
-                "text-white",
-                "bg-red-500"
-            );
-
-            applyPromo.classList.add(
-                "bg-gray-200",
-                "text-gray-700"
-            );
-
-        }, 2000);
-
-    }
-
-
-
-    // =========================================================
-    // CART TOTALS
-    // =========================================================
-
-    function getCartTotals() {
-
-        let subtotal = 0;
-
-        let tax = 0;
-
-        cart.forEach(item => {
-
-            const plan =
-                item.selectedPlan ||
-                {
-                    price: item.price
-                };
-
-            const itemTotal =
-                Number(
-                    plan.price || 0
-                ) *
-                Number(
-                    item.quantity || 1
-                );
-
-            subtotal += itemTotal;
-
-            tax +=
-                calculateTax(
-                    itemTotal
-                );
-
-        });
-
-        const total =
-            subtotal +
-            tax -
-            discountAmount;
-
-        return {
-
-            subtotal:
-                Number(
-                    subtotal.toFixed(2)
-                ),
-
-            tax:
-                Number(
-                    tax.toFixed(2)
-                ),
-
-            discount:
-                Number(
-                    discountAmount.toFixed(2)
-                ),
-
-            total:
-                Number(
-                    total.toFixed(2)
-                )
-
-        };
-
-    }
-
-
-
-    // =========================================================
-    // CUSTOMER NAME
-    // =========================================================
-
-    function getCustomerName() {
-
-        const firstName =
-            document.getElementById(
-                "firstName"
-            ).value.trim();
-
-        const lastName =
-            document.getElementById(
-                "lastName"
-            ).value.trim();
-
-        return (
-            `${firstName} ${lastName}`
-        ).trim();
-
-    }
-
-
-
-    // =========================================================
-    // VALIDATE CHECKOUT
-    // =========================================================
-
-    function validateCheckout() {
-
-        if (!currentUser) {
-
-            alert(
-                "Please log in before placing your order."
-            );
-
-            window.location.href =
-                "login.html";
-
-            return false;
-
-        }
-
-        if (!checkoutForm.checkValidity()) {
-
-            checkoutForm.reportValidity();
-
-            return false;
-
-        }
-
-        if (!paymentSenderNumber.value.trim()) {
-
-            alert(
-                "Please enter the payment sender number."
-            );
-
-            paymentSenderNumber.focus();
-
-            return false;
-
-        }
-
-        if (!paymentReference.value.trim()) {
-
-            alert(
-                "Please enter the transaction ID / payment reference."
-            );
-
-            paymentReference.focus();
-
-            return false;
-
-        }
-
-        if (cart.length === 0) {
-
-            alert(
-                "Your cart is empty."
-            );
-
-            window.location.href =
-                "index.html";
-
-            return false;
-
-        }
-
-        return true;
-
-    }
-
-
-
-    // =========================================================
-    // PLACE ORDER
-    // =========================================================
-
-    async function placeOrder() {
-
-        if (isSubmitting) {
-
-            return;
-
-        }
-
-        if (!validateCheckout()) {
-
-            return;
-
-        }
-
-        isSubmitting = true;
-
-        const originalButtonHTML =
-            placeOrderBtn.innerHTML;
-
-        placeOrderBtn.disabled = true;
-
-        placeOrderBtn.innerHTML = `
-
-            <div class="spinner mx-auto"></div>
-
-        `;
-
-        try {
-
-            // =================================================
-            // GET CURRENT AUTH USER
-            // =================================================
-
-            const {
-                data: authData,
-                error: authError
-            } =
-                await supabaseClient.auth.getUser();
-
-            if (authError) {
-
-                throw authError;
-
-            }
-
-            const user =
-                authData?.user;
-
-            if (!user) {
-
-                alert(
-                    "Your login session has expired. Please log in again."
-                );
-
-                window.location.href =
-                    "login.html";
-
-                return;
-
-            }
-
-            currentUser =
-                user;
-
-
-            console.log(
-                "Authenticated user ID:",
-                user.id
-            );
-
-
-            // =================================================
-            // BILLING INFORMATION
-            // =================================================
-
-            const customerName =
-                getCustomerName();
-
-            const email =
-                document.getElementById(
-                    "email"
-                ).value.trim();
-
-            const phone =
-                document.getElementById(
-                    "phone"
-                ).value.trim();
-
-            const address =
-                document.getElementById(
-                    "address"
-                ).value.trim();
-
-            const notes =
-                document.getElementById(
-                    "notes"
-                ).value.trim();
-
-            const senderNumber =
-                paymentSenderNumber.value.trim();
-
-            const reference =
-                paymentReference.value.trim();
-
-
-            // =================================================
-            // TOTALS
-            // =================================================
-
-            const totals =
-                getCartTotals();
-
-
-            // =================================================
-            // GENERATE ORDER NUMBER
-            //
-            // IMPORTANT:
-            // Your database requires order_number NOT NULL.
-            // =================================================
-
-            const orderNumber =
-                generateOrderNumber();
-
-
-            console.log(
-                "Generated order number:",
-                orderNumber
-            );
-
-
-            // =================================================
-            // ORDER PAYLOAD
-            //
-            // These match your Supabase columns.
-            // =================================================
-
-            const orderPayload = {
-
-                order_number:
-                    orderNumber,
-
-                user_id:
-                    user.id,
-
-                customer_name:
-                    customerName,
-
-                email:
-                    email,
-
-                phone:
-                    phone,
-
-                address:
-                    address,
-
-                notes:
-                    notes || null,
-
-                subtotal:
-                    totals.subtotal,
-
-                tax:
-                    totals.tax,
-
-                discount:
-                    totals.discount,
-
-                total:
-                    totals.total,
-
-                promo_code:
-                    appliedPromoCode || null,
-
-                payment_method:
-                    selectedPaymentMethod,
-
-                payment_status:
-                    "pending",
-
-                payment_reference:
-                    reference,
-
-                payment_sender_number:
-                    senderNumber,
-
-                admin_note:
-                    null,
-
-                subscription_email:
-                    null,
-
-                subscription_password:
-                    null,
-
-                delivery_note:
-                    null,
-
-                subscription_start:
-                    null,
-
-                subscription_expiry:
-                    null
-
-            };
-
-
-            console.log(
-                "Creating order payload:",
-                orderPayload
-            );
-
-
-            // =================================================
-            // INSERT ORDER
-            // =================================================
-
-            const {
-                data: createdOrder,
-                error: orderError
-            } =
-                await supabaseClient
-                    .from("orders")
-                    .insert(
-                        orderPayload
-                    )
-                    .select(
-                        "id, order_number"
-                    )
-                    .single();
-
-
-            if (orderError) {
-
-                console.error(
-                    "Supabase orders INSERT error:",
-                    orderError
-                );
-
-                throw orderError;
-
-            }
-
-
-            if (
-                !createdOrder ||
-                !createdOrder.id
-            ) {
-
-                throw new Error(
-                    "Order was created but no order ID was returned."
-                );
-
-            }
-
-
-            console.log(
-                "Order created successfully:",
-                createdOrder
-            );
-
-
-            // =================================================
-            // CREATE ORDER ITEMS
-            // =================================================
-
-            const orderItems =
-                cart.map(item => {
-
-                    const plan =
-                        item.selectedPlan ||
-                        {
-
-                            price:
-                                item.price,
-
-                            duration:
-                                item.duration
-
-                        };
-
-                    return {
-
-                        order_id:
-                            createdOrder.id,
-
-                        product_name:
-                            item.name ||
-                            "Product",
-
-                        product_image:
-                            item.image ||
-                            null,
-
-                        plan_duration:
-                            plan.duration ||
-                            null,
-
-                        price:
-                            Number(
-                                plan.price || 0
-                            ),
-
-                        quantity:
-                            Number(
-                                item.quantity || 1
-                            )
-
-                    };
-
-                });
-
-
-            console.log(
-                "Creating order items:",
-                orderItems
-            );
-
-
-            // =================================================
-            // INSERT ORDER ITEMS
-            // =================================================
-
-            const {
-                error: itemsError
-            } =
-                await supabaseClient
-                    .from("order_items")
-                    .insert(
-                        orderItems
-                    );
-
-
-            if (itemsError) {
-
-                console.error(
-                    "Supabase order_items INSERT error:",
-                    itemsError
-                );
-
-                throw itemsError;
-
-            }
-
-
-            console.log(
-                "Order items created successfully."
-            );
-
-
-            // =================================================
-            // SUCCESS
-            // =================================================
-
-            localStorage.removeItem(
-                "streamHubCart"
-            );
-
-            cart = [];
-
-            updateCartCount();
-
-
-            successMessage.textContent =
-                `Order ${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
-
-
-            successModal.classList.remove(
-                "hidden"
-            );
-
-
-            // Keep button disabled after success
-
-            placeOrderBtn.innerHTML = `
-
-                <i class="fas fa-check mr-2"></i>
-
-                Order Submitted
-
-            `;
-
-
-        }
-        catch (error) {
-
-            console.error(
-                "===================================="
-            );
-
-            console.error(
-                "ORDER CREATION FAILED"
-            );
-
-            console.error(
-                "===================================="
-            );
-
-            console.error(
-                "Full error:",
-                error
-            );
-
-            console.error(
-                "Supabase message:",
-                error?.message
-            );
-
-            console.error(
-                "Supabase code:",
-                error?.code
-            );
-
-            console.error(
-                "Supabase details:",
-                error?.details
-            );
-
-            console.error(
-                "Supabase hint:",
-                error?.hint
-            );
-
-
-            let message =
-                "Unable to place your order. Please try again.";
-
-
-            // ---------------------------------------------
-            // User-friendly errors
-            // ---------------------------------------------
-
-            if (
-                error?.code === "23505"
-            ) {
-
-                message =
-                    "This order number already exists. Please try again.";
-
-            }
-            else if (
-                error?.code === "23502"
-            ) {
-
-                message =
-                    "A required order field is missing. Please check the database columns.";
-
-            }
-            else if (
-                error?.code === "42501"
-            ) {
-
-                message =
-                    "You do not have permission to place this order. Please make sure you are logged in.";
-
-            }
-            else if (
-                error?.code === "23503"
-            ) {
-
-                message =
-                    "Your account could not be linked to this order. Please log in again.";
-
-            }
-
-
-            alert(message);
-
-
-            placeOrderBtn.innerHTML =
-                originalButtonHTML;
-
-            placeOrderBtn.disabled =
-                false;
-
-            isSubmitting =
-                false;
-
-        }
-
-    }
-
-
-
-    // =========================================================
-    // PAYMENT METHOD EVENTS
-    // =========================================================
-
-    document
-        .querySelectorAll(
-            ".payment-method"
-        )
-        .forEach(
-            element => {
-
-                element.addEventListener(
-                    "click",
-                    () => {
-
-                        selectPaymentMethod(
-                            element.dataset.method
-                        );
-
-                    }
-                );
-
-            }
+    catch (error) {
+
+        console.error(
+            "Checkout initialization error:",
+            error
         );
 
 
+        alert(
+            "Unable to load checkout. Please log in again."
+        );
 
-    // =========================================================
-    // PROMO EVENTS
-    // =========================================================
 
-    promoToggle.addEventListener(
-        "change",
-        togglePromoSection
-    );
+        window.location.href =
+            "login.html";
 
+    }
 
-    applyPromo.addEventListener(
-        "click",
-        applyPromoCode
-    );
+}
 
 
+// ============================================================
+// AUTH STATE
+// ============================================================
 
-    // =========================================================
-    // PLACE ORDER EVENT
-    // =========================================================
+supabaseClient.auth.onAuthStateChange(
+    (
+        event,
+        session
+    ) => {
 
-    placeOrderBtn.addEventListener(
-        "click",
-        placeOrder
-    );
-
-
-
-    // =========================================================
-    // INITIALIZE
-    // =========================================================
-
-    async function init() {
-
-        try {
-
-            // =================================================
-            // AUTHENTICATION
-            // =================================================
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient.auth.getUser();
-
-
-            if (error) {
-
-                console.error(
-                    "Authentication error:",
-                    error
-                );
-
-                window.location.href =
-                    "login.html";
-
-                return;
-
-            }
-
-
-            currentUser =
-                data?.user;
-
-
-            if (!currentUser) {
-
-                alert(
-                    "Please log in before accessing checkout."
-                );
-
-                window.location.href =
-                    "login.html";
-
-                return;
-
-            }
-
-
-            console.log(
-                "Checkout authenticated user:",
-                currentUser.id
-            );
-
-
-            // =================================================
-            // LOAD CART
-            // =================================================
-
-            try {
-
-                cart =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "streamHubCart"
-                        )
-                    ) || [];
-
-            }
-            catch (cartError) {
-
-                console.error(
-                    "Cart parsing error:",
-                    cartError
-                );
-
-                cart = [];
-
-            }
-
-
-            // =================================================
-            // STANDARDIZE CART
-            // =================================================
-
-            cart =
-                cart.map(item => {
-
-                    if (
-                        item.selectedPlan
-                    ) {
-
-                        return item;
-
-                    }
-
-                    return {
-
-                        ...item,
-
-                        selectedPlan: {
-
-                            price:
-                                item.price,
-
-                            duration:
-                                item.duration,
-
-                            currency:
-                                "BDT"
-
-                        }
-
-                    };
-
-                });
-
-
-            // =================================================
-            // EMPTY CART
-            // =================================================
-
-            if (
-                cart.length === 0
-            ) {
-
-                window.location.href =
-                    "index.html";
-
-                return;
-
-            }
-
-
-            // =================================================
-            // PREFILL EMAIL
-            // =================================================
-
-            const emailInput =
-                document.getElementById(
-                    "email"
-                );
-
-
-            if (
-                emailInput &&
-                currentUser.email
-            ) {
-
-                emailInput.value =
-                    currentUser.email;
-
-            }
-
-
-            // =================================================
-            // RENDER
-            // =================================================
-
-            renderOrderSummary();
-
-            updateCartCount();
-
-            renderPaymentDetails();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Checkout initialization error:",
-                error
-            );
-
-            alert(
-                "Unable to load checkout. Please log in again."
-            );
+        if (
+            event ===
+            "SIGNED_OUT"
+        ) {
 
             window.location.href =
                 "login.html";
@@ -3061,41 +3564,16 @@
         }
 
     }
+);
 
 
+// ============================================================
+// START
+// ============================================================
 
-    // =========================================================
-    // AUTH STATE MONITOR
-    // =========================================================
+init();
 
-    supabaseClient.auth.onAuthStateChange(
-        (
-            event,
-            session
-        ) => {
-
-            if (
-                event ===
-                "SIGNED_OUT"
-            ) {
-
-                window.location.href =
-                    "login.html";
-
-            }
-
-        }
-    );
-
-
-
-    // =========================================================
-    // START
-    // =========================================================
-
-    init();
-
-    </script>
+</script>
 
 </body>
 
