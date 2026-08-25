@@ -2578,7 +2578,7 @@
     <div id="toastContainer"></div>
 
 
-<script src="/products.js"></script>
+<script src="/api/product.js"></script>
     <!-- =========================================================
          JAVASCRIPT
     ========================================================== -->
@@ -4866,6 +4866,10 @@ function getProductCatalogItem(productName) {
    RENDER ORDER PRODUCTS
 ========================================================= */
 
+/* =========================================================
+   RENDER PRODUCTS
+========================================================= */
+
 function renderProducts(orderId) {
 
     const items =
@@ -4908,25 +4912,142 @@ function renderProducts(orderId) {
 
             ${items.map(item => {
 
+                /* =========================================
+                   PRODUCT NAME
+                ========================================= */
+
                 const productName =
-                    item.product_name ||
-                    item.name ||
-                    "Product";
+                    String(
+                        item.product_name ||
+                        item.name ||
+                        "Product"
+                    ).trim();
 
 
-                /*
-                 * Find matching product from products.js
-                 */
-                const product =
+
+                /* =========================================
+                   FIND PRODUCT
+                ========================================= */
+
+                let product =
                     findProductByName(
                         productName
                     );
 
 
+                /*
+                 * Extra fallback matching.
+                 *
+                 * This handles differences such as:
+                 *
+                 * Amazon Prime Video
+                 * amazon-prime-video
+                 *
+                 * Black Box Ai(CHAT-GPT5)
+                 * Black Box Ai (CHAT-GPT5)
+                 *
+                 */
+
+                if (!product) {
+
+                    const normalize =
+                        value =>
+                            String(
+                                value || ""
+                            )
+                                .toLowerCase()
+                                .trim()
+                                .replace(
+                                    /[^a-z0-9]+/g,
+                                    ""
+                                );
+
+
+                    const normalizedName =
+                        normalize(
+                            productName
+                        );
+
+
+                    /*
+                     * products may be either:
+                     *
+                     * 1. Object:
+                     *    const products = {
+                     *       "netflix-premium": {...}
+                     *    }
+                     *
+                     * 2. Array:
+                     *    const products = [
+                     *       {...}
+                     *    ]
+                     */
+
+                    if (
+                        typeof products !==
+                        "undefined"
+                    ) {
+
+                        if (
+                            Array.isArray(
+                                products
+                            )
+                        ) {
+
+                            product =
+                                products.find(
+                                    item => {
+
+                                        return (
+                                            normalize(
+                                                item?.name
+                                            ) ===
+                                            normalizedName
+                                        );
+
+                                    }
+                                );
+
+                        }
+                        else {
+
+                            product =
+                                Object.values(
+                                    products
+                                ).find(
+                                    item => {
+
+                                        return (
+                                            normalize(
+                                                item?.name
+                                            ) ===
+                                            normalizedName
+                                        );
+
+                                    }
+                                );
+
+                        }
+
+                    }
+
+                }
+
+
+
+                /* =========================================
+                   IMAGE
+                ========================================= */
+
                 const image =
                     product?.image ||
                     "/assets/cards/default.webp";
 
+
+
+                /* =========================================
+                   QUANTITY
+                ========================================= */
 
                 const quantity =
                     Number(
@@ -4934,16 +5055,27 @@ function renderProducts(orderId) {
                     );
 
 
+
+                /* =========================================
+                   PRICE
+                ========================================= */
+
                 const price =
                     Number(
                         item.price || 0
                     );
 
 
+
+                /* =========================================
+                   DURATION
+                ========================================= */
+
                 const duration =
                     item.plan_duration ||
                     item.duration ||
                     "Standard";
+
 
 
                 return `
@@ -4961,7 +5093,10 @@ function renderProducts(orderId) {
                         "
                     >
 
-                        <!-- PRODUCT IMAGE -->
+
+                        <!-- =================================
+                             PRODUCT IMAGE
+                        ================================== -->
 
                         <div
                             style="
@@ -4988,18 +5123,29 @@ function renderProducts(orderId) {
                                 style="
                                     width:100%;
                                     height:100%;
-                                    object-fit:cover;
+                                    object-fit:contain;
+                                    display:block;
                                 "
                                 onerror="
+                                    console.error(
+                                        'Product image failed:',
+                                        this.src
+                                    );
+
                                     this.onerror=null;
-                                    this.src='/assets/cards/default.webp';
+
+                                    this.src=
+                                        '/assets/cards/default.webp';
                                 "
                             >
 
                         </div>
 
 
-                        <!-- PRODUCT INFO -->
+
+                        <!-- =================================
+                             PRODUCT INFO
+                        ================================== -->
 
                         <div
                             style="
@@ -5045,7 +5191,10 @@ function renderProducts(orderId) {
                         </div>
 
 
-                        <!-- PRICE -->
+
+                        <!-- =================================
+                             PRICE
+                        ================================== -->
 
                         <div
                             style="
@@ -5067,29 +5216,39 @@ function renderProducts(orderId) {
 
                             </div>
 
+
                             ${
                                 quantity > 1
                                 ?
 
                                 `
+
                                     <div
                                         style="
                                             font-size:12px;
                                             color:#6b7280;
                                         "
                                     >
+
                                         ৳${money(
-                                            price * quantity
-                                        )} total
+                                            price *
+                                            quantity
+                                        )}
+
+                                        total
+
                                     </div>
+
                                 `
 
                                 :
 
                                 ""
+
                             }
 
                         </div>
+
 
                     </div>
 
@@ -5103,139 +5262,66 @@ function renderProducts(orderId) {
 
 }
 
-
-
 /* =========================================================
    FIND PRODUCT BY NAME
 ========================================================= */
 
-function findProductByName(
-    productName
-) {
+function findProductByName(productName) {
 
-    if (
-        !productName ||
-        typeof products === "undefined"
-    ) {
-
+    if (!productName) {
         return null;
-
     }
-
 
     const target =
-        String(
-            productName
-        )
-        .trim()
-        .toLowerCase();
-
+        String(productName)
+            .trim()
+            .toLowerCase();
 
     /*
-     * 1. Exact name match
+     * First try products.js
      */
+    if (typeof products !== "undefined") {
 
-    const exact =
-        Object.values(
-            products
-        ).find(
-            product =>
-                String(
-                    product?.name || ""
-                )
-                .trim()
-                .toLowerCase() ===
-                target
-        );
-
-
-    if (exact) {
-
-        return exact;
-
-    }
-
-
-    /*
-     * 2. Normalized match
-     *
-     * Handles:
-     *
-     * "Amazon Prime Video"
-     * "amazon prime video"
-     *
-     * etc.
-     */
-
-    const normalize =
-        value =>
-            String(
-                value || ""
-            )
-            .toLowerCase()
-            .replace(
-                /[^a-z0-9]+/g,
-                ""
-            );
-
-
-    const normalizedTarget =
-        normalize(
-            productName
-        );
-
-
-    const normalized =
-        Object.values(
-            products
-        ).find(
-            product =>
-                normalize(
-                    product?.name
-                ) ===
-                normalizedTarget
-        );
-
-
-    if (normalized) {
-
-        return normalized;
-
-    }
-
-
-    /*
-     * 3. Partial match
-     */
-
-    const partial =
-        Object.values(
-            products
-        ).find(
-            product => {
+        const product =
+            Object.values(products).find(item => {
 
                 const name =
-                    normalize(
-                        product?.name
-                    );
+                    String(item?.name || "")
+                        .trim()
+                        .toLowerCase();
 
-                return (
-                    name.includes(
-                        normalizedTarget
-                    ) ||
-                    normalizedTarget.includes(
-                        name
-                    )
-                );
+                return name === target;
+            });
 
-            }
-        );
+        if (product) {
+            return product;
+        }
+    }
 
+    /*
+     * If products.js does not match,
+     * use the exact product data from index.html.
+     */
+    if (typeof rawSubscriptions !== "undefined") {
 
-    return partial || null;
+        const subscription =
+            rawSubscriptions.find(item => {
 
+                const name =
+                    String(item?.name || "")
+                        .trim()
+                        .toLowerCase();
+
+                return name === target;
+            });
+
+        if (subscription) {
+            return subscription;
+        }
+    }
+
+    return null;
 }
-
     /* =========================================================
        RENDER ORDERS
     ========================================================= */
