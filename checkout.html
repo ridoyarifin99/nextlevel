@@ -466,6 +466,7 @@
                                     border-gray-200
                                     text-center
                                     selected
+                                    cursor-pointer
                                 "
                                 data-method="bkash"
                             >
@@ -502,6 +503,7 @@
                                     border
                                     border-gray-200
                                     text-center
+                                    cursor-pointer
                                 "
                                 data-method="nagad"
                             >
@@ -538,6 +540,7 @@
                                     border
                                     border-gray-200
                                     text-center
+                                    cursor-pointer
                                 "
                                 data-method="rocket"
                             >
@@ -574,6 +577,7 @@
                                     border
                                     border-gray-200
                                     text-center
+                                    cursor-pointer
                                 "
                                 data-method="upay"
                             >
@@ -610,6 +614,7 @@
                                     border
                                     border-gray-200
                                     text-center
+                                    cursor-pointer
                                     md:col-span-2
                                 "
                                 data-method="bank_transfer"
@@ -681,7 +686,8 @@
                                 >
 
                                 <p class="text-sm text-gray-500 mt-1">
-                                    Enter the mobile number/account you used to send the payment.
+                                    Enter the mobile number or bank account
+                                    you used to send the payment.
                                 </p>
 
                             </div>
@@ -1032,7 +1038,8 @@
                     id="successMessage"
                     class="text-gray-600 mb-6"
                 >
-                    Your payment information has been submitted. Your order is now pending payment verification.
+                    Your payment information has been submitted.
+                    Your order is now pending payment verification.
                 </p>
 
 
@@ -1128,7 +1135,7 @@
 
 
     // =========================================================
-    // PAYMENT NUMBERS
+    // PAYMENT ACCOUNTS
     // =========================================================
 
     const PAYMENT_ACCOUNTS = {
@@ -1143,17 +1150,13 @@
 
         bank_transfer: {
 
-            bankName:
-                "City Bank",
+            bankName: "City Bank",
 
-            accountNumber:
-                "2302841525001",
+            accountNumber: "2302841525001",
 
-            accountHolder:
-                "Nur Mohammad",
+            accountHolder: "Nur Mohammad",
 
-            branch:
-                "Naogaon"
+            branch: "Naogaon"
 
         }
 
@@ -1166,105 +1169,55 @@
     // =========================================================
 
     const checkoutForm =
-        document.getElementById(
-            "checkoutForm"
-        );
-
+        document.getElementById("checkoutForm");
 
     const orderSummary =
-        document.getElementById(
-            "orderSummary"
-        );
-
+        document.getElementById("orderSummary");
 
     const subtotalEl =
-        document.getElementById(
-            "subtotal"
-        );
-
+        document.getElementById("subtotal");
 
     const taxEl =
-        document.getElementById(
-            "tax"
-        );
-
+        document.getElementById("tax");
 
     const discountEl =
-        document.getElementById(
-            "discount"
-        );
-
+        document.getElementById("discount");
 
     const totalEl =
-        document.getElementById(
-            "total"
-        );
-
+        document.getElementById("total");
 
     const promoToggle =
-        document.getElementById(
-            "promoToggle"
-        );
-
+        document.getElementById("promoToggle");
 
     const promoCodeSection =
-        document.getElementById(
-            "promoCodeSection"
-        );
-
+        document.getElementById("promoCodeSection");
 
     const promoCode =
-        document.getElementById(
-            "promoCode"
-        );
-
+        document.getElementById("promoCode");
 
     const applyPromo =
-        document.getElementById(
-            "applyPromo"
-        );
-
+        document.getElementById("applyPromo");
 
     const placeOrderBtn =
-        document.getElementById(
-            "placeOrderBtn"
-        );
-
+        document.getElementById("placeOrderBtn");
 
     const paymentDetails =
-        document.getElementById(
-            "paymentDetails"
-        );
-
+        document.getElementById("paymentDetails");
 
     const paymentSenderNumber =
-        document.getElementById(
-            "paymentSenderNumber"
-        );
-
+        document.getElementById("paymentSenderNumber");
 
     const paymentReference =
-        document.getElementById(
-            "paymentReference"
-        );
-
+        document.getElementById("paymentReference");
 
     const successModal =
-        document.getElementById(
-            "successModal"
-        );
-
+        document.getElementById("successModal");
 
     const successMessage =
-        document.getElementById(
-            "successMessage"
-        );
-
+        document.getElementById("successMessage");
 
     const cartCount =
-        document.getElementById(
-            "cartCount"
-        );
+        document.getElementById("cartCount");
 
 
 
@@ -1283,28 +1236,12 @@
 
         }
 
-
         return String(value)
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
     }
 
@@ -1314,25 +1251,52 @@
     // FORMAT MONEY
     // =========================================================
 
-    function formatMoney(
-        amount
-    ) {
+    function formatMoney(amount) {
 
-        return Number(
-            amount || 0
-        ).toFixed(2);
+        return Number(amount || 0).toFixed(2);
 
     }
 
 
 
     // =========================================================
-    // GET SELECTED PAYMENT LABEL
+    // GENERATE ORDER NUMBER
     // =========================================================
 
-    function getPaymentMethodLabel(
-        method
-    ) {
+    function generateOrderNumber() {
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        const random =
+            Math.floor(
+                100000 +
+                Math.random() * 900000
+            );
+
+        return `NLS-${year}${month}${day}-${random}`;
+
+    }
+
+
+
+    // =========================================================
+    // PAYMENT METHOD LABEL
+    // =========================================================
+
+    function getPaymentMethodLabel(method) {
 
         switch (method) {
 
@@ -1382,28 +1346,36 @@
                     <p>
                         <strong>Bank:</strong>
                         ${escapeHTML(
-                            PAYMENT_ACCOUNTS.bank_transfer.bankName
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .bankName
                         )}
                     </p>
 
                     <p>
                         <strong>Account Name:</strong>
                         ${escapeHTML(
-                            PAYMENT_ACCOUNTS.bank_transfer.accountHolder
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .accountHolder
                         )}
                     </p>
 
                     <p>
                         <strong>Account Number:</strong>
                         ${escapeHTML(
-                            PAYMENT_ACCOUNTS.bank_transfer.accountNumber
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .accountNumber
                         )}
                     </p>
 
                     <p>
                         <strong>Branch:</strong>
                         ${escapeHTML(
-                            PAYMENT_ACCOUNTS.bank_transfer.branch
+                            PAYMENT_ACCOUNTS
+                                .bank_transfer
+                                .branch
                         )}
                     </p>
 
@@ -1425,24 +1397,22 @@
                     selectedPaymentMethod
                 ];
 
+            const label =
+                getPaymentMethodLabel(
+                    selectedPaymentMethod
+                );
 
             paymentDetails.innerHTML = `
 
                 <h3 class="font-semibold mb-3">
-                    ${escapeHTML(
-                        getPaymentMethodLabel(
-                            selectedPaymentMethod
-                        )
-                    )} Payment Instructions
+                    ${escapeHTML(label)}
+                    Payment Instructions
                 </h3>
 
                 <p class="text-sm text-gray-600 mb-3">
-                    Send the exact order total to the following
-                    number using ${escapeHTML(
-                        getPaymentMethodLabel(
-                            selectedPaymentMethod
-                        )
-                    )} Send Money.
+                    Send the exact order total to the
+                    following number using ${escapeHTML(label)}
+                    Send Money.
                 </p>
 
                 <div
@@ -1460,8 +1430,9 @@
                 </div>
 
                 <p class="text-sm text-gray-500 mt-3">
-                    After sending the payment, enter the number
-                    you used to send the money and your transaction ID below.
+                    After sending the payment, enter the
+                    number you used to send the money and
+                    your transaction ID below.
                 </p>
 
             `;
@@ -1482,34 +1453,25 @@
     // SELECT PAYMENT METHOD
     // =========================================================
 
-    function selectPaymentMethod(
-        method
-    ) {
+    function selectPaymentMethod(method) {
 
         selectedPaymentMethod =
             method;
 
-
         document
-            .querySelectorAll(
-                ".payment-method"
-            )
-            .forEach(
-                element => {
+            .querySelectorAll(".payment-method")
+            .forEach(element => {
 
-                    element.classList.remove(
-                        "selected"
-                    );
+                element.classList.remove(
+                    "selected"
+                );
 
-                }
-            );
-
+            });
 
         const selectedElement =
             document.querySelector(
                 `.payment-method[data-method="${method}"]`
             );
-
 
         if (selectedElement) {
 
@@ -1519,7 +1481,6 @@
 
         }
 
-
         renderPaymentDetails();
 
     }
@@ -1527,208 +1488,160 @@
 
 
     // =========================================================
-    // CALCULATE TAX
+    // TAX
     // =========================================================
 
-    function calculateTax(
-        price
-    ) {
+    function calculateTax(price) {
 
-        return Number(price || 0) *
-            0.0185;
+        return Number(price || 0) * 0.0185;
 
     }
 
 
 
     // =========================================================
-    // RENDER ORDER SUMMARY
+    // ORDER SUMMARY
     // =========================================================
 
     function renderOrderSummary() {
 
-        orderSummary.innerHTML =
-            "";
+        orderSummary.innerHTML = "";
 
         let subtotal = 0;
 
         let totalTax = 0;
 
+        cart.forEach(item => {
 
-        cart.forEach(
-            (
-                item
-            ) => {
+            const plan =
+                item.selectedPlan ||
+                {
+                    price: item.price,
+                    duration: item.duration,
+                    currency: "BDT"
+                };
 
-                const plan =
-                    item.selectedPlan ||
-                    {
+            const quantity =
+                Number(
+                    item.quantity || 1
+                );
 
-                        price:
-                            item.price,
+            const price =
+                Number(
+                    plan.price || 0
+                );
 
-                        duration:
-                            item.duration,
+            const itemTotal =
+                price * quantity;
 
-                        currency:
-                            "BDT"
+            subtotal += itemTotal;
 
-                    };
+            const itemTax =
+                calculateTax(itemTotal);
 
+            totalTax += itemTax;
 
-                const quantity =
-                    Number(
-                        item.quantity || 1
-                    );
+            const orderItem =
+                document.createElement("div");
 
+            orderItem.className =
+                "order-item p-3 border-b border-gray-200";
 
-                const price =
-                    Number(
-                        plan.price || 0
-                    );
+            let productImageHTML = "";
 
+            if (item.image) {
 
-                const itemTotal =
-                    price *
-                    quantity;
+                productImageHTML = `
 
+                    <img
+                        src="${escapeHTML(item.image)}"
+                        alt="${escapeHTML(
+                            item.name || "Product"
+                        )}"
+                        class="
+                            w-10
+                            h-10
+                            rounded-lg
+                            mr-3
+                            object-contain
+                        "
+                    >
 
-                subtotal +=
-                    itemTotal;
+                `;
 
+            }
+            else {
 
-                const itemTax =
-                    calculateTax(
-                        itemTotal
-                    );
+                productImageHTML = `
 
+                    <div
+                        class="
+                            w-10
+                            h-10
+                            rounded-lg
+                            flex
+                            items-center
+                            justify-center
+                            mr-3
+                        "
+                        style="
+                            background-color:
+                            ${escapeHTML(
+                                item.color || "#eeeeee"
+                            )}20;
+                        "
+                    >
 
-                totalTax +=
-                    itemTax;
-
-
-                const orderItem =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                orderItem.className =
-                    "order-item p-3 border-b border-gray-200";
-
-
-                let productImageHTML =
-                    "";
-
-
-                if (item.image) {
-
-                    productImageHTML = `
-
-                        <img
-                            src="${escapeHTML(item.image)}"
-                            alt="${escapeHTML(item.name || "Product")}"
-                            class="
-                                w-10
-                                h-10
-                                rounded-lg
-                                mr-3
-                                object-contain
-                            "
-                        >
-
-                    `;
-
-                }
-                else {
-
-                    productImageHTML = `
-
-                        <div
-                            class="
-                                w-10
-                                h-10
-                                rounded-lg
-                                flex
-                                items-center
-                                justify-center
-                                mr-3
-                            "
+                        <i
+                            class="${escapeHTML(
+                                item.icon || "fas fa-box"
+                            )}"
                             style="
-                                background-color:
+                                color:
                                 ${escapeHTML(
-                                    item.color || "#eeeeee"
-                                )}20;
+                                    item.color || "#555555"
+                                )};
                             "
-                        >
+                        ></i>
 
-                            <i
-                                class="${escapeHTML(
-                                    item.icon || "fas fa-box"
-                                )}"
-                                style="
-                                    color:
-                                    ${escapeHTML(
-                                        item.color || "#555555"
-                                    )};
-                                "
-                            ></i>
+                    </div>
 
-                        </div>
+                `;
 
-                    `;
+            }
 
-                }
+            orderItem.innerHTML = `
 
-
-                orderItem.innerHTML = `
+                <div
+                    class="
+                        flex
+                        justify-between
+                        items-start
+                    "
+                >
 
                     <div
                         class="
                             flex
-                            justify-between
                             items-start
                         "
                     >
 
-                        <div
-                            class="
-                                flex
-                                items-start
-                            "
-                        >
+                        ${productImageHTML}
 
-                            ${productImageHTML}
+                        <div>
 
-                            <div>
-
-                                <h4 class="font-medium">
-                                    ${escapeHTML(
-                                        item.name ||
-                                        "Product"
-                                    )}
-                                </h4>
-
-                                <p class="text-sm text-gray-500">
-                                    ${escapeHTML(
-                                        plan.duration ||
-                                        ""
-                                    )}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="text-right">
-
-                            <span class="font-medium">
-                                ৳${formatMoney(itemTotal)}
-                            </span>
+                            <h4 class="font-medium">
+                                ${escapeHTML(
+                                    item.name ||
+                                    "Product"
+                                )}
+                            </h4>
 
                             <p class="text-sm text-gray-500">
-                                Qty: ${quantity}
+                                ${escapeHTML(
+                                    plan.duration || ""
+                                )}
                             </p>
 
                         </div>
@@ -1736,103 +1649,111 @@
                     </div>
 
 
-                    <div
+                    <div class="text-right">
+
+                        <span class="font-medium">
+                            ৳${formatMoney(itemTotal)}
+                        </span>
+
+                        <p class="text-sm text-gray-500">
+                            Qty: ${quantity}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="
+                        flex
+                        justify-between
+                        items-center
+                        mt-2
+                    "
+                >
+
+                    <button
+                        type="button"
                         class="
+                            remove-btn
                             flex
-                            justify-between
                             items-center
-                            mt-2
+                            text-sm
                         "
+                        data-product-name="${escapeHTML(
+                            item.name
+                        )}"
                     >
+
+                        <i class="fas fa-trash mr-1"></i>
+
+                        Remove
+
+                    </button>
+
+
+                    <div class="quantity-control">
 
                         <button
                             type="button"
-                            class="
-                                remove-btn
-                                flex
-                                items-center
-                                text-sm
-                            "
+                            class="quantity-btn decrease-btn"
                             data-product-name="${escapeHTML(
                                 item.name
                             )}"
                         >
 
-                            <i class="fas fa-trash mr-1"></i>
-
-                            Remove
+                            <i class="fas fa-minus"></i>
 
                         </button>
 
 
-                        <div class="quantity-control">
-
-                            <button
-                                type="button"
-                                class="quantity-btn decrease-btn"
-                                data-product-name="${escapeHTML(
-                                    item.name
-                                )}"
-                            >
-
-                                <i class="fas fa-minus"></i>
-
-                            </button>
+                        <input
+                            type="number"
+                            class="quantity-input"
+                            value="${quantity}"
+                            min="1"
+                            readonly
+                        >
 
 
-                            <input
-                                type="number"
-                                class="quantity-input"
-                                value="${quantity}"
-                                min="1"
-                                readonly
-                            >
+                        <button
+                            type="button"
+                            class="quantity-btn increase-btn"
+                            data-product-name="${escapeHTML(
+                                item.name
+                            )}"
+                        >
 
+                            <i class="fas fa-plus"></i>
 
-                            <button
-                                type="button"
-                                class="quantity-btn increase-btn"
-                                data-product-name="${escapeHTML(
-                                    item.name
-                                )}"
-                            >
-
-                                <i class="fas fa-plus"></i>
-
-                            </button>
-
-                        </div>
+                        </button>
 
                     </div>
 
-                `;
+                </div>
 
+            `;
 
-                orderSummary.appendChild(
-                    orderItem
-                );
+            orderSummary.appendChild(
+                orderItem
+            );
 
-            }
-        );
-
+        });
 
         const total =
             subtotal +
             totalTax -
             discountAmount;
 
-
         subtotalEl.textContent =
             `৳${formatMoney(subtotal)}`;
-
 
         taxEl.textContent =
             `৳${formatMoney(totalTax)}`;
 
-
         discountEl.textContent =
             `-৳${formatMoney(discountAmount)}`;
-
 
         totalEl.textContent =
             `৳${formatMoney(total)}`;
@@ -1849,17 +1770,13 @@
 
         const totalItems =
             cart.reduce(
-                (
-                    sum,
-                    item
-                ) =>
+                (sum, item) =>
                     sum +
                     Number(
                         item.quantity || 0
                     ),
                 0
             );
-
 
         cartCount.textContent =
             totalItems;
@@ -1872,34 +1789,24 @@
     // REMOVE ITEM
     // =========================================================
 
-    function removeItem(
-        name
-    ) {
+    function removeItem(name) {
 
         cart =
             cart.filter(
                 item =>
-                    item.name !==
-                    name
+                    item.name !== name
             );
-
 
         localStorage.setItem(
             "streamHubCart",
-            JSON.stringify(
-                cart
-            )
+            JSON.stringify(cart)
         );
-
 
         renderOrderSummary();
 
         updateCartCount();
 
-
-        if (
-            cart.length === 0
-        ) {
+        if (cart.length === 0) {
 
             window.location.href =
                 "index.html";
@@ -1914,17 +1821,13 @@
     // INCREASE QUANTITY
     // =========================================================
 
-    function increaseQuantity(
-        name
-    ) {
+    function increaseQuantity(name) {
 
         const item =
             cart.find(
                 item =>
-                    item.name ===
-                    name
+                    item.name === name
             );
-
 
         if (item) {
 
@@ -1933,14 +1836,10 @@
                     item.quantity || 1
                 ) + 1;
 
-
             localStorage.setItem(
                 "streamHubCart",
-                JSON.stringify(
-                    cart
-                )
+                JSON.stringify(cart)
             );
-
 
             renderOrderSummary();
 
@@ -1956,17 +1855,13 @@
     // DECREASE QUANTITY
     // =========================================================
 
-    function decreaseQuantity(
-        name
-    ) {
+    function decreaseQuantity(name) {
 
         const item =
             cart.find(
                 item =>
-                    item.name ===
-                    name
+                    item.name === name
             );
-
 
         if (
             item &&
@@ -1980,14 +1875,10 @@
                     item.quantity
                 ) - 1;
 
-
             localStorage.setItem(
                 "streamHubCart",
-                JSON.stringify(
-                    cart
-                )
+                JSON.stringify(cart)
             );
-
 
             renderOrderSummary();
 
@@ -2000,7 +1891,7 @@
 
 
     // =========================================================
-    // ORDER SUMMARY CLICK EVENTS
+    // ORDER SUMMARY EVENTS
     // =========================================================
 
     orderSummary.addEventListener(
@@ -2012,7 +1903,6 @@
                     ".remove-btn"
                 );
 
-
             if (removeButton) {
 
                 removeItem(
@@ -2023,12 +1913,10 @@
 
             }
 
-
             const increaseButton =
                 event.target.closest(
                     ".increase-btn"
                 );
-
 
             if (increaseButton) {
 
@@ -2040,12 +1928,10 @@
 
             }
 
-
             const decreaseButton =
                 event.target.closest(
                     ".decrease-btn"
                 );
-
 
             if (decreaseButton) {
 
@@ -2066,9 +1952,7 @@
 
     function togglePromoSection() {
 
-        if (
-            promoToggle.checked
-        ) {
+        if (promoToggle.checked) {
 
             promoCodeSection.classList.remove(
                 "hidden"
@@ -2081,14 +1965,9 @@
                 "hidden"
             );
 
+            discountAmount = 0;
 
-            discountAmount =
-                0;
-
-
-            appliedPromoCode =
-                "";
-
+            appliedPromoCode = "";
 
             renderOrderSummary();
 
@@ -2109,11 +1988,7 @@
                 .trim()
                 .toUpperCase();
 
-
-        if (
-            code ===
-            "TAXFREE"
-        ) {
+        if (code === "TAXFREE") {
 
             const taxAmount =
                 parseFloat(
@@ -2124,17 +1999,13 @@
                         )
                 ) || 0;
 
-
             discountAmount =
                 taxAmount;
-
 
             appliedPromoCode =
                 "TAXFREE";
 
-
             renderOrderSummary();
-
 
             showPromoResult(
                 "Tax Free!",
@@ -2142,21 +2013,14 @@
             );
 
         }
-        else if (
-            code ===
-            "JULY36"
-        ) {
+        else if (code === "JULY36") {
 
-            discountAmount =
-                30;
-
+            discountAmount = 30;
 
             appliedPromoCode =
                 "JULY36";
 
-
             renderOrderSummary();
-
 
             showPromoResult(
                 "30 Taka Off!",
@@ -2164,10 +2028,7 @@
             );
 
         }
-        else if (
-            code ===
-            "NEXTLEVEL10"
-        ) {
+        else if (code === "NEXTLEVEL10") {
 
             const subtotal =
                 parseFloat(
@@ -2178,19 +2039,15 @@
                         )
                 ) || 0;
 
-
             discountAmount =
                 Math.round(
                     subtotal * 0.1
                 );
 
-
             appliedPromoCode =
                 "NEXTLEVEL10";
 
-
             renderOrderSummary();
-
 
             showPromoResult(
                 "10% Off!",
@@ -2211,14 +2068,10 @@
 
 
 
-    function showPromoResult(
-        text,
-        success
-    ) {
+    function showPromoResult(text, success) {
 
         applyPromo.textContent =
             text;
-
 
         if (success) {
 
@@ -2249,29 +2102,23 @@
 
         }
 
+        setTimeout(() => {
 
-        setTimeout(
-            () => {
+            applyPromo.textContent =
+                "Apply";
 
-                applyPromo.textContent =
-                    "Apply";
+            applyPromo.classList.remove(
+                "bg-green-500",
+                "text-white",
+                "bg-red-500"
+            );
 
+            applyPromo.classList.add(
+                "bg-gray-200",
+                "text-gray-700"
+            );
 
-                applyPromo.classList.remove(
-                    "bg-green-500",
-                    "text-white",
-                    "bg-red-500"
-                );
-
-
-                applyPromo.classList.add(
-                    "bg-gray-200",
-                    "text-gray-700"
-                );
-
-            },
-            2000
-        );
+        }, 2000);
 
     }
 
@@ -2283,52 +2130,39 @@
 
     function getCartTotals() {
 
-        let subtotal =
-            0;
+        let subtotal = 0;
 
+        let tax = 0;
 
-        let tax =
-            0;
+        cart.forEach(item => {
 
+            const plan =
+                item.selectedPlan ||
+                {
+                    price: item.price
+                };
 
-        cart.forEach(
-            item => {
+            const itemTotal =
+                Number(
+                    plan.price || 0
+                ) *
+                Number(
+                    item.quantity || 1
+                );
 
-                const plan =
-                    item.selectedPlan ||
-                    {
-                        price:
-                            item.price
-                    };
+            subtotal += itemTotal;
 
+            tax +=
+                calculateTax(
+                    itemTotal
+                );
 
-                const itemTotal =
-                    Number(
-                        plan.price || 0
-                    ) *
-                    Number(
-                        item.quantity || 1
-                    );
-
-
-                subtotal +=
-                    itemTotal;
-
-
-                tax +=
-                    calculateTax(
-                        itemTotal
-                    );
-
-            }
-        );
-
+        });
 
         const total =
             subtotal +
             tax -
             discountAmount;
-
 
         return {
 
@@ -2359,7 +2193,7 @@
 
 
     // =========================================================
-    // VALIDATE FORM
+    // VALIDATE CHECKOUT
     // =========================================================
 
     function validateCheckout() {
@@ -2377,10 +2211,7 @@
 
         }
 
-
-        if (
-            !checkoutForm.checkValidity()
-        ) {
+        if (!checkoutForm.checkValidity()) {
 
             checkoutForm.reportValidity();
 
@@ -2388,16 +2219,13 @@
 
         }
 
-
         const senderNumber =
             paymentSenderNumber.value
                 .trim();
 
-
         const reference =
             paymentReference.value
                 .trim();
-
 
         if (!senderNumber) {
 
@@ -2411,7 +2239,6 @@
 
         }
 
-
         if (!reference) {
 
             alert(
@@ -2424,10 +2251,7 @@
 
         }
 
-
-        if (
-            cart.length === 0
-        ) {
+        if (cart.length === 0) {
 
             alert(
                 "Your cart is empty."
@@ -2439,7 +2263,6 @@
             return false;
 
         }
-
 
         return true;
 
@@ -2454,20 +2277,18 @@
     function getCustomerName() {
 
         const firstName =
-            document.getElementById(
-                "firstName"
-            ).value.trim();
-
+            document
+                .getElementById("firstName")
+                .value
+                .trim();
 
         const lastName =
-            document.getElementById(
-                "lastName"
-            ).value.trim();
+            document
+                .getElementById("lastName")
+                .value
+                .trim();
 
-
-        return (
-            `${firstName} ${lastName}`
-        ).trim();
+        return `${firstName} ${lastName}`.trim();
 
     }
 
@@ -2479,35 +2300,25 @@
 
     async function placeOrder() {
 
-        if (
-            isSubmitting
-        ) {
+        if (isSubmitting) {
 
             return;
 
         }
 
-
-        if (
-            !validateCheckout()
-        ) {
+        if (!validateCheckout()) {
 
             return;
 
         }
 
-
-        isSubmitting =
-            true;
-
+        isSubmitting = true;
 
         const originalButtonHTML =
             placeOrderBtn.innerHTML;
 
-
         placeOrderBtn.disabled =
             true;
-
 
         placeOrderBtn.innerHTML = `
 
@@ -2515,12 +2326,11 @@
 
         `;
 
-
         try {
 
-            // -------------------------------------------------
-            // Confirm current authenticated user
-            // -------------------------------------------------
+            // =================================================
+            // AUTHENTICATED USER
+            // =================================================
 
             const {
                 data: authData,
@@ -2528,17 +2338,14 @@
             } =
                 await supabaseClient.auth.getUser();
 
-
             if (authError) {
 
                 throw authError;
 
             }
 
-
             const user =
                 authData?.user;
-
 
             if (!user) {
 
@@ -2549,91 +2356,96 @@
 
             }
 
-
             currentUser =
                 user;
 
 
 
-            // -------------------------------------------------
-            // Read billing information
-            // -------------------------------------------------
+            // =================================================
+            // BILLING INFORMATION
+            // =================================================
 
             const customerName =
                 getCustomerName();
 
-
             const email =
-                document.getElementById(
-                    "email"
-                ).value.trim();
-
+                document
+                    .getElementById("email")
+                    .value
+                    .trim();
 
             const phone =
-                document.getElementById(
-                    "phone"
-                ).value.trim();
-
+                document
+                    .getElementById("phone")
+                    .value
+                    .trim();
 
             const address =
-                document.getElementById(
-                    "address"
-                ).value.trim();
-
+                document
+                    .getElementById("address")
+                    .value
+                    .trim();
 
             const notes =
-                document.getElementById(
-                    "notes"
-                ).value.trim();
-
+                document
+                    .getElementById("notes")
+                    .value
+                    .trim();
 
             const senderNumber =
-                paymentSenderNumber.value
+                paymentSenderNumber
+                    .value
                     .trim();
-
 
             const reference =
-                paymentReference.value
+                paymentReference
+                    .value
                     .trim();
 
 
 
-            // -------------------------------------------------
-            // Calculate totals
-            // -------------------------------------------------
+            // =================================================
+            // TOTALS
+            // =================================================
 
             const totals =
                 getCartTotals();
 
 
 
-            // -------------------------------------------------
-            // Exact orders columns
+            // =================================================
+            // GENERATE REQUIRED ORDER NUMBER
             //
-            // Fields intentionally left NULL:
+            // THIS FIXES:
             //
-            // admin_note
-            // subscription_email
-            // subscription_password
-            // delivery_note
-            // subscription_start
-            // subscription_expiry
+            // null value in column "order_number"
             //
-            // These are filled later by your admin/delivery
-            // process.
-            // -------------------------------------------------
-const orderNumber =
-    "NLS-" +
-    Date.now().toString(36).toUpperCase() +
-    "-" +
-    Math.random()
-        .toString(36)
-        .substring(2, 7)
-        .toUpperCase();
+            // =================================================
+
+            const orderNumber =
+                generateOrderNumber();
+
+
+            console.log(
+                "Generated order number:",
+                orderNumber
+            );
+
+
+
+            // =================================================
+            // ORDERS TABLE PAYLOAD
+            //
+            // Includes the exact fields used by your table.
+            // =================================================
+
             const orderPayload = {
 
                 user_id:
                     user.id,
+
+                order_number:
+                    orderNumber,
 
                 customer_name:
                     customerName,
@@ -2698,7 +2510,6 @@ const orderNumber =
             };
 
 
-
             console.log(
                 "Creating order:",
                 orderPayload
@@ -2706,9 +2517,9 @@ const orderNumber =
 
 
 
-            // -------------------------------------------------
+            // =================================================
             // INSERT ORDER
-            // -------------------------------------------------
+            // =================================================
 
             const {
                 data: createdOrder,
@@ -2716,11 +2527,9 @@ const orderNumber =
             } =
                 await supabaseClient
                     .from("orders")
-                    .insert(
-                        orderPayload
-                    )
+                    .insert(orderPayload)
                     .select(
-                        "id"
+                        "id, order_number"
                     )
                     .single();
 
@@ -2749,11 +2558,17 @@ const orderNumber =
             }
 
 
+            console.log(
+                "Order created successfully:",
+                createdOrder
+            );
 
-            // -------------------------------------------------
-            // CREATE ORDER ITEMS
+
+
+            // =================================================
+            // ORDER ITEMS
             //
-            // Exact order_items columns:
+            // Exact columns:
             //
             // id
             // order_id
@@ -2764,59 +2579,55 @@ const orderNumber =
             // quantity
             // created_at
             //
-            // id and created_at are omitted so Supabase
-            // can use their database defaults.
-            // -------------------------------------------------
+            // id and created_at use DB defaults.
+            // =================================================
 
             const orderItems =
-                cart.map(
-                    item => {
+                cart.map(item => {
 
-                        const plan =
-                            item.selectedPlan ||
-                            {
-
-                                price:
-                                    item.price,
-
-                                duration:
-                                    item.duration
-
-                            };
-
-
-                        return {
-
-                            order_id:
-                                createdOrder.id,
-
-                            product_name:
-                                item.name ||
-                                "Product",
-
-                            product_image:
-                                item.image ||
-                                null,
-
-                            plan_duration:
-                                plan.duration ||
-                                null,
+                    const plan =
+                        item.selectedPlan ||
+                        {
 
                             price:
-                                Number(
-                                    plan.price || 0
-                                ),
+                                item.price,
 
-                            quantity:
-                                Number(
-                                    item.quantity || 1
-                                )
+                            duration:
+                                item.duration
 
                         };
 
-                    }
-                );
 
+                    return {
+
+                        order_id:
+                            createdOrder.id,
+
+                        product_name:
+                            item.name ||
+                            "Product",
+
+                        product_image:
+                            item.image ||
+                            null,
+
+                        plan_duration:
+                            plan.duration ||
+                            null,
+
+                        price:
+                            Number(
+                                plan.price || 0
+                            ),
+
+                        quantity:
+                            Number(
+                                item.quantity || 1
+                            )
+
+                    };
+
+                });
 
 
             console.log(
@@ -2826,9 +2637,9 @@ const orderNumber =
 
 
 
-            // -------------------------------------------------
+            // =================================================
             // INSERT ORDER ITEMS
-            // -------------------------------------------------
+            // =================================================
 
             const {
                 error: itemsError
@@ -2847,14 +2658,9 @@ const orderNumber =
                     itemsError
                 );
 
-
                 /*
-                 * We do not silently pretend everything
-                 * worked. The order exists, but its items
-                 * failed, so notify the customer.
-                 *
-                 * The order remains in Supabase and can
-                 * be identified from the browser console.
+                 * The order itself has already been created.
+                 * Do not pretend the entire operation succeeded.
                  */
 
                 throw itemsError;
@@ -2863,9 +2669,15 @@ const orderNumber =
 
 
 
-            // -------------------------------------------------
+            // =================================================
             // SUCCESS
-            // -------------------------------------------------
+            // =================================================
+
+            console.log(
+                "ORDER CREATION SUCCESS:",
+                createdOrder.order_number
+            );
+
 
             localStorage.removeItem(
                 "streamHubCart"
@@ -2879,7 +2691,7 @@ const orderNumber =
 
 
             successMessage.textContent =
-    `Order #${orderNumber} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+                `Order #${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
 
 
             successModal.classList.remove(
@@ -2896,19 +2708,7 @@ const orderNumber =
             );
 
 
-            let message =
-                "Unable to place your order. Please try again.";
-
-
-            /*
-             * Give useful browser-console information
-             * without exposing database errors directly
-             * to customers.
-             */
-
-            if (
-                error?.message
-            ) {
+            if (error?.message) {
 
                 console.error(
                     "Supabase message:",
@@ -2918,9 +2718,7 @@ const orderNumber =
             }
 
 
-            if (
-                error?.code
-            ) {
+            if (error?.code) {
 
                 console.error(
                     "Supabase code:",
@@ -2930,8 +2728,62 @@ const orderNumber =
             }
 
 
+            if (error?.details) {
+
+                console.error(
+                    "Supabase details:",
+                    error.details
+                );
+
+            }
+
+
+            if (error?.hint) {
+
+                console.error(
+                    "Supabase hint:",
+                    error.hint
+                );
+
+            }
+
+
+            let customerMessage =
+                "Unable to place your order. Please try again.";
+
+
+            /*
+             * Helpful messages for common database errors.
+             */
+
+            if (
+                error?.code === "23502"
+            ) {
+
+                customerMessage =
+                    "Some required order information is missing. Please refresh the page and try again.";
+
+            }
+            else if (
+                error?.code === "42501"
+            ) {
+
+                customerMessage =
+                    "You do not have permission to place this order. Please make sure you are logged in.";
+
+            }
+            else if (
+                error?.code === "23505"
+            ) {
+
+                customerMessage =
+                    "This order number already exists. Please try again.";
+
+            }
+
+
             alert(
-                message
+                customerMessage
             );
 
 
@@ -2953,29 +2805,25 @@ const orderNumber =
 
 
     // =========================================================
-    // PAYMENT METHOD CLICK EVENTS
+    // PAYMENT METHOD EVENTS
     // =========================================================
 
     document
-        .querySelectorAll(
-            ".payment-method"
-        )
-        .forEach(
-            element => {
+        .querySelectorAll(".payment-method")
+        .forEach(element => {
 
-                element.addEventListener(
-                    "click",
-                    () => {
+            element.addEventListener(
+                "click",
+                () => {
 
-                        selectPaymentMethod(
-                            element.dataset.method
-                        );
+                    selectPaymentMethod(
+                        element.dataset.method
+                    );
 
-                    }
-                );
+                }
+            );
 
-            }
-        );
+        });
 
 
 
@@ -3015,9 +2863,9 @@ const orderNumber =
 
         try {
 
-            // ---------------------------------------------
+            // =================================================
             // AUTH CHECK
-            // ---------------------------------------------
+            // =================================================
 
             const {
                 data,
@@ -3032,7 +2880,6 @@ const orderNumber =
                     "Authentication error:",
                     error
                 );
-
 
                 window.location.href =
                     "login.html";
@@ -3057,9 +2904,9 @@ const orderNumber =
 
 
 
-            // ---------------------------------------------
+            // =================================================
             // LOAD CART
-            // ---------------------------------------------
+            // =================================================
 
             try {
 
@@ -3078,61 +2925,54 @@ const orderNumber =
                     cartError
                 );
 
-
                 cart = [];
 
             }
 
 
 
-            // ---------------------------------------------
+            // =================================================
             // STANDARDIZE CART
-            // ---------------------------------------------
+            // =================================================
 
             cart =
-                cart.map(
-                    item => {
+                cart.map(item => {
 
-                        if (
-                            item.selectedPlan
-                        ) {
+                    if (item.selectedPlan) {
 
-                            return item;
+                        return item;
+
+                    }
+
+
+                    return {
+
+                        ...item,
+
+                        selectedPlan: {
+
+                            price:
+                                item.price,
+
+                            duration:
+                                item.duration,
+
+                            currency:
+                                "BDT"
 
                         }
 
+                    };
 
-                        return {
-
-                            ...item,
-
-                            selectedPlan: {
-
-                                price:
-                                    item.price,
-
-                                duration:
-                                    item.duration,
-
-                                currency:
-                                    "BDT"
-
-                            }
-
-                        };
-
-                    }
-                );
+                });
 
 
 
-            // ---------------------------------------------
+            // =================================================
             // EMPTY CART
-            // ---------------------------------------------
+            // =================================================
 
-            if (
-                cart.length === 0
-            ) {
+            if (cart.length === 0) {
 
                 window.location.href =
                     "index.html";
@@ -3143,9 +2983,9 @@ const orderNumber =
 
 
 
-            // ---------------------------------------------
-            // PREFILL EMAIL
-            // ---------------------------------------------
+            // =================================================
+            // PREFILL USER EMAIL
+            // =================================================
 
             const emailInput =
                 document.getElementById(
@@ -3165,34 +3005,15 @@ const orderNumber =
 
 
 
-            // ---------------------------------------------
+            // =================================================
             // RENDER
-            // ---------------------------------------------
+            // =================================================
 
             renderOrderSummary();
 
             updateCartCount();
 
             renderPaymentDetails();
-
-
-
-            // ---------------------------------------------
-            // SCROLL BUTTON EFFECT
-            // ---------------------------------------------
-
-            window.addEventListener(
-                "scroll",
-                () => {
-
-                    /*
-                     * No WhatsApp floating button anymore.
-                     * Kept intentionally empty so the existing
-                     * page has no floating WhatsApp behavior.
-                     */
-
-                }
-            );
 
         }
         catch (error) {
@@ -3202,11 +3023,9 @@ const orderNumber =
                 error
             );
 
-
             alert(
                 "Unable to load checkout. Please log in again."
             );
-
 
             window.location.href =
                 "login.html";
