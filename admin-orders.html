@@ -2578,7 +2578,7 @@
     <div id="toastContainer"></div>
 
 
-
+<script src="/products.js"></script>
     <!-- =========================================================
          JAVASCRIPT
     ========================================================== -->
@@ -3059,291 +3059,767 @@
 
 
 
-    /* =========================================================
-       LOAD ORDERS
-    ========================================================= */
+   /* =========================================================
+   LOAD ORDERS
+========================================================= */
 
-    async function loadOrders() {
+async function loadOrders() {
 
-        if (isLoading) {
+    if (isLoading) {
 
-            return;
+        return;
+
+    }
+
+    isLoading = true;
+
+    showSkeleton();
+
+    try {
+
+        /* =====================================================
+           1. LOAD ORDERS
+        ===================================================== */
+
+        const {
+            data: orders,
+            error: ordersError
+        } =
+            await supabaseClient
+
+                .from("orders")
+
+                .select("*")
+
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        if (ordersError) {
+
+            throw ordersError;
 
         }
 
-        isLoading = true;
 
-        showSkeleton();
-
-        try {
-
-            /*
-             * IMPORTANT:
-             * We load the orders first.
-             *
-             * Then order_items separately.
-             *
-             * This guarantees that ALL products
-             * belonging to an order appear.
-             */
-
-            const {
-                data: orders,
-                error: ordersError
-            } =
-                await supabaseClient
-
-                    .from("orders")
-
-                    .select("*")
-
-                    .order(
-                        "created_at",
-                        {
-                            ascending: false
-                        }
-                    );
+        allOrders =
+            orders || [];
 
 
-            if (ordersError) {
+        orderItemsMap = {};
 
-                throw ordersError;
-
-            }
+        subscriptionsMap = {};
 
 
-            allOrders =
-                orders || [];
+        /* =====================================================
+           NO ORDERS
+        ===================================================== */
 
-
-            orderItemsMap = {};
-
-            subscriptionsMap = {};
-
-
-            if (
-                allOrders.length === 0
-            ) {
-
-                updateStats();
-
-                renderOrders();
-
-                return;
-
-            }
-
-
-            const orderIds =
-                allOrders.map(
-                    order =>
-                        order.id
-                );
-
-
-            /* =================================================
-               ORDER ITEMS
-            ================================================= */
-
-            const {
-                data: orderItems,
-                error: itemsError
-            } =
-                await supabaseClient
-
-                    .from("order_items")
-
-                    .select(`
-                        id,
-                        order_id,
-                        product_name,
-                        product_image,
-                        plan_duration,
-                        price,
-                        quantity
-                    `)
-
-                    .in(
-                        "order_id",
-                        orderIds
-                    )
-
-                    .order(
-                        "id",
-                        {
-                            ascending: true
-                        }
-                    );
-
-
-            if (itemsError) {
-
-                console.error(
-                    "Order items loading error:",
-                    itemsError
-                );
-
-                /*
-                 * Don't destroy the whole admin panel.
-                 * Orders can still be shown.
-                 */
-
-                showToast(
-                    "Orders loaded, but some product details could not be loaded.",
-                    "error"
-                );
-
-            }
-
-
-            (orderItems || [])
-                .forEach(
-                    item => {
-
-                        if (
-                            !orderItemsMap[
-                                item.order_id
-                            ]
-                        ) {
-
-                            orderItemsMap[
-                                item.order_id
-                            ] = [];
-
-                        }
-
-                        orderItemsMap[
-                            item.order_id
-                        ].push(item);
-
-                    }
-                );
-
-
-            /* =================================================
-               SUBSCRIPTIONS
-            ================================================= */
-
-            const {
-                data: subscriptions,
-                error: subscriptionsError
-            } =
-                await supabaseClient
-
-                    .from("subscriptions")
-
-                    .select(`
-                        id,
-                        order_id,
-                        user_id,
-                        product_name,
-                        start_date,
-                        expiry_date,
-                        status,
-                        delivery_info,
-                        created_at,
-                        updated_at
-                    `)
-
-                    .in(
-                        "order_id",
-                        orderIds
-                    );
-
-
-            if (subscriptionsError) {
-
-                console.error(
-                    "Subscriptions loading error:",
-                    subscriptionsError
-                );
-
-                /*
-                 * Subscription RLS may prevent this.
-                 * Orders should still work.
-                 */
-
-            }
-
-
-            (subscriptions || [])
-                .forEach(
-                    subscription => {
-
-                        subscriptionsMap[
-                            subscription.order_id
-                        ] = subscription;
-
-                    }
-                );
-
+        if (
+            allOrders.length === 0
+        ) {
 
             updateStats();
 
             renderOrders();
 
-        }
-        catch (error) {
+            return;
 
-            console.error(
-                "Load orders failed:",
-                error
+        }
+
+
+        /* =====================================================
+           2. GET ORDER IDS
+        ===================================================== */
+
+        const orderIds =
+            allOrders.map(
+                order =>
+                    order.id
             );
 
-            ordersContainer.innerHTML = `
 
-                <div class="empty-state">
+        /* =====================================================
+           3. LOAD ORDER ITEMS
+        =====================================================
 
-                    <div class="empty-icon">
+           IMPORTANT:
 
-                        <i class="fas fa-triangle-exclamation"></i>
+           Do NOT only select product_name.
 
-                    </div>
+           We load "*" because your order_items table may contain
+           product_id, product_name, plan_duration, price,
+           quantity, etc.
 
-                    <h2>
-                        Unable to load orders
-                    </h2>
+           This also prevents missing fields from breaking the
+           admin product display.
+        ===================================================== */
 
-                    <p
-                        style="
-                            color:#6b7280;
-                            margin-top:8px;
-                        "
-                    >
-                        ${escapeHTML(
-                            error?.message ||
-                            "Please check your Supabase RLS policies."
-                        )}
-                    </p>
+        const {
+            data: orderItems,
+            error: orderItemsError
+        } =
+            await supabaseClient
 
-                    <button
-                        type="button"
-                        class="action-btn btn-primary"
-                        style="margin-top:18px;"
-                        onclick="loadOrders()"
-                    >
-                        <i class="fas fa-rotate"></i>
-                        Try Again
-                    </button>
+                .from("order_items")
+
+                .select("*")
+
+                .in(
+                    "order_id",
+                    orderIds
+                );
+
+
+        if (orderItemsError) {
+
+            throw orderItemsError;
+
+        }
+
+
+        const safeOrderItems =
+            orderItems || [];
+
+
+        /* =====================================================
+           4. PRODUCT CATALOG
+        =====================================================
+
+           Your product.js contains:
+
+           const products = {
+               "netflix-premium": {...},
+               ...
+           };
+
+           We try to use that catalog if it is available on
+           admin-orders.html.
+
+           If product.js is not loaded on this page, the
+           database values are still preserved.
+        ===================================================== */
+
+        let productCatalog = {};
+
+
+        try {
+
+            if (
+                typeof products !==
+                "undefined" &&
+                products &&
+                typeof products ===
+                "object"
+            ) {
+
+                productCatalog =
+                    products;
+
+            }
+
+        }
+        catch (catalogError) {
+
+            console.warn(
+                "Product catalog unavailable:",
+                catalogError
+            );
+
+        }
+
+
+
+        /* =====================================================
+           5. CREATE NORMALIZED PRODUCT LOOKUP
+        ===================================================== */
+
+        const productLookup = {};
+
+
+        Object.keys(
+            productCatalog
+        ).forEach(
+            slug => {
+
+                const product =
+                    productCatalog[
+                        slug
+                    ];
+
+
+                if (!product) {
+
+                    return;
+
+                }
+
+
+                const normalizedSlug =
+                    String(
+                        slug
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                const normalizedName =
+                    String(
+                        product.name ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                productLookup[
+                    normalizedSlug
+                ] = {
+
+                    ...product,
+
+                    slug:
+                        slug
+
+                };
+
+
+                if (
+                    normalizedName
+                ) {
+
+                    productLookup[
+                        normalizedName
+                    ] = {
+
+                        ...product,
+
+                        slug:
+                            slug
+
+                    };
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================================
+           6. NORMALIZE ORDER ITEMS
+        ===================================================== */
+
+        safeOrderItems.forEach(
+            item => {
+
+                const orderId =
+                    item.order_id;
+
+
+                if (!orderId) {
+
+                    return;
+
+                }
+
+
+                /*
+                 * Some older orders may store the product as:
+                 *
+                 * product_name
+                 *
+                 * while newer orders may have:
+                 *
+                 * product_id
+                 * product_slug
+                 * slug
+                 *
+                 * We support all of them.
+                 */
+
+
+                const databaseProductName =
+                    item.product_name ||
+                    item.name ||
+                    "";
+
+
+                const databaseProductId =
+                    item.product_id ||
+                    item.product_slug ||
+                    item.slug ||
+                    "";
+
+
+                const normalizedProductId =
+                    String(
+                        databaseProductId
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                const normalizedProductName =
+                    String(
+                        databaseProductName
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                /*
+                 * Try product ID/slug first.
+                 */
+
+                let catalogProduct =
+                    null;
+
+
+                if (
+                    normalizedProductId &&
+                    productLookup[
+                        normalizedProductId
+                    ]
+                ) {
+
+                    catalogProduct =
+                        productLookup[
+                            normalizedProductId
+                        ];
+
+                }
+
+
+                /*
+                 * If no product was found by slug,
+                 * try product name.
+                 */
+
+                if (
+                    !catalogProduct &&
+                    normalizedProductName &&
+                    productLookup[
+                        normalizedProductName
+                    ]
+                ) {
+
+                    catalogProduct =
+                        productLookup[
+                            normalizedProductName
+                        ];
+
+                }
+
+
+                /*
+                 * Create the final product object.
+                 *
+                 * Database values have priority for
+                 * order-specific information such as:
+                 *
+                 * price
+                 * quantity
+                 * plan duration
+                 *
+                 * Product catalog values provide:
+                 *
+                 * name
+                 * image
+                 * icon
+                 * color
+                 * description
+                 */
+
+                const normalizedItem = {
+
+                    ...item,
+
+
+                    /* -----------------------------------------
+                       PRODUCT NAME
+                    ----------------------------------------- */
+
+                    product_name:
+
+                        item.product_name ||
+
+                        item.name ||
+
+                        catalogProduct?.name ||
+
+                        "Product",
+
+
+                    /* -----------------------------------------
+                       PRODUCT SLUG
+                    ----------------------------------------- */
+
+                    product_slug:
+
+                        item.product_slug ||
+
+                        item.slug ||
+
+                        catalogProduct?.slug ||
+
+                        databaseProductId ||
+
+                        "",
+
+
+                    /* -----------------------------------------
+                       PRODUCT IMAGE
+                    ----------------------------------------- */
+
+                    product_image:
+
+                        item.product_image ||
+
+                        item.image ||
+
+                        catalogProduct?.image ||
+
+                        "",
+
+
+                    /* -----------------------------------------
+                       PRODUCT ICON
+                    ----------------------------------------- */
+
+                    product_icon:
+
+                        item.product_icon ||
+
+                        item.icon ||
+
+                        catalogProduct?.icon ||
+
+                        "fas fa-box",
+
+
+                    /* -----------------------------------------
+                       PRODUCT COLOR
+                    ----------------------------------------- */
+
+                    product_color:
+
+                        item.product_color ||
+
+                        item.color ||
+
+                        catalogProduct?.color ||
+
+                        "#6b7280",
+
+
+                    /* -----------------------------------------
+                       PRODUCT DESCRIPTION
+                    ----------------------------------------- */
+
+                    product_description:
+
+                        item.product_description ||
+
+                        item.description ||
+
+                        catalogProduct?.description ||
+
+                        "",
+
+
+                    /* -----------------------------------------
+                       PRICE
+                    ----------------------------------------- */
+
+                    price:
+
+                        item.price ??
+                        item.unit_price ??
+                        0,
+
+
+                    /* -----------------------------------------
+                       QUANTITY
+                    ----------------------------------------- */
+
+                    quantity:
+
+                        item.quantity ??
+                        1,
+
+
+                    /* -----------------------------------------
+                       PLAN / DURATION
+                    ----------------------------------------- */
+
+                    plan_duration:
+
+                        item.plan_duration ||
+
+                        item.duration ||
+
+                        item.plan ||
+
+                        catalogProduct?.duration ||
+
+                        "Standard"
+
+                };
+
+
+                /* =================================================
+                   ADD TO ORDER MAP
+                ================================================= */
+
+                if (
+                    !orderItemsMap[
+                        orderId
+                    ]
+                ) {
+
+                    orderItemsMap[
+                        orderId
+                    ] = [];
+
+                }
+
+
+                orderItemsMap[
+                    orderId
+                ].push(
+                    normalizedItem
+                );
+
+            }
+        );
+
+
+
+        /* =====================================================
+           7. LOAD SUBSCRIPTIONS
+        ===================================================== */
+
+        const {
+            data: subscriptions,
+            error: subscriptionsError
+        } =
+            await supabaseClient
+
+                .from("subscriptions")
+
+                .select("*")
+
+                .in(
+                    "order_id",
+                    orderIds
+                );
+
+
+        /*
+         * If subscriptions cannot be loaded, do NOT destroy
+         * the whole orders page.
+
+         * This is useful if an RLS policy temporarily prevents
+         * reading subscriptions.
+         */
+
+        if (
+            subscriptionsError
+        ) {
+
+            console.warn(
+                "Unable to load subscriptions:",
+                subscriptionsError
+            );
+
+        }
+        else {
+
+            const safeSubscriptions =
+                subscriptions || [];
+
+
+            safeSubscriptions.forEach(
+                subscription => {
+
+                    if (
+                        !subscription.order_id
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    subscriptionsMap[
+                        subscription.order_id
+                    ] =
+                        subscription;
+
+                }
+            );
+
+        }
+
+
+
+        /* =====================================================
+           8. ENSURE EVERY ORDER HAS AN ITEM ARRAY
+        ===================================================== */
+
+        allOrders.forEach(
+            order => {
+
+                if (
+                    !orderItemsMap[
+                        order.id
+                    ]
+                ) {
+
+                    orderItemsMap[
+                        order.id
+                    ] = [];
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================================
+           9. DEBUG INFORMATION
+        ===================================================== */
+
+        console.log(
+            "Orders loaded:",
+            allOrders
+        );
+
+
+        console.log(
+            "Order items loaded:",
+            orderItemsMap
+        );
+
+
+        console.log(
+            "Subscriptions loaded:",
+            subscriptionsMap
+        );
+
+
+        console.log(
+            "Product catalog:",
+            productCatalog
+        );
+
+
+
+        /* =====================================================
+           10. UPDATE ADMIN STATISTICS
+        ===================================================== */
+
+        updateStats();
+
+
+
+        /* =====================================================
+           11. RENDER ORDERS
+        ===================================================== */
+
+        renderOrders();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load orders error:",
+            error
+        );
+
+
+        ordersContainer.innerHTML = `
+
+            <div
+                class="empty-state"
+            >
+
+                <div
+                    class="empty-icon"
+                >
+
+                    <i
+                        class="fas fa-triangle-exclamation"
+                    ></i>
 
                 </div>
 
-            `;
 
-        }
-        finally {
+                <h2>
+                    Unable to load orders
+                </h2>
 
-            isLoading = false;
+
+                <p
+                    style="
+                        color:#6b7280;
+                        margin-top:7px;
+                    "
+                >
+
+                    ${
+                        escapeHTML(
+                            error?.message ||
+                            "Something went wrong while loading orders."
+                        )
+                    }
+
+                </p>
+
+            </div>
+
+        `;
+
+
+        showToast(
+            error?.message ||
+            "Unable to load orders.",
+            "error"
+        );
+
+    }
+    finally {
+
+        isLoading = false;
+
+
+        /*
+         * Restore refresh buttons if they exist.
+         */
+
+        if (
+            typeof refreshButton !==
+            "undefined" &&
+            refreshButton
+        ) {
 
             refreshButton.disabled =
                 false;
 
-            refreshTopButton.disabled =
-                false;
-
             refreshButton.innerHTML = `
 
-                <i class="fas fa-rotate"></i>
+                <i
+                    class="
+                        fas
+                        fa-sync-alt
+                    "
+                ></i>
 
                 Refresh
 
@@ -3353,6 +3829,7 @@
 
     }
 
+}
 
 
     /* =========================================================
@@ -3602,172 +4079,534 @@
     }
 
 
+/* =========================================================
+   PRODUCT CATALOG LOOKUP
+========================================================= */
 
-    /* =========================================================
-       PRODUCT HTML
-    ========================================================= */
+function normalizeProductName(name) {
 
-    function renderProducts(orderId) {
+    return String(name || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
 
-        const items =
-            orderItemsMap[
-                orderId
-            ] || [];
-
-
-        if (
-            items.length === 0
-        ) {
-
-            return `
-
-                <div
-                    style="
-                        padding:18px;
-                        text-align:center;
-                        color:#6b7280;
-                        font-size:13px;
-                    "
-                >
-
-                    <i class="fas fa-box-open"></i>
-
-                    No order items found.
-
-                </div>
-
-            `;
-
-        }
+}
 
 
-        return `
+function getProductCatalogItem(productName) {
 
-            <div class="product-list">
+    const normalized =
+        normalizeProductName(productName);
 
-                ${items.map(
-                    item => {
-
-                        const quantity =
-                            Number(
-                                item.quantity ||
-                                1
-                            );
-
-                        const price =
-                            Number(
-                                item.price ||
-                                0
-                            );
-
-                        const lineTotal =
-                            price *
-                            quantity;
-
-
-                        return `
-
-                            <div
-                                class="product-item"
-                            >
-
-                                ${
-                                    item.product_image
-
-                                    ?
-
-                                    `
-                                        <img
-                                            class="product-image"
-                                            src="${escapeHTML(
-                                                item.product_image
-                                            )}"
-                                            alt="${escapeHTML(
-                                                item.product_name
-                                            )}"
-                                            loading="lazy"
-                                        >
-                                    `
-
-                                    :
-
-                                    `
-                                        <div
-                                            class="product-placeholder"
-                                        >
-                                            <i class="fas fa-box"></i>
-                                        </div>
-                                    `
-                                }
-
-
-                                <div>
-
-                                    <div
-                                        class="product-name"
-                                    >
-                                        ${escapeHTML(
-                                            item.product_name ||
-                                            "Product"
-                                        )}
-                                    </div>
-
-
-                                    <div
-                                        class="product-meta"
-                                    >
-
-                                        <span
-                                            class="product-tag"
-                                        >
-                                            Plan:
-                                            ${escapeHTML(
-                                                item.plan_duration ||
-                                                "Standard"
-                                            )}
-                                        </span>
-
-
-                                        <span
-                                            class="product-tag"
-                                        >
-                                            Qty:
-                                            ${quantity}
-                                        </span>
-
-
-                                        <span
-                                            class="product-tag"
-                                        >
-                                            Unit:
-                                            ৳${money(price)}
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-
-                                <div
-                                    class="product-price"
-                                >
-                                    ৳${money(
-                                        lineTotal
-                                    )}
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
-                ).join("")}
-
-            </div>
-
-        `;
-
+    if (!normalized) {
+        return null;
     }
+
+    if (
+        typeof rawSubscriptions === "undefined" ||
+        !Array.isArray(rawSubscriptions)
+    ) {
+        return null;
+    }
+
+    return (
+        rawSubscriptions.find(
+            product =>
+                normalizeProductName(
+                    product.name
+                ) === normalized
+        ) || null
+    );
+
+}
+    /* =========================================================
+   PRODUCT HTML
+========================================================= */
+
+// function renderProducts(orderId) {
+
+//     const items =
+//         orderItemsMap[
+//             orderId
+//         ] || [];
+
+
+//     if (
+//         items.length === 0
+//     ) {
+
+//         return `
+
+//             <div
+//                 style="
+//                     padding:18px;
+//                     text-align:center;
+//                     color:#6b7280;
+//                     font-size:13px;
+//                 "
+//             >
+
+//                 <i class="fas fa-box-open"></i>
+
+//                 No order items found.
+
+//             </div>
+
+//         `;
+
+//     }
+
+
+//     return `
+
+//         <div class="product-list">
+
+//             ${items.map(
+//                 item => {
+
+//                     const quantity =
+//                         Number(
+//                             item.quantity ||
+//                             1
+//                         );
+
+//                     const price =
+//                         Number(
+//                             item.price ||
+//                             0
+//                         );
+
+//                     const lineTotal =
+//                         price *
+//                         quantity;
+
+
+//                     /* =========================================
+//                        FIND PRODUCT FROM YOUR MAIN CATALOG
+//                     ========================================= */
+
+//                     const catalogProduct =
+//                         getProductCatalogItem(
+//                             item.product_name
+//                         );
+
+
+//                     /*
+//                      * Priority:
+//                      *
+//                      * 1. Saved database image
+//                      * 2. Main product catalog image
+//                      * 3. No image
+//                      */
+
+//                     const productImage =
+//                         item.product_image ||
+//                         catalogProduct?.image ||
+//                         "";
+
+
+//                     /*
+//                      * Product icon from catalog
+//                      */
+
+//                     const productIcon =
+//                         catalogProduct?.icon ||
+//                         "fas fa-box";
+
+
+//                     /*
+//                      * Product color from catalog
+//                      */
+
+//                     const productColor =
+//                         catalogProduct?.color ||
+//                         "#6b7280";
+
+
+//                     /*
+//                      * Product name:
+//                      *
+//                      * Database first.
+//                      * Catalog fallback.
+//                      */
+
+//                     const productName =
+//                         item.product_name ||
+//                         catalogProduct?.name ||
+//                         "Product";
+
+
+//                     /*
+//                      * Description fallback
+//                      */
+
+//                     const productDescription =
+//                         catalogProduct?.description ||
+//                         "";
+
+
+//                     /*
+//                      * Combo services
+//                      */
+
+//                     const services =
+//                         Array.isArray(
+//                             catalogProduct?.services
+//                         )
+//                             ? catalogProduct.services
+//                             : [];
+
+
+//                     const serviceIcons =
+//                         Array.isArray(
+//                             catalogProduct?.serviceIcons
+//                         )
+//                             ? catalogProduct.serviceIcons
+//                             : [];
+
+
+//                     const serviceColors =
+//                         Array.isArray(
+//                             catalogProduct?.serviceColors
+//                         )
+//                             ? catalogProduct.serviceColors
+//                             : [];
+
+
+//                     /*
+//                      * Combo service icons HTML
+//                      */
+
+//                     const serviceIconsHTML =
+//                         services.length > 0
+
+//                         ?
+
+//                         `
+
+//                             <div
+//                                 class="product-services"
+//                                 style="
+//                                     display:flex;
+//                                     align-items:center;
+//                                     gap:7px;
+//                                     margin-top:7px;
+//                                     flex-wrap:wrap;
+//                                 "
+//                             >
+
+//                                 ${services.map(
+//                                     (
+//                                         service,
+//                                         serviceIndex
+//                                     ) => {
+
+//                                         const icon =
+//                                             serviceIcons[
+//                                                 serviceIndex
+//                                             ] ||
+//                                             "fas fa-circle";
+
+
+//                                         const color =
+//                                             serviceColors[
+//                                                 serviceIndex
+//                                             ] ||
+//                                             productColor;
+
+
+//                                         return `
+
+//                                             <span
+//                                                 style="
+//                                                     display:inline-flex;
+//                                                     align-items:center;
+//                                                     gap:5px;
+//                                                     padding:4px 8px;
+//                                                     border-radius:8px;
+//                                                     background:${escapeHTML(
+//                                                         color
+//                                                     )}15;
+//                                                     color:${escapeHTML(
+//                                                         color
+//                                                     )};
+//                                                     font-size:11px;
+//                                                     font-weight:700;
+//                                                 "
+//                                             >
+
+//                                                 <i
+//                                                     class="${escapeHTML(
+//                                                         icon
+//                                                     )}"
+//                                                 ></i>
+
+//                                                 ${escapeHTML(
+//                                                     service
+//                                                 )}
+
+//                                             </span>
+
+//                                         `;
+
+//                                     }
+//                                 ).join("")}
+
+//                             </div>
+
+//                         `
+
+//                         :
+
+//                         "";
+
+
+//                     return `
+
+//                         <div
+//                             class="product-item"
+//                             style="
+//                                 position:relative;
+//                             "
+//                         >
+
+//                             <!-- =================================
+//                                  PRODUCT IMAGE / ICON
+//                             ================================== -->
+
+//                             <div
+//                                 style="
+//                                     width:58px;
+//                                     min-width:58px;
+//                                     height:58px;
+//                                     border-radius:14px;
+//                                     overflow:hidden;
+//                                     display:flex;
+//                                     align-items:center;
+//                                     justify-content:center;
+//                                     background:${escapeHTML(
+//                                         productColor
+//                                     )}15;
+//                                     border:1px solid ${escapeHTML(
+//                                         productColor
+//                                     )}25;
+//                                 "
+//                             >
+
+//                                 ${
+//                                     productImage
+
+//                                     ?
+
+//                                     `
+
+//                                         <img
+//                                             class="product-image"
+//                                             src="${escapeHTML(
+//                                                 productImage
+//                                             )}"
+//                                             alt="${escapeHTML(
+//                                                 productName
+//                                             )}"
+//                                             loading="lazy"
+//                                             style="
+//                                                 width:100%;
+//                                                 height:100%;
+//                                                 object-fit:cover;
+//                                             "
+//                                             onerror="
+//                                                 this.style.display='none';
+//                                                 this.nextElementSibling.style.display='flex';
+//                                             "
+//                                         >
+
+//                                         <div
+//                                             style="
+//                                                 display:none;
+//                                                 width:100%;
+//                                                 height:100%;
+//                                                 align-items:center;
+//                                                 justify-content:center;
+//                                                 color:${escapeHTML(
+//                                                     productColor
+//                                                 )};
+//                                                 font-size:22px;
+//                                             "
+//                                         >
+
+//                                             <i
+//                                                 class="${escapeHTML(
+//                                                     productIcon
+//                                                 )}"
+//                                             ></i>
+
+//                                         </div>
+
+//                                     `
+
+//                                     :
+
+//                                     `
+
+//                                         <div
+//                                             style="
+//                                                 width:100%;
+//                                                 height:100%;
+//                                                 display:flex;
+//                                                 align-items:center;
+//                                                 justify-content:center;
+//                                                 color:${escapeHTML(
+//                                                     productColor
+//                                                 )};
+//                                                 font-size:22px;
+//                                             "
+//                                         >
+
+//                                             <i
+//                                                 class="${escapeHTML(
+//                                                     productIcon
+//                                                 )}"
+//                                             ></i>
+
+//                                         </div>
+
+//                                     `
+//                                 }
+
+//                             </div>
+
+
+//                             <!-- =================================
+//                                  PRODUCT INFORMATION
+//                             ================================== -->
+
+//                             <div
+//                                 style="
+//                                     flex:1;
+//                                     min-width:0;
+//                                 "
+//                             >
+
+//                                 <div
+//                                     class="product-name"
+//                                 >
+
+//                                     ${escapeHTML(
+//                                         productName
+//                                     )}
+
+//                                 </div>
+
+
+//                                 ${
+//                                     productDescription
+
+//                                     ?
+
+//                                     `
+
+//                                         <div
+//                                             style="
+//                                                 margin-top:3px;
+//                                                 font-size:12px;
+//                                                 color:#6b7280;
+//                                                 line-height:1.4;
+//                                             "
+//                                         >
+
+//                                             ${escapeHTML(
+//                                                 productDescription
+//                                             )}
+
+//                                         </div>
+
+//                                     `
+
+//                                     :
+
+//                                     ""
+//                                 }
+
+
+//                                 <div
+//                                     class="product-meta"
+//                                     style="
+//                                         display:flex;
+//                                         gap:6px;
+//                                         flex-wrap:wrap;
+//                                         margin-top:7px;
+//                                     "
+//                                 >
+
+//                                     <span
+//                                         class="product-tag"
+//                                     >
+
+//                                         Plan:
+//                                         ${escapeHTML(
+//                                             item.plan_duration ||
+//                                             catalogProduct?.duration ||
+//                                             "Standard"
+//                                         )}
+
+//                                     </span>
+
+
+//                                     <span
+//                                         class="product-tag"
+//                                     >
+
+//                                         Qty:
+//                                         ${quantity}
+
+//                                     </span>
+
+
+//                                     <span
+//                                         class="product-tag"
+//                                     >
+
+//                                         Unit:
+//                                         ৳${money(
+//                                             price
+//                                         )}
+
+//                                     </span>
+
+//                                 </div>
+
+
+//                                 ${serviceIconsHTML}
+
+//                             </div>
+
+
+//                             <!-- =================================
+//                                  PRODUCT TOTAL
+//                             ================================== -->
+
+//                             <div
+//                                 class="product-price"
+//                             >
+
+//                                 ৳${money(
+//                                     lineTotal
+//                                 )}
+
+//                             </div>
+
+//                         </div>
+
+//                     `;
+
+//                 }
+//             ).join("")}
+
+//         </div>
+
+//     `;
+
+// }
 
 
 
@@ -4023,7 +4862,379 @@
 
     }
 
+/* =========================================================
+   RENDER ORDER PRODUCTS
+========================================================= */
 
+function renderProducts(orderId) {
+
+    const items =
+        orderItemsMap[orderId] || [];
+
+
+    if (items.length === 0) {
+
+        return `
+
+            <div
+                style="
+                    padding:16px;
+                    text-align:center;
+                    color:#6b7280;
+                    background:#f9fafb;
+                    border-radius:10px;
+                "
+            >
+
+                No products found for this order.
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div
+            class="order-products"
+            style="
+                display:flex;
+                flex-direction:column;
+                gap:12px;
+            "
+        >
+
+            ${items.map(item => {
+
+                const productName =
+                    item.product_name ||
+                    item.name ||
+                    "Product";
+
+
+                /*
+                 * Find matching product from products.js
+                 */
+                const product =
+                    findProductByName(
+                        productName
+                    );
+
+
+                const image =
+                    product?.image ||
+                    "/assets/cards/default.webp";
+
+
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const price =
+                    Number(
+                        item.price || 0
+                    );
+
+
+                const duration =
+                    item.plan_duration ||
+                    item.duration ||
+                    "Standard";
+
+
+                return `
+
+                    <div
+                        class="order-product"
+                        style="
+                            display:flex;
+                            align-items:center;
+                            gap:14px;
+                            padding:14px;
+                            background:#f9fafb;
+                            border:1px solid #e5e7eb;
+                            border-radius:12px;
+                        "
+                    >
+
+                        <!-- PRODUCT IMAGE -->
+
+                        <div
+                            style="
+                                width:58px;
+                                height:58px;
+                                min-width:58px;
+                                border-radius:10px;
+                                overflow:hidden;
+                                background:#ffffff;
+                                border:1px solid #e5e7eb;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                            "
+                        >
+
+                            <img
+                                src="${escapeHTML(
+                                    image
+                                )}"
+                                alt="${escapeHTML(
+                                    productName
+                                )}"
+                                style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                "
+                                onerror="
+                                    this.onerror=null;
+                                    this.src='/assets/cards/default.webp';
+                                "
+                            >
+
+                        </div>
+
+
+                        <!-- PRODUCT INFO -->
+
+                        <div
+                            style="
+                                flex:1;
+                                min-width:0;
+                            "
+                        >
+
+                            <div
+                                style="
+                                    font-weight:700;
+                                    color:#111827;
+                                    font-size:15px;
+                                    margin-bottom:4px;
+                                "
+                            >
+
+                                ${escapeHTML(
+                                    productName
+                                )}
+
+                            </div>
+
+
+                            <div
+                                style="
+                                    color:#6b7280;
+                                    font-size:13px;
+                                "
+                            >
+
+                                ${escapeHTML(
+                                    duration
+                                )}
+
+                                &nbsp; • &nbsp;
+
+                                Qty:
+                                ${quantity}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PRICE -->
+
+                        <div
+                            style="
+                                text-align:right;
+                                white-space:nowrap;
+                            "
+                        >
+
+                            <div
+                                style="
+                                    font-weight:700;
+                                    color:#111827;
+                                "
+                            >
+
+                                ৳${money(
+                                    price
+                                )}
+
+                            </div>
+
+                            ${
+                                quantity > 1
+                                ?
+
+                                `
+                                    <div
+                                        style="
+                                            font-size:12px;
+                                            color:#6b7280;
+                                        "
+                                    >
+                                        ৳${money(
+                                            price * quantity
+                                        )} total
+                                    </div>
+                                `
+
+                                :
+
+                                ""
+                            }
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }).join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   FIND PRODUCT BY NAME
+========================================================= */
+
+function findProductByName(
+    productName
+) {
+
+    if (
+        !productName ||
+        typeof products === "undefined"
+    ) {
+
+        return null;
+
+    }
+
+
+    const target =
+        String(
+            productName
+        )
+        .trim()
+        .toLowerCase();
+
+
+    /*
+     * 1. Exact name match
+     */
+
+    const exact =
+        Object.values(
+            products
+        ).find(
+            product =>
+                String(
+                    product?.name || ""
+                )
+                .trim()
+                .toLowerCase() ===
+                target
+        );
+
+
+    if (exact) {
+
+        return exact;
+
+    }
+
+
+    /*
+     * 2. Normalized match
+     *
+     * Handles:
+     *
+     * "Amazon Prime Video"
+     * "amazon prime video"
+     *
+     * etc.
+     */
+
+    const normalize =
+        value =>
+            String(
+                value || ""
+            )
+            .toLowerCase()
+            .replace(
+                /[^a-z0-9]+/g,
+                ""
+            );
+
+
+    const normalizedTarget =
+        normalize(
+            productName
+        );
+
+
+    const normalized =
+        Object.values(
+            products
+        ).find(
+            product =>
+                normalize(
+                    product?.name
+                ) ===
+                normalizedTarget
+        );
+
+
+    if (normalized) {
+
+        return normalized;
+
+    }
+
+
+    /*
+     * 3. Partial match
+     */
+
+    const partial =
+        Object.values(
+            products
+        ).find(
+            product => {
+
+                const name =
+                    normalize(
+                        product?.name
+                    );
+
+                return (
+                    name.includes(
+                        normalizedTarget
+                    ) ||
+                    normalizedTarget.includes(
+                        name
+                    )
+                );
+
+            }
+        );
+
+
+    return partial || null;
+
+}
 
     /* =========================================================
        RENDER ORDERS
@@ -5225,101 +6436,165 @@
             /* ================================================
                2. SUBSCRIPTION PAYLOAD
             ================================================= */
+/* ================================================
+   3. SAVE SUBSCRIPTION THROUGH ADMIN RPC
+================================================ */
 
-            const subscriptionPayload = {
+const {
+    data: savedSubscription,
+    error: subscriptionError
+} =
+    await supabaseClient.rpc(
+        "admin_save_subscription",
+        {
+            p_subscription_id:
+                subscriptionId || null,
 
-                user_id:
-                    userId,
+            p_user_id:
+                userId,
 
-                order_id:
-                    orderId,
+            p_order_id:
+                orderId,
 
-                product_name:
-                    productName,
+            p_product_name:
+                productName,
 
-                start_date:
-                    new Date(
-                        startDate
-                    ).toISOString(),
+            p_start_date:
+                new Date(
+                    startDate
+                ).toISOString(),
 
-                expiry_date:
-                    new Date(
-                        expiryDate
-                    ).toISOString(),
+            p_expiry_date:
+                new Date(
+                    expiryDate
+                ).toISOString(),
 
-                status:
-                    status,
+            p_status:
+                status,
 
-                delivery_info:
-                    deliveryInfo ||
-                    null
-
-            };
-
-
-
-            /* ================================================
-               3. INSERT OR UPDATE SUBSCRIPTION
-            ================================================= */
-
-            if (
-                subscriptionId
-            ) {
-
-                const {
-                    error
-                } =
-                    await supabaseClient
-
-                        .from("subscriptions")
-
-                        .update(
-                            subscriptionPayload
-                        )
-
-                        .eq(
-                            "id",
-                            subscriptionId
-                        );
+            p_delivery_info:
+                deliveryInfo || null
+        }
+    );
 
 
-                if (error) {
+if (subscriptionError) {
 
-                    throw error;
+    throw subscriptionError;
 
-                }
-
-            }
-            else {
-
-                const {
-                    data,
-                    error
-                } =
-                    await supabaseClient
-
-                        .from("subscriptions")
-
-                        .insert(
-                            subscriptionPayload
-                        )
-
-                        .select()
-                        .single();
+}
 
 
-                if (error) {
+if (!savedSubscription) {
 
-                    throw error;
+    throw new Error(
+        "Subscription was not returned after saving."
+    );
 
-                }
+}
 
 
-                subscriptionsMap[
-                    orderId
-                ] = data;
+/* ================================================
+   UPDATE LOCAL STATE
+================================================ */
 
-            }
+subscriptionsMap[
+    orderId
+] = savedSubscription;
+            // const subscriptionPayload = {
+
+            //     user_id:
+            //         userId,
+
+            //     order_id:
+            //         orderId,
+
+            //     product_name:
+            //         productName,
+
+            //     start_date:
+            //         new Date(
+            //             startDate
+            //         ).toISOString(),
+
+            //     expiry_date:
+            //         new Date(
+            //             expiryDate
+            //         ).toISOString(),
+
+            //     status:
+            //         status,
+
+            //     delivery_info:
+            //         deliveryInfo ||
+            //         null
+
+            // };
+
+
+
+            // /* ================================================
+            //    3. INSERT OR UPDATE SUBSCRIPTION
+            // ================================================= */
+
+            // if (
+            //     subscriptionId
+            // ) {
+
+            //     const {
+            //         error
+            //     } =
+            //         await supabaseClient
+
+            //             .from("subscriptions")
+
+            //             .update(
+            //                 subscriptionPayload
+            //             )
+
+            //             .eq(
+            //                 "id",
+            //                 subscriptionId
+            //             );
+
+
+            //     if (error) {
+
+            //         throw error;
+
+            //     }
+
+            // }
+            // else {
+
+            //     const {
+            //         data,
+            //         error
+            //     } =
+            //         await supabaseClient
+
+            //             .from("subscriptions")
+
+            //             .insert(
+            //                 subscriptionPayload
+            //             )
+
+            //             .select()
+            //             .single();
+
+
+            //     if (error) {
+
+            //         throw error;
+
+            //     }
+
+
+            //     subscriptionsMap[
+            //         orderId
+            //     ] = data;
+
+            // }
 
 
             showToast(
