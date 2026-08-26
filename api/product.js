@@ -1964,367 +1964,274 @@ ${esc(seoData.keywords.join(" • "))}
 ============================================================= -->
 
 <script>
-
 (function () {
-
     "use strict";
 
+    const HOME = ${json(SITE.domain + "/")};
+    const BASE = HOME + "product/";
+    const CURRENT = ${json(slug)};
+    const MAP = ${json(productMap)};
+    const frame = document.getElementById("productFrame");
 
-    var HOME =
-        ${json(`${SITE.domain}/`)};
-
-    var BASE =
-        HOME + "product/";
-
-    var CURRENT =
-        ${json(slug)};
-
-    var MAP =
-        ${json(clientProductMap)};
-
-    var frame =
-        document.getElementById("productFrame");
-
-
-    // ------------------------------------------------------------
-    // HOME
-    // ------------------------------------------------------------
+    /* ---------------------------------------------------------
+       NAVIGATION HELPERS
+    --------------------------------------------------------- */
 
     function goHome() {
-
-        if (
-            window.top.location.href !== HOME
-        ) {
-            window.top.location.href = HOME;
-        }
+        // Always navigate the TOP window.
+        // This is important because the storefront is inside an iframe.
+        window.top.location.assign(HOME);
     }
 
-
-    // ------------------------------------------------------------
-    // FIND PRODUCT BY NAME
-    // ------------------------------------------------------------
-
     function byName(name) {
+        name = String(name || "").trim().toLowerCase();
 
-        name =
-            String(name || "")
-                .trim()
-                .toLowerCase();
-
-        for (var key in MAP) {
-
-            if (
-                Object.prototype.hasOwnProperty.call(
-                    MAP,
-                    key
-                ) &&
-                MAP[key].name.toLowerCase() === name
-            ) {
+        for (const key in MAP) {
+            if (MAP[key].name.toLowerCase() === name) {
                 return key;
             }
         }
 
+        const slug = name
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-+|-+$/g, "");
 
-        var generated =
-            name
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "");
-
-
-        return MAP[generated]
-            ? generated
-            : "";
+        return MAP[slug] ? slug : "";
     }
 
+    function goProduct(productSlug) {
+        if (!productSlug || !MAP[productSlug]) return;
 
-    // ------------------------------------------------------------
-    // NAVIGATE PRODUCT
-    // ------------------------------------------------------------
+        if (productSlug === CURRENT) return;
 
-    function go(slug) {
+        window.top.location.assign(
+            BASE + encodeURIComponent(productSlug)
+        );
+    }
 
-        if (
-            MAP[slug] &&
-            slug !== CURRENT
-        ) {
+    function navigateFromDetails(name) {
+        const slug = byName(name);
 
-            window.top.location.href =
-                BASE + encodeURIComponent(slug);
+        if (slug) {
+            goProduct(slug);
         }
     }
 
+    /* ---------------------------------------------------------
+       MESSAGE NAVIGATION
+       details.html can explicitly tell the SEO wrapper where
+       the user wants to go.
+    --------------------------------------------------------- */
 
-    // ------------------------------------------------------------
-    // INSPECT IFRAME
-    // ------------------------------------------------------------
+    window.addEventListener("message", function (event) {
 
-    function inspect() {
+        if (!event.data || typeof event.data !== "object") {
+            return;
+        }
+
+        if (event.data.type === "NLS_GO_HOME") {
+            goHome();
+            return;
+        }
+
+        if (event.data.type === "NLS_NAVIGATE_PRODUCT") {
+
+            const slug =
+                event.data.productSlug &&
+                MAP[event.data.productSlug]
+                    ? event.data.productSlug
+                    : byName(event.data.productName);
+
+            if (slug) {
+                goProduct(slug);
+            }
+        }
+    });
+
+    /* ---------------------------------------------------------
+       INTERCEPT LINKS INSIDE DETAILS.HTML
+    --------------------------------------------------------- */
+
+    frame.addEventListener("load", function () {
 
         try {
 
-            var currentURL =
-                new URL(
-                    frame.contentWindow.location.href
-                );
+            const doc = frame.contentWindow.document;
 
+            doc.addEventListener("click", function (event) {
 
-            var productMatch =
-                currentURL.pathname.match(
-                    /^\/product\/([^/]+)\/?$/i
-                );
+                const link =
+                    event.target.closest &&
+                    event.target.closest("a");
 
+                if (!link) return;
 
-            if (productMatch) {
+                const href = link.getAttribute("href");
 
-                var target =
-                    decodeURIComponent(
-                        productMatch[1]
-                    ).toLowerCase();
+                if (!href) return;
 
-                if (MAP[target]) {
-                    go(target);
+                /* ---------------------------------------------
+                   HOME LINKS
+                --------------------------------------------- */
+
+                const normalized = href
+                    .trim()
+                    .toLowerCase();
+
+                if (
+                    normalized === "/" ||
+                    normalized === "" ||
+                    normalized === HOME.toLowerCase() ||
+                    normalized === "/index.html"
+                ) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    goHome();
+                    return;
+                }
+
+                /* ---------------------------------------------
+                   PRODUCT LINKS
+                --------------------------------------------- */
+
+                try {
+
+                    const url = new URL(
+                        href,
+                        frame.contentWindow.location.href
+                    );
+
+                    const match = url.pathname.match(
+                        /^\/product\/([^/]+)\/?$/i
+                    );
+
+                    if (match) {
+
+                        const productSlug =
+                            decodeURIComponent(match[1]).toLowerCase();
+
+                        if (MAP[productSlug]) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            goProduct(productSlug);
+                            return;
+                        }
+                    }
+
+                    /* -----------------------------------------
+                       details.html?name=...
+                    ----------------------------------------- */
+
+                    if (
+                        /\/details\.html$/i.test(
+                            url.pathname
+                        )
+                    ) {
+
+                        const name =
+                            url.searchParams.get("name");
+
+                        const productSlug =
+                            byName(name);
+
+                        if (productSlug) {
+
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            goProduct(productSlug);
+                            return;
+                        }
+                    }
+
+                } catch (error) {
+                    // Ignore malformed links.
+                }
+
+            }, true);
+
+        } catch (error) {
+            // Cross-document access can fail in some environments.
+        }
+    });
+
+    /* ---------------------------------------------------------
+       FALLBACK URL CHECK
+       Only check when the iframe actually navigates.
+       No aggressive 700ms polling.
+    --------------------------------------------------------- */
+
+    let lastFrameURL = "";
+
+    function inspectFrame() {
+
+        try {
+
+            const currentURL =
+                frame.contentWindow.location.href;
+
+            if (!currentURL || currentURL === lastFrameURL) {
+                return;
+            }
+
+            lastFrameURL = currentURL;
+
+            const url = new URL(currentURL);
+
+            /* Home */
+
+            if (
+                url.pathname === "/" ||
+                /\/index\.html$/i.test(url.pathname)
+            ) {
+                goHome();
+                return;
+            }
+
+            /* Product URL */
+
+            const match = url.pathname.match(
+                /^\/product\/([^/]+)\/?$/i
+            );
+
+            if (match) {
+
+                const productSlug =
+                    decodeURIComponent(match[1]).toLowerCase();
+
+                if (MAP[productSlug]) {
+                    goProduct(productSlug);
                     return;
                 }
             }
 
+            /* details.html */
 
-            if (
-                /details\.html/i.test(
-                    currentURL.pathname
-                )
-            ) {
+            if (/\/details\.html$/i.test(url.pathname)) {
 
-                var name =
-                    currentURL.searchParams.get(
-                        "name"
-                    );
+                const name =
+                    url.searchParams.get("name");
 
-                if (name) {
+                const productSlug =
+                    byName(name);
 
-                    var resolved =
-                        byName(name);
-
-                    if (resolved) {
-                        go(resolved);
-                        return;
-                    }
+                if (productSlug) {
+                    goProduct(productSlug);
                 }
             }
 
-
-            if (
-                currentURL.pathname === "/" ||
-                /\/index\.html$/i.test(
-                    currentURL.pathname
-                )
-            ) {
-                goHome();
-            }
-
-        } catch (_) {
-
-            // Cross-origin iframe access can fail.
-            // Navigation through postMessage still works.
+        } catch (error) {
+            // Ignore inaccessible iframe URL checks.
         }
     }
 
-
-    // ------------------------------------------------------------
-    // POSTMESSAGE NAVIGATION
-    // ------------------------------------------------------------
-
-    window.addEventListener(
-        "message",
-        function (event) {
-
-            if (!event.data) {
-                return;
-            }
-
-
-            if (
-                event.data.type ===
-                "NLS_GO_HOME"
-            ) {
-                goHome();
-                return;
-            }
-
-
-            if (
-                event.data.type ===
-                "NLS_NAVIGATE_PRODUCT"
-            ) {
-
-                var target =
-                    event.data.productSlug &&
-                    MAP[event.data.productSlug]
-                        ? event.data.productSlug
-                        : byName(
-                            event.data.productName ||
-                            event.data.productSlug
-                        );
-
-
-                if (target) {
-                    go(target);
-                }
-            }
-        }
-    );
-
-
-    // ------------------------------------------------------------
-    // SAME-ORIGIN LINK INTERCEPTION
-    // ------------------------------------------------------------
-
-    frame.addEventListener(
-        "load",
-        function () {
-
-            try {
-
-                var frameDocument =
-                    frame.contentWindow.document;
-
-
-                frameDocument.addEventListener(
-                    "click",
-                    function (event) {
-
-                        var anchor =
-                            event.target.closest &&
-                            event.target.closest("a");
-
-
-                        if (!anchor) {
-                            return;
-                        }
-
-
-                        try {
-
-                            var targetURL =
-                                new URL(
-                                    anchor.href,
-                                    frame.contentWindow.location.href
-                                );
-
-
-                            var match =
-                                targetURL.pathname.match(
-                                    /^\/product\/([^/]+)\/?$/i
-                                );
-
-
-                            if (match) {
-
-                                var targetSlug =
-                                    decodeURIComponent(
-                                        match[1]
-                                    ).toLowerCase();
-
-
-                                if (MAP[targetSlug]) {
-
-                                    event.preventDefault();
-                                    event.stopPropagation();
-
-                                    go(targetSlug);
-
-                                    return;
-                                }
-                            }
-
-
-                            if (
-                                /details\.html/i.test(
-                                    targetURL.pathname
-                                )
-                            ) {
-
-                                var productName =
-                                    targetURL.searchParams.get(
-                                        "name"
-                                    );
-
-
-                                var resolvedSlug =
-                                    byName(productName);
-
-
-                                if (resolvedSlug) {
-
-                                    event.preventDefault();
-                                    event.stopPropagation();
-
-                                    go(resolvedSlug);
-                                }
-                            }
-
-                        } catch (_) {
-                            // Ignore malformed links.
-                        }
-
-                    },
-                    true
-                );
-
-            } catch (_) {
-                // Ignore cross-origin restrictions.
-            }
-
-        }
-    );
-
-
-    // ------------------------------------------------------------
-    // FALLBACK POLLING
-    //
-    // Reduced from an aggressive continuous loop.
-    // ------------------------------------------------------------
-
-    var inspectionTimer =
-        setInterval(
-            inspect,
-            1500
-        );
-
-
-    setTimeout(
-        inspect,
-        800
-    );
-
-
-    // Stop unnecessary polling when page is hidden.
-    document.addEventListener(
-        "visibilitychange",
-        function () {
-
-            if (document.hidden) {
-
-                clearInterval(
-                    inspectionTimer
-                );
-
-            } else {
-
-                inspectionTimer =
-                    setInterval(
-                        inspect,
-                        1500
-                    );
-
-                inspect();
-            }
-
-        }
-    );
-
+    frame.addEventListener("load", inspectFrame);
 
 })();
-
 </script>
 
 
