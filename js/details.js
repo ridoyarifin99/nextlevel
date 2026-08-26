@@ -1,5 +1,6 @@
- // Product data with individual pricing and features for each item
-        const products = [
+"use strict";
+
+const products = [
             // Best-selling Subscriptions
             {
                 name: "Netflix Premium",
@@ -4337,3 +4338,10 @@
                 ]
             }
         ];
+        //
+
+        // ============================================================
+// GLOBAL EXPORT
+// ============================================================
+
+window.products = products;
