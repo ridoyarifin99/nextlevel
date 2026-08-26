@@ -4,37 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details | NEXT LEVEL SUBS</title>
+
+    <!-- Restored SEO & Meta Tags -->
+    <meta name="description" content="Premium digital subscriptions, streaming services, VPNs, AI tools and more from NEXT LEVEL SUBS.">
+    <link rel="canonical" href="https://nextlevelsubs.com/details.html">
+    <meta property="og:site_name" content="NEXT LEVEL SUBS">
+    <meta property="og:title" content="NEXT LEVEL SUBS">
+    <meta property="og:description" content="Premium digital subscriptions at affordable prices.">
+    <meta property="og:image" content="https://nextlevelsubs.com/images/next_level.png">
+    <meta property="og:url" content="https://nextlevelsubs.com/details.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="NEXT LEVEL SUBS">
+    <meta name="twitter:description" content="Premium digital subscriptions at affordable prices.">
+    <meta name="twitter:image" content="https://nextlevelsubs.com/images/next_level.png">
+
     <link rel="stylesheet" href="/src/output.css">
     <link rel="stylesheet" href="/src/all.min.css">
     <link rel="stylesheet" href="./src/aos.css">
     <script src="./src/aos.js"></script>
+
     <style>
         :root {
             --primary-color: #6a11cb;
             --primary-dark: #4a0699;
             --primary-light: #9d4edd;
             --secondary-color: #2575fc;
+            --text-dark: #2C3E50;
+            --text-light: #7F8C8D;
             --transition: all .3s cubic-bezier(.4, 0, .2, 1);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        body { font-family: Inter, sans-serif; background: #f8fafc; }
+        body { font-family: Inter, sans-serif; background: #f8fafc; color: var(--text-dark); }
         
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;
+            background-color: rgba(255, 255, 255, 0.95); transition: opacity 0.3s ease, visibility 0.3s ease;
+            opacity: 1; visibility: visible;
+        }
+        .loading-overlay.hidden { opacity: 0; visibility: hidden; }
+        .loading-spinner {
+            width: 60px; height: 60px; border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* Buttons */
         .btn-primary {
             background: linear-gradient(to right, var(--primary-color), var(--primary-light));
-            color: white; transition: var(--transition); border: none;
-            border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer;
+            color: white; transition: var(--transition); border: none; border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(106, 17, 203, 0.2);
         }
         .btn-primary:hover { background: linear-gradient(to right, var(--primary-dark), var(--primary-color)); transform: translateY(-2px); }
         .btn-whatsapp {
-            background-color: #25D366; color: white; transition: var(--transition); border: none;
-            border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer;
+            background-color: #25D366; color: white; transition: var(--transition); border: none; border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
         }
         .btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
         
         /* Plan Cards */
         .plan-card {
-            transition: var(--transition); cursor: pointer; border: 2px solid #e5e7eb;
-            border-radius: 0.75rem; background: white; padding: 1rem; text-align: center; position: relative;
+            transition: var(--transition); cursor: pointer; border: 2px solid #e5e7eb; border-radius: 0.75rem;
+            background: white; padding: 1rem; text-align: center; position: relative; box-shadow: var(--shadow);
         }
         .plan-card:hover { transform: translateY(-5px); border-color: var(--primary-light); }
         .plan-card.selected { border-color: var(--primary-color); background-color: rgba(106, 17, 203, 0.05); }
@@ -42,21 +82,21 @@
 
         /* Tabs */
         .tab-button {
-            transition: var(--transition); position: relative; color: #64748b;
-            font-weight: 600; padding: 1rem 0; margin-right: 2rem; background: none; border: none; cursor: pointer;
+            transition: var(--transition); position: relative; color: var(--text-dark); font-weight: 500;
+            padding: 1rem 0; margin-right: 2rem; background: none; border: none; cursor: pointer; font-size: 1rem;
         }
         .tab-button.active { color: var(--primary-color); }
         .tab-button.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary-color); border-radius: 3px; }
 
         /* Gallery */
-        .gallery-container { border-radius: 1rem; overflow: hidden; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); position: relative; }
+        .gallery-container { border-radius: 1rem; overflow: hidden; box-shadow: var(--shadow-hover); position: relative; }
         .gallery-slider { display: flex; transition: transform 0.5s ease-in-out; }
         .gallery-slide { min-width: 100%; aspect-ratio: 16/9; }
         .gallery-slide img { width: 100%; height: 100%; object-fit: cover; }
         .gallery-thumbnail { transition: var(--transition); cursor: pointer; opacity: 0.6; border: 2px solid transparent; border-radius: 0.5rem; }
         .gallery-thumbnail:hover { opacity: 1; }
         .gallery-thumbnail.active { opacity: 1; border-color: var(--primary-color); }
-        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; }
+        .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .gallery-prev { left: 10px; }
         .gallery-next { right: 10px; }
 
@@ -75,17 +115,37 @@
         .faq-icon { transition: transform 0.3s ease; }
 
         /* Related Products */
-        .subscription-card { transition: var(--transition); background: white; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .subscription-card { transition: var(--transition); background: white; border-radius: 0.75rem; overflow: hidden; box-shadow: var(--shadow); height: 100%; display: flex; flex-direction: column; }
         .subscription-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(106,17,203,0.15); }
+
+        /* Floating Buttons */
+        .fab, .whatsapp-fab {
+            position: fixed; bottom: 30px; width: 60px; height: 60px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; box-shadow: var(--shadow-hover); cursor: pointer;
+            transition: var(--transition); z-index: 100; opacity: 0; visibility: hidden;
+        }
+        .fab { right: 30px; background: linear-gradient(to right, var(--primary-color), var(--primary-light)); color: white; }
+        .fab:hover { background: linear-gradient(to right, var(--primary-dark), var(--primary-color)); transform: scale(1.1); }
+        .whatsapp-fab { right: 100px; background-color: #25D366; color: white; }
+        .whatsapp-fab:hover { background-color: #128C7E; transform: scale(1.1); }
+        .fab i, .whatsapp-fab i { font-size: 24px; }
+        
+        /* Modal */
+        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="bg-gray-50">
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
 
     <!-- Header -->
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <a href="index.html" class="flex items-center space-x-2">
-                <img src="/images/next_level.png" alt="Logo" class="h-10 w-auto">
+                <img src="/images/next_level.png" alt="NEXT LEVEL SUBS Logo" class="h-10 w-auto">
             </a>
             <div class="flex items-center space-x-4">
                 <a href="index.html" class="text-gray-600 hover:text-purple-600 hidden sm:block"><i class="fas fa-arrow-left mr-2"></i>Back to Shop</a>
@@ -103,6 +163,8 @@
             <ol class="flex items-center space-x-2 text-sm">
                 <li><a href="index.html" class="text-gray-500 hover:text-blue-500">Home</a></li>
                 <li class="text-gray-400">/</li>
+                <li><a href="index.html" class="text-gray-500 hover:text-blue-500">Subscriptions</a></li>
+                <li class="text-gray-400">/</li>
                 <li id="breadcrumbProduct" class="text-gray-700 font-medium">Product Details</li>
             </ol>
         </div>
@@ -112,7 +174,7 @@
     <main class="py-8">
         <div class="container mx-auto px-4">
             <div id="productDetails" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Loading Skeleton -->
+                <!-- Skeleton Loading -->
                 <div class="animate-pulse">
                     <div class="bg-gray-300 rounded-xl h-96 w-full mb-4"></div>
                     <div class="flex gap-2"><div class="bg-gray-300 h-20 w-20 rounded-lg"></div><div class="bg-gray-300 h-20 w-20 rounded-lg"></div></div>
@@ -126,7 +188,7 @@
             </div>
             
             <!-- Tabs Section -->
-            <div class="mt-12 bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="mt-12 bg-white rounded-xl shadow-md overflow-hidden" data-aos="fade-up">
                 <div class="border-b border-gray-200 flex px-6 overflow-x-auto">
                     <button class="tab-button active whitespace-nowrap" onclick="switchTab('description')">Description</button>
                     <button class="tab-button whitespace-nowrap" onclick="switchTab('features')">Features</button>
@@ -138,29 +200,54 @@
             
             <!-- Related Products -->
             <div class="mt-12">
-                <h2 class="text-2xl font-bold mb-6">Related Subscriptions</h2>
+                <div class="flex items-center mb-6">
+                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-fire text-blue-500"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">Related Subscriptions</h2>
+                        <p class="text-gray-500 text-sm">You might also like these services</p>
+                    </div>
+                </div>
                 <div id="relatedProducts" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4"></div>
             </div>
         </div>
     </main>
 
+    <!-- Floating Action Buttons -->
+    <div id="fab" class="fab" onclick="scrollToTop()" style="opacity: 0; visibility: hidden;">
+        <i class="fa-solid fa-chevrons-up"></i>
+    </div>
+    <div id="whatsappFab" class="whatsapp-fab" onclick="sendToWhatsApp()" style="opacity: 0; visibility: hidden;">
+        <i class="fa-brands fa-whatsapp fa-beat-fade"></i>
+    </div>
+
     <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center">
-            <i class="fas fa-check text-5xl text-green-500 mb-4"></i>
-            <h2 class="text-2xl font-bold mb-2">Added to Cart!</h2>
-            <button onclick="document.getElementById('successModal').classList.add('hidden')" class="btn-primary mt-4">Continue Shopping</button>
+    <div id="successModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop absolute inset-0"></div>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-3xl text-green-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2">Added to Cart!</h2>
+                <p class="text-gray-600 mb-6">Your subscription has been added to the cart.</p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="closeSuccessModal()" class="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors">Continue Shopping</button>
+                    <a href="checkout.html" class="px-6 py-2 rounded-lg font-semibold text-white btn-primary">View Cart</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./js/supabase-config.js"></script>
-    <!-- Load your massive product array externally -->
+    <!-- Load products externally -->
     <script src="./js/details_product.js"></script>
     
     <script>
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 800, once: true, offset: 100 });
 
         let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
         let currentProduct = null;
@@ -170,6 +257,9 @@
         let currentSlide = 0;
 
         const supabase = window.supabaseClient;
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const fab = document.getElementById('fab');
+        const whatsappFab = document.getElementById('whatsappFab');
 
         // Auth State Listener
         if (supabase) {
@@ -184,9 +274,21 @@
             });
         }
 
+        // Scroll listener for FABs
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                fab.style.opacity = '1'; fab.style.visibility = 'visible';
+                whatsappFab.style.opacity = '1'; whatsappFab.style.visibility = 'visible';
+            } else {
+                fab.style.opacity = '0'; fab.style.visibility = 'hidden';
+                whatsappFab.style.opacity = '0'; whatsappFab.style.visibility = 'hidden';
+            }
+        });
+
         window.onload = function() {
             if (typeof products === 'undefined' || products.length === 0) {
-                document.getElementById('productDetails').innerHTML = '<div class="col-span-2 text-center text-red-500 font-bold">Error: Products array not found. Make sure js/details_product.js is loaded.</div>';
+                document.getElementById('productDetails').innerHTML = '<div class="col-span-2 text-center text-red-500 font-bold">Error: Products array not found. Make sure js/details_product.js is loaded correctly.</div>';
+                loadingOverlay.classList.add('hidden');
                 return;
             }
 
@@ -196,9 +298,12 @@
             if (productName) {
                 loadProduct(productName);
             } else {
-                loadProduct(products[0].name);
+                loadProduct(products[0].name); // Fallback to first product if no URL param
             }
             updateCartCount();
+            
+            // Hide loading overlay
+            setTimeout(() => loadingOverlay.classList.add('hidden'), 300);
         };
 
         function loadProduct(name) {
@@ -219,6 +324,7 @@
         function renderProductDetails() {
             document.getElementById('breadcrumbProduct').textContent = currentProduct.name;
             const images = currentProduct.images || [currentProduct.image];
+            currentSlide = 0; // Reset slide
             
             document.getElementById('productDetails').innerHTML = `
                 <div data-aos="fade-right">
@@ -238,10 +344,15 @@
                     ` : ''}
                 </div>
                 <div data-aos="fade-left">
-                    <h1 class="text-3xl font-bold mb-2">${currentProduct.name}</h1>
                     <div class="flex items-center mb-4">
-                        <div class="text-yellow-400 mr-2">${'<i class="fas fa-star"></i>'.repeat(Math.round(currentProduct.rating || 5))}</div>
-                        <span class="text-gray-600">${currentProduct.rating || 5} Stars</span>
+                        <img src="${currentProduct.image}" alt="${currentProduct.name}" class="w-16 h-16 rounded-lg mr-4 object-contain">
+                        <div>
+                            <h1 class="text-3xl font-bold">${currentProduct.name}</h1>
+                            <div class="flex items-center mt-1">
+                                <div class="flex text-yellow-400 mr-2">${'<i class="fas fa-star"></i>'.repeat(Math.round(currentProduct.rating || 5))}</div>
+                                <span class="text-gray-600">${currentProduct.rating || 5} (${(currentProduct.reviews || 0).toLocaleString()} reviews)</span>
+                            </div>
+                        </div>
                     </div>
                     <p class="text-gray-600 mb-6">${currentProduct.description}</p>
                     
@@ -260,6 +371,12 @@
                     <div class="flex space-x-4">
                         <button onclick="addToCart()" class="btn-primary flex-1 py-3 rounded-lg font-semibold"><i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart</button>
                         <button onclick="buyNow()" class="btn-whatsapp flex-1 py-3 rounded-lg font-semibold"><i class="fab fa-whatsapp mr-2"></i>Buy Now</button>
+                    </div>
+                    
+                    <div class="mt-6 pt-6 border-t border-gray-200 flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2">
+                        <div class="flex items-center"><i class="fas fa-shield-alt mr-2"></i><span>30-Day Money Back Guarantee</span></div>
+                        <div class="flex items-center"><i class="fas fa-lock mr-2"></i><span>Secure Payment</span></div>
+                        <div class="flex items-center"><i class="fas fa-headset mr-2"></i><span>24/7 Support</span></div>
                     </div>
                 </div>
             `;
@@ -297,12 +414,14 @@
                 tabContent.innerHTML = `
                     <div class="prose max-w-none">
                         <p class="text-gray-700 mb-4">${currentProduct.description}</p>
-                        <p class="text-gray-700 mb-4">Experience the best quality service with our premium offerings. Full access to all features without any ads.</p>
+                        <h3 class="text-xl font-semibold mb-3">Why Choose ${currentProduct.name}?</h3>
+                        <p class="text-gray-700 mb-4">${currentProduct.name} offers an unparalleled experience with a vast library of content. From premium features to exclusive benefits, there's something for everyone.</p>
+                        <p class="text-gray-700 mb-4">With our subscription, you get unlimited access to all features without any ads or interruptions. Experience the best quality service with our premium offerings.</p>
                     </div>`;
             } else if (tabName === 'features') {
                 const features = currentProduct.features || [];
                 tabContent.innerHTML = features.length > 0 ? 
-                    `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${features.map(f => `<div class="flex items-start p-4 bg-gray-50 rounded-lg"><i class="fas fa-check text-green-500 mt-1 mr-3"></i><span>${f}</span></div>`).join('')}</div>`
+                    `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${features.map((f, index) => `<div class="flex items-start p-4 bg-gray-50 rounded-lg" data-aos="fade-up" data-aos-delay="${index * 50}"><i class="fas fa-check text-green-500 mt-1 mr-3"></i><span>${f}</span></div>`).join('')}</div>`
                     : `<p class="text-gray-500">No features listed.</p>`;
             } else if (tabName === 'reviews') {
                 tabContent.innerHTML = `<div id="reviewFormContainer"></div><div id="reviewsList" class="mt-6"></div>`;
@@ -337,14 +456,16 @@
                 document.getElementById('relatedProducts').innerHTML = '<p class="text-gray-500">No related products found.</p>';
                 return;
             }
-            document.getElementById('relatedProducts').innerHTML = related.map(p => `
-                <a href="details.html?name=${encodeURIComponent(p.name)}" class="subscription-card block">
-                    <img src="${p.image}" alt="${p.name}" class="w-full h-32 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-bold text-md mb-1">${p.name}</h3>
-                        <div class="text-purple-600 font-bold">${p.pricing[0].currency} ${p.pricing[0].price}</div>
-                    </div>
-                </a>
+            document.getElementById('relatedProducts').innerHTML = related.map((p, index) => `
+                <div class="subscription-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+                    <a href="details.html?name=${encodeURIComponent(p.name)}" class="block">
+                        <img src="${p.image}" alt="${p.name}" class="w-full h-32 object-cover">
+                        <div class="p-4">
+                            <h3 class="font-bold text-md mb-1">${p.name}</h3>
+                            <div class="text-purple-600 font-bold">${p.pricing[0].currency} ${p.pricing[0].price}</div>
+                        </div>
+                    </a>
+                </div>
             `).join('');
         }
 
@@ -448,7 +569,7 @@
             }
         }
 
-        // --- CART LOGIC ---
+        // --- CART & UI LOGIC ---
         function addToCart() {
             const item = { ...currentProduct, selectedPlan: currentProduct.pricing[selectedPlan], quantity: 1 };
             const idx = cart.findIndex(c => c.name === currentProduct.name);
@@ -464,7 +585,24 @@
         }
 
         function updateCartCount() {
-            document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('cartCount').classList.add('animate-pulse-once');
+            setTimeout(() => document.getElementById('cartCount').classList.remove('animate-pulse-once'), 500);
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function sendToWhatsApp() {
+            const plan = currentProduct.pricing[selectedPlan];
+            const message = `Hello! I'm interested in purchasing:\n\n*Product:* ${currentProduct.name}\n*Plan:* ${plan.duration}\n*Price:* ${plan.currency} ${plan.price}\n\nPlease provide payment details. Thank you!`;
+            window.open(`https://wa.me/8801644490566?text=${encodeURIComponent(message)}`, '_blank');
         }
     </script>
 </body>
