@@ -38,7 +38,7 @@
         /* Tabs */
         .tab-button {
             transition: var(--transition); position: relative; color: #64748b;
-            font-weight: 600; padding: 1rem 0; margin-right: 2rem;
+            font-weight: 600; padding: 1rem 0; margin-right: 2rem; background: none; border: none;
         }
         .tab-button.active { color: var(--primary-color); }
         .tab-button.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary-color); border-radius: 3px; }
@@ -96,7 +96,26 @@
     <!-- Main Content -->
     <main class="py-8">
         <div class="container mx-auto px-4">
-            <div id="productDetails" class="grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
+            <div id="productDetails" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Loading Skeleton -->
+                <div class="animate-pulse">
+                    <div class="bg-gray-300 rounded-xl h-96 w-full mb-4"></div>
+                    <div class="flex gap-2">
+                        <div class="bg-gray-300 h-20 w-20 rounded-lg"></div>
+                        <div class="bg-gray-300 h-20 w-20 rounded-lg"></div>
+                    </div>
+                </div>
+                <div class="animate-pulse">
+                    <div class="bg-gray-300 h-8 w-3/4 mb-4 rounded"></div>
+                    <div class="bg-gray-300 h-4 w-full mb-2 rounded"></div>
+                    <div class="bg-gray-300 h-4 w-5/6 mb-6 rounded"></div>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-300 h-24 rounded-lg"></div>
+                        <div class="bg-gray-300 h-24 rounded-lg"></div>
+                    </div>
+                    <div class="bg-gray-300 h-12 w-full rounded-lg"></div>
+                </div>
+            </div>
             
             <!-- Tabs Section -->
             <div class="mt-12 bg-white rounded-xl shadow-md overflow-hidden">
@@ -129,30 +148,11 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="./js/supabase-config.js"></script>
+    <!-- Load products from external file to prevent code bloat -->
+    <script src="./js/products.js"></script>
     
     <script>
         AOS.init({ duration: 800, once: true });
-
-        // =====================================================================
-        // PASTE YOUR GIANT PRODUCTS ARRAY HERE
-        // Example: const products = [ { name: "Netflix", ... }, { name: "Spotify", ... } ];
-        // =====================================================================
-        const products = [
-            {
-                name: "Netflix Premium",
-                description: "Watch unlimited movies and TV shows",
-                image: "./assets/details/netflix/netflix.webp",
-                images: [ "./assets/details/netflix/netflix1.webp", "./assets/details/netflix/netflix2.webp", "./assets/details/netflix/netflix3.webp" ],
-                categories: ["best-selling", "popular-streaming"],
-                rating: 4.7,
-                pricing: [
-                    { duration: "1 Month", price: 379, currency: "BDT", popular: false, discount: "Save 30 Taka" },
-                    { duration: "6 Months", price: 2199, currency: "BDT", popular: true, discount: "Save 75 Taka" }
-                ],
-                features: ["4K Ultra HD streaming", "Watch on multiple devices", "Download for offline viewing", "Ad-free experience"],
-                faq: [{ question: "Is it 4K?", answer: "Yes, Netflix Premium offers 4K." }]
-            }
-        ]; 
 
         let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
         let currentProduct = null;
@@ -169,26 +169,37 @@
             });
             supabase.auth.onAuthStateChange((event, session) => {
                 currentUser = session?.user || null;
-                if (document.querySelector('.tab-button.active').textContent.includes('Reviews')) {
+                if (document.querySelector('.tab-button.active')?.textContent.includes('Reviews')) {
                     initReviewsTab(); 
                 }
             });
         }
 
-        function init() {
+        window.onload = function() {
+            // Ensure products array is loaded from products.js
+            if (typeof products === 'undefined' || products.length === 0) {
+                document.getElementById('productDetails').innerHTML = '<div class="col-span-2 text-center text-red-500 font-bold">Error: Products array not found. Make sure js/products.js is loaded correctly.</div>';
+                return;
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const productName = decodeURIComponent(urlParams.get('name'));
+            
             if (productName) {
                 loadProduct(productName);
             } else {
-                window.location.href = 'index.html';
+                // If no product name in URL, just load the first product as a fallback so page isn't blank
+                loadProduct(products[0].name);
             }
             updateCartCount();
-        }
+        };
 
         function loadProduct(name) {
             currentProduct = products.find(p => p.name === name);
-            if (!currentProduct) return window.location.href = 'index.html';
+            if (!currentProduct) {
+                document.getElementById('productDetails').innerHTML = `<div class="col-span-2 text-center text-gray-500">Product not found. <a href="index.html" class="text-purple-600 underline">Go back</a></div>`;
+                return;
+            }
             
             selectedPlan = currentProduct.pricing.findIndex(p => p.popular);
             if (selectedPlan === -1) selectedPlan = 0;
@@ -240,10 +251,14 @@
                     </button>
                 </div>
             `;
+            // Set first thumbnail as active
+            const thumbs = document.querySelectorAll('.gallery-thumbnail');
+            if(thumbs.length > 0) thumbs[0].classList.add('active');
         }
 
         function goToSlide(index) {
             const slider = document.getElementById('gallerySlider');
+            if(!slider) return;
             slider.style.transform = `translateX(-${index * 100}%)`;
             document.querySelectorAll('.gallery-thumbnail').forEach((thumb, i) => {
                 thumb.classList.toggle('active', i === index);
@@ -282,6 +297,10 @@
 
         function loadRelatedProducts() {
             const related = products.filter(p => p.name !== currentProduct.name && p.categories.some(c => currentProduct.categories.includes(c))).slice(0, 5);
+            if(related.length === 0) {
+                document.getElementById('relatedProducts').innerHTML = '<p class="text-gray-500">No related products found.</p>';
+                return;
+            }
             document.getElementById('relatedProducts').innerHTML = related.map(p => `
                 <a href="details.html?name=${encodeURIComponent(p.name)}" class="subscription-card block">
                     <img src="${p.image}" alt="${p.name}" class="w-full h-32 object-cover">
@@ -402,8 +421,6 @@
         function updateCartCount() {
             document.getElementById('cartCount').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
-
-        init();
     </script>
 </body>
 </html>
