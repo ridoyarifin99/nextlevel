@@ -1,647 +1,125 @@
+"use strict";
+
+/*
+============================================================
+NEXT LEVEL SUBS
+PRODUCTION HYBRID PRODUCT SEO HANDLER
+============================================================
+
+DATA SOURCES
+------------------------------------------------------------
+/js/details.js
+    → Full product data
+    → name
+    → description
+    → images
+    → categories
+    → pricing
+    → features
+    → reviews
+    → FAQ
+    → etc.
+
+/api/seo-content.js
+    → SEO title
+    → meta description
+    → intro
+    → SEO sections
+
+THIS FILE
+------------------------------------------------------------
+Combines both sources and generates:
+
+/product/netflix-premium
+/product/spotify-premium
+/product/hbo-max
+...
+
+FEATURES
+------------------------------------------------------------
+✓ Clean product URLs
+✓ Server-rendered SEO
+✓ Product-specific SEO title
+✓ Product-specific meta description
+✓ Canonical URL
+✓ Open Graph
+✓ WhatsApp/Facebook preview metadata
+✓ Twitter/X metadata
+✓ Product JSON-LD
+✓ Breadcrumb JSON-LD
+✓ WebPage JSON-LD
+✓ Organization JSON-LD
+✓ Pricing / plans from details.js
+✓ Features from details.js
+✓ Server-rendered product information
+✓ Related product internal links
+✓ Existing details.html UI inside iframe
+✓ Product navigation
+✓ Home navigation
+✓ Back navigation
+✓ Proper 404
+✓ Proper 405
+✓ GET + HEAD support
+✓ Caching headers
+
+IMPORTANT
+------------------------------------------------------------
+details.html is NOT rewritten.
+
+============================================================
+*/
+
 // ============================================================
-// NEXT LEVEL SUBS
-// PRODUCTION HYBRID PRODUCT SEO HANDLER
+// IMPORT PRODUCT DATABASE
 // ============================================================
 //
-// Clean product URLs:
+// details.js must contain:
 //
-// https://www.nextlevelsubs.com/product/netflix-premium
-// https://www.nextlevelsubs.com/product/spotify-premium
-// https://www.nextlevelsubs.com/product/hbo-max
+// window.products = products;
 //
-// PURPOSE
-// ------------------------------------------------------------
-// 1. Server-rendered SEO HTML
-// 2. Product-specific title / description
-// 3. Canonical URL
-// 4. Open Graph / WhatsApp / Facebook metadata
-// 5. Twitter/X metadata
-// 6. Product JSON-LD
-// 7. Breadcrumb JSON-LD
-// 8. WebPage JSON-LD
-// 9. Organization JSON-LD
-// 10. Crawlable product content outside iframe
-// 11. Existing details.html product UI
-// 12. Related product internal links
-// 13. Product navigation controller
-// 14. Proper 404 / 405 handling
-//
-// IMPORTANT
-// ------------------------------------------------------------
-// details.html does NOT need to be rewritten.
-//
-// The SEO content is generated directly by this server handler.
-// The iframe remains responsible for your existing product UI.
+// if (typeof module !== "undefined" && module.exports) {
+//     module.exports = products;
+// }
 //
 // ============================================================
 
-"use strict";
+const products = require("../js/details.js");
+
+// ============================================================
+// IMPORT SEO DATABASE
+// ============================================================
+//
+// seo-content.js ends with:
+//
+// module.exports = seoContent;
+//
+// ============================================================
+
+const seoContent = require("./seo-content.js");
 
 // ============================================================
 // SITE CONFIG
 // ============================================================
 
 const SITE = {
+
     name: "NEXT LEVEL SUBS",
-    domain: "https://www.nextlevelsubs.com",
+
+    domain:
+        "https://www.nextlevelsubs.com",
+
     defaultDescription:
         "Premium subscriptions, streaming services, VPNs, AI tools, cloud storage and more from NEXT LEVEL SUBS.",
-    locale: "en_US",
-    language: "en"
-};
 
-// ============================================================
-// PRODUCT DATABASE
-// ============================================================
+    locale:
+        "en_US",
 
-const products = {
+    language:
+        "en",
 
-    // ========================================================
-    // STREAMING
-    // ========================================================
+    logo:
+        "/assets/logo.png"
 
-    "netflix-premium": {
-        name: "Netflix Premium",
-        description: "Watch unlimited movies and TV shows",
-        image: "/assets/cards/netflix.webp",
-        category: "Streaming"
-    },
-
-    "amazon-prime-video": {
-        name: "Amazon Prime Video",
-        description: "Thousands of movies and TV shows",
-        image: "/assets/cards/Prime_Video.png",
-        category: "Streaming"
-    },
-
-    "hbo-max": {
-        name: "HBO Max",
-        description: "HBO, Warner Bros., DC, Max Originals",
-        image: "/assets/cards/hbomax.jpg",
-        category: "Streaming"
-    },
-
-    "crunchy-roll-mega": {
-        name: "Crunchy Roll Mega",
-        description: "Anime. Streaming. Community",
-        image: "/assets/cards/crunchy.png",
-        category: "Streaming"
-    },
-
-    "netflix-for-tv": {
-        name: "Netflix For TV",
-        description: "Watch unlimited movies and TV shows",
-        image: "/assets/cards/netflixfortv.webp",
-        category: "Streaming"
-    },
-
-    "chorki-premium": {
-        name: "Chorki Premium",
-        description: "Bengali. Bold. Streaming",
-        image: "/assets/cards/chorki.webp",
-        category: "Streaming"
-    },
-
-    "hoichoi-premium": {
-        name: "Hoichoi Premium",
-        description: "Unlimited Bangla Entertainment",
-        image: "/assets/cards/hoichoi.png",
-        category: "Streaming"
-    },
-
-    "bongo": {
-        name: "Bongo",
-        description: "Unlimited Bangla Entertainment",
-        image: "/assets/cards/bongo.png",
-        category: "Streaming"
-    },
-
-    "disney-plus": {
-        name: "Disney+",
-        description:
-            "Premium movies, series and exclusive Disney content",
-        image: "/assets/cards/disney.jpg",
-        category: "Streaming"
-    },
-
-    "hulu": {
-        name: "Hulu",
-        description: "Next-day TV and original content",
-        image: "/assets/cards/hulu.svg",
-        category: "Streaming"
-    },
-
-    "apple-tv-plus": {
-        name: "Apple TV+",
-        description: "Original shows and movies",
-        image: "/assets/cards/apple_tv.jpg",
-        category: "Streaming"
-    },
-
-    "paramount-plus": {
-        name: "Paramount+",
-        description:
-            "Movies, live sports, and exclusive originals",
-        image: "/assets/cards/paramount.webp",
-        category: "Streaming"
-    },
-
-    "peacock": {
-        name: "Peacock",
-        description: "NBCUniversal content and live sports",
-        image: "/assets/cards/Peacock.avif",
-        category: "Streaming"
-    },
-
-    "youtube-premium": {
-        name: "YouTube Premium",
-        description: "Ad-free videos and YouTube Music",
-        image: "/assets/cards/youtube.webp",
-        category: "Streaming"
-    },
-
-    "youtube-premium-non-renewable": {
-        name: "Youtube Premium Non-Renewable",
-        description: "Ad-free videos and music",
-        image: "/assets/cards/youtube.webp",
-        category: "Streaming"
-    },
-
-    "discovery-plus": {
-        name: "Discovery+",
-        description: "Documentaries, Reality, Entertainment",
-        image: "/assets/cards/discovery.webp",
-        category: "Streaming"
-    },
-
-    "shudder-premium": {
-        name: "Shudder Premium",
-        description: "Horror, Thriller, Suspense",
-        image: "/assets/cards/shudder.jpg",
-        category: "Streaming"
-    },
-
-    "prime-video-full": {
-        name: "Prime Video Full",
-        description: "Movies, Series, Originals",
-        image: "/assets/cards/primefull.webp",
-        category: "Streaming"
-    },
-
-    "amc-plus": {
-        name: "AMC+",
-        description: "Horror, Thriller, Suspense",
-        image: "/assets/cards/amc+.webp",
-        category: "Streaming"
-    },
-
-    "fubo-tv": {
-        name: "Fubo TV",
-        description: "Sports, Live, Entertainment",
-        image: "/assets/cards/fuboTV.webp",
-        category: "Streaming"
-    },
-
-    "ullu-pro": {
-        name: "Ullu Pro",
-        description: "Adult, Web, Series",
-        image: "/assets/cards/ullu.png",
-        category: "Streaming"
-    },
-
-    "sling-tv": {
-        name: "Sling TV",
-        description: "Live, Channels, Streaming",
-        image: "/assets/cards/slingtv.png",
-        category: "Streaming"
-    },
-
-    // ========================================================
-    // MUSIC
-    // ========================================================
-
-    "spotify-premium": {
-        name: "Spotify Premium",
-        description: "Ad-free music and podcasts",
-        image: "/assets/cards/spotify.jpg",
-        category: "Music"
-    },
-
-    "amazon-music-unlimited": {
-        name: "Amazon Music Unlimited",
-        description: "High-quality music and podcasts",
-        image: "/assets/cards/amazon-music-unlimited.jpeg",
-        category: "Music"
-    },
-
-    "apple-music": {
-        name: "Apple Music",
-        description: "Stream over 75 million songs",
-        image: "/assets/cards/apple_music.jpg",
-        category: "Music"
-    },
-
-    "tidal": {
-        name: "Tidal",
-        description: "High-fidelity music streaming",
-        image: "/assets/cards/tidal.svg",
-        category: "Music"
-    },
-
-    "pandora-premium": {
-        name: "Pandora Premium",
-        description: "Personalized music and podcasts",
-        image: "/assets/cards/pandora.svg",
-        category: "Music"
-    },
-
-    "soundcloud-go-plus": {
-        name: "SoundCloud Go+",
-        description: "Ad-free music and offline listening",
-        image: "/assets/cards/sound_cloud.svg",
-        category: "Music"
-    },
-
-    "deezer-hifi": {
-        name: "Deezer HiFi",
-        description: "High-quality audio streaming",
-        image: "/assets/cards/deezer.svg",
-        category: "Music"
-    },
-
-    // ========================================================
-    // CLOUD STORAGE
-    // ========================================================
-
-    "microsoft-onedrive": {
-        name: "Microsoft OneDrive",
-        description: "1TB cloud storage with Office apps",
-        image: "/assets/cards/onedrive.svg",
-        category: "Cloud Storage"
-    },
-
-    "dropbox-plus": {
-        name: "Dropbox Plus",
-        description: "2TB secure cloud storage",
-        image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
-        category: "Cloud Storage"
-    },
-
-    "google-drive": {
-        name: "Google Drive",
-        description: "1TB cloud storage",
-        image: "/assets/cards/Google_Drive-Logo.wine.svg",
-        category: "Cloud Storage"
-    },
-
-    "icloud-plus": {
-        name: "iCloud+",
-        description: "50GB cloud storage for Apple users",
-        image: "/assets/cards/icloud+webp.webp",
-        category: "Cloud Storage"
-    },
-
-    "amazon-drive": {
-        name: "Amazon Drive",
-        description: "100GB cloud storage",
-        image: "/assets/cards/amazon_drive.png",
-        category: "Cloud Storage"
-    },
-
-    // ========================================================
-    // VPN
-    // ========================================================
-
-    "expressvpn": {
-        name: "ExpressVPN",
-        description: "High-speed, secure VPN service",
-        image: "/assets/cards/expressVPN.png",
-        category: "VPN"
-    },
-
-    "nordvpn": {
-        name: "NordVPN",
-        description: "Advanced security with double VPN",
-        image: "/assets/cards/nordvpn.webp",
-        category: "VPN"
-    },
-
-    "surfshark": {
-        name: "Surfshark",
-        description: "Unlimited devices and connections",
-        image: "/assets/cards/surfsharkvpn.webp",
-        category: "VPN"
-    },
-
-    "cyberghost": {
-        name: "CyberGhost",
-        description:
-            "User-friendly VPN with 45-day guarantee",
-        image: "/assets/cards/cyberghost.png",
-        category: "VPN"
-    },
-
-    "ipvanish": {
-        name: "IPVanish",
-        description: "Fast connections with no logs",
-        image: "/assets/cards/ipvanish.webp",
-        category: "VPN"
-    },
-
-    "private-internet-access": {
-        name: "Private Internet Access",
-        description: "Highly customizable VPN",
-        image: "/assets/cards/pia.png",
-        category: "VPN"
-    },
-
-    "hotspot-shield": {
-        name: "Hotspot Shield",
-        description: "Patented VPN technology",
-        image: "/assets/cards/Hotspot-Shield-vpn.webp",
-        category: "VPN"
-    },
-
-    "vypr-vpn": {
-        name: "Vypr VPN",
-        description: "Secure and private VPN service",
-        image: "/assets/cards/vyprvpn.webp",
-        category: "VPN"
-    },
-
-    // ========================================================
-    // AI & DESIGN
-    // ========================================================
-
-    "canva-pro": {
-        name: "Canva Pro",
-        description:
-            "Canva Pro: Where Ideas Turn into Stunning Designs—Fast!",
-        image: "/assets/cards/canva.png",
-        category: "AI & Design"
-    },
-
-    "photoroom-pro": {
-        name: "Photoroom Pro",
-        description:
-            "Professional AI-powered photo editing and design tools",
-        image: "/assets/cards/photoroom.jpg",
-        category: "AI & Design"
-    },
-
-    "picsart-premium": {
-        name: "Picsart Premium",
-        description:
-            "Creative photo and video editing tools",
-        image: "/assets/cards/picsart.png",
-        category: "AI & Design"
-    },
-
-    "photoroom-max": {
-        name: "Photoroom Max",
-        description:
-            "Advanced AI photo editing and creative tools",
-        image: "/assets/cards/photoroom.jpg",
-        category: "AI & Design"
-    },
-
-    "blackbox-ai-chatgpt5": {
-        name: "Black Box Ai (CHAT-GPT5)",
-        description:
-            "AI-powered coding and development assistant",
-        image: "/assets/cards/blackboxai.jpg",
-        category: "AI & Design"
-    },
-
-    "gemini-ai": {
-        name: "Gemini Ai",
-        description: "Google's advanced AI assistant",
-        image: "/assets/cards/gemini.png",
-        category: "AI & Design"
-    },
-
-    "chat-gpt": {
-        name: "Chat GPT",
-        description:
-            "Advanced AI assistant for writing, research and productivity",
-        image: "/assets/cards/chatgpt.jpg",
-        category: "AI & Design"
-    },
-
-    "perplexity-chatgpt5": {
-        name: "Perplexity (ChatGPT-5)",
-        description:
-            "AI-powered search and research assistant",
-        image: "/assets/cards/Perplexity.svg",
-        category: "AI & Design"
-    },
-
-    "remini-ai": {
-        name: "Remini Ai",
-        description:
-            "AI-powered photo enhancement and restoration",
-        image: "/assets/cards/remini.avif",
-        category: "AI & Design"
-    },
-
-    // ========================================================
-    // COMBOS
-    // ========================================================
-
-    "netflix-prime-video": {
-        name: "Netflix + Prime Video",
-        description:
-            "Get both streaming services at a discount",
-        image: "/assets/cards/Netflix-vs-Amazon.jpg",
-        category: "Combo"
-    },
-
-    "netflix-hbo-max": {
-        name: "Netflix + HBO Max",
-        description:
-            "Premium content from both platforms",
-        image: "/assets/cards/netflix+hbomax.webp",
-        category: "Combo"
-    },
-
-    "prime-video-hbo-max": {
-        name: "Prime Video + HBO Max",
-        description:
-            "Premium content from both platforms",
-        image: "/assets/cards/prime+hbo.webp",
-        category: "Combo"
-    },
-
-    "hbo-max-surfshark-vpn": {
-        name: "HBO Max + Surfshark VPN",
-        description:
-            "Stream securely with VPN protection",
-        image: "/assets/cards/hbo+surfshark.webp",
-        category: "Combo"
-    },
-
-    "spotify-youtube-premium": {
-        name: "Spotify + YouTube Premium",
-        description:
-            "Ad-free music and videos",
-        image: "/assets/cards/spotify+youtube.webp",
-        category: "Combo"
-    },
-
-    "disney-hbo-max": {
-        name: "Disney + HBO Max",
-        description:
-            "Disney+ and HBO Max premium entertainment",
-        image: "/assets/cards/disney+nordVPN.webp",
-        category: "Combo"
-    },
-
-    "disney-nord-vpn": {
-        name: "Disney + Nord VPN",
-        description:
-            "Disney+ entertainment with NordVPN protection",
-        image: "/assets/cards/disney+nordVPN.webp",
-        category: "Combo"
-    },
-
-    "music-storage": {
-        name: "Music & Storage",
-        description:
-            "Amazon Music HD and 1TB OneDrive storage",
-        image: "/assets/cards/amazon+onedrive.png",
-        category: "Combo"
-    },
-
-    "security-bundle": {
-        name: "Security Bundle",
-        description:
-            "ExpressVPN and 1TB OneDrive cloud storage",
-        image: "/assets/cards/expressvpn+onedrive.webp",
-        category: "Combo"
-    },
-
-    "ultimate-entertainment": {
-        name: "Ultimate Entertainment",
-        description:
-            "Netflix, HBO Max, and ExpressVPN",
-        image: "/assets/cards/netflix_expressvpn_hbomax.webp",
-        category: "Combo"
-    },
-
-    // ========================================================
-    // EDUCATION
-    // ========================================================
-
-    "doulingo": {
-        name: "Doulingo",
-        description:
-            "Learn languages with interactive lessons",
-        image: "/assets/cards/doulingo.png",
-        category: "Education"
-    },
-
-    "skillshare": {
-        name: "Skillshare",
-        description:
-            "Access thousands of online creative courses",
-        image: "/assets/cards/skill_share.png",
-        category: "Education"
-    },
-
-    "linkedin-premium": {
-        name: "LinkedIn Premium",
-        description:
-            "Professional development and career tools",
-        image: "/assets/cards/LinkedIn.png",
-        category: "Education"
-    },
-
-    "numerade": {
-        name: "Numerade",
-        description:
-            "Learn with step-by-step educational video solutions",
-        image: "/assets/cards/Numerade.jpg",
-        category: "Education"
-    },
-
-    "grammarly-pro": {
-        name: "Grammarly Pro",
-        description:
-            "Advanced writing, grammar and productivity tools",
-        image: "/assets/cards/grammarly.png",
-        category: "Education"
-    },
-
-    // ========================================================
-    // ADULT
-    // ========================================================
-
-    "digital-playground": {
-        name: "Digital Playground",
-        description:
-            "Exclusive premium content from creators",
-        image: "/assets/cards/DigitalPlayground-logo.png",
-        category: "Adult"
-    },
-
-    "pornhub-premium": {
-        name: "Pornhub Premium",
-        description:
-            "Ad-free premium adult entertainment",
-        image: "/assets/cards/pornhub.webp",
-        category: "Adult"
-    },
-
-    "brazzers": {
-        name: "Brazzers",
-        description: "Premium adult content",
-        image: "/assets/cards/brazzers.webp",
-        category: "Adult"
-    },
-
-    "spice-vids": {
-        name: "Spice Vids",
-        description:
-            "Premium adult streaming platform",
-        image: "/assets/cards/spicevids.webp",
-        category: "Adult"
-    },
-
-    "reality-kings": {
-        name: "Reality Kings",
-        description:
-            "Premium reality adult content",
-        image: "/assets/cards/realitykings.webp",
-        category: "Adult"
-    },
-
-    "bang-bros": {
-        name: "Bang Bros",
-        description:
-            "High-quality, exclusive adult entertainment",
-        image: "/assets/cards/bangbros.webp",
-        category: "Adult"
-    },
-
-    "babes-com": {
-        name: "Babes.com",
-        description:
-            "High-quality, exclusive adult video content",
-        image: "/assets/cards/babes.webp",
-        category: "Adult"
-    },
-
-    // ========================================================
-    // PRODUCTIVITY
-    // ========================================================
-
-    "truecaller-gold": {
-        name: "True Caller Gold",
-        description:
-            "Premium caller identification and protection",
-        image: "/assets/cards/truecaller.avif",
-        category: "Productivity"
-    }
 };
 
 // ============================================================
@@ -650,103 +128,16 @@ const products = {
 
 const slugAliases = {
 
-    "netflix": "netflix-premium",
+    "netflix":
+        "netflix-premium",
 
-    "duolingo": "doulingo",
+    "duolingo":
+        "doulingo",
 
     "youtube-premium-nonrenewable":
         "youtube-premium-non-renewable"
-};
-
-// ============================================================
-// SEO CONTENT OVERRIDES
-// ============================================================
-//
-// Product-specific SEO content.
-//
-// IMPORTANT:
-// Do not add claims that are not actually true for your offer.
-//
-// ============================================================
-
-const seoContent = {
-
-    "hbo-max": {
-        intro:
-            "Get an HBO Max subscription from NEXT LEVEL SUBS and access HBO, Warner Bros., DC, Max Originals and more premium entertainment.",
-
-        sections: [
-            {
-                heading: "HBO Max Subscription",
-                paragraphs: [
-                    "HBO Max brings together premium entertainment from HBO, Warner Bros., DC and Max Originals in one streaming service.",
-                    "NEXT LEVEL SUBS offers HBO Max subscription options for customers looking for convenient access to premium streaming entertainment."
-                ]
-            },
-            {
-                heading: "What can you watch on HBO Max?",
-                paragraphs: [
-                    "HBO Max features HBO programming, Warner Bros. movies and series, DC content and Max Original productions.",
-                    "The available catalog can change over time as the streaming service adds new movies, series and original programming."
-                ]
-            },
-            {
-                heading: "Why choose an HBO Max subscription?",
-                paragraphs: [
-                    "An HBO Max subscription gives you access to a wide range of premium movies, series and original entertainment from one streaming platform.",
-                    "Choose the subscription option available on NEXT LEVEL SUBS that best matches your needs."
-                ]
-            },
-            {
-                heading: "HBO Max Subscription from NEXT LEVEL SUBS",
-                paragraphs: [
-                    "Browse the available HBO Max subscription option, select your preferred plan and continue through the existing checkout process on NEXT LEVEL SUBS.",
-                    "For the current price and plan availability, use the product options displayed on this page."
-                ]
-            }
-        ]
-    }
 
 };
-
-// ============================================================
-// DEFAULT SEO CONTENT
-// ============================================================
-
-function getSEOContent(slug, product) {
-
-    if (seoContent[slug]) {
-        return seoContent[slug];
-    }
-
-    return {
-        intro:
-            `Get ${product.name} subscription from NEXT LEVEL SUBS. ${product.description}.`,
-
-        sections: [
-            {
-                heading: `${product.name} Subscription`,
-                paragraphs: [
-                    `${product.name} is available from NEXT LEVEL SUBS as a premium ${String(product.category || "digital").toLowerCase()} service.`,
-                    `${product.description}.`
-                ]
-            },
-            {
-                heading: `Why choose ${product.name}?`,
-                paragraphs: [
-                    `Explore the available ${product.name} subscription option and choose the plan that fits your needs.`,
-                    `Current plan details and availability are shown on this product page.`
-                ]
-            },
-            {
-                heading: `${product.name} from NEXT LEVEL SUBS`,
-                paragraphs: [
-                    `View the available ${product.name} subscription options below and continue through the existing checkout experience.`
-                ]
-            }
-        ]
-    };
-}
 
 // ============================================================
 // HTML ESCAPE
@@ -754,7 +145,9 @@ function getSEOContent(slug, product) {
 
 function escapeHTML(value) {
 
-    return String(value == null ? "" : value)
+    return String(
+        value == null ? "" : value
+    )
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -777,7 +170,7 @@ function safeJSON(value) {
 }
 
 // ============================================================
-// SLUG GENERATOR
+// GENERATE SLUG
 // ============================================================
 
 function generateSlug(value) {
@@ -790,33 +183,123 @@ function generateSlug(value) {
 }
 
 // ============================================================
+// GET PRODUCT CATEGORY
+// ============================================================
+//
+// details.js uses:
+//
+// categories: ["best-selling", "popular-streaming"]
+//
+// Some older product structures may use:
+//
+// category: "Streaming"
+//
+// This function supports both.
+// ============================================================
+
+function getProductCategory(product) {
+
+    if (!product) {
+        return "Digital Services";
+    }
+
+    if (
+        typeof product.category === "string" &&
+        product.category.trim()
+    ) {
+
+        return product.category.trim();
+    }
+
+    if (
+        Array.isArray(product.categories) &&
+        product.categories.length
+    ) {
+
+        const categories =
+            product.categories
+                .filter(Boolean)
+                .map(function (category) {
+
+                    return String(category)
+                        .trim();
+
+                });
+
+        if (categories.length) {
+
+            return categories
+                .map(function (category) {
+
+                    return category
+                        .replace(/-/g, " ")
+                        .replace(/\b\w/g, function (letter) {
+                            return letter.toUpperCase();
+                        });
+
+                })
+                .join(", ");
+        }
+    }
+
+    return "Digital Services";
+}
+
+// ============================================================
 // BUILD PRODUCT INDEX
 // ============================================================
 
 function buildProductIndex() {
 
-    const index = Object.create(null);
+    const index =
+        Object.create(null);
 
-    Object.keys(products).forEach(function (key) {
+    Object.keys(products || {})
+        .forEach(function (key) {
 
-        index[key.toLowerCase()] = key;
+            const product =
+                products[key];
 
-        const generated =
-            generateSlug(products[key].name);
+            const lowerKey =
+                String(key)
+                    .toLowerCase();
 
-        if (generated) {
-            index[generated] = key;
-        }
-    });
+            index[lowerKey] =
+                key;
 
-    Object.keys(slugAliases).forEach(function (alias) {
+            if (
+                product &&
+                product.name
+            ) {
 
-        const target = slugAliases[alias];
+                const generated =
+                    generateSlug(
+                        product.name
+                    );
 
-        if (products[target]) {
-            index[alias.toLowerCase()] = target;
-        }
-    });
+                if (generated) {
+
+                    index[generated] =
+                        key;
+                }
+            }
+
+        });
+
+    Object.keys(slugAliases)
+        .forEach(function (alias) {
+
+            const target =
+                slugAliases[alias];
+
+            if (products[target]) {
+
+                index[
+                    alias.toLowerCase()
+                ] = target;
+            }
+
+        });
 
     return index;
 }
@@ -834,16 +317,21 @@ function resolveProductKey(value) {
         return "";
     }
 
-    let decoded = value.trim();
+    let decoded =
+        value.trim();
 
     try {
-        decoded = decodeURIComponent(decoded);
+
+        decoded =
+            decodeURIComponent(decoded);
+
     } catch (_) {}
 
-    decoded = decoded
-        .trim()
-        .toLowerCase()
-        .replace(/^\/+|\/+$/g, "");
+    decoded =
+        decoded
+            .trim()
+            .toLowerCase()
+            .replace(/^\/+|\/+$/g, "");
 
     if (products[decoded]) {
         return decoded;
@@ -856,7 +344,10 @@ function resolveProductKey(value) {
     const generated =
         generateSlug(decoded);
 
-    return productIndex[generated] || "";
+    return (
+        productIndex[generated] ||
+        ""
+    );
 }
 
 // ============================================================
@@ -878,7 +369,9 @@ function getProductSlug(req) {
     ) {
 
         const resolved =
-            resolveProductKey(req.query.slug);
+            resolveProductKey(
+                req.query.slug
+            );
 
         if (resolved) {
             return resolved;
@@ -886,7 +379,7 @@ function getProductSlug(req) {
     }
 
     // --------------------------------------------------------
-    // CLEAN URL
+    // CLEAN PRODUCT URL
     //
     // /product/hbo-max
     // --------------------------------------------------------
@@ -902,11 +395,17 @@ function getProductSlug(req) {
             /^\/product\/([^/]+)\/?$/i
         );
 
-    if (!match || !match[1]) {
+    if (
+        !match ||
+        !match[1]
+    ) {
+
         return "";
     }
 
-    return resolveProductKey(match[1]);
+    return resolveProductKey(
+        match[1]
+    );
 }
 
 // ============================================================
@@ -916,16 +415,27 @@ function getProductSlug(req) {
 function absoluteURL(value) {
 
     if (!value) {
-        return `${SITE.domain}/assets/logo.png`;
+
+        return (
+            SITE.domain +
+            SITE.logo
+        );
     }
 
-    if (/^https?:\/\//i.test(value)) {
+    if (
+        /^https?:\/\//i.test(value)
+    ) {
+
         return value;
     }
 
     return (
         SITE.domain +
-        (value.startsWith("/") ? "" : "/") +
+        (
+            value.startsWith("/")
+                ? ""
+                : "/"
+        ) +
         value
     );
 }
@@ -937,103 +447,656 @@ function absoluteURL(value) {
 function getProductImage(product) {
 
     let image =
-        product.image || "/assets/logo.png";
+        product &&
+        product.image
+            ? product.image
+            : SITE.logo;
 
-    // SVG social previews can be unreliable.
-// Use site logo as a fallback.
-    if (/\.svg(\?|#|$)/i.test(image)) {
-        image = "/assets/logo.png";
+    /*
+     * SVG social previews can be unreliable.
+     * Use site logo as fallback.
+     */
+
+    if (
+        /\.svg(\?|#|$)/i.test(image)
+    ) {
+
+        image =
+            SITE.logo;
     }
 
     return absoluteURL(image);
 }
 
 // ============================================================
-// SEND 404
+// GET SEO DATA
 // ============================================================
 
-function send404(res) {
+function getSEOData(
+    slug,
+    product
+) {
 
-    res.statusCode = 404;
+    const customSEO =
+        seoContent &&
+        seoContent[slug];
 
-    res.setHeader(
-        "Content-Type",
-        "text/html; charset=utf-8"
+    if (customSEO) {
+
+        return {
+
+            title:
+                customSEO.title ||
+                `${product.name} Subscription | ${SITE.name}`,
+
+            description:
+                customSEO.description ||
+                `${product.description}. Get ${product.name} subscription from ${SITE.name}.`,
+
+            intro:
+                customSEO.intro ||
+                `Get ${product.name} subscription from ${SITE.name}. ${product.description}.`,
+
+            sections:
+                Array.isArray(
+                    customSEO.sections
+                )
+                    ? customSEO.sections
+                    : []
+
+        };
+    }
+
+    /*
+     * Safe fallback if a product does not
+     * yet have custom SEO content.
+     */
+
+    return {
+
+        title:
+            `${product.name} Subscription | ${SITE.name}`,
+
+        description:
+            `${product.description}. Get ${product.name} subscription from ${SITE.name}.`,
+
+        intro:
+            `Get ${product.name} subscription from ${SITE.name}. ${product.description}.`,
+
+        sections: [
+
+            {
+
+                heading:
+                    `${product.name} Subscription`,
+
+                paragraphs: [
+
+                    `${product.name} is available from ${SITE.name} as a premium ${getProductCategory(product).toLowerCase()} service.`,
+
+                    product.description
+
+                ]
+
+            },
+
+            {
+
+                heading:
+                    `Why choose ${product.name}?`,
+
+                paragraphs: [
+
+                    `Explore the available ${product.name} subscription options and choose the plan that fits your needs.`,
+
+                    `Current pricing, plans and availability are shown on this product page.`
+
+                ]
+
+            }
+
+        ]
+
+    };
+}
+
+// ============================================================
+// GET PRICING
+// ============================================================
+
+function getPricing(product) {
+
+    if (
+        !product ||
+        !Array.isArray(product.pricing)
+    ) {
+
+        return [];
+    }
+
+    return product.pricing
+        .filter(function (plan) {
+
+            return (
+                plan &&
+                plan.duration &&
+                plan.price != null
+            );
+
+        })
+        .map(function (plan) {
+
+            return {
+
+                duration:
+                    String(plan.duration),
+
+                price:
+                    Number(plan.price),
+
+                currency:
+                    plan.currency ||
+                    "BDT",
+
+                popular:
+                    Boolean(plan.popular),
+
+                discount:
+                    plan.discount ||
+                    ""
+
+            };
+
+        });
+}
+
+// ============================================================
+// FORMAT PRICE
+// ============================================================
+
+function formatPrice(
+    price,
+    currency
+) {
+
+    const numericPrice =
+        Number(price);
+
+    if (
+        !Number.isFinite(numericPrice)
+    ) {
+
+        return "";
+    }
+
+    const formatted =
+        numericPrice.toLocaleString(
+            "en-BD"
+        );
+
+    if (
+        String(currency)
+            .toUpperCase() === "BDT"
+    ) {
+
+        return `৳${formatted}`;
+    }
+
+    return (
+        `${formatted} ${escapeHTML(currency || "")}`
     );
+}
 
-    res.setHeader(
-        "X-Robots-Tag",
-        "noindex, nofollow"
-    );
+// ============================================================
+// BUILD PRICING HTML
+// ============================================================
 
-    return res.end(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-    <title>Product Not Found | ${escapeHTML(SITE.name)}</title>
-    <meta
-        name="robots"
-        content="noindex, nofollow"
-    >
-</head>
+function buildPricingHTML(product) {
 
-<body>
+    const pricing =
+        getPricing(product);
 
-    <main>
+    if (!pricing.length) {
 
-        <h1>Product Not Found</h1>
+        return "";
+    }
 
-        <p>
-            The requested product could not be found.
-        </p>
+    return `
 
-        <p>
-            <a href="${escapeHTML(SITE.domain)}/">
-                Return to ${escapeHTML(SITE.name)}
-            </a>
-        </p>
+        <section class="product-pricing">
 
-    </main>
+            <h2>
+                ${escapeHTML(product.name)}
+                Plans &amp; Prices
+            </h2>
 
-</body>
-</html>`);
+            <div class="pricing-list">
+
+                ${pricing
+                    .map(function (plan) {
+
+                        return `
+
+                            <article class="pricing-plan">
+
+                                <h3>
+                                    ${escapeHTML(plan.duration)}
+                                </h3>
+
+                                <p>
+                                    <strong>
+                                        ${formatPrice(
+                                            plan.price,
+                                            plan.currency
+                                        )}
+                                    </strong>
+                                </p>
+
+                                ${
+                                    plan.popular
+                                        ? `
+                                            <p>
+                                                Popular plan
+                                            </p>
+                                          `
+                                        : ""
+                                }
+
+                                ${
+                                    plan.discount
+                                        ? `
+                                            <p>
+                                                ${escapeHTML(
+                                                    plan.discount
+                                                )}
+                                            </p>
+                                          `
+                                        : ""
+                                }
+
+                            </article>
+
+                        `;
+
+                    })
+                    .join("")}
+
+            </div>
+
+        </section>
+
+    `;
+}
+
+// ============================================================
+// BUILD FEATURES HTML
+// ============================================================
+
+function buildFeaturesHTML(product) {
+
+    if (
+        !product ||
+        !Array.isArray(product.features) ||
+        !product.features.length
+    ) {
+
+        return "";
+    }
+
+    return `
+
+        <section class="product-features">
+
+            <h2>
+                ${escapeHTML(product.name)}
+                Features
+            </h2>
+
+            <ul>
+
+                ${product.features
+                    .filter(Boolean)
+                    .map(function (feature) {
+
+                        return `
+                            <li>
+                                ${escapeHTML(feature)}
+                            </li>
+                        `;
+
+                    })
+                    .join("")}
+
+            </ul>
+
+        </section>
+
+    `;
+}
+
+// ============================================================
+// BUILD REVIEWS HTML
+// ============================================================
+
+function buildReviewsHTML(product) {
+
+    if (
+        !product ||
+        !Array.isArray(product.customerReviews) ||
+        !product.customerReviews.length
+    ) {
+
+        return "";
+    }
+
+    return `
+
+        <section class="customer-reviews">
+
+            <h2>
+                Customer Reviews
+            </h2>
+
+            ${product.customerReviews
+                .slice(0, 10)
+                .map(function (review) {
+
+                    return `
+
+                        <article class="customer-review">
+
+                            <h3>
+                                ${escapeHTML(
+                                    review.name ||
+                                    "Customer"
+                                )}
+                            </h3>
+
+                            ${
+                                review.rating != null
+                                    ? `
+                                        <p>
+                                            Rating:
+                                            ${escapeHTML(
+                                                review.rating
+                                            )}/5
+                                        </p>
+                                      `
+                                    : ""
+                            }
+
+                            ${
+                                review.date
+                                    ? `
+                                        <p>
+                                            ${escapeHTML(
+                                                review.date
+                                            )}
+                                        </p>
+                                      `
+                                    : ""
+                            }
+
+                            ${
+                                review.comment
+                                    ? `
+                                        <p>
+                                            ${escapeHTML(
+                                                review.comment
+                                            )}
+                                        </p>
+                                      `
+                                    : ""
+                            }
+
+                        </article>
+
+                    `;
+
+                })
+                .join("")}
+
+        </section>
+
+    `;
+}
+
+// ============================================================
+// BUILD FAQ HTML
+// ============================================================
+
+function buildFAQHTML(product) {
+
+    if (
+        !product ||
+        !Array.isArray(product.faq) ||
+        !product.faq.length
+    ) {
+
+        return "";
+    }
+
+    return `
+
+        <section class="product-faq">
+
+            <h2>
+                Frequently Asked Questions
+            </h2>
+
+            ${product.faq
+                .map(function (item) {
+
+                    if (!item) {
+                        return "";
+                    }
+
+                    return `
+
+                        <details>
+
+                            <summary>
+                                ${escapeHTML(
+                                    item.question ||
+                                    ""
+                                )}
+                            </summary>
+
+                            <p>
+                                ${escapeHTML(
+                                    item.answer ||
+                                    ""
+                                )}
+                            </p>
+
+                        </details>
+
+                    `;
+
+                })
+                .join("")}
+
+        </section>
+
+    `;
+}
+
+// ============================================================
+// BUILD SEO SECTIONS
+// ============================================================
+
+function buildSEOSections(seo) {
+
+    if (
+        !seo ||
+        !Array.isArray(seo.sections)
+    ) {
+
+        return "";
+    }
+
+    return seo.sections
+        .map(function (section) {
+
+            if (!section) {
+                return "";
+            }
+
+            const paragraphs =
+                Array.isArray(
+                    section.paragraphs
+                )
+                    ? section.paragraphs
+                    : [];
+
+            return `
+
+                <section class="seo-section">
+
+                    <h2>
+                        ${escapeHTML(
+                            section.heading ||
+                            ""
+                        )}
+                    </h2>
+
+                    ${paragraphs
+                        .map(function (paragraph) {
+
+                            return `
+                                <p>
+                                    ${escapeHTML(
+                                        paragraph
+                                    )}
+                                </p>
+                            `;
+
+                        })
+                        .join("")}
+
+                </section>
+
+            `;
+
+        })
+        .join("");
 }
 
 // ============================================================
 // BUILD RELATED PRODUCTS
 // ============================================================
 
-function getRelatedProducts(currentSlug, currentProduct) {
+function getRelatedProducts(
+    currentSlug,
+    currentProduct
+) {
 
     const result = [];
 
-    Object.keys(products).forEach(function (key) {
+    const currentCategory =
+        getProductCategory(
+            currentProduct
+        );
 
-        if (key === currentSlug) {
-            return;
-        }
+    Object.keys(products || {})
+        .forEach(function (key) {
 
-        const product =
-            products[key];
+            if (
+                key === currentSlug
+            ) {
 
-        if (
-            product.category ===
-            currentProduct.category
-        ) {
+                return;
+            }
 
-            result.push({
-                slug: key,
-                name: product.name
-            });
-        }
-    });
+            const product =
+                products[key];
 
-    // Limit internal links.
+            if (!product) {
+                return;
+            }
+
+            const category =
+                getProductCategory(
+                    product
+                );
+
+            if (
+                category ===
+                currentCategory
+            ) {
+
+                result.push({
+
+                    slug:
+                        key,
+
+                    name:
+                        product.name
+
+                });
+            }
+
+        });
+
     return result.slice(0, 8);
+}
+
+// ============================================================
+// BUILD RELATED HTML
+// ============================================================
+
+function buildRelatedHTML(
+    relatedProducts,
+    category
+) {
+
+    if (
+        !relatedProducts.length
+    ) {
+
+        return "";
+    }
+
+    return `
+
+        <section class="related-products">
+
+            <h2>
+                More ${escapeHTML(category)}
+                Subscriptions
+            </h2>
+
+            <ul>
+
+                ${relatedProducts
+                    .map(function (related) {
+
+                        return `
+
+                            <li>
+
+                                <a
+                                    href="${escapeHTML(
+                                        `${SITE.domain}/product/${encodeURIComponent(related.slug)}`
+                                    )}"
+                                >
+                                    ${escapeHTML(
+                                        related.name
+                                    )}
+                                </a>
+
+                            </li>
+
+                        `;
+
+                    })
+                    .join("")}
+
+            </ul>
+
+        </section>
+
+    `;
 }
 
 // ============================================================
@@ -1047,7 +1110,10 @@ function buildProductSchema(
     description
 ) {
 
-    return {
+    const pricing =
+        getPricing(product);
+
+    const schema = {
 
         "@context":
             "https://schema.org",
@@ -1072,17 +1138,20 @@ function buildProductSchema(
             productURL,
 
         "category":
-            product.category,
+            getProductCategory(product),
 
         "brand": {
+
             "@type":
                 "Brand",
 
             "name":
                 SITE.name
+
         },
 
         "seller": {
+
             "@type":
                 "Organization",
 
@@ -1091,8 +1160,98 @@ function buildProductSchema(
 
             "url":
                 SITE.domain
+
         }
+
     };
+
+    /*
+     * Add aggregate rating only when
+     * the product actually has rating data.
+     */
+
+    if (
+        product.rating != null &&
+        product.reviews != null
+    ) {
+
+        const rating =
+            Number(product.rating);
+
+        const reviews =
+            Number(product.reviews);
+
+        if (
+            Number.isFinite(rating) &&
+            Number.isFinite(reviews) &&
+            reviews > 0
+        ) {
+
+            schema.aggregateRating = {
+
+                "@type":
+                    "AggregateRating",
+
+                "ratingValue":
+                    rating,
+
+                "reviewCount":
+                    reviews
+
+            };
+        }
+    }
+
+    /*
+     * Add offers automatically from pricing.
+     */
+
+    if (pricing.length) {
+
+        const offers =
+            pricing.map(function (plan) {
+
+                return {
+
+                    "@type":
+                        "Offer",
+
+                    "url":
+                        productURL,
+
+                    "priceCurrency":
+                        plan.currency,
+
+                    "price":
+                        plan.price,
+
+                    "name":
+                        `${product.name} - ${plan.duration}`,
+
+                    "availability":
+                        "https://schema.org/InStock",
+
+                    "seller": {
+
+                        "@type":
+                            "Organization",
+
+                        "name":
+                            SITE.name
+
+                    }
+
+                };
+
+            });
+
+        schema.offers =
+            offers.length === 1
+                ? offers[0]
+                : offers;
+    }
+
+    return schema;
 }
 
 // ============================================================
@@ -1115,6 +1274,7 @@ function buildBreadcrumbSchema(
         "itemListElement": [
 
             {
+
                 "@type":
                     "ListItem",
 
@@ -1126,9 +1286,11 @@ function buildBreadcrumbSchema(
 
                 "item":
                     `${SITE.domain}/`
+
             },
 
             {
+
                 "@type":
                     "ListItem",
 
@@ -1136,10 +1298,12 @@ function buildBreadcrumbSchema(
                     2,
 
                 "name":
-                    product.category
+                    getProductCategory(product)
+
             },
 
             {
+
                 "@type":
                     "ListItem",
 
@@ -1151,8 +1315,11 @@ function buildBreadcrumbSchema(
 
                 "item":
                     productURL
+
             }
+
         ]
+
     };
 }
 
@@ -1190,6 +1357,7 @@ function buildWebPageSchema(
             SITE.language,
 
         "isPartOf": {
+
             "@type":
                 "WebSite",
 
@@ -1198,15 +1366,19 @@ function buildWebPageSchema(
 
             "url":
                 `${SITE.domain}/`
+
         },
 
         "about": {
+
             "@type":
                 "Product",
 
             "name":
                 product.name
+
         }
+
     };
 }
 
@@ -1229,137 +1401,86 @@ function buildOrganizationSchema() {
 
         "url":
             `${SITE.domain}/`
+
     };
 }
 
 // ============================================================
-// MAIN HANDLER
+// FAQ JSON-LD
 // ============================================================
 
-module.exports = function handler(req, res) {
-
-    // ========================================================
-    // GET / HEAD ONLY
-    // ========================================================
+function buildFAQSchema(product) {
 
     if (
-        req.method !== "GET" &&
-        req.method !== "HEAD"
+        !product ||
+        !Array.isArray(product.faq) ||
+        !product.faq.length
     ) {
 
-        res.statusCode = 405;
-
-        res.setHeader(
-            "Allow",
-            "GET, HEAD"
-        );
-
-        return res.end(
-            "Method Not Allowed"
-        );
+        return null;
     }
 
-    // ========================================================
-    // FIND PRODUCT
-    // ========================================================
+    const questions =
+        product.faq
+            .filter(function (item) {
 
-    const slug =
-        getProductSlug(req);
+                return (
+                    item &&
+                    item.question &&
+                    item.answer
+                );
 
-    if (
-        !slug ||
-        !products[slug]
-    ) {
+            })
+            .map(function (item) {
 
-        return send404(res);
+                return {
+
+                    "@type":
+                        "Question",
+
+                    "name":
+                        item.question,
+
+                    "acceptedAnswer": {
+
+                        "@type":
+                            "Answer",
+
+                        "text":
+                            item.answer
+
+                    }
+
+                };
+
+            });
+
+    if (!questions.length) {
+        return null;
     }
 
-    const product =
-        products[slug];
+    return {
 
-    // ========================================================
-    // PRODUCT URL
-    // ========================================================
+        "@context":
+            "https://schema.org",
 
-    const productURL =
-        `${SITE.domain}/product/${encodeURIComponent(slug)}`;
+        "@type":
+            "FAQPage",
 
-    // ========================================================
-    // EXISTING DETAILS PAGE
-    // ========================================================
+        "mainEntity":
+            questions
 
-    const destinationURL =
-        `${SITE.domain}/details.html?name=${encodeURIComponent(product.name)}`;
+    };
+}
 
-    // ========================================================
-    // IMAGE
-    // ========================================================
+// ============================================================
+// SEND 404
+// ============================================================
 
-    const imageURL =
-        getProductImage(product);
+function send404(res) {
 
-    // ========================================================
-    // SEO TEXT
-    // ========================================================
-
-    const seo =
-        getSEOContent(
-            slug,
-            product
-        );
-
-    const title =
-        `${product.name} Subscription | ${SITE.name}`;
-
-    const description =
-        `${product.description}. Get ${product.name} subscription from ${SITE.name}.`;
-
-    const imageAlt =
-        `${product.name} - ${SITE.name}`;
-
-    // ========================================================
-    // RELATED PRODUCTS
-    // ========================================================
-
-    const relatedProducts =
-        getRelatedProducts(
-            slug,
-            product
-        );
-
-    // ========================================================
-    // STRUCTURED DATA
-    // ========================================================
-
-    const productSchema =
-        buildProductSchema(
-            product,
-            productURL,
-            imageURL,
-            description
-        );
-
-    const breadcrumbSchema =
-        buildBreadcrumbSchema(
-            product,
-            productURL
-        );
-
-    const webPageSchema =
-        buildWebPageSchema(
-            product,
-            productURL,
-            description
-        );
-
-    const organizationSchema =
-        buildOrganizationSchema();
-
-    // ========================================================
-    // RESPONSE HEADERS
-    // ========================================================
-
-    res.statusCode = 200;
+    res.statusCode =
+        404;
 
     res.setHeader(
         "Content-Type",
@@ -1367,128 +1488,336 @@ module.exports = function handler(req, res) {
     );
 
     res.setHeader(
-        "Content-Language",
-        SITE.language
-    );
-
-    res.setHeader(
-        "X-Content-Type-Options",
-        "nosniff"
-    );
-
-    res.setHeader(
         "X-Robots-Tag",
-        "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        "noindex, nofollow"
     );
 
-    res.setHeader(
-        "Cache-Control",
-        "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
-    );
+    return res.end(`<!DOCTYPE html>
 
-    // ========================================================
-    // HEAD
-    // ========================================================
+<html lang="en">
 
-    if (req.method === "HEAD") {
-        return res.end();
-    }
+<head>
 
-    // ========================================================
-    // PRODUCT MAP
-    // ========================================================
+    <meta charset="UTF-8">
 
-    const productMap =
-        Object.keys(products).reduce(
-            function (map, key) {
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-                map[key] = {
-                    name:
-                        products[key].name
-                };
+    <title>
+        Product Not Found | ${escapeHTML(SITE.name)}
+    </title>
 
-                return map;
-            },
-            {}
+    <meta
+        name="robots"
+        content="noindex, nofollow"
+    >
+
+</head>
+
+<body>
+
+    <main>
+
+        <h1>
+            Product Not Found
+        </h1>
+
+        <p>
+            The requested product could not be found.
+        </p>
+
+        <p>
+
+            <a
+                href="${escapeHTML(SITE.domain)}/"
+            >
+                Return to
+                ${escapeHTML(SITE.name)}
+            </a>
+
+        </p>
+
+    </main>
+
+</body>
+
+</html>`);
+}
+
+// ============================================================
+// MAIN HANDLER
+// ============================================================
+
+module.exports =
+    function handler(req, res) {
+
+        // ====================================================
+        // GET / HEAD ONLY
+        // ====================================================
+
+        if (
+            req.method !== "GET" &&
+            req.method !== "HEAD"
+        ) {
+
+            res.statusCode =
+                405;
+
+            res.setHeader(
+                "Allow",
+                "GET, HEAD"
+            );
+
+            return res.end(
+                "Method Not Allowed"
+            );
+        }
+
+        // ====================================================
+        // FIND PRODUCT
+        // ====================================================
+
+        const slug =
+            getProductSlug(req);
+
+        if (
+            !slug ||
+            !products[slug]
+        ) {
+
+            return send404(res);
+        }
+
+        const product =
+            products[slug];
+
+        // ====================================================
+        // PRODUCT URL
+        // ====================================================
+
+        const productURL =
+            `${SITE.domain}/product/${encodeURIComponent(slug)}`;
+
+        // ====================================================
+        // EXISTING DETAILS PAGE
+        // ====================================================
+
+        const destinationURL =
+            `${SITE.domain}/details.html?name=${encodeURIComponent(product.name)}`;
+
+        // ====================================================
+        // IMAGE
+        // ====================================================
+
+        const imageURL =
+            getProductImage(
+                product
+            );
+
+        // ====================================================
+        // SEO
+        // ====================================================
+
+        const seo =
+            getSEOData(
+                slug,
+                product
+            );
+
+        const title =
+            seo.title ||
+            `${product.name} Subscription | ${SITE.name}`;
+
+        const description =
+            seo.description ||
+            `${product.description}. Get ${product.name} subscription from ${SITE.name}.`;
+
+        const imageAlt =
+            `${product.name} - ${SITE.name}`;
+
+        // ====================================================
+        // CATEGORY
+        // ====================================================
+
+        const category =
+            getProductCategory(
+                product
+            );
+
+        // ====================================================
+        // RELATED PRODUCTS
+        // ====================================================
+
+        const relatedProducts =
+            getRelatedProducts(
+                slug,
+                product
+            );
+
+        // ====================================================
+        // STRUCTURED DATA
+        // ====================================================
+
+        const productSchema =
+            buildProductSchema(
+                product,
+                productURL,
+                imageURL,
+                description
+            );
+
+        const breadcrumbSchema =
+            buildBreadcrumbSchema(
+                product,
+                productURL
+            );
+
+        const webPageSchema =
+            buildWebPageSchema(
+                product,
+                productURL,
+                description
+            );
+
+        const organizationSchema =
+            buildOrganizationSchema();
+
+        const faqSchema =
+            buildFAQSchema(
+                product
+            );
+
+        // ====================================================
+        // RESPONSE HEADERS
+        // ====================================================
+
+        res.statusCode =
+            200;
+
+        res.setHeader(
+            "Content-Type",
+            "text/html; charset=utf-8"
         );
 
-    // ========================================================
-    // SERVER-RENDERED SEO SECTIONS
-    // ========================================================
+        res.setHeader(
+            "Content-Language",
+            SITE.language
+        );
 
-    const sectionHTML =
-        seo.sections
-            .map(function (section) {
+        res.setHeader(
+            "X-Content-Type-Options",
+            "nosniff"
+        );
 
-                const paragraphs =
-                    section.paragraphs
-                        .map(function (paragraph) {
+        res.setHeader(
+            "X-Robots-Tag",
+            "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        );
 
-                            return `
-                                <p>
-                                    ${escapeHTML(paragraph)}
-                                </p>
-                            `;
+        res.setHeader(
+            "Cache-Control",
+            "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400"
+        );
 
-                        })
-                        .join("");
+        // ====================================================
+        // HEAD
+        // ====================================================
 
-                return `
-                    <section class="seo-section">
-                        <h2>
-                            ${escapeHTML(section.heading)}
-                        </h2>
+        if (
+            req.method === "HEAD"
+        ) {
 
-                        ${paragraphs}
-                    </section>
-                `;
+            return res.end();
+        }
 
-            })
-            .join("");
+        // ====================================================
+        // PRODUCT MAP
+        // ====================================================
+        //
+        // Used by the iframe navigation controller.
+        //
+        // ====================================================
 
-    // ========================================================
-    // RELATED PRODUCT LINKS
-    // ========================================================
+        const productMap =
+            Object.keys(products)
+                .reduce(
+                    function (map, key) {
 
-    const relatedHTML =
-        relatedProducts.length
-            ? `
-                <section class="related-products">
+                        map[key] = {
 
-                    <h2>
-                        More ${escapeHTML(product.category)}
-                        Subscriptions
-                    </h2>
+                            name:
+                                products[key].name
 
-                    <ul>
-                        ${relatedProducts
-                            .map(function (related) {
+                        };
 
-                                return `
-                                    <li>
-                                        <a
-                                            href="${escapeHTML(
-                                                `${SITE.domain}/product/${encodeURIComponent(related.slug)}`
-                                            )}"
-                                        >
-                                            ${escapeHTML(related.name)}
-                                        </a>
-                                    </li>
-                                `;
+                        return map;
 
-                            })
-                            .join("")}
-                    </ul>
+                    },
+                    {}
+                );
 
-                </section>
-            `
-            : "";
+        // ====================================================
+        // SEO CONTENT
+        // ====================================================
 
-    // ========================================================
-    // HTML
-    // ========================================================
+        const sectionHTML =
+            buildSEOSections(
+                seo
+            );
 
-    const html = `<!DOCTYPE html>
+        // ====================================================
+        // PRICING
+        // ====================================================
+
+        const pricingHTML =
+            buildPricingHTML(
+                product
+            );
+
+        // ====================================================
+        // FEATURES
+        // ====================================================
+
+        const featuresHTML =
+            buildFeaturesHTML(
+                product
+            );
+
+        // ====================================================
+        // REVIEWS
+        // ====================================================
+
+        const reviewsHTML =
+            buildReviewsHTML(
+                product
+            );
+
+        // ====================================================
+        // FAQ
+        // ====================================================
+
+        const faqHTML =
+            buildFAQHTML(
+                product
+            );
+
+        // ====================================================
+        // RELATED
+        // ====================================================
+
+        const relatedHTML =
+            buildRelatedHTML(
+                relatedProducts,
+                category
+            );
+
+        // ====================================================
+        // HTML
+        // ====================================================
+
+        const html = `<!DOCTYPE html>
 
 <html lang="${escapeHTML(SITE.language)}">
 
@@ -1654,6 +1983,20 @@ ${safeJSON(webPageSchema)}
 ${safeJSON(organizationSchema)}
     </script>
 
+    ${
+        faqSchema
+            ? `
+                <!-- =================================================
+                     FAQ JSON-LD
+                     ================================================= -->
+
+                <script type="application/ld+json">
+${safeJSON(faqSchema)}
+                </script>
+              `
+            : ""
+    }
+
     <!-- =====================================================
          PAGE STYLE
          ===================================================== -->
@@ -1662,56 +2005,76 @@ ${safeJSON(organizationSchema)}
 
         html,
         body {
+
             margin: 0;
             padding: 0;
+
             width: 100%;
             min-height: 100%;
+
             background: #ffffff;
         }
 
         body {
+
             font-family:
                 Arial,
                 Helvetica,
                 sans-serif;
+
             color: #111111;
         }
 
         .seo-content {
+
             position: absolute;
+
             width: 1px;
             height: 1px;
+
             overflow: hidden;
-            clip: rect(0 0 0 0);
-            clip-path: inset(50%);
-            white-space: normal;
+
+            clip: rect(
+                0 0 0 0
+            );
+
+            clip-path:
+                inset(50%);
+
+            white-space:
+                normal;
         }
 
-        /*
-         * IMPORTANT:
-         * The SEO content is visually hidden from the normal
-         * product UI but remains part of the server-rendered
-         * HTML.
-         *
-         * The iframe remains the visible product interface.
-         */
-
         .seo-content a {
-            color: inherit;
+
+            color:
+                inherit;
         }
 
         .product-frame {
-            display: block;
-            width: 100%;
-            height: 100vh;
-            min-height: 700px;
-            border: 0;
+
+            display:
+                block;
+
+            width:
+                100%;
+
+            height:
+                100vh;
+
+            min-height:
+                700px;
+
+            border:
+                0;
         }
 
         @media (max-width: 768px) {
 
             .product-frame {
-                min-height: 100vh;
+
+                min-height:
+                    100vh;
             }
 
         }
@@ -1732,18 +2095,25 @@ ${safeJSON(organizationSchema)}
     >
 
         <!-- Breadcrumb -->
-        <nav aria-label="Breadcrumb">
+
+        <nav
+            aria-label="Breadcrumb"
+        >
 
             <ol>
 
                 <li>
-                    <a href="${escapeHTML(SITE.domain)}/">
+
+                    <a
+                        href="${escapeHTML(SITE.domain)}/"
+                    >
                         Home
                     </a>
+
                 </li>
 
                 <li>
-                    ${escapeHTML(product.category)}
+                    ${escapeHTML(category)}
                 </li>
 
                 <li>
@@ -1754,19 +2124,23 @@ ${safeJSON(organizationSchema)}
 
         </nav>
 
-        <!-- Product heading -->
+        <!-- Product -->
 
         <article>
 
             <header>
 
                 <h1>
+
                     ${escapeHTML(product.name)}
                     Subscription
+
                 </h1>
 
                 <p>
+
                     ${escapeHTML(seo.intro)}
+
                 </p>
 
             </header>
@@ -1780,12 +2154,15 @@ ${safeJSON(organizationSchema)}
                     alt="${escapeHTML(imageAlt)}"
                     width="1200"
                     height="630"
+                    loading="eager"
                 >
 
                 <figcaption>
+
                     ${escapeHTML(product.name)}
                     subscription from
                     ${escapeHTML(SITE.name)}
+
                 </figcaption>
 
             </figure>
@@ -1793,15 +2170,36 @@ ${safeJSON(organizationSchema)}
             <!-- Product category -->
 
             <p>
+
                 Category:
+
                 <a
                     href="${escapeHTML(SITE.domain)}/"
                 >
-                    ${escapeHTML(product.category)}
+                    ${escapeHTML(category)}
                 </a>
+
             </p>
 
+            <!-- SEO sections -->
+
             ${sectionHTML}
+
+            <!-- Pricing -->
+
+            ${pricingHTML}
+
+            <!-- Features -->
+
+            ${featuresHTML}
+
+            <!-- Reviews -->
+
+            ${reviewsHTML}
+
+            <!-- FAQ -->
+
+            ${faqHTML}
 
             <!-- Related products -->
 
@@ -1851,7 +2249,9 @@ ${safeJSON(organizationSchema)}
             ${safeJSON(product.name)};
 
         var frame =
-            document.getElementById("productFrame");
+            document.getElementById(
+                "productFrame"
+            );
 
         if (!frame) {
             return;
@@ -1873,8 +2273,13 @@ ${safeJSON(organizationSchema)}
             return String(value || "")
                 .toLowerCase()
                 .trim()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/^-+|-+$/g, "");
+                .replace(
+                    /[^a-z0-9]+/g,
+                    "-"
+                )
+                .replace(
+                    /^-+|-+$/g,
+                    "");
         }
 
         // ====================================================
@@ -1891,7 +2296,9 @@ ${safeJSON(organizationSchema)}
         // PRODUCT NAVIGATION
         // ====================================================
 
-        function goToProduct(targetSlug) {
+        function goToProduct(
+            targetSlug
+        ) {
 
             if (!targetSlug) {
                 return;
@@ -1902,17 +2309,26 @@ ${safeJSON(organizationSchema)}
                     .trim()
                     .toLowerCase();
 
-            if (!PRODUCT_MAP[targetSlug]) {
+            if (
+                !PRODUCT_MAP[targetSlug]
+            ) {
+
                 return;
             }
 
-            if (targetSlug === CURRENT_SLUG) {
+            if (
+                targetSlug ===
+                CURRENT_SLUG
+            ) {
+
                 return;
             }
 
             var targetURL =
                 PRODUCT_BASE +
-                encodeURIComponent(targetSlug);
+                encodeURIComponent(
+                    targetSlug
+                );
 
             window.top.location.href =
                 targetURL;
@@ -1922,7 +2338,9 @@ ${safeJSON(organizationSchema)}
         // FIND SLUG FROM PRODUCT NAME
         // ====================================================
 
-        function findSlugFromName(name) {
+        function findSlugFromName(
+            name
+        ) {
 
             if (!name) {
                 return "";
@@ -1932,8 +2350,12 @@ ${safeJSON(organizationSchema)}
                 String(name);
 
             try {
+
                 decoded =
-                    decodeURIComponent(decoded);
+                    decodeURIComponent(
+                        decoded
+                    );
+
             } catch (_) {}
 
             decoded =
@@ -1941,35 +2363,55 @@ ${safeJSON(organizationSchema)}
                     .trim()
                     .toLowerCase();
 
-            // Exact name
-            for (var key in PRODUCT_MAP) {
+            // ------------------------------------------------
+            // Exact product name
+            // ------------------------------------------------
+
+            for (
+                var key in PRODUCT_MAP
+            ) {
 
                 if (
                     !Object.prototype.hasOwnProperty
-                        .call(PRODUCT_MAP, key)
+                        .call(
+                            PRODUCT_MAP,
+                            key
+                        )
                 ) {
+
                     continue;
                 }
 
                 var productName =
                     String(
-                        PRODUCT_MAP[key].name || ""
+                        PRODUCT_MAP[key].name ||
+                        ""
                     )
                     .trim()
                     .toLowerCase();
 
                 if (
-                    productName === decoded
+                    productName ===
+                    decoded
                 ) {
+
                     return key;
                 }
             }
 
+            // ------------------------------------------------
             // Generated slug
-            var generated =
-                generateSlug(decoded);
+            // ------------------------------------------------
 
-            if (PRODUCT_MAP[generated]) {
+            var generated =
+                generateSlug(
+                    decoded
+                );
+
+            if (
+                PRODUCT_MAP[generated]
+            ) {
+
                 return generated;
             }
 
@@ -1980,7 +2422,9 @@ ${safeJSON(organizationSchema)}
         // FIND SLUG FROM URL
         // ====================================================
 
-        function findSlugFromURL(url) {
+        function findSlugFromURL(
+            url
+        ) {
 
             if (!url) {
                 return "";
@@ -1994,7 +2438,10 @@ ${safeJSON(organizationSchema)}
                         window.location.origin
                     );
 
+                // --------------------------------------------
                 // /product/{slug}
+                // --------------------------------------------
+
                 var match =
                     parsed.pathname.match(
                         /^\\/product\\/([^/]+)\\/?$/i
@@ -2013,17 +2460,25 @@ ${safeJSON(organizationSchema)}
                         .toLowerCase();
 
                     if (
-                        PRODUCT_MAP[directSlug]
+                        PRODUCT_MAP[
+                            directSlug
+                        ]
                     ) {
+
                         return directSlug;
                     }
                 }
 
+                // --------------------------------------------
                 // details.html?name=Product
+                // --------------------------------------------
+
                 if (
                     parsed.pathname
                         .toLowerCase()
-                        .indexOf("details.html") !== -1
+                        .indexOf(
+                            "details.html"
+                        ) !== -1
                 ) {
 
                     var name =
@@ -2056,23 +2511,35 @@ ${safeJSON(organizationSchema)}
                     return;
                 }
 
+                // ------------------------------------------------
                 // HOME
+                // ------------------------------------------------
+
                 if (
                     event.data.type ===
                     "NLS_GO_HOME"
                 ) {
 
                     goHome();
+
                     return;
                 }
 
+                // ------------------------------------------------
                 // PRODUCT
+                // ------------------------------------------------
+
                 if (
                     event.data.type ===
                     "NLS_NAVIGATE_PRODUCT"
                 ) {
 
-                    var targetSlug = "";
+                    var targetSlug =
+                        "";
+
+                    // --------------------------------------------
+                    // productSlug
+                    // --------------------------------------------
 
                     if (
                         event.data.productSlug
@@ -2093,6 +2560,10 @@ ${safeJSON(organizationSchema)}
                                 event.data.productSlug;
                         }
                     }
+
+                    // --------------------------------------------
+                    // productName
+                    // --------------------------------------------
 
                     if (
                         !targetSlug &&
@@ -2131,11 +2602,13 @@ ${safeJSON(organizationSchema)}
                     !frameWin ||
                     !frameWin.location
                 ) {
+
                     return;
                 }
 
                 var href =
-                    frameWin.location.href || "";
+                    frameWin.location.href ||
+                    "";
 
                 if (!href) {
                     return;
@@ -2145,19 +2618,27 @@ ${safeJSON(organizationSchema)}
                     new URL(href);
 
                 var pathname =
-                    parsed.pathname.toLowerCase();
+                    parsed.pathname
+                        .toLowerCase();
 
+                // ------------------------------------------------
                 // HOME
+                // ------------------------------------------------
+
                 if (
                     pathname === "/" ||
                     pathname === "/index.html"
                 ) {
 
                     goHome();
+
                     return;
                 }
 
+                // ------------------------------------------------
                 // DETAILS PAGE
+                // ------------------------------------------------
+
                 if (
                     pathname.indexOf(
                         "/details.html"
@@ -2178,7 +2659,8 @@ ${safeJSON(organizationSchema)}
 
                         if (
                             targetSlug &&
-                            targetSlug !== CURRENT_SLUG
+                            targetSlug !==
+                                CURRENT_SLUG
                         ) {
 
                             goToProduct(
@@ -2188,13 +2670,19 @@ ${safeJSON(organizationSchema)}
                     }
                 }
 
+                // ------------------------------------------------
                 // PRODUCT URL
+                // ------------------------------------------------
+
                 var detectedSlug =
-                    findSlugFromURL(href);
+                    findSlugFromURL(
+                        href
+                    );
 
                 if (
                     detectedSlug &&
-                    detectedSlug !== CURRENT_SLUG
+                    detectedSlug !==
+                        CURRENT_SLUG
                 ) {
 
                     goToProduct(
@@ -2203,6 +2691,7 @@ ${safeJSON(organizationSchema)}
                 }
 
             } catch (_) {}
+
         }
 
         // ====================================================
@@ -2230,22 +2719,24 @@ ${safeJSON(organizationSchema)}
                     var frameDoc =
                         frameWin.document;
 
-                    // ========================================
+                    // =========================================
                     // HISTORY BACK
-                    // ========================================
+                    // =========================================
 
                     try {
 
                         frameWin.history.back =
                             function () {
+
                                 goHome();
+
                             };
 
                     } catch (_) {}
 
-                    // ========================================
+                    // =========================================
                     // HISTORY GO
-                    // ========================================
+                    // =========================================
 
                     try {
 
@@ -2259,6 +2750,7 @@ ${safeJSON(organizationSchema)}
                                 ) {
 
                                     goHome();
+
                                     return;
                                 }
 
@@ -2266,9 +2758,9 @@ ${safeJSON(organizationSchema)}
 
                     } catch (_) {}
 
-                    // ========================================
+                    // =========================================
                     // CLICK INTERCEPTION
-                    // ========================================
+                    // =========================================
 
                     frameDoc.addEventListener(
                         "click",
@@ -2286,7 +2778,9 @@ ${safeJSON(organizationSchema)}
                             // =================================
 
                             var link =
-                                target.closest("a");
+                                target.closest(
+                                    "a"
+                                );
 
                             if (link) {
 
@@ -2300,7 +2794,10 @@ ${safeJSON(organizationSchema)}
                                         .toLowerCase()
                                         .trim();
 
+                                // ---------------------------------
                                 // HOME
+                                // ---------------------------------
+
                                 if (
                                     lower === "/" ||
                                     lower === "/index.html" ||
@@ -2313,6 +2810,7 @@ ${safeJSON(organizationSchema)}
                                     event.stopPropagation();
 
                                     goHome();
+
                                     return;
                                 }
 
@@ -2324,7 +2822,10 @@ ${safeJSON(organizationSchema)}
                                             frameWin.location.href
                                         );
 
+                                    // -----------------------------
                                     // HOME
+                                    // -----------------------------
+
                                     if (
                                         url.pathname === "/" ||
                                         url.pathname
@@ -2338,10 +2839,14 @@ ${safeJSON(organizationSchema)}
                                         event.stopPropagation();
 
                                         goHome();
+
                                         return;
                                     }
 
+                                    // -----------------------------
                                     // PRODUCT URL
+                                    // -----------------------------
+
                                     var matchedSlug =
                                         findSlugFromURL(
                                             url.href
@@ -2363,7 +2868,10 @@ ${safeJSON(organizationSchema)}
                                         return;
                                     }
 
+                                    // -----------------------------
                                     // details.html?name=
+                                    // -----------------------------
+
                                     var name =
                                         url.searchParams.get(
                                             "name"
@@ -2394,6 +2902,7 @@ ${safeJSON(organizationSchema)}
                                     }
 
                                 } catch (_) {}
+
                             }
 
                             // =================================
@@ -2419,16 +2928,25 @@ ${safeJSON(organizationSchema)}
                                 if (
                                     text === "home" ||
                                     text === "back" ||
-                                    text.indexOf("back to") !== -1 ||
-                                    text.indexOf("return to") !== -1 ||
-                                    text.indexOf("return home") !== -1 ||
-                                    text.indexOf("go home") !== -1
+                                    text.indexOf(
+                                        "back to"
+                                    ) !== -1 ||
+                                    text.indexOf(
+                                        "return to"
+                                    ) !== -1 ||
+                                    text.indexOf(
+                                        "return home"
+                                    ) !== -1 ||
+                                    text.indexOf(
+                                        "go home"
+                                    ) !== -1
                                 ) {
 
                                     event.preventDefault();
                                     event.stopPropagation();
 
                                     goHome();
+
                                     return;
                                 }
                             }

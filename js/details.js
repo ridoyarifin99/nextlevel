@@ -4345,3 +4345,7 @@ const products = [
 // ============================================================
 
 window.products = products;
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = products;
+}
