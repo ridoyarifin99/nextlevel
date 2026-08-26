@@ -522,7 +522,7 @@
             <h2>Payment Submitted!</h2>
             <p id="successMessage">Your order has been submitted successfully.</p>
             <div class="success-actions">
-                <a id="dashboardButton" href="./account.html" class="modal-action btn-primary success-dashboard-button">
+                <a id="dashboardButton" href="./dashboard.html" class="modal-action btn-primary success-dashboard-button">
                     <span><i class="fas fa-gauge-high"></i> Dashboard</span>
                 </a>
                 <a id="homeButton" href="./index.html" class="modal-action success-home-button">
@@ -1373,7 +1373,7 @@ placeOrderBtn.addEventListener("click", placeOrder);
 
 dashboardButton.addEventListener("click", event => {
     event.stopPropagation();
-    window.location.href = "./account.html";
+    window.location.href = "./dashboard.html";
 });
 
 homeButton.addEventListener("click", event => {
