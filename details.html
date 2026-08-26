@@ -36,8 +36,12 @@
         }
         
         @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
         
         .skeleton-card {
@@ -561,11 +565,6 @@
             visibility: visible;
         }
 
-        /* Review Styles */
-        .review-card { border-bottom: 1px solid #e5e7eb; padding: 1.5rem 0; }
-        .star { color: #f59e0b; }
-        .review-form { background: #f8f9ff; border: 1px solid #e8eaf0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .gallery-slide {
@@ -724,9 +723,6 @@
         </div>
     </div>
     
-    <!-- Supabase Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./js/supabase-config.js"></script>
  
     <script>
         // Initialize AOS
@@ -736,7 +732,7 @@
             offset: 100
         });
         
- // Product data with individual pricing and features for each item
+        // Product data with individual pricing and features for each item
         const products = [
             // Best-selling Subscriptions
             {
@@ -5075,29 +5071,30 @@
                 ]
             }
         ];
+        // Add this helper function inside details.html
 
+// Call this when user clicks a Home / Back button:
+function goHomeParent() {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'NLS_GO_HOME' }, '*');
+    } else {
+        window.location.href = '/';
+    }
+}
+
+// Call this when user clicks a Related Product:
+function goToProductParent(productName) {
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'NLS_NAVIGATE_PRODUCT', productName: productName }, '*');
+    } else {
+        window.location.href = '/details.html?name=' + encodeURIComponent(productName);
+    }
+}
         // Cart state
         let cart = JSON.parse(localStorage.getItem('streamHubCart')) || [];
         let currentProduct = null;
         let selectedPlan = 2; // Default to 6 months (index 2)
         let currentSlide = 0; // Current slide index for image gallery
-        let currentUser = null;
-        let userExistingReview = null;
-
-        const supabase = window.supabaseClient;
-
-        // Auth State Listener
-        if (supabase) {
-            supabase.auth.getSession().then(({ data }) => {
-                currentUser = data.session?.user || null;
-            });
-            supabase.auth.onAuthStateChange((event, session) => {
-                currentUser = session?.user || null;
-                if (document.querySelector('.tab-button.active')?.textContent.includes('Reviews')) {
-                    initReviewsTab(); 
-                }
-            });
-        }
         
         // DOM elements
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -5252,6 +5249,15 @@
             
             // Create a deep copy of the product to avoid modifying the original
             currentProduct = JSON.parse(JSON.stringify(products[productIndex]));
+            
+            // Ensure required arrays exist
+            if (!currentProduct.customerReviews || !Array.isArray(currentProduct.customerReviews)) {
+                currentProduct.customerReviews = [];
+            }
+            
+            if (!currentProduct.faq || !Array.isArray(currentProduct.faq)) {
+                currentProduct.faq = [];
+            }
             
             // Update breadcrumb
             breadcrumbProduct.textContent = currentProduct.name;
@@ -5551,6 +5557,42 @@
                         break;
                         
                     case 'reviews':
+                        // Create reviews HTML
+                        let reviewsHTML = '';
+                        
+                        if (currentProduct.customerReviews && currentProduct.customerReviews.length > 0) {
+                            reviewsHTML = `
+                                <div class="space-y-4">
+                                    ${currentProduct.customerReviews.map((review, index) => `
+                                        <div class="border-b border-gray-200 pb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div class="flex items-center">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                                                        <span class="font-semibold text-gray-700">${review.name.charAt(0)}</span>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-medium">${review.name}</h4>
+                                                        <div class="flex text-yellow-400 text-sm">
+                                                            ${generateStars(review.rating)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="text-sm text-gray-500">${formatDate(review.date)}</span>
+                                            </div>
+                                            <p class="text-gray-700">${review.comment}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        } else {
+                            reviewsHTML = `
+                                <div class="text-center py-8">
+                                    <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
+                                    <p class="text-gray-600">No reviews yet. Be the first to review this product!</p>
+                                </div>
+                            `;
+                        }
+                        
                         tabContent.innerHTML = `
                             <div class="space-y-6">
                                 <div class="flex items-center justify-between">
@@ -5563,12 +5605,13 @@
                                             <span class="ml-2 text-gray-600">${currentProduct.rating} out of 5</span>
                                         </div>
                                     </div>
+                                    <button class="btn-primary px-4 py-2 rounded-lg">
+                                        Write a Review
+                                    </button>
                                 </div>
-                                <div id="reviewFormContainer"></div>
-                                <div id="reviewsList" class="space-y-4"></div>
+                                ${reviewsHTML}
                             </div>
                         `;
-                        initReviewsTab();
                         break;
                         
                     case 'faq':
@@ -5598,7 +5641,11 @@
                             `;
                         }
                         
-                        tabContent.innerHTML = `<div class="space-y-4">${faqHTML}</div>`;
+                        tabContent.innerHTML = `
+                            <div class="space-y-4">
+                                ${faqHTML}
+                            </div>
+                        `;
                         break;
                 }
                 
@@ -5610,6 +5657,20 @@
                 console.error('Error in switchTab:', error);
                 tabContent.innerHTML = '<p class="text-gray-600">Error loading content. Please try again.</p>';
             }
+        }
+        
+        // Format date for reviews
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return '1 day ago';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+            if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+            return `${Math.floor(diffDays / 365)} years ago`;
         }
         
         // Toggle FAQ item
@@ -5675,106 +5736,6 @@
             `).join('');
         }
         
-        // --- REVIEW SYSTEM LOGIC ---
-        async function initReviewsTab() {
-            renderReviewFormUI();
-            await loadReviews();
-        }
-
-        function renderReviewFormUI() {
-            const formContainer = document.getElementById('reviewFormContainer');
-            if (!currentUser) {
-                formContainer.innerHTML = `<div class="bg-blue-50 text-blue-700 p-4 rounded-lg text-center">Please <a href="login.html" class="font-bold underline">log in</a> to leave a review.</div>`;
-                return;
-            }
-            
-            formContainer.innerHTML = `
-                <div class="review-form">
-                    <h4 class="font-bold text-lg mb-3">${userExistingReview ? 'Edit Your Review' : 'Write a Review'}</h4>
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">Your Rating</label>
-                        <select id="ratingInput" class="w-full p-2 border rounded">
-                            <option value="5" ${userExistingReview?.rating == 5 ? 'selected' : ''}>5 Stars</option>
-                            <option value="4" ${userExistingReview?.rating == 4 ? 'selected' : ''}>4 Stars</option>
-                            <option value="3" ${userExistingReview?.rating == 3 ? 'selected' : ''}>3 Stars</option>
-                            <option value="2" ${userExistingReview?.rating == 2 ? 'selected' : ''}>2 Stars</option>
-                            <option value="1" ${userExistingReview?.rating == 1 ? 'selected' : ''}>1 Star</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium mb-1">Your Review</label>
-                        <textarea id="reviewTextInput" class="w-full p-2 border rounded" rows="3" placeholder="Share your experience...">${userExistingReview?.review_text || ''}</textarea>
-                    </div>
-                    <button onclick="submitReview()" class="btn-primary">${userExistingReview ? 'Update Review' : 'Submit Review'}</button>
-                </div>
-            `;
-        }
-
-        async function loadReviews() {
-            const list = document.getElementById('reviewsList');
-            list.innerHTML = '<p class="text-gray-500">Loading reviews...</p>';
-
-            const { data: reviews, error } = await supabase
-                .from('product_reviews')
-                .select('*')
-                .eq('product_slug', currentProduct.name)
-                .order('created_at', { ascending: false });
-
-            if (error) return list.innerHTML = '<p class="text-red-500">Error loading reviews.</p>';
-
-            userExistingReview = currentUser ? reviews.find(r => r.user_id === currentUser.id) : null;
-            renderReviewFormUI(); 
-
-            if (!reviews || reviews.length === 0) {
-                list.innerHTML = '<p class="text-gray-500 text-center py-8">No reviews yet. Be the first to review!</p>';
-                return;
-            }
-
-            list.innerHTML = reviews.map(r => `
-                <div class="review-card">
-                    <div class="flex justify-between items-center mb-2">
-                        <div>
-                            <h4 class="font-bold">${r.author_name}</h4>
-                            <div class="star">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-                        </div>
-                        <span class="text-sm text-gray-500">${new Date(r.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <p class="text-gray-600">${r.review_text}</p>
-                </div>
-            `).join('');
-        }
-
-        async function submitReview() {
-            if (!currentUser) return alert('Please log in to submit a review.');
-            
-            const rating = document.getElementById('ratingInput').value;
-            const text = document.getElementById('reviewTextInput').value.trim();
-            if (!text) return alert('Please write something in your review.');
-
-            const payload = {
-                product_slug: currentProduct.name,
-                user_id: currentUser.id,
-                author_name: currentUser.user_metadata?.full_name || currentUser.email,
-                rating: parseInt(rating),
-                review_text: text
-            };
-
-            try {
-                if (userExistingReview) {
-                    const { error } = await supabase.from('product_reviews').update(payload).eq('id', userExistingReview.id);
-                    if (error) throw error;
-                    alert('Review updated successfully!');
-                } else {
-                    const { error } = await supabase.from('product_reviews').insert(payload);
-                    if (error) throw error;
-                    alert('Review submitted successfully!');
-                }
-                await loadReviews();
-            } catch (error) {
-                alert('Error saving review: ' + error.message);
-            }
-        }
-
         // Add to cart
         function addToCart() {
             const selectedPlanData = currentProduct.pricing[selectedPlan];
