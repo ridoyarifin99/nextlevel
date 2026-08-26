@@ -7605,9 +7605,35 @@ async function loadOrders(
             .from(
                 DASHBOARD_CONFIG.ordersTable
             )
-            .select(
-                "*"
-            )
+            .select(`
+                *,
+                order_items (
+                    id,
+                    product_name,
+                    product_image,
+                    plan_duration,
+                    price,
+                    quantity,
+                    order_item_components (
+                        id,
+                        component_name,
+                        component_slug,
+                        component_image,
+                        custom_name,
+                        subscription_email,
+                        subscription_password,
+                        delivery_note,
+                        subscription_start,
+                        subscription_expiry,
+                        delivery_status,
+                        admin_note,
+                        plan_duration,
+                        quantity,
+                        slot_number,
+                        component_price
+                    )
+                )
+            `)
             .eq(
                 "user_id",
                 user.id
@@ -7621,28 +7647,342 @@ async function loadOrders(
             );
 
 
+    /* ============================================================
+       DATABASE ERROR
+    ============================================================ */
+
     if (
         error
     ) {
+
+        console.error(
+            "Failed to load customer orders:",
+            error
+        );
 
         throw error;
 
     }
 
 
+    /* ============================================================
+       NORMALIZE ORDERS
+    ============================================================ */
+
     currentOrders =
         Array.isArray(
             data
         )
         ?
-        data
+        data.map(
+            order => {
+
+                /*
+                ----------------------------------------------------
+                ORDER ITEMS
+                ----------------------------------------------------
+                */
+
+                const orderItems =
+                    Array.isArray(
+                        order.order_items
+                    )
+                    ?
+                    order.order_items.map(
+                        item => {
+
+                            /*
+                            ------------------------------------------------
+                            COMPONENTS
+                            ------------------------------------------------
+                            */
+
+                            const components =
+                                Array.isArray(
+                                    item.order_item_components
+                                )
+                                ?
+                                item.order_item_components.map(
+                                    component => {
+
+                                        return {
+
+                                            ...component,
+
+
+                                            /*
+                                            ----------------------------
+                                            COMPONENT NAME
+                                            ----------------------------
+                                            */
+
+                                            component_name:
+                                                component.component_name ||
+                                                component.custom_name ||
+                                                "Subscription",
+
+
+                                            /*
+                                            ----------------------------
+                                            CUSTOM NAME
+                                            ----------------------------
+                                            */
+
+                                            custom_name:
+                                                component.custom_name ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            COMPONENT IMAGE
+                                            ----------------------------
+                                            */
+
+                                            component_image:
+                                                component.component_image ||
+                                                item.product_image ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            PLAN
+                                            ----------------------------
+                                            */
+
+                                            plan_duration:
+                                                component.plan_duration ||
+                                                item.plan_duration ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            QUANTITY
+                                            ----------------------------
+                                            */
+
+                                            quantity:
+                                                Number(
+                                                    component.quantity ||
+                                                    1
+                                                ),
+
+
+                                            /*
+                                            ----------------------------
+                                            SLOT NUMBER
+                                            ----------------------------
+                                            */
+
+                                            slot_number:
+                                                component.slot_number ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            EMAIL
+                                            ----------------------------
+                                            */
+
+                                            subscription_email:
+                                                component.subscription_email ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            PASSWORD
+                                            ----------------------------
+                                            */
+
+                                            subscription_password:
+                                                component.subscription_password ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            DELIVERY NOTE
+                                            ----------------------------
+                                            */
+
+                                            delivery_note:
+                                                component.delivery_note ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            START DATE
+                                            ----------------------------
+                                            */
+
+                                            subscription_start:
+                                                component.subscription_start ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            EXPIRY DATE
+                                            ----------------------------
+                                            */
+
+                                            subscription_expiry:
+                                                component.subscription_expiry ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            DELIVERY STATUS
+                                            ----------------------------
+                                            */
+
+                                            delivery_status:
+                                                component.delivery_status ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            ADMIN NOTE
+                                            ----------------------------
+                                            */
+
+                                            admin_note:
+                                                component.admin_note ||
+                                                null,
+
+
+                                            /*
+                                            ----------------------------
+                                            COMPONENT PRICE
+                                            ----------------------------
+                                            */
+
+                                            component_price:
+                                                component.component_price !==
+                                                    null &&
+                                                component.component_price !==
+                                                    undefined
+                                                ?
+                                                Number(
+                                                    component.component_price
+                                                )
+                                                :
+                                                Number(
+                                                    item.price ||
+                                                    0
+                                                )
+
+                                        };
+
+                                    }
+                                )
+                                :
+                                [];
+
+
+                            /*
+                            ------------------------------------------------
+                            RETURN NORMALIZED ORDER ITEM
+                            ------------------------------------------------
+                            */
+
+                            return {
+
+                                ...item,
+
+                                quantity:
+                                    Number(
+                                        item.quantity ||
+                                        1
+                                    ),
+
+                                price:
+                                    Number(
+                                        item.price ||
+                                        0
+                                    ),
+
+                                order_item_components:
+                                    components
+
+                            };
+
+                        }
+                    )
+                    :
+                    [];
+
+
+                /*
+                ----------------------------------------------------
+                RETURN NORMALIZED ORDER
+                ----------------------------------------------------
+                */
+
+                return {
+
+                    ...order,
+
+                    order_items:
+                        orderItems,
+
+
+                    /*
+                    ------------------------------------------------
+                    OLD SINGLE-PRODUCT ORDER SUPPORT
+                    ------------------------------------------------
+
+                    Keep these fields because older orders may have
+                    credentials directly inside the orders table.
+                    ------------------------------------------------
+                    */
+
+                    subscription_email:
+                        order.subscription_email ||
+                        null,
+
+                    subscription_password:
+                        order.subscription_password ||
+                        null,
+
+                    delivery_note:
+                        order.delivery_note ||
+                        null,
+
+                    subscription_start:
+                        order.subscription_start ||
+                        null,
+
+                    subscription_expiry:
+                        order.subscription_expiry ||
+                        null
+
+                };
+
+            }
+        )
         :
         [];
 
 
+    /* ============================================================
+       TOTAL ORDER COUNT
+    ============================================================ */
+
     totalOrderCount.textContent =
         currentOrders.length;
 
+
+    /* ============================================================
+       FIND PENDING ORDERS
+    ============================================================ */
 
     const pendingOrders =
         currentOrders.filter(
@@ -7680,19 +8020,30 @@ async function loadOrders(
         );
 
 
+    /* ============================================================
+       PENDING ORDER COUNT
+    ============================================================ */
+
     pendingOrderCount.textContent =
         pendingOrders.length;
 
+
+    /* ============================================================
+       RENDER ORDERS
+    ============================================================ */
 
     renderOrders(
         currentOrders
     );
 
 
+    /* ============================================================
+       RETURN ORDERS
+    ============================================================ */
+
     return currentOrders;
 
 }
-
 
 /* ================================================================
    SHOW DASHBOARD
