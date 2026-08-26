@@ -471,7 +471,7 @@ function getStatusClass(status) {
     const normalized = normalizeStatus(status);
     switch (normalized) {
         case "active": case "paid": case "completed": case "delivered": return "status-active";
-        case "pending": return "status-pending";
+        case "pending": case "pending payment": return "status-pending";
         case "processing": case "in progress": return "status-processing";
         case "expired": case "cancelled": case "canceled": case "failed": case "rejected": return "status-expired";
         default: return "status-default";
@@ -883,6 +883,53 @@ function renderEmptyOrders() {
     `;
 }
 
+// Helper to determine if an order is completely delivered
+function isOrderFullyDelivered(order) {
+    const items = Array.isArray(order.order_items) ? order.order_items : [];
+    if (items.length === 0) return false;
+    
+    for (const item of items) {
+        const components = Array.isArray(item.order_item_components) ? item.order_item_components : [];
+        if (components.length === 0) return false; // No components means not delivered
+        
+        for (const comp of components) {
+            const compStatus = normalizeStatus(comp.delivery_status);
+            // If any component is not delivered/active, the order is not fully delivered
+            if (compStatus !== 'delivered' && compStatus !== 'active') {
+                return false;
+            }
+        }
+    }
+    return true; // All items have components and all are delivered
+}
+
+// Helper to determine if an order is pending
+function isOrderPending(order) {
+    const paymentStatus = normalizeStatus(order.payment_status);
+    if (paymentStatus === 'pending' || paymentStatus === 'processing') return true;
+    
+    // If it's paid but not fully delivered, it's still pending from the customer's perspective
+    if (paymentStatus === 'paid' && !isOrderFullyDelivered(order)) return true;
+    
+    return false;
+}
+
+// Helper to get the overall display status for an order
+function getOrderDisplayStatus(order) {
+    const paymentStatus = normalizeStatus(order.payment_status);
+    if (paymentStatus === 'pending') return 'Pending Payment';
+    if (paymentStatus === 'failed') return 'Failed';
+    if (paymentStatus === 'cancelled' || paymentStatus === 'canceled') return 'Cancelled';
+    if (paymentStatus === 'refunded') return 'Refunded';
+    
+    // If paid, check delivery
+    if (isOrderFullyDelivered(order)) {
+        return 'Delivered';
+    } else {
+        return 'Processing';
+    }
+}
+
 function renderOrders(orders) {
     if (!Array.isArray(orders) || !orders.length) { renderEmptyOrders(); return; }
     ordersContainer.innerHTML = `
@@ -894,7 +941,10 @@ function renderOrders(orders) {
                 <tbody>
                     ${orders.map(order => {
                         const orderNumber = firstValue(order, ["order_number", "orderNumber", "order_id"], order.id ? String(order.id).substring(0, 8) : "Order");
-                        const paymentStatus = firstValue(order, ["payment_status", "paymentStatus", "order_status", "orderStatus"], "Unknown");
+                        
+                        // Use the new helper to determine display status
+                        const displayStatus = getOrderDisplayStatus(order);
+                        
                         const total = firstValue(order, ["total", "amount", "price", "paid_amount"], "");
                         const orderItems = Array.isArray(order.order_items) ? order.order_items : [];
                         const componentCount = orderItems.reduce((count, item) => count + (Array.isArray(item.order_item_components) ? item.order_item_components.length : 0), 0);
@@ -957,7 +1007,7 @@ function renderOrders(orders) {
                                 <td>${escapeHTML(formatDate(order.created_at))}</td>
                                 <td><span class="order-total">${escapeHTML(formatCurrency(total))}</span></td>
                                 <td><span class="payment-method"><i class="fas fa-credit-card"></i> ${escapeHTML(formatPaymentMethod(order.payment_method))}</span></td>
-                                <td><span class="status-badge ${getStatusClass(paymentStatus)}">${escapeHTML(formatStatus(paymentStatus))}</span></td>
+                                <td><span class="status-badge ${getStatusClass(displayStatus)}">${escapeHTML(formatStatus(displayStatus))}</span></td>
                             </tr>
                             ${orderItems.length ? `
                                 <tr>
@@ -1081,13 +1131,10 @@ async function loadOrders(user) {
 
         if (totalOrderCount) totalOrderCount.textContent = currentOrders.length;
 
-        const pendingOrders = currentOrders.filter(order => {
-            const paymentStatus = normalizeStatus(order.payment_status);
-            const orderStatus = normalizeStatus(order.order_status);
-            return paymentStatus === "pending" || paymentStatus === "processing" || orderStatus === "pending" || orderStatus === "processing";
-        });
-
+        // FIXED LOGIC: Use the new helper to properly calculate pending orders
+        const pendingOrders = currentOrders.filter(order => isOrderPending(order));
         if (pendingOrderCount) pendingOrderCount.textContent = pendingOrders.length;
+
         renderOrders(currentOrders);
         return currentOrders;
     } catch (error) {
@@ -1131,6 +1178,7 @@ function buildSubscriptionsFromOrders() {
     subs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     currentSubscriptions = subs;
     
+    // Active subscriptions are those marked as 'active' or 'delivered'
     const activeSubscriptions = currentSubscriptions.filter(sub => {
         const status = normalizeStatus(sub.status);
         return status === "active" || status === "delivered";
