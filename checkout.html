@@ -6641,234 +6641,75 @@ async function placeOrder() {
         // ORDER ITEMS
         // -----------------------------------------------------
 
-// -----------------------------------------------------
-// ORDER ITEMS
-// -----------------------------------------------------
+        const orderItems =
+            cart.map(item => {
 
-const orderItems = cart.map(item => {
+                const plan =
+                    item.selectedPlan ||
+                    {
 
-    const plan =
-        item.selectedPlan || {
-            price: item.price,
-            duration: item.duration
-        };
+                        price:
+                            item.price,
 
-    return {
+                        duration:
+                            item.duration
 
-        order_id:
-            createdOrder.id,
-
-        product_name:
-            item.name ||
-            "Product",
-
-        product_image:
-            item.image ||
-            null,
-
-        plan_duration:
-            plan.duration ||
-            null,
-
-        price:
-            Number(
-                plan.price || 0
-            ),
-
-        quantity:
-            Number(
-                item.quantity || 1
-            )
-
-    };
-
-});
+                    };
 
 
-const {
-    data: createdItems,
-    error: itemsError
-} =
-    await supabaseClient
-        .from("order_items")
-        .insert(orderItems)
-        .select("id, product_name, product_image, quantity");
+                return {
 
+                    order_id:
+                        createdOrder.id,
 
-if (itemsError) {
+                    product_name:
+                        item.name ||
+                        "Product",
 
-    console.error(
-        "Order items INSERT error:",
-        itemsError
-    );
+                    product_image:
+                        item.image ||
+                        null,
 
-    throw itemsError;
+                    plan_duration:
+                        plan.duration ||
+                        null,
 
-}
+                    price:
+                        Number(
+                            plan.price || 0
+                        ),
 
+                    quantity:
+                        Number(
+                            item.quantity || 1
+                        )
 
-if (
-    !createdItems ||
-    createdItems.length !== orderItems.length
-) {
-
-    throw new Error(
-        "Order items were not created correctly."
-    );
-
-}
-
-
-// -----------------------------------------------------
-// CREATE DELIVERY COMPONENTS
-// -----------------------------------------------------
-
-const componentRows = [];
-
-
-createdItems.forEach((createdItem, index) => {
-
-    const originalItem =
-        cart[index];
-
-    const productSlug =
-        originalItem.productSlug ||
-        originalItem.slug ||
-        originalItem.product_slug ||
-        "";
-
-
-    // -------------------------------------------------
-    // COMBO
-    // -------------------------------------------------
-
-    const comboComponents =
-        COMBO_COMPONENTS[productSlug];
-
-
-    if (comboComponents &&
-        comboComponents.length > 0) {
-
-        comboComponents.forEach(component => {
-
-            componentRows.push({
-
-                order_item_id:
-                    createdItem.id,
-
-                component_name:
-                    component.name,
-
-                component_slug:
-                    component.slug,
-
-                component_image:
-                    component.image,
-
-                custom_name:
-                    null,
-
-                subscription_email:
-                    null,
-
-                subscription_password:
-                    null,
-
-                delivery_note:
-                    null,
-
-                subscription_start:
-                    null,
-
-                subscription_expiry:
-                    null,
-
-                delivery_status:
-                    "pending",
-
-                admin_note:
-                    null
+                };
 
             });
 
-        });
 
-    }
-
-
-    // -------------------------------------------------
-    // NORMAL PRODUCT
-    // -------------------------------------------------
-
-    else {
-
-        componentRows.push({
-
-            order_item_id:
-                createdItem.id,
-
-            component_name:
-                createdItem.product_name,
-
-            component_slug:
-                productSlug || null,
-
-            component_image:
-                createdItem.product_image,
-
-            custom_name:
-                null,
-
-            subscription_email:
-                null,
-
-            subscription_password:
-                null,
-
-            delivery_note:
-                null,
-
-            subscription_start:
-                null,
-
-            subscription_expiry:
-                null,
-
-            delivery_status:
-                "pending",
-
-            admin_note:
-                null
-
-        });
-
-    }
-
-});
+        const {
+            error: itemsError
+        } =
+            await supabaseClient
+                .from("order_items")
+                .insert(
+                    orderItems
+                );
 
 
-if (componentRows.length > 0) {
+        if (itemsError) {
 
-    const {
-        error: componentError
-    } =
-        await supabaseClient
-            .from("order_item_components")
-            .insert(componentRows);
+            console.error(
+                "Order items INSERT error:",
+                itemsError
+            );
 
+            throw itemsError;
 
-    if (componentError) {
+        }
 
-        console.error(
-            "Delivery components INSERT error:",
-            componentError
-        );
-
-        throw componentError;
-
-    }
-
-}
 
         // -----------------------------------------------------
         // SUCCESS

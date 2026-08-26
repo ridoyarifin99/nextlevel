@@ -6998,9 +6998,9 @@ function renderEmptyOrders() {
 }
 
 
-/* ================================================================
+/* =========================================================
    RENDER ORDERS
-================================================================ */
+========================================================= */
 
 function renderOrders(
     orders
@@ -7108,6 +7108,534 @@ function renderOrders(
                                     );
 
 
+                                const orderItems =
+                                    Array.isArray(
+                                        order.order_items
+                                    )
+                                    ?
+                                    order.order_items
+                                    :
+                                    [];
+
+
+                                /* =================================================
+                                   COMPONENT COUNT
+                                ================================================= */
+
+                                const componentCount =
+                                    orderItems.reduce(
+                                        (
+                                            count,
+                                            item
+                                        ) => {
+
+                                            const components =
+                                                Array.isArray(
+                                                    item.order_item_components
+                                                )
+                                                ?
+                                                item.order_item_components
+                                                :
+                                                [];
+
+                                            return (
+                                                count +
+                                                components.length
+                                            );
+
+                                        },
+                                        0
+                                    );
+
+
+                                /* =================================================
+                                   PRODUCT DETAILS
+                                ================================================= */
+
+                                const productDetails =
+                                    orderItems.length
+                                    ?
+
+                                    orderItems
+                                        .map(
+                                            item => {
+
+                                                const productName =
+                                                    item.product_name ||
+                                                    "Product";
+
+
+                                                const itemQuantity =
+                                                    Number(
+                                                        item.quantity ??
+                                                        1
+                                                    );
+
+
+                                                const itemPlan =
+                                                    item.plan_duration ||
+                                                    "Standard";
+
+
+                                                const components =
+                                                    Array.isArray(
+                                                        item.order_item_components
+                                                    )
+                                                    ?
+                                                    item.order_item_components
+                                                    :
+                                                    [];
+
+
+                                                return `
+
+                                                    <div
+                                                        style="
+                                                            margin-top:12px;
+                                                            padding:14px;
+                                                            border:1px solid #e5e7eb;
+                                                            border-radius:12px;
+                                                            background:#f9fafb;
+                                                        "
+                                                    >
+
+                                                        <div
+                                                            style="
+                                                                display:flex;
+                                                                justify-content:space-between;
+                                                                gap:10px;
+                                                                flex-wrap:wrap;
+                                                            "
+                                                        >
+
+                                                            <strong>
+
+                                                                ${escapeHTML(
+                                                                    productName
+                                                                )}
+
+                                                            </strong>
+
+
+                                                            <span>
+
+                                                                Plan:
+                                                                ${escapeHTML(
+                                                                    itemPlan
+                                                                )}
+
+                                                                &nbsp; • &nbsp;
+
+                                                                Qty:
+                                                                ${itemQuantity}
+
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        ${
+                                                            components.length
+                                                            ?
+
+                                                            components
+                                                                .map(
+                                                                    (
+                                                                        component,
+                                                                        index
+                                                                    ) => {
+
+                                                                        const serviceName =
+                                                                            component.service_name ||
+                                                                            "Subscription";
+
+
+                                                                        const planDuration =
+                                                                            component.plan_duration ||
+                                                                            itemPlan ||
+                                                                            "Standard";
+
+
+                                                                        const quantity =
+                                                                            Number(
+                                                                                component.quantity ??
+                                                                                itemQuantity ??
+                                                                                1
+                                                                            );
+
+
+                                                                        const slotNumber =
+                                                                            component.slot_number ??
+                                                                            index +
+                                                                            1;
+
+
+                                                                        const componentPrice =
+                                                                            component.component_price !==
+                                                                                null &&
+                                                                            component.component_price !==
+                                                                                undefined
+                                                                            ?
+                                                                            Number(
+                                                                                component.component_price
+                                                                            )
+                                                                            :
+                                                                            0;
+
+
+                                                                        const deliveryStatus =
+                                                                            component.delivery_status ||
+                                                                            "pending";
+
+
+                                                                        const email =
+                                                                            component.subscription_email ||
+                                                                            "";
+
+
+                                                                        const password =
+                                                                            component.subscription_password ||
+                                                                            "";
+                                                                        
+
+                                                                        const deliveryNote =
+                                                                            component.delivery_note ||
+                                                                            "";
+                                                                        const adminNote =
+                                                                            component.admin_note ||
+                                                                            "";
+
+                                                                        const start =
+                                                                            component.subscription_start ||
+                                                                            "";
+
+
+                                                                        const expiry =
+                                                                            component.subscription_expiry ||
+                                                                            "";
+
+
+                                                                        return `
+
+                                                                            <div
+                                                                                style="
+                                                                                    margin-top:10px;
+                                                                                    padding:12px;
+                                                                                    border:1px solid #e5e7eb;
+                                                                                    border-radius:10px;
+                                                                                    background:#ffffff;
+                                                                                "
+                                                                            >
+
+                                                                                <div
+                                                                                    style="
+                                                                                        font-weight:700;
+                                                                                        margin-bottom:8px;
+                                                                                    "
+                                                                                >
+
+                                                                                    ${escapeHTML(
+                                                                                        serviceName
+                                                                                    )}
+
+                                                                                    <span
+                                                                                        style="
+                                                                                            color:#6b7280;
+                                                                                            font-size:12px;
+                                                                                            margin-left:6px;
+                                                                                        "
+                                                                                    >
+
+                                                                                        Slot
+                                                                                        ${escapeHTML(
+                                                                                            String(
+                                                                                                slotNumber
+                                                                                            )
+                                                                                        )}
+
+                                                                                    </span>
+
+                                                                                </div>
+
+
+                                                                                <div
+                                                                                    style="
+                                                                                        display:grid;
+                                                                                        grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+                                                                                        gap:8px;
+                                                                                        font-size:13px;
+                                                                                    "
+                                                                                >
+
+                                                                                    <div>
+
+                                                                                        <strong>
+                                                                                            Plan:
+                                                                                        </strong>
+
+                                                                                        ${escapeHTML(
+                                                                                            planDuration
+                                                                                        )}
+
+                                                                                    </div>
+
+
+                                                                                    <div>
+
+                                                                                        <strong>
+                                                                                            Quantity:
+                                                                                        </strong>
+
+                                                                                        ${quantity}
+
+                                                                                    </div>
+
+
+                                                                                    <div>
+
+                                                                                        <strong>
+                                                                                            Price:
+                                                                                        </strong>
+
+                                                                                        ${escapeHTML(
+                                                                                            formatCurrency(
+                                                                                                componentPrice
+                                                                                            )
+                                                                                        )}
+
+                                                                                    </div>
+
+
+                                                                                    <div>
+
+                                                                                        <strong>
+                                                                                            Delivery:
+                                                                                        </strong>
+
+                                                                                        ${escapeHTML(
+                                                                                            formatStatus(
+                                                                                                deliveryStatus
+                                                                                            )
+                                                                                        )}
+
+                                                                                    </div>
+
+
+                                                                                    ${
+                                                                                        email
+                                                                                        ?
+
+                                                                                        `
+
+                                                                                            <div
+                                                                                                style="
+                                                                                                    grid-column:1/-1;
+                                                                                                "
+                                                                                            >
+
+                                                                                                <strong>
+                                                                                                    Email:
+                                                                                                </strong>
+
+                                                                                                ${escapeHTML(
+                                                                                                    email
+                                                                                                )}
+
+                                                                                            </div>
+
+                                                                                        `
+
+                                                                                        :
+
+                                                                                        ""
+
+                                                                                    }
+
+
+                                                                                    ${
+                                                                                        password
+                                                                                        ?
+
+                                                                                        `
+
+                                                                                            <div
+                                                                                                style="
+                                                                                                    grid-column:1/-1;
+                                                                                                "
+                                                                                            >
+
+                                                                                                <strong>
+                                                                                                    Password:
+                                                                                                </strong>
+
+                                                                                                <span
+                                                                                                    style="
+                                                                                                        word-break:break-word;
+                                                                                                    "
+                                                                                                >
+
+                                                                                                    ${escapeHTML(
+                                                                                                        password
+                                                                                                    )}
+
+                                                                                                </span>
+
+                                                                                            </div>
+
+                                                                                        `
+
+                                                                                        :
+
+                                                                                        ""
+
+                                                                                    }
+
+
+                                                                                    ${
+                                                                                        start
+                                                                                        ?
+
+                                                                                        `
+
+                                                                                            <div>
+
+                                                                                                <strong>
+                                                                                                    Start:
+                                                                                                </strong>
+
+                                                                                                ${escapeHTML(
+                                                                                                    formatDate(
+                                                                                                        start
+                                                                                                    )
+                                                                                                )}
+
+                                                                                            </div>
+
+                                                                                        `
+
+                                                                                        :
+
+                                                                                        ""
+
+                                                                                    }
+
+
+                                                                                    ${
+                                                                                        expiry
+                                                                                        ?
+
+                                                                                        `
+
+                                                                                            <div>
+
+                                                                                                <strong>
+                                                                                                    Expiry:
+                                                                                                </strong>
+
+                                                                                                ${escapeHTML(
+                                                                                                    formatDate(
+                                                                                                        expiry
+                                                                                                    )
+                                                                                                )}
+
+                                                                                            </div>
+
+                                                                                        `
+
+                                                                                        :
+
+                                                                                        ""
+
+                                                                                    }
+
+
+                                                                                    ${
+                                                                                        deliveryNote
+                                                                                        ?
+
+                                                                                        `
+
+                                                                                            <div
+                                                                                                style="
+                                                                                                    grid-column:1/-1;
+                                                                                                "
+                                                                                            >
+
+                                                                                                <strong>
+                                                                                                    Delivery note:
+                                                                                                </strong>
+
+                                                                                                ${escapeHTML(
+                                                                                                    deliveryNote
+                                                                                                )}
+
+                                                                                            </div>
+
+                                                                                        `
+
+                                                                                        :
+
+                                                                                        ""
+
+                                                                                    }
+
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                        `;
+
+                                                                    }
+                                                                )
+                                                                .join("")
+
+                                                            :
+
+                                                            `
+
+                                                                <div
+                                                                    style="
+                                                                        margin-top:10px;
+                                                                        color:#6b7280;
+                                                                        font-size:13px;
+                                                                    "
+                                                                >
+
+                                                                    Delivery details are not available yet.
+
+                                                                </div>
+
+                                                            `
+
+                                                        }
+
+                                                    </div>
+
+                                                `;
+
+                                            }
+                                        )
+                                        .join("")
+
+                                    :
+
+                                    `
+
+                                        <div
+                                            style="
+                                                margin-top:10px;
+                                                color:#6b7280;
+                                                font-size:13px;
+                                            "
+                                        >
+
+                                            No products found for this order.
+
+                                        </div>
+
+                                    `;
+
+
                                 return `
 
                                     <tr>
@@ -7121,6 +7649,53 @@ function renderOrders(
                                                 )}
 
                                             </span>
+
+
+                                            ${
+                                                orderItems.length
+                                                ?
+
+                                                `
+
+                                                    <div
+                                                        style="
+                                                            margin-top:5px;
+                                                            font-size:11px;
+                                                            color:#6b7280;
+                                                        "
+                                                    >
+
+                                                        ${orderItems.length}
+                                                        product${orderItems.length === 1 ? "" : "s"}
+
+                                                        ${
+                                                            componentCount
+                                                            ?
+
+                                                            `
+
+                                                                •
+                                                                ${componentCount}
+                                                                delivery
+                                                                ${componentCount === 1 ? "slot" : "slots"}
+
+                                                            `
+
+                                                            :
+
+                                                            ""
+
+                                                        }
+
+                                                    </div>
+
+                                                `
+
+                                                :
+
+                                                ""
+
+                                            }
 
                                         </td>
 
@@ -7191,6 +7766,61 @@ function renderOrders(
 
                                     </tr>
 
+
+                                    ${
+                                        orderItems.length
+                                        ?
+
+                                        `
+
+                                            <tr>
+
+                                                <td
+                                                    colspan="5"
+                                                    style="
+                                                        padding:0 12px 14px 12px;
+                                                        border-top:0;
+                                                    "
+                                                >
+
+                                                    <details>
+
+                                                        <summary
+                                                            style="
+                                                                cursor:pointer;
+                                                                font-weight:600;
+                                                                padding:10px 0;
+                                                                color:#2563eb;
+                                                            "
+                                                        >
+
+                                                            <i class="fas fa-key"></i>
+
+                                                            View subscription / delivery details
+
+                                                        </summary>
+
+
+                                                        <div>
+
+                                                            ${productDetails}
+
+                                                        </div>
+
+                                                    </details>
+
+                                                </td>
+
+                                            </tr>
+
+                                        `
+
+                                        :
+
+                                        ""
+
+                                    }
+
                                 `;
 
                             }
@@ -7206,8 +7836,6 @@ function renderOrders(
     `;
 
 }
-
-
 /* ================================================================
    LOAD PROFILE
 ================================================================ */
@@ -7593,109 +8221,107 @@ async function loadSubscriptions(
    LOAD ORDERS
 ================================================================ */
 
-async function loadOrders(
-    user
-) {
+/* ============================================================
+   LOAD ORDERS
+============================================================ */
 
-    const {
-        data,
-        error
-    } =
-        await supabaseClient
-            .from(
-                DASHBOARD_CONFIG.ordersTable
-            )
-            .select(`
-                *,
-                order_items (
-                    id,
-                    product_name,
-                    product_image,
-                    plan_duration,
-                    price,
-                    quantity,
-                    order_item_components (
-                        id,
-                        component_name,
-                        component_slug,
-                        component_image,
-                        custom_name,
-                        subscription_email,
-                        subscription_password,
-                        delivery_note,
-                        subscription_start,
-                        subscription_expiry,
-                        delivery_status,
-                        admin_note,
-                        plan_duration,
-                        quantity,
-                        slot_number,
-                        component_price
-                    )
+async function loadOrders(user) {
+
+    try {
+
+        /* ========================================================
+           1. LOAD CUSTOMER ORDERS + ORDER ITEMS + COMPONENTS
+        ======================================================== */
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from(
+                    DASHBOARD_CONFIG.ordersTable
                 )
-            `)
-            .eq(
-                "user_id",
-                user.id
-            )
-            .order(
-                "created_at",
-                {
-                    ascending:
-                        false
-                }
+                .select(`
+                    *,
+                    order_items (
+                        id,
+                        product_name,
+                        product_image,
+                        plan_duration,
+                        price,
+                        quantity,
+                        order_item_components (
+                            id,
+                            order_item_id,
+                            delivery_status,
+                            admin_note,
+                            created_at,
+                            updated_at,
+                            plan_duration,
+                            quantity,
+                            slot_number,
+                            component_price,
+                            service_name,
+                            subscription_email,
+                            subscription_password,
+                            delivery_note,
+                            subscription_start,
+                            subscription_expiry
+                        )
+                    )
+                `)
+                .eq(
+                    "user_id",
+                    user.id
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: false
+                    }
+                );
+
+
+        /* ========================================================
+           2. DATABASE ERROR
+        ======================================================== */
+
+        if (error) {
+
+            console.error(
+                "Failed to load customer orders:",
+                error
             );
 
+            throw error;
 
-    /* ============================================================
-       DATABASE ERROR
-    ============================================================ */
-
-    if (
-        error
-    ) {
-
-        console.error(
-            "Failed to load customer orders:",
-            error
-        );
-
-        throw error;
-
-    }
+        }
 
 
-    /* ============================================================
-       NORMALIZE ORDERS
-    ============================================================ */
+        /* ========================================================
+           3. NORMALIZE ORDERS
+        ======================================================== */
 
-    currentOrders =
-        Array.isArray(
-            data
-        )
-        ?
-        data.map(
-            order => {
+        currentOrders =
+            Array.isArray(data)
+                ? data.map(order => {
 
-                /*
-                ----------------------------------------------------
-                ORDER ITEMS
-                ----------------------------------------------------
-                */
 
-                const orderItems =
-                    Array.isArray(
-                        order.order_items
-                    )
-                    ?
-                    order.order_items.map(
-                        item => {
+                    /* ================================================
+                       ORDER ITEMS
+                    ================================================= */
 
-                            /*
-                            ------------------------------------------------
-                            COMPONENTS
-                            ------------------------------------------------
-                            */
+                    const orderItems =
+                        Array.isArray(
+                            order.order_items
+                        )
+                        ?
+                        order.order_items.map(item => {
+
+
+                            /* ============================================
+                               COMPONENTS
+                            ============================================ */
 
                             const components =
                                 Array.isArray(
@@ -7705,51 +8331,24 @@ async function loadOrders(
                                 item.order_item_components.map(
                                     component => {
 
+
                                         return {
 
                                             ...component,
 
 
-                                            /*
-                                            ----------------------------
-                                            COMPONENT NAME
-                                            ----------------------------
-                                            */
+                                            /* ============================
+                                               SERVICE NAME
+                                            ============================ */
 
-                                            component_name:
-                                                component.component_name ||
-                                                component.custom_name ||
+                                            service_name:
+                                                component.service_name ||
                                                 "Subscription",
 
 
-                                            /*
-                                            ----------------------------
-                                            CUSTOM NAME
-                                            ----------------------------
-                                            */
-
-                                            custom_name:
-                                                component.custom_name ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            COMPONENT IMAGE
-                                            ----------------------------
-                                            */
-
-                                            component_image:
-                                                component.component_image ||
-                                                item.product_image ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            PLAN
-                                            ----------------------------
-                                            */
+                                            /* ============================
+                                               PLAN
+                                            ============================ */
 
                                             plan_duration:
                                                 component.plan_duration ||
@@ -7757,112 +8356,30 @@ async function loadOrders(
                                                 null,
 
 
-                                            /*
-                                            ----------------------------
-                                            QUANTITY
-                                            ----------------------------
-                                            */
+                                            /* ============================
+                                               QUANTITY
+                                            ============================ */
 
                                             quantity:
                                                 Number(
-                                                    component.quantity ||
+                                                    component.quantity ??
+                                                    item.quantity ??
                                                     1
                                                 ),
 
 
-                                            /*
-                                            ----------------------------
-                                            SLOT NUMBER
-                                            ----------------------------
-                                            */
+                                            /* ============================
+                                               SLOT
+                                            ============================ */
 
                                             slot_number:
-                                                component.slot_number ||
+                                                component.slot_number ??
                                                 null,
 
 
-                                            /*
-                                            ----------------------------
-                                            EMAIL
-                                            ----------------------------
-                                            */
-
-                                            subscription_email:
-                                                component.subscription_email ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            PASSWORD
-                                            ----------------------------
-                                            */
-
-                                            subscription_password:
-                                                component.subscription_password ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            DELIVERY NOTE
-                                            ----------------------------
-                                            */
-
-                                            delivery_note:
-                                                component.delivery_note ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            START DATE
-                                            ----------------------------
-                                            */
-
-                                            subscription_start:
-                                                component.subscription_start ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            EXPIRY DATE
-                                            ----------------------------
-                                            */
-
-                                            subscription_expiry:
-                                                component.subscription_expiry ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            DELIVERY STATUS
-                                            ----------------------------
-                                            */
-
-                                            delivery_status:
-                                                component.delivery_status ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            ADMIN NOTE
-                                            ----------------------------
-                                            */
-
-                                            admin_note:
-                                                component.admin_note ||
-                                                null,
-
-
-                                            /*
-                                            ----------------------------
-                                            COMPONENT PRICE
-                                            ----------------------------
-                                            */
+                                            /* ============================
+                                               COMPONENT PRICE
+                                            ============================ */
 
                                             component_price:
                                                 component.component_price !==
@@ -7875,9 +8392,77 @@ async function loadOrders(
                                                 )
                                                 :
                                                 Number(
-                                                    item.price ||
-                                                    0
-                                                )
+                                                    item.price || 0
+                                                ),
+
+
+                                            /* ============================
+                                               SUBSCRIPTION EMAIL
+                                            ============================ */
+
+                                            subscription_email:
+                                                component.subscription_email ||
+                                                null,
+
+
+                                            /* ============================
+                                               SUBSCRIPTION PASSWORD
+                                            ============================ */
+
+                                            subscription_password:
+                                                component.subscription_password ||
+                                                null,
+
+
+                                            /* ============================
+                                               DELIVERY STATUS
+                                            ============================ */
+
+                                            delivery_status:
+                                                component.delivery_status ||
+                                                null,
+
+
+                                            /* ============================
+                                               DELIVERY NOTE
+                                            ============================ */
+
+                                            delivery_note:
+                                                component.delivery_note ||
+                                                null,
+
+
+                                            /* ============================
+                                               ADMIN NOTE
+
+                                               Keep this available in the
+                                               object, but your customer UI
+                                               should only display it if you
+                                               intentionally want customers
+                                               to see admin notes.
+                                            ============================ */
+
+                                            admin_note:
+                                                component.admin_note ||
+                                                null,
+
+
+                                            /* ============================
+                                               SUBSCRIPTION START
+                                            ============================ */
+
+                                            subscription_start:
+                                                component.subscription_start ||
+                                                null,
+
+
+                                            /* ============================
+                                               SUBSCRIPTION EXPIRY
+                                            ============================ */
+
+                                            subscription_expiry:
+                                                component.subscription_expiry ||
+                                                null
 
                                         };
 
@@ -7887,11 +8472,9 @@ async function loadOrders(
                                 [];
 
 
-                            /*
-                            ------------------------------------------------
-                            RETURN NORMALIZED ORDER ITEM
-                            ------------------------------------------------
-                            */
+                            /* ============================================
+                               RETURN NORMALIZED ORDER ITEM
+                            ============================================ */
 
                             return {
 
@@ -7899,152 +8482,190 @@ async function loadOrders(
 
                                 quantity:
                                     Number(
-                                        item.quantity ||
+                                        item.quantity ??
                                         1
                                     ),
 
                                 price:
                                     Number(
-                                        item.price ||
+                                        item.price ??
                                         0
                                     ),
+
+                                plan_duration:
+                                    item.plan_duration ||
+                                    null,
 
                                 order_item_components:
                                     components
 
                             };
 
-                        }
-                    )
-                    :
-                    [];
+                        })
+                        :
+                        [];
 
 
-                /*
-                ----------------------------------------------------
-                RETURN NORMALIZED ORDER
-                ----------------------------------------------------
-                */
+                    /* ====================================================
+                       RETURN NORMALIZED ORDER
+                    ==================================================== */
 
-                return {
+                    return {
 
-                    ...order,
+                        ...order,
 
-                    order_items:
-                        orderItems,
+                        order_items:
+                            orderItems,
 
 
-                    /*
-                    ------------------------------------------------
-                    OLD SINGLE-PRODUCT ORDER SUPPORT
-                    ------------------------------------------------
+                        /* =================================================
+                           OLD SINGLE-PRODUCT ORDER SUPPORT
+                        ================================================= */
 
-                    Keep these fields because older orders may have
-                    credentials directly inside the orders table.
-                    ------------------------------------------------
-                    */
+                        subscription_email:
+                            order.subscription_email ||
+                            null,
 
-                    subscription_email:
-                        order.subscription_email ||
-                        null,
+                        subscription_password:
+                            order.subscription_password ||
+                            null,
 
-                    subscription_password:
-                        order.subscription_password ||
-                        null,
+                        delivery_note:
+                            order.delivery_note ||
+                            null,
 
-                    delivery_note:
-                        order.delivery_note ||
-                        null,
+                        subscription_start:
+                            order.subscription_start ||
+                            null,
 
-                    subscription_start:
-                        order.subscription_start ||
-                        null,
+                        subscription_expiry:
+                            order.subscription_expiry ||
+                            null
 
-                    subscription_expiry:
-                        order.subscription_expiry ||
-                        null
+                    };
 
-                };
-
-            }
-        )
-        :
-        [];
+                })
+                :
+                [];
 
 
-    /* ============================================================
-       TOTAL ORDER COUNT
-    ============================================================ */
+        /* ========================================================
+           4. TOTAL ORDER COUNT
+        ======================================================== */
 
-    totalOrderCount.textContent =
-        currentOrders.length;
+        if (
+            totalOrderCount
+        ) {
+
+            totalOrderCount.textContent =
+                currentOrders.length;
+
+        }
 
 
-    /* ============================================================
-       FIND PENDING ORDERS
-    ============================================================ */
+        /* ========================================================
+           5. FIND PENDING ORDERS
+        ======================================================== */
 
-    const pendingOrders =
-        currentOrders.filter(
-            order => {
+        const pendingOrders =
+            currentOrders.filter(
+                order => {
 
-                const paymentStatus =
-                    normalizeStatus(
-                        order.payment_status
+                    const paymentStatus =
+                        normalizeStatus(
+                            order.payment_status
+                        );
+
+
+                    const orderStatus =
+                        normalizeStatus(
+                            order.order_status
+                        );
+
+
+                    return (
+
+                        paymentStatus ===
+                            "pending" ||
+
+                        paymentStatus ===
+                            "processing" ||
+
+                        orderStatus ===
+                            "pending" ||
+
+                        orderStatus ===
+                            "processing"
+
                     );
 
-
-                const orderStatus =
-                    normalizeStatus(
-                        order.order_status
-                    );
+                }
+            );
 
 
-                return (
+        /* ========================================================
+           6. PENDING ORDER COUNT
+        ======================================================== */
 
-                    paymentStatus ===
-                        "pending" ||
+        if (
+            pendingOrderCount
+        ) {
 
-                    paymentStatus ===
-                        "processing" ||
+            pendingOrderCount.textContent =
+                pendingOrders.length;
 
-                    orderStatus ===
-                        "pending" ||
+        }
 
-                    orderStatus ===
-                        "processing"
 
-                );
+        /* ========================================================
+           7. RENDER ORDERS
+        ======================================================== */
 
-            }
+        renderOrders(
+            currentOrders
         );
 
 
-    /* ============================================================
-       PENDING ORDER COUNT
-    ============================================================ */
+        /* ========================================================
+           8. DEBUG
+        ======================================================== */
 
-    pendingOrderCount.textContent =
-        pendingOrders.length;
-
-
-    /* ============================================================
-       RENDER ORDERS
-    ============================================================ */
-
-    renderOrders(
-        currentOrders
-    );
+        console.log(
+            "Customer orders loaded:",
+            currentOrders
+        );
 
 
-    /* ============================================================
-       RETURN ORDERS
-    ============================================================ */
+        console.log(
+            "Order items with components:",
+            currentOrders.map(
+                order => ({
+                    order_id: order.id,
+                    order_items: order.order_items
+                })
+            )
+        );
 
-    return currentOrders;
+
+        /* ========================================================
+           9. RETURN
+        ======================================================== */
+
+        return currentOrders;
+
+    }
+    catch (error) {
+
+        console.error(
+            "Customer order loading error:",
+            error
+        );
+
+        throw error;
+
+    }
 
 }
-
 /* ================================================================
    SHOW DASHBOARD
 ================================================================ */
