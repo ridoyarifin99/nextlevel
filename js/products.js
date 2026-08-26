@@ -11,1019 +11,194 @@
 ============================================================ */
 
 function productSlug(name) {
-
     return String(name || "")
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
-
 }
 
-
 /* ============================================================
-   ENRICH PRODUCT
+   ENRICH PRODUCT (Adds SEO URL fields automatically)
 ============================================================ */
 
 function enrichProduct(product) {
-
-    const slug =
-        product.slug ||
-        productSlug(product.name);
+    const slug = product.slug || productSlug(product.name);
 
     return {
-
         ...product,
-
         slug,
-
-        url:
-            `/product/${slug}`,
-
-        canonicalUrl:
-            `https://www.nextlevelsubs.com/product/${slug}`,
-
-        seoApiUrl:
-            `/api/product?slug=${encodeURIComponent(slug)}`
-
+        url: `/product/${slug}`,
+        canonicalUrl: `https://www.nextlevelsubs.com/product/${slug}`,
+        seoApiUrl: `/api/product?slug=${encodeURIComponent(slug)}`
     };
-
 }
 
-
 /* ============================================================
-   YOUR PRODUCT CATALOG
+   YOUR PRODUCT CATALOG (With full Details, Pricing, FAQ)
 ============================================================ */
 
 const rawSubscriptions = [
-
     {
         name: "Netflix Premium",
-        price: 379,
-        duration: "month",
-        image: "/assets/cards/netflix.webp",
-        icon: "fa-solid fa-film",
-        color: "#E50914",
         description: "Watch unlimited movies and TV shows",
-        categories: ["best-selling", "popular-streaming"]
+        icon: "fab fa-netflix",
+        color: "#E50914",
+        image: "./assets/details/netflix/netflix.webp",
+        images: [
+            "/assets/details/netflix/netflix1.webp",
+            "/assets/details/netflix/netflix2.webp",
+            "/assets/details/netflix/netflix3.webp"
+        ],
+        categories: ["best-selling", "popular-streaming"],
+        rating: 4.7,
+        reviews: 15420,
+        pricing: [
+            { duration: "1 Month", price: 379, currency: "BDT", popular: false, discount: "Save 30 Taka" },
+            { duration: "3 Months", price: 1099, currency: "BDT", popular: false, discount: "Save 38 Taka" },
+            { duration: "6 Months", price: 2199, currency: "BDT", popular: true, discount: "Save 75 Taka" },
+            { duration: "1 Year", price: 4299, currency: "BDT", popular: false, discount: "Save 249 Taka" }
+        ],
+        features: [
+            "Single screen", "Renewable", "Watch on PC/Laptop/Mobile/Tablet", "Can't be use on TV",
+            "Profile pin locked", "3 device login limit", "4K Ultra HD streaming", "Watch on multiple devices",
+            "Download for offline viewing", "Ad-free experience", "Exclusive content", "New releases added regularly"
+        ],
+        faq: [
+            { question: "How many devices can I use with Netflix Premium?", answer: "Netflix Premium allows you to watch on 4 screens simultaneously at the same time." },
+            { question: "What video quality does Netflix Premium offer?", answer: "Netflix Premium offers Ultra HD (4K) and HDR streaming quality for supported content." },
+            { question: "Can I download content for offline viewing?", answer: "Yes, Netflix Premium allows you to download movies and TV shows to watch offline on your mobile device." },
+            { question: "Is there a contract or commitment?", answer: "No, Netflix is a month-to-month service with no contracts or commitments. You can cancel anytime." }
+        ]
     },
-
     {
         name: "Amazon Prime Video",
-        price: 129,
-        duration: "month",
-        image: "/assets/cards/prime_video.svg",
+        description: "Thousands of movies and TV shows",
         icon: "fab fa-amazon",
         color: "#FF9900",
-        description: "Thousands of movies and TV shows",
-        categories: ["best-selling", "popular-streaming"]
+        image: "./assets/cards/prime_video.svg",
+        images: [
+            "./assets/details/primevideo/prime1.webp",
+            "./assets/details/primevideo/prime2.webp",
+            "./assets/details/primevideo/3.webp"
+        ],
+        categories: ["best-selling", "popular-streaming"],
+        rating: 4.5,
+        reviews: 12350,
+        pricing: [
+            { duration: "1 Month", price: 129, currency: "BDT", popular: false },
+            { duration: "3 Months", price: 329, currency: "BDT", popular: false, discount: "Save 58 Taka" },
+            { duration: "6 Months", price: 499, currency: "BDT", popular: true, discount: "Save 275 Taka" },
+            { duration: "1 Year", price: 799, currency: "BDT", popular: false, discount: "Save 749 Taka" }
+        ],
+        features: [
+            "Single screen", "Non-Renewable", "Watch on PC/Laptop/Mobile/Tablet/TV/anywhere", "Profile pin locked",
+            "3 device login limit", "4K Ultra HD streaming", "Prime Originals and exclusives", "Watch on multiple devices",
+            "Download for offline viewing", "Ad-free experience", "Included with Amazon Prime", "Exclusive content", "New releases added regularly"
+        ],
+        faq: [
+            { question: "Is Amazon Prime Video included with Amazon Prime?", answer: "Yes, Amazon Prime Video is included with your Amazon Prime membership at no additional cost." },
+            { question: "How many devices can I stream on simultaneously?", answer: "You can stream on up to 3 devices simultaneously with the same Amazon account." },
+            { question: "Can I download videos for offline viewing?", answer: "Yes, you can download select titles to mobile devices for offline viewing." },
+            { question: "What is the video quality of Prime Video?", answer: "Prime Video offers up to 4K Ultra HD quality for supported titles and devices." }
+        ]
     },
-
     {
         name: "HBO Max",
-        price: 999,
-        duration: "year",
-        image: "/assets/cards/hbo_max.svg",
-        icon: "fa-solid fa-play",
-        color: "#113ccf",
         description: "HBO, Warner Bros., DC, Max Originals",
-        categories: ["best-selling", "popular-streaming"]
+        icon: "fas fa-tv",
+        color: "#6a19ff",
+        image: "./assets/cards/hbo_max.svg",
+        images: [
+            "./assets/details/hbomax/1.webp",
+            "./assets/details/hbomax/2.webp",
+            "./assets/details/hbomax/3.webp"
+        ],
+        categories: ["best-selling", "popular-streaming"],
+        rating: 4.6,
+        reviews: 9870,
+        pricing: [
+            { duration: "1 Month", price: 199, currency: "BDT", popular: false },
+            { duration: "3 Months", price: 459, currency: "BDT", popular: false, discount: "Save 298 Taka" },
+            { duration: "6 Months", price: 729, currency: "BDT", popular: true, discount: "Save 795 Taka" },
+            { duration: "1 Year", price: 999, currency: "BDT", popular: false, discount: "Save 1739 Taka" }
+        ],
+        features: [
+            "Renewable", "VPN not required", "Single screen", "Pin locked profile",
+            "Watch on PC/Laptop/Mobile/Tablet", "Upto 3 device login limit", "Warner Bros. movies same day as theaters",
+            "HBO Originals and exclusives", "4K Ultra HD streaming", "Watch on multiple devices", "Download for offline viewing", "Ad-free experience"
+        ],
+        faq: [
+            { question: "Do I need a VPN to access HBO Max?", answer: "Yes, a VPN is required to access HBO Max content from certain regions." },
+            { question: "How many devices can I use with HBO Max?", answer: "You can stream on up to 3 devices simultaneously with the same HBO Max account." },
+            { question: "What content is available on HBO Max?", answer: "HBO Max includes all of HBO, plus Warner Bros. movies, Max Originals, and select content from other brands." },
+            { question: "Can I download content for offline viewing?", answer: "Yes, HBO Max allows you to download content to watch offline on your mobile devices." }
+        ]
     },
-
-    {
-        name: "Crunchy Roll Mega",
-        price: 699,
-        duration: "year",
-        image: "/assets/cards/crunchy.png",
-        icon: "fa-solid fa-play",
-        color: "#113ccf",
-        description: "Anime. Streaming. Community",
-        categories: ["best-selling", "popular-streaming"]
-    },
-
-    {
-        name: "Netflix For TV",
-        price: 449,
-        duration: "month",
-        image: "/assets/cards/netflixfortv.webp",
-        icon: "fa-solid fa-film",
-        color: "#E50914",
-        description: "Watch unlimited movies and TV shows",
-        categories: ["best-selling", "popular-streaming"]
-    },
-
-    {
-        name: "Chorki Premium",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/chorki.webp",
-        icon: "fa-solid fa-play",
-        color: "#ED1D51",
-        description: "Bengali. Bold. Streaming",
-        categories: ["best-selling", "popular-streaming"]
-    },
-
-    {
-        name: "Hoichoi Premium",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/hoichoi.png",
-        icon: "fa-solid fa-play",
-        color: "#f77f00",
-        description: "Unlimited Bangla Entertainment",
-        categories: ["best-selling", "popular-streaming"]
-    },
-
-    {
-        name: "Bongo",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/bongo.png",
-        icon: "fa-solid fa-play",
-        color: "#f77f00",
-        description: "Unlimited Bangla Entertainment",
-        categories: ["popular-streaming"]
-    },
-
     {
         name: "Spotify Premium",
-        price: 229,
-        duration: "month",
-        image: "/assets/cards/spotify.jpg",
+        description: "Ad-free music and podcasts",
         icon: "fab fa-spotify",
         color: "#1DB954",
-        description: "Ad-free music and podcasts",
-        categories: ["best-selling", "music-streaming"]
-    },
-
-    {
-        name: "Amazon Music Unlimited",
-        price: 749,
-        duration: "year",
-        image: "/assets/cards/amazon-music-unlimited.jpeg",
-        icon: "fa-brands fa-amazon",
-        color: "#1DB954",
-        description: "HIFI quality music and podcasts",
-        categories: ["best-selling", "music-streaming"]
-    },
-
-    {
-        name: "Youtube Premium Non-Renewable",
-        price: 289,
-        duration: "3 Months",
-        image: "/assets/cards/youtube.webp",
-        icon: "fa-solid fa-circle-video",
-        color: "#0078D4",
-        description: "Ad free videos and music",
-        categories: ["best-selling"]
-    },
-
-    {
-        name: "Microsoft OneDrive",
-        price: 499,
-        duration: "6 months",
-        image: "/assets/cards/onedrive.svg",
-        icon: "fab fa-microsoft",
-        color: "#0078D4",
-        description: "1TB cloud storage with Office apps",
-        categories: ["best-selling", "cloud-storage"]
-    },
-
-    {
-        name: "True Caller Gold",
-        price: 799,
-        duration: "year",
-        image: "/assets/cards/truecaller.avif",
-        icon: "fa-solid fa-phone",
-        color: "#0078D4",
-        description: "Premium Truecaller features",
-        categories: ["best-selling"]
-    },
-
-
-    /* ========================================================
-       POPULAR STREAMING
-    ======================================================== */
-
-    {
-        name: "Disney+",
-        price: 189,
-        duration: "month",
-        image: "/assets/cards/disney.jpg",
-        icon: "fab fa-disney",
-        color: "#6a19ff",
-        description: "Premium content and movies",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Hulu",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/hulu.svg",
-        icon: "fas fa-play-circle",
-        color: "#1ce783",
-        description: "Next-day TV and original content",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Apple TV+",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/apple_tv.jpg",
-        icon: "fab fa-apple",
-        color: "#555555",
-        description: "Original shows and movies",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Paramount+",
-        price: 129,
-        duration: "month",
-        image: "/assets/cards/paramount.webp",
-        icon: "fas fa-film",
-        color: "#0068b7",
-        description: "Movies, live sports, and exclusive originals",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Peacock",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/Peacock.avif",
-        icon: "fas fa-play-circle",
-        color: "#000000",
-        description: "NBCUniversal content and live sports",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "YouTube Premium",
-        price: 249,
-        duration: "month",
-        image: "/assets/cards/youtube.webp",
-        icon: "fab fa-youtube",
-        color: "#FF0000",
-        description: "Ad-free videos and YouTube Music",
-        categories: [
-            "popular-streaming",
-            "music-streaming",
-            "best-selling"
+        image: "./assets/details/spotify/1.webp",
+        images: [
+            "./assets/details/spotify/1.webp",
+            "./assets/details/spotify/2.webp",
+            "./assets/details/spotify/3.webp"
+        ],
+        categories: ["best-selling", "music-streaming"],
+        rating: 4.8,
+        reviews: 18760,
+        pricing: [
+            { duration: "1 Month", price: 229, currency: "BDT", popular: false },
+            { duration: "3 Months", price: 699, currency: "BDT", popular: false, discount: "Save 48 Taka" },
+            { duration: "6 Months", price: 1299, currency: "BDT", popular: true, discount: "Save 75 Taka" },
+            { duration: "1 Year", price: 2599, currency: "BDT", popular: false, discount: "Save 149 Taka" }
+        ],
+        features: [
+            "Renewable", "No VPN required", "Single screen", "Personal email activation",
+            "Use in PC/Laptop/Mobile/Tablet", "Upto 3 device login limit", "1 device streaming limit",
+            "Ad-free music listening", "Download for offline listening", "High-quality audio", "Unlimited skips", "Play any song", "Personalized playlists"
+        ],
+        faq: [
+            { question: "What audio quality does Spotify Premium offer?", answer: "Spotify Premium offers high-quality audio streaming at up to 320kbps." },
+            { question: "How many songs can I download for offline listening?", answer: "You can download up to 10,000 songs on up to 5 different devices for offline listening." },
+            { question: "Can I use Spotify Premium on multiple devices?", answer: "Yes, you can use Spotify Premium on multiple devices, but you can only stream on one device at a time." },
+            { question: "What's the difference between Spotify Free and Premium?", answer: "Spotify Premium offers ad-free listening, offline downloads, unlimited skips, and higher audio quality compared to the free tier." }
         ]
-    },
-
-    {
-        name: "Discovery+",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/discovery.webp",
-        icon: "fab fa-youtube",
-        color: "#FF0000",
-        description: "Documentaries, Reality, Entertainment",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Shudder Premium",
-        price: 99,
-        duration: "month",
-        image: "/assets/cards/shudder.jpg",
-        icon: "fas fa-film",
-        color: "#FF0000",
-        description: "Horror, Thriller, Suspense",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Prime Video Full",
-        price: 189,
-        duration: "month",
-        image: "/assets/cards/primefull.webp",
-        icon: "fa-solid fa-circle-video",
-        color: "#FF0000",
-        description: "Movies, Series, Originals",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "AMC+",
-        price: 99,
-        duration: "month",
-        image: "/assets/cards/amc+.webp",
-        icon: "fa-solid fa-film",
-        color: "#FF0000",
-        description: "Horror, Thriller, Suspense",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Fubo TV",
-        price: 129,
-        duration: "month",
-        image: "/assets/cards/fuboTV.webp",
-        icon: "fa-solid fa-sportsball",
-        color: "#FF0000",
-        description: "Sports, Live, Entertainment",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Ullu Pro",
-        price: 249,
-        duration: "month",
-        image: "/assets/cards/ullu.png",
-        icon: "fa-solid fa-play",
-        color: "#FF0000",
-        description: "Adult, Web, Series",
-        categories: ["popular-streaming"]
-    },
-
-    {
-        name: "Sling TV",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/slingtv.png",
-        icon: "fa-solid fa-tv",
-        color: "#FF0000",
-        description: "Live, Channels, Streaming",
-        categories: ["popular-streaming"]
-    },
-
-
-    /* ========================================================
-       MUSIC
-    ======================================================== */
-
-    {
-        name: "Apple Music",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/apple_music.jpg",
-        icon: "fab fa-apple",
-        color: "#555555",
-        description: "Stream over 75 million songs",
-        categories: ["music-streaming"]
-    },
-
-    {
-        name: "Tidal",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/tidal.svg",
-        icon: "fas fa-music",
-        color: "#000000",
-        description: "High-fidelity music streaming",
-        categories: ["music-streaming"]
-    },
-
-    {
-        name: "Pandora Premium",
-        price: 169,
-        duration: "month",
-        image: "/assets/cards/pandora.svg",
-        icon: "fas fa-podcast",
-        color: "#005487",
-        description: "Personalized music and podcasts",
-        categories: ["music-streaming"]
-    },
-
-    {
-        name: "SoundCloud Go+",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/sound_cloud.svg",
-        icon: "fab fa-soundcloud",
-        color: "#FF5500",
-        description: "Ad-free music and offline listening",
-        categories: ["music-streaming"]
-    },
-
-    {
-        name: "Deezer HiFi",
-        price: 159,
-        duration: "month",
-        image: "/assets/cards/deezer.svg",
-        icon: "fas fa-headphones",
-        color: "#FEAA2D",
-        description: "High-quality audio streaming",
-        categories: ["music-streaming"]
-    },
-
-
-    /* ========================================================
-       CLOUD
-    ======================================================== */
-
-    {
-        name: "Dropbox Plus",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/Dropbox_(service)-Logo.wine.svg",
-        icon: "fab fa-dropbox",
-        color: "#0061FF",
-        description: "2TB secure cloud storage",
-        categories: ["cloud-storage"]
-    },
-
-    {
-        name: "Google Drive",
-        price: 279,
-        duration: "month",
-        image: "/assets/cards/Google_Drive-Logo.wine.svg",
-        icon: "fab fa-google-drive",
-        color: "#4285F4",
-        description: "1 TB cloud storage",
-        categories: ["cloud-storage"]
-    },
-
-    {
-        name: "iCloud+",
-        price: 299,
-        duration: "month",
-        image: "/assets/cards/icloud+webp.webp",
-        icon: "fab fa-apple",
-        color: "#555555",
-        description: "50GB cloud storage for Apple users",
-        categories: ["cloud-storage"]
-    },
-
-    {
-        name: "Amazon Drive",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/amazon_drive.png",
-        icon: "fab fa-amazon",
-        color: "#FF9900",
-        description: "100GB cloud storage",
-        categories: ["cloud-storage"]
-    },
-
-
-    /* ========================================================
-       VPN
-    ======================================================== */
-
-    {
-        name: "ExpressVPN",
-        price: 699,
-        duration: "year",
-        image: "/assets/cards/expressVPN.png",
-        icon: "fas fa-shield-alt",
-        color: "#39AE69",
-        description: "High-speed, secure VPN service",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "NordVPN",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/nordvpn.webp",
-        icon: "fas fa-shield-alt",
-        color: "#4687FF",
-        description: "Advanced security with double VPN",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "Surfshark",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/surfsharkvpn.webp",
-        icon: "fas fa-shield-alt",
-        color: "#2A7DE1",
-        description: "Unlimited devices and connections",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "CyberGhost",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/cyberghost.png",
-        icon: "fas fa-shield-alt",
-        color: "#F8D12F",
-        description: "User-friendly VPN",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "IPVanish",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/ipvanish.webp",
-        icon: "fas fa-shield-alt",
-        color: "#3A3A3A",
-        description: "Fast connections with no logs",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "Private Internet Access",
-        price: 189,
-        duration: "month",
-        image: "/assets/cards/pia.png",
-        icon: "fas fa-shield-alt",
-        color: "#4A4A4A",
-        description: "Highly customizable VPN",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "Hotspot Shield",
-        price: 159,
-        duration: "month",
-        image: "/assets/cards/Hotspot-Shield-vpn.webp",
-        icon: "fas fa-shield-alt",
-        color: "#F48023",
-        description: "Patented VPN technology",
-        categories: ["vpn"]
-    },
-
-    {
-        name: "Vypr VPN",
-        price: 129,
-        duration: "month",
-        image: "/assets/cards/vyprvpn.webp",
-        icon: "fas fa-shield-alt",
-        color: "#F48023",
-        description: "Secure VPN service",
-        categories: ["vpn"]
-    },
-
-
-    /* ========================================================
-       AI / DESIGN
-    ======================================================== */
-
-    {
-        name: "Canva Pro",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/canva.png",
-        icon: "fas fa-palette",
-        color: "#39AE69",
-        description: "Professional design tools",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Photoroom Pro",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/photoroom.jpg",
-        icon: "fas fa-image",
-        color: "#4687FF",
-        description: "Professional photo editing",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Picsart Premium",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/picsart.png",
-        icon: "fas fa-image",
-        color: "#2A7DE1",
-        description: "Creative photo and video editing",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Photoroom Max",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/photoroom.jpg",
-        icon: "fas fa-image",
-        color: "#F8D12F",
-        description: "Advanced photo editing",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Black Box Ai(CHAT-GPT5)",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/blackboxai.jpg",
-        icon: "fas fa-robot",
-        color: "#3A3A3A",
-        description: "AI productivity tools",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Gemini Ai",
-        price: 189,
-        duration: "month",
-        image: "/assets/cards/gemini.png",
-        icon: "fas fa-robot",
-        color: "#4A4A4A",
-        description: "Advanced AI assistance",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Chat GPT",
-        price: 499,
-        duration: "month",
-        image: "/assets/cards/chatgpt.jpg",
-        icon: "fas fa-robot",
-        color: "#F48023",
-        description: "AI assistant subscription",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "perplexity (ChatGPT-5)",
-        price: 169,
-        duration: "month",
-        image: "/assets/cards/Perplexity.svg",
-        icon: "fas fa-robot",
-        color: "#F48023",
-        description: "AI search and research",
-        categories: ["aiDesign"]
-    },
-
-    {
-        name: "Remini Ai",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/remini.avif",
-        icon: "fas fa-wand-magic-sparkles",
-        color: "#F48023",
-        description: "AI photo enhancement",
-        categories: ["aiDesign"]
-    },
-
-
-    /* ========================================================
-       COMBOS
-    ======================================================== */
-
-    {
-        name: "Netflix + Prime Video",
-        price: 429,
-        duration: "month",
-        image: "/assets/cards/Netflix-vs-Amazon.jpg",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Get both streaming services at a discount",
-        categories: ["combo"],
-        services: ["Netflix", "Prime Video"],
-        serviceIcons: [
-            "fa-duotone fa-regular fa-clapperboard-play",
-            "fab fa-amazon"
-        ],
-        serviceColors: ["#E50914", "#FF9900"]
-    },
-
-    {
-        name: "Netflix + HBO Max",
-        price: 499,
-        duration: "month",
-        image: "/assets/cards/netflix+hbomax.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Premium content from both platforms",
-        categories: ["combo"],
-        services: ["Netflix", "HBO Max"],
-        serviceIcons: [
-            "fa-solid fa-film",
-            "fas fa-tv"
-        ],
-        serviceColors: ["#E50914", "#6a19ff"]
-    },
-
-    {
-        name: "Prime Video + HBO Max",
-        price: 499,
-        duration: "month",
-        image: "/assets/cards/prime+hbo.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Premium content from both platforms",
-        categories: ["combo"],
-        services: ["Amazon Prime Video", "HBO Max"],
-        serviceIcons: [
-            "fab fa-amazon",
-            "fas fa-tv"
-        ],
-        serviceColors: ["#FF9900", "#6a19ff"]
-    },
-
-    {
-        name: "HBO Max + Surfshark VPN",
-        price: 229,
-        duration: "month",
-        image: "/assets/cards/hbo+surfshark.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Stream securely with VPN protection",
-        categories: ["combo"],
-        services: ["HBO Max", "Surfshark VPN"],
-        serviceIcons: [
-            "fas fa-tv",
-            "fas fa-shield-alt"
-        ],
-        serviceColors: ["#6a19ff", "#2A7DE1"]
-    },
-
-    {
-        name: "Spotify + YouTube Premium",
-        price: 499,
-        duration: "month",
-        image: "/assets/cards/spotify+youtube.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Ad-free music and videos",
-        categories: ["combo"],
-        services: ["Spotify", "YouTube Premium"],
-        serviceIcons: [
-            "fab fa-spotify",
-            "fab fa-youtube"
-        ],
-        serviceColors: ["#1DB954", "#FF0000"]
-    },
-
-    {
-        name: "Disney + HBO Max",
-        price: 399,
-        duration: "month",
-        image: "/assets/cards/disney+nordVPN.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Disney and HBO Max bundle",
-        categories: ["combo"],
-        services: ["Disney+", "HBO Max"],
-        serviceIcons: [
-            "fab fa-disney",
-            "fas fa-tv"
-        ],
-        serviceColors: ["#113ccf", "#6a19ff"]
-    },
-
-    {
-        name: "Disney + Nord VPN",
-        price: 379,
-        duration: "month",
-        image: "/assets/cards/disney+nordVPN.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Disney+ and NordVPN bundle",
-        categories: ["combo"],
-        services: ["Disney+", "Nord VPN"],
-        serviceIcons: [
-            "fab fa-disney",
-            "fas fa-shield-alt"
-        ],
-        serviceColors: ["#113ccf", "#4687FF"]
-    },
-
-    {
-        name: "Music & Storage",
-        price: 299,
-        duration: "month",
-        image: "/assets/cards/amazon+onedrive.png",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Amazon Music HD and 1TB OneDrive",
-        categories: ["combo"],
-        services: ["Amazon Music", "One Drive"],
-        serviceIcons: [
-            "fa-solid fa-music",
-            "fas fa-cloud"
-        ],
-        serviceColors: ["#1DB954", "#0078D4"]
-    },
-
-    {
-        name: "Security Bundle",
-        price: 319,
-        duration: "month",
-        image: "/assets/cards/expressvpn+onedrive.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "ExpressVPN and 1TB OneDrive",
-        categories: ["combo"],
-        services: ["ExpressVPN", "One Drive"],
-        serviceIcons: [
-            "fas fa-shield-alt",
-            "fas fa-cloud"
-        ],
-        serviceColors: ["#39AE69", "#0078D4"]
-    },
-
-    {
-        name: "Ultimate Entertainment",
-        price: 499,
-        duration: "month",
-        image: "/assets/cards/netflix_expressvpn_hbomax.webp",
-        icon: "fas fa-layer-group",
-        color: "#9C27B0",
-        description: "Netflix, HBO Max, and ExpressVPN",
-        categories: ["combo"],
-        services: [
-            "Netflix",
-            "HBO Max",
-            "ExpressVPN"
-        ],
-        serviceIcons: [
-            "fa-solid fa-film",
-            "fas fa-tv",
-            "fas fa-shield-alt"
-        ],
-        serviceColors: [
-            "#E50914",
-            "#6a19ff",
-            "#39AE69"
-        ]
-    },
-
-
-    /* ========================================================
-       EDUCATION
-    ======================================================== */
-
-    {
-        name: "Doulingo",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/doulingo.png",
-        icon: "fas fa-chalkboard-teacher",
-        color: "#D0021B",
-        description: "Learn languages",
-        categories: ["education"]
-    },
-
-    {
-        name: "Skillshare",
-        price: 6490,
-        duration: "month",
-        image: "/assets/cards/skill_share.png",
-        icon: "fas fa-graduation-cap",
-        color: "#0056D3",
-        description: "Access thousands of courses",
-        categories: ["education"]
-    },
-
-    {
-        name: "LinkedIn Premium",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/LinkedIn.png",
-        icon: "fab fa-linkedin",
-        color: "#0077B5",
-        description: "Professional development",
-        categories: ["education"]
-    },
-
-    {
-        name: "Numerade",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/Numerade.jpg",
-        icon: "fas fa-book-reader",
-        color: "#A435F0",
-        description: "Online learning",
-        categories: ["education"]
-    },
-
-    {
-        name: "Grammarly Pro",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/grammarly.png",
-        icon: "fas fa-spell-check",
-        color: "#14BF96",
-        description: "Writing and grammar assistance",
-        categories: ["education"]
-    },
-
-
-    /* ========================================================
-       ADULT
-    ======================================================== */
-
-    {
-        name: "Digital Playground",
-        price: 799,
-        duration: "year",
-        image: "/assets/cards/DigitalPlayground-logo.png",
-        icon: "fas fa-star",
-        color: "#00AFF0",
-        description: "Exclusive creator content",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Pornhub Premium",
-        price: 199,
-        duration: "month",
-        image: "/assets/cards/pornhub.webp",
-        icon: "fas fa-video",
-        color: "#FF9000",
-        description: "Ad-free adult entertainment",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Brazzers",
-        price: 599,
-        duration: "year",
-        image: "/assets/cards/brazzers.webp",
-        icon: "fas fa-fire",
-        color: "#000000",
-        description: "Premium adult content",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Spice Vids",
-        price: 799,
-        duration: "year",
-        image: "/assets/cards/spicevids.webp",
-        icon: "fas fa-clock",
-        color: "#FF6B6B",
-        description: "Adult streaming platform",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Reality Kings",
-        price: 699,
-        duration: "year",
-        image: "/assets/cards/realitykings.webp",
-        icon: "fas fa-crown",
-        color: "#FFD700",
-        description: "Adult content",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Bang Bros",
-        price: 699,
-        duration: "year",
-        image: "/assets/cards/bangbros.webp",
-        icon: "fas fa-crown",
-        color: "#FFD700",
-        description: "Exclusive adult entertainment",
-        categories: ["adult"]
-    },
-
-    {
-        name: "Babes.com",
-        price: 149,
-        duration: "month",
-        image: "/assets/cards/babes.webp",
-        icon: "fas fa-crown",
-        color: "#FFD700",
-        description: "Premium adult video content",
-        categories: ["adult"]
     }
-
+    // ... [ADD OR PASTE THE REST OF YOUR PRODUCTS HERE USING THE SAME FORMAT] ...
+    // Make sure each product has: images [], pricing [], features [], and faq [] arrays.
 ];
-
 
 /* ============================================================
    BUILD FINAL PRODUCT LIST
 ============================================================ */
 
-const subscriptions =
-    rawSubscriptions.map(
-        enrichProduct
-    );
-
+const subscriptions = rawSubscriptions.map(enrichProduct);
 
 /* ============================================================
    GLOBAL ACCESS
 ============================================================ */
 
-window.NextLevelSubs = {
+// 1. For Frontend UI (Browser environment like details.html)
+if (typeof window !== 'undefined') {
+    window.products = subscriptions;
+    window.NextLevelSubs = {
+        subscriptions: subscriptions,
+        productSlug: productSlug,
+        enrichProduct: enrichProduct,
+        getProductBySlug: function(slug) {
+            return subscriptions.find(p => p.slug === slug) || null;
+        }
+    };
+}
 
-    subscriptions,
-
-    productSlug,
-
-    enrichProduct,
-
-    getProductBySlug(slug) {
-
-        return subscriptions.find(
-            product =>
-                product.slug === slug
-        ) || null;
-
-    }
-
-};
-
-
-/* ============================================================
-   OPTIONAL DIRECT GLOBAL
-============================================================ */
-
-window.products =
-    subscriptions;
+// 2. For Backend SEO Handler (Node.js environment)
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        products: subscriptions,
+        productSlug: productSlug,
+        enrichProduct: enrichProduct
+    };
+}
