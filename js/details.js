@@ -4341,10 +4341,13 @@ const products = [
         //
 
         // ============================================================
-// GLOBAL EXPORT
+// ============================================================
+// EXPORT FOR BOTH BROWSER AND VERCEL / NODE.JS
 // ============================================================
 
-window.products = products;
+if (typeof window !== "undefined") {
+    window.products = products;
+}
 
 if (typeof module !== "undefined" && module.exports) {
     module.exports = products;
