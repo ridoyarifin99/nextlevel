@@ -61,9 +61,9 @@ body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;color:var(
 .sub-btn:hover::before{left:140%}.sub-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(106,17,203,.28)}
 .sub-btn:active{transform:translateY(0) scale(.99)}.sub-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
 
-/* SPINNER FIX: Added display inline-flex to content and inline-block to spinner */
+/* SPINNER FIX: Using flex on content and block on the spinner element */
 #btnContent{display:inline-flex;align-items:center;justify-content:center;gap:10px;}
-.btn-spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+.btn-spin{display:block !important;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
 
 @keyframes spin{to{transform:rotate(360deg)}}
 .divider{display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:1px}
@@ -126,7 +126,7 @@ const loader=$("pageLoader"),form=$("registerForm"),fullName=$("fullName"),email
 const hideLoader=()=>loader.classList.add("hidden");
 const showAlert=(m,t="error")=>{alertBox.className="alert show "+t;alertIcon.className=t==="success"?"fas fa-circle-check":"fas fa-circle-exclamation";alertMsg.textContent=m;alertBox.scrollIntoView({behavior:"smooth",block:"nearest"});};
 const hideAlert=()=>{alertBox.className="alert";alertMsg.textContent="";};
-const setLoading=l=>{btn.disabled=l;btnC.innerHTML=l?'<span class="btn-spin"></span>Creating Account...':'<i class="fas fa-user-plus"></i> Create Account';};
+const setLoading=l=>{btn.disabled=l;btnC.innerHTML=l?'<div class="btn-spin"></div>Creating Account...':'<i class="fas fa-user-plus"></i> Create Account';};
 const isEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const normPhone=p=>p.replace(/[^\d+]/g,"").trim();
 const isPhone=p=>{const d=normPhone(p).replace(/\D/g,"");if(d.length<10||d.length>15)return false;if(/^01\d{9}$/.test(d)||/^8801\d{9}$/.test(d))return true;return /^\+?[1-9]\d{9,14}$/.test(normPhone(p));};
@@ -153,21 +153,6 @@ if(typeof supabaseClient==="undefined"){showAlert("Authentication service is una
 setLoading(true);
 
 try {
-    // 1. EXPLICIT DATABASE CHECK: Query the profiles table to see if email already exists
-    const { data: existingUser } = await supabaseClient
-        .from('profiles')
-        .select('id')
-        .eq('email', em)
-        .maybeSingle();
-
-    if (existingUser) {
-        showAlert("You already have an account. Please log in with your existing account.", "error");
-        setTimeout(() => window.location.href = "login.html", 2000);
-        setLoading(false);
-        return;
-    }
-
-    // 2. SUPABASE SIGN UP
     const { data, error } = await supabaseClient.auth.signUp({
         email: em,
         password: pw,
@@ -177,20 +162,30 @@ try {
     if (error) throw error;
 
     if (data?.user && data?.session) {
+        // Auto-logged in (Email confirmations disabled)
         showAlert("Account created successfully. Redirecting...", "success");
         setTimeout(() => window.location.replace("dashboard.html"), 700);
         return;
     }
 
     if (data?.user && !data?.session) {
-        showAlert("Account created successfully. Please check your email to confirm your account before signing in.", "success");
-        form.reset();
-        updateStr();
+        // User object returned, but no session. 
+        // Supabase returns an empty identities array if the email already exists.
+        const isExistingUser = Array.isArray(data.user.identities) && data.user.identities.length === 0;
+
+        if (isExistingUser) {
+            showAlert("You already have an account. Please log in with your existing account.", "error");
+            setTimeout(() => window.location.href = "login.html", 2000);
+        } else {
+            showAlert("Account created successfully. Please check your email to confirm your account before signing in.", "success");
+            form.reset();
+            updateStr();
+        }
         setLoading(false);
         return;
     }
 
-    // 3. FALLBACK: If Supabase returns no error but no user/session (Email Enumeration Protection is ON)
+    // Fallback if no user and no session
     showAlert("You already have an account. Please log in with your existing account.", "error");
     setTimeout(() => window.location.href = "login.html", 2000);
     setLoading(false);
