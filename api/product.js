@@ -1327,60 +1327,60 @@ function buildBreadcrumbSchema(
 // WEBPAGE JSON-LD
 // ============================================================
 
-function buildWebPageSchema(
-    product,
-    productURL,
-    description
-) {
+// function buildWebPageSchema(
+//     product,
+//     productURL,
+//     description
+// ) {
 
-    return {
+//     return {
 
-        "@context":
-            "https://schema.org",
+//         "@context":
+//             "https://schema.org",
 
-        "@type":
-            "WebPage",
+//         "@type":
+//             "WebPage",
 
-        "@id":
-            `${productURL}#webpage`,
+//         "@id":
+//             `${productURL}#webpage`,
 
-        "url":
-            productURL,
+//         "url":
+//             productURL,
 
-        "name":
-            `${product.name} Subscription | ${SITE.name}`,
+//         "name":
+//             `${product.name} Subscription | ${SITE.name}`,
 
-        "description":
-            description,
+//         "description":
+//             description,
 
-        "inLanguage":
-            SITE.language,
+//         "inLanguage":
+//             SITE.language,
 
-        "isPartOf": {
+//         "isPartOf": {
 
-            "@type":
-                "WebSite",
+//             "@type":
+//                 "WebSite",
 
-            "name":
-                SITE.name,
+//             "name":
+//                 SITE.name,
 
-            "url":
-                `${SITE.domain}/`
+//             "url":
+//                 `${SITE.domain}/`
 
-        },
+//         },
 
-        "about": {
+//         "about": {
 
-            "@type":
-                "Product",
+//             "@type":
+//                 "Product",
 
-            "name":
-                product.name
+//             "name":
+//                 product.name
 
-        }
+//         }
 
-    };
-}
+//     };
+// }
 
 // ============================================================
 // ORGANIZATION JSON-LD
