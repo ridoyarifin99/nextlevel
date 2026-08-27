@@ -60,7 +60,11 @@ body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;color:var(
 .sub-btn::before{content:"";position:absolute;top:0;left:-100%;width:70%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);transition:left .7s ease}
 .sub-btn:hover::before{left:140%}.sub-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(106,17,203,.28)}
 .sub-btn:active{transform:translateY(0) scale(.99)}.sub-btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
-.btn-spin{width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+
+/* SPINNER FIX: Added display inline-flex to content and inline-block to spinner */
+#btnContent{display:inline-flex;align-items:center;justify-content:center;gap:10px;}
+.btn-spin{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 .divider{display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:#e2e8f0}
@@ -147,25 +151,69 @@ if(pw!==cpw){showAlert("Passwords do not match.");return cpass.focus();}
 if(!terms.checked){showAlert("Please accept the terms before creating your account.");return terms.focus();}
 if(typeof supabaseClient==="undefined"){showAlert("Authentication service is unavailable. Please try again later.");return;}
 setLoading(true);
-try{
-const{data,error}=await supabaseClient.auth.signUp({email:em,password:pw,options:{data:{full_name:fn,phone:ph}}});
-if(error)throw error;
-if(data?.user&&data?.session){showAlert("Account created successfully. Redirecting...","success");setTimeout(()=>window.location.replace("dashboard.html"),700);return;}
-if(data?.user&&!data?.session){showAlert("Account created successfully. Please check your email to confirm your account before signing in.","success");form.reset();updateStr();setLoading(false);return;}
-// If Supabase returns no error but no user/session, it usually means the email is already registered (Email Enumeration Protection)
-showAlert("You already have an account. Please log in with your existing account.","error");
-setTimeout(()=>window.location.href="login.html",2000);
-setLoading(false);
-}catch(err){
-console.error("Registration error:",err);
-let m="Unable to create your account. Please try again.";
-const msg=String(err?.message||"").toLowerCase();
-if(msg.includes("user already registered")||msg.includes("already registered"))m="You already have an account. Please log in with your existing account.";
-else if(msg.includes("password")&&msg.includes("weak"))m="Please choose a stronger password.";
-else if(msg.includes("rate limit"))m="Too many attempts. Please wait a moment and try again.";
-else if(msg.includes("phone")&&(msg.includes("duplicate")||msg.includes("already exists")))m="This phone number is already associated with an account.";
-showAlert(m);setLoading(false);
-}});
+
+try {
+    // 1. EXPLICIT DATABASE CHECK: Query the profiles table to see if email already exists
+    const { data: existingUser } = await supabaseClient
+        .from('profiles')
+        .select('id')
+        .eq('email', em)
+        .maybeSingle();
+
+    if (existingUser) {
+        showAlert("You already have an account. Please log in with your existing account.", "error");
+        setTimeout(() => window.location.href = "login.html", 2000);
+        setLoading(false);
+        return;
+    }
+
+    // 2. SUPABASE SIGN UP
+    const { data, error } = await supabaseClient.auth.signUp({
+        email: em,
+        password: pw,
+        options: { data: { full_name: fn, phone: ph } }
+    });
+
+    if (error) throw error;
+
+    if (data?.user && data?.session) {
+        showAlert("Account created successfully. Redirecting...", "success");
+        setTimeout(() => window.location.replace("dashboard.html"), 700);
+        return;
+    }
+
+    if (data?.user && !data?.session) {
+        showAlert("Account created successfully. Please check your email to confirm your account before signing in.", "success");
+        form.reset();
+        updateStr();
+        setLoading(false);
+        return;
+    }
+
+    // 3. FALLBACK: If Supabase returns no error but no user/session (Email Enumeration Protection is ON)
+    showAlert("You already have an account. Please log in with your existing account.", "error");
+    setTimeout(() => window.location.href = "login.html", 2000);
+    setLoading(false);
+
+} catch(err) {
+    console.error("Registration error:", err);
+    let m = "Unable to create your account. Please try again.";
+    const msg = String(err?.message || "").toLowerCase();
+    if (msg.includes("user already registered") || msg.includes("already registered")) {
+        m = "You already have an account. Please log in with your existing account.";
+        setTimeout(() => window.location.href = "login.html", 2000);
+    } else if (msg.includes("password") && msg.includes("weak")) {
+        m = "Please choose a stronger password.";
+    } else if (msg.includes("rate limit")) {
+        m = "Too many attempts. Please wait a moment and try again.";
+    } else if (msg.includes("phone") && (msg.includes("duplicate") || msg.includes("already exists"))) {
+        m = "This phone number is already associated with an account.";
+    }
+    showAlert(m);
+    setLoading(false);
+}
+});
+
 async function checkSession(){try{if(typeof supabaseClient==="undefined"){hideLoader();return;}const{data,error}=await supabaseClient.auth.getSession();if(error)throw error;if(data?.session?.user){window.location.replace("dashboard.html");return;}}catch(e){console.error(e);}hideLoader();}
 checkSession();
 </script>
