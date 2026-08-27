@@ -1349,53 +1349,43 @@ function goToProductParent(productName) {
         }
         
         // Load related products
-        function loadRelatedProducts() {
-            // Get related products based on category
-            const relatedCategories = currentProduct.categories || [];
-            const related = products
-                .filter(p => p.name !== currentProduct.name && 
-                          p.categories.some(cat => relatedCategories.includes(cat)))
-                .slice(0, 5);
-            
-            // If not enough related products by category, fill with random products
-            if (related.length < 5) {
-                const additional = products
-                    .filter(p => p.name !== currentProduct.name && !related.includes(p))
-                    .slice(0, 5 - related.length);
-                related.push(...additional);
-            }
-            
-            relatedProducts.innerHTML = related.map((product, index) => `
-                <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link" onclick="event.preventDefault(); goToProductParent('${product.name.replace(/'/g, "\\'")}');">
-                        <div class="product-image-container">
-                            <img src="${product.image}" alt="${product.name}" class="product-image">
-                        </div>
-                        <div class="p-4 sm:p-5 md:p-6">
-                            <div class="mb-4">
-                                <h3 class="font-bold text-lg">${product.name}</h3>
-                                <p class="text-sm text-gray-500">${product.description}</p>
-                            </div>
-                            
-                            <div class="flex justify-between items-center mb-4">
-                                <div>
-                                    <span class="text-2xl font-bold">BDT ${product.pricing[2].price}</span>
-                                    <span class="text-gray-500">/${product.pricing[2].duration}</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <span class="ml-1 text-gray-600">${product.rating}</span>
-                                </div>
-                            </div>
-                            
-                            <button class="w-full py-2 rounded-lg font-medium text-white btn-primary">
-                                View Details
-                            </button>
-                        </div>
-                    </a>
-                </div>
-            `).join('');
-        }
+     // Inside details.js (or your client-side rendering script)
+function loadRelatedProducts() {
+    const relatedCategories = currentProduct.categories || [];
+    const related = products
+        .filter(p => p.name !== currentProduct.name && 
+                  p.categories.some(cat => relatedCategories.includes(cat)))
+        .slice(0, 5);
+    
+    if (related.length < 5) {
+        const additional = products
+            .filter(p => p.name !== currentProduct.name && !related.includes(p))
+            .slice(0, 5 - related.length);
+        related.push(...additional);
+    }
+    
+    relatedProducts.innerHTML = related.map((product, index) => {
+        // Generate a clean slug from the product name instead of using indices
+        const slug = product.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+        
+        return `
+            <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden">
+                <a href="/product/${slug}" class="card-link" onclick="event.preventDefault(); goToProductParent('${product.name.replace(/'/g, "\\'")}');">
+                    <div class="product-image-container">
+                        <img src="${product.image}" alt="${product.name}" class="product-image">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">${product.name}</h3>
+                        <p class="text-sm text-gray-500">${product.description}</p>
+                        <button class="w-full mt-4 py-2 rounded-lg font-medium text-white btn-primary">
+                            View Details
+                        </button>
+                    </div>
+                </a>
+            </div>
+        `;
+    }).join('');
+}
         
         // Add to cart
         function addToCart() {
