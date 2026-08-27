@@ -1906,11 +1906,11 @@ const products = [
                 description: "1 TB cloud storage",
                 icon: "fab fa-google-drive",
                 color: "#4285F4",
-                image: "..../assets/cards/Google_Drive-Logo.wine.svg",
+                image: "./assets/cards/Google_Drive-Logo.wine.svg",
                 images: [
-                    "..../assets/cards/Google_Drive-Logo.wine.svg",
-                    "..../assets/cards/Google_Drive2.svg",
-                    "..../assets/cards/Google_Drive3.svg"
+                    "./assets/cards/Google_Drive-Logo.wine.svg",
+                    "./assets/cards/Google_Drive2.svg",
+                    "./assets/cards/Google_Drive3.svg"
                 ],
                 categories: ["cloud-storage"],
                 rating: 4.6,
