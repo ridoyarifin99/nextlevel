@@ -589,12 +589,13 @@ function getRelatedProducts(currentSlug, currentProduct) {
 
     Object.keys(products || {})
         .forEach(function (key) {
-            if (key === currentSlug) {
+            const product = products[key];
+            if (!product) {
                 return;
             }
 
-            const product = products[key];
-            if (!product) {
+            const productSlug = generateSlug(product.name);
+            if (productSlug === currentSlug) {
                 return;
             }
 
@@ -602,7 +603,7 @@ function getRelatedProducts(currentSlug, currentProduct) {
 
             if (category === currentCategory) {
                 result.push({
-                    slug: key,
+                    slug: productSlug,
                     name: product.name
                 });
             }
@@ -610,7 +611,6 @@ function getRelatedProducts(currentSlug, currentProduct) {
 
     return result.slice(0, 8);
 }
-
 // ============================================================
 // BUILD RELATED HTML
 // ============================================================
