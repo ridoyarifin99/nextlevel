@@ -730,7 +730,8 @@ function buildBreadcrumbSchema(product, productURL) {
             {
                 "@type": "ListItem",
                 "position": 2,
-                "name": getProductCategory(product)
+                "name": getProductCategory(product),
+                "item": `${SITE.domain}/`
             },
             {
                 "@type": "ListItem",
@@ -743,7 +744,7 @@ function buildBreadcrumbSchema(product, productURL) {
 }
 
 // ============================================================
-// WEBPAGE JSON-LD (Fixed: Removed conflicting "about" property)
+// WEBPAGE JSON-LD
 // ============================================================
 
 function buildWebPageSchema(product, productURL, description) {
