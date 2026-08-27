@@ -608,13 +608,13 @@
     <header class="bg-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <a href="/index.html" class="flex items-center space-x-2">
+                <a href="/index.html" class="flex items-center space-x-2" onclick="event.preventDefault(); goHomeParent();">
                     <img src="/images/next_level.png" alt="StreamHub Logo" class="logo-image">
                 </a>
             </div>
             
             <div class="flex items-center space-x-4">
-                <a href="/index.html" class="text-gray-600 hover:text-blue-500 transition-colors">
+                <a href="/index.html" class="text-gray-600 hover:text-blue-500 transition-colors" onclick="event.preventDefault(); goHomeParent();">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Shop
                 </a>
                 <div class="relative">
@@ -631,9 +631,9 @@
     <nav class="bg-white border-b border-gray-200 py-3">
         <div class="container mx-auto px-4">
             <ol class="flex items-center space-x-2 text-sm">
-                <li><a href="index.html" class="text-gray-500 hover:text-blue-500">Home</a></li>
+                <li><a href="index.html" class="text-gray-500 hover:text-blue-500" onclick="event.preventDefault(); goHomeParent();">Home</a></li>
                 <li class="text-gray-400">/</li>
-                <li><a href="index.html" class="text-gray-500 hover:text-blue-500">Subscriptions</a></li>
+                <li><a href="index.html" class="text-gray-500 hover:text-blue-500" onclick="event.preventDefault(); goHomeParent();">Subscriptions</a></li>
                 <li class="text-gray-400">/</li>
                 <li id="breadcrumbProduct" class="text-gray-700 font-medium">Product Details</li>
             </ol>
@@ -978,8 +978,8 @@ function goToProductParent(productName) {
                     <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">
                         ${currentProduct.images.map((img, index) => `
                             <img src="${img}" alt="${currentProduct.name} ${index + 1}" 
-                                 class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${index === 0 ? 'active' : ''}"
-                                 onclick="goToSlide(${index})">
+                                   class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${index === 0 ? 'active' : ''}"
+                                   onclick="goToSlide(${index})">
                         `).join('')}
                     </div>
                 </div>
@@ -1367,7 +1367,7 @@ function goToProductParent(productName) {
             
             relatedProducts.innerHTML = related.map((product, index) => `
                 <div class="subscription-card bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1" data-aos="fade-up" data-aos-delay="${index * 100}">
-                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link">
+                    <a href="details.html?name=${encodeURIComponent(product.name)}" class="card-link" onclick="event.preventDefault(); goToProductParent('${product.name.replace(/'/g, "\\'")}');">
                         <div class="product-image-container">
                             <img src="${product.image}" alt="${product.name}" class="product-image">
                         </div>
