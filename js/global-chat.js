@@ -82,7 +82,7 @@
     `;
     document.head.appendChild(style);
 
-    // 2. Create HTML Elements
+    // 2. Create HTML Elements (Removed inline onclick)
     const container = document.createElement('div');
     container.innerHTML = `
         <div class="whatsapp-bubble-container">
@@ -90,15 +90,15 @@
                 <span class="typing-text">Hi there, how can I help you?</span>
             </div>
         </div>
-        <div id="whatsappFab" class="whatsapp-fab" onclick="sendGlobalToWhatsApp()">
+        <div id="whatsappFab" class="whatsapp-fab">
             <i class="fa-brands fa-whatsapp"></i>
         </div>
     `;
     document.body.appendChild(container);
-})();
 
-// 3. Global WhatsApp Redirect Function
-function sendGlobalToWhatsApp() {
-    const message = encodeURIComponent("Hello! I'm visiting your website and I need some help with a subscription.");
-    window.open(`https://wa.me/8801644490566?text=${message}`, '_blank');
-}
+    // 3. Attach click event programmatically to avoid scope blocking
+    document.getElementById('whatsappFab').addEventListener('click', function () {
+        const message = encodeURIComponent("Hello! I'm visiting your website and I need some help with a subscription.");
+        window.open(`https://wa.me/8801644490566?text=${message}`, '_blank');
+    });
+})();
