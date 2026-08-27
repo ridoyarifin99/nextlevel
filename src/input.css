@@ -98,6 +98,11 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Fix: Prevent SVG icons from collapsing in flex containers (Tailwind v4) */
+svg {
+    flex-shrink: 0;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
 }
