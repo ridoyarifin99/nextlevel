@@ -502,6 +502,14 @@ function formatPaymentMethod(method) {
     return methods[normalized] || formatStatus(method || "Unknown");
 }
 
+// NEW HELPER: Check if the subscription expiry date has passed
+function isSubscriptionExpired(expiryDate) {
+    if (!expiryDate) return false;
+    const expiry = new Date(expiryDate);
+    if (isNaN(expiry.getTime())) return false;
+    return expiry < new Date();
+}
+
 async function loadProductCatalog() {
     if (productCatalogLoaded) return;
     try {
@@ -684,7 +692,10 @@ function openSubscriptionModal(subscription) {
     const paymentStatus = getPaymentStatus(subscription, order);
     const transactionId = getTransactionId(subscription, order);
     const paymentReference = getPaymentReference(subscription, order);
-    const status = firstValue(subscription, ["status", "subscription_status", "delivery_status"], "Unknown");
+    
+    // Use the locally calculated status (which accounts for expiry) instead of raw db status
+    const status = subscription.status; 
+    
     const subscriptionId = firstValue(subscription, ["id", "subscription_id", "component_id"], "");
     const orderId = firstValue(order, ["order_number", "order_id", "id"], "");
     const createdAt = firstValue(subscription, ["created_at", "createdAt"], "") || firstValue(order, ["created_at", "createdAt"], "");
@@ -830,7 +841,7 @@ function renderSubscriptions(subscriptions) {
                 const product = getProductData(subscription);
                 const productName = firstValue(subscription, ["product_name", "productName", "name", "title"], product?.resolvedName || product?.name || "Subscription");
                 const image = getProductImage(subscription);
-                const status = firstValue(subscription, ["status", "subscription_status", "delivery_status"], "Unknown");
+                const status = subscription.status; // Uses the updated status
                 const startDate = getStartDate(subscription, findRelatedOrder(subscription));
                 const expiryDate = getExpiryDate(subscription, findRelatedOrder(subscription));
                 const plan = getPlan(subscription, findRelatedOrder(subscription));
@@ -1151,6 +1162,15 @@ function buildSubscriptionsFromOrders() {
                 order.order_items.forEach(item => {
                     if (Array.isArray(item.order_item_components)) {
                         item.order_item_components.forEach(comp => {
+                            
+                            // 1. Determine base status from database
+                            let currentStatus = comp.delivery_status === 'delivered' ? 'active' : (comp.delivery_status || 'pending');
+                            
+                            // 2. AUTOMATIC EXPIRY CHECK: If it's currently active but the expiry date has passed, mark as expired
+                            if (currentStatus === 'active' && isSubscriptionExpired(comp.subscription_expiry)) {
+                                currentStatus = 'expired';
+                            }
+
                             subs.push({
                                 ...comp,
                                 product_name: comp.component_name || comp.custom_name || comp.service_name || item.product_name,
@@ -1166,7 +1186,7 @@ function buildSubscriptionsFromOrders() {
                                 order_number: order.order_number,
                                 order_created_at: order.created_at,
                                 created_at: comp.created_at || order.created_at,
-                                status: comp.delivery_status === 'delivered' ? 'active' : (comp.delivery_status || 'pending')
+                                status: currentStatus // Apply the calculated status
                             });
                         });
                     }
@@ -1178,7 +1198,7 @@ function buildSubscriptionsFromOrders() {
     subs.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
     currentSubscriptions = subs;
     
-    // Active subscriptions are those marked as 'active' or 'delivered'
+    // Active subscriptions are those marked as 'active' or 'delivered' (Expired ones are automatically excluded now)
     const activeSubscriptions = currentSubscriptions.filter(sub => {
         const status = normalizeStatus(sub.status);
         return status === "active" || status === "delivered";
@@ -1309,6 +1329,6 @@ injectDetailModalCSS();
 createDetailModal();
 loadDashboard();
 </script>
-
+<script src="/js/global-chat.js"></script>
 </body>
 </html>

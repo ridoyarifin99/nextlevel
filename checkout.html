@@ -252,21 +252,58 @@
         #successModal:not(.hidden), #loginRequiredModal:not(.hidden) { pointer-events: auto; }
         .modal-backdrop { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px); pointer-events: auto; animation: modalBackdropIn 0.25s ease; }
         .success-modal-wrapper { position: relative; z-index: 2; min-height: 100vh; width: 100%; padding: 18px; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        .success-modal-container { width: 100%; max-width: 430px; padding: 34px 30px; border-radius: 28px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); text-align: center; box-shadow: 0 25px 70px rgba(30, 41, 59, 0.15); border: 1px solid rgba(255, 255, 255, 0.6); animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-        .success-icon { width: 78px; height: 78px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border-radius: 50%; background: #dcfce7; animation: successPop 0.55s cubic-bezier(0.16, 1, 0.3, 1); }
+        .success-modal-container { width: 100%; max-width: 430px; padding: 34px 30px; border-radius: 28px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); text-align: center; box-shadow: 0 25px 70px rgba(30, 41, 59, 0.15); border: 1px solid rgba(255, 255, 255, 0.6); animation: modalIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; position: relative; }
+        .success-icon { width: 78px; height: 78px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border-radius: 50%; background: #dcfce7; animation: successPop 0.55s cubic-bezier(0.16, 1, 0.3, 1); position: relative; z-index: 2; }
         .success-icon-inner { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #22c55e; color: white; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.25); }
         .success-check { font-size: 1.4rem; animation: checkDraw 0.45s ease 0.25s both; }
-        .success-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; margin-bottom: 13px; border-radius: 999px; background: #f0fdf4; color: #15803d; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.04em; }
-        .success-modal-container h2 { margin: 0 0 9px; color: #172033; font-size: clamp(1.55rem, 5vw, 2rem); font-weight: 900; letter-spacing: -0.035em; }
-        .success-modal-container > p { margin: 0 auto 24px; max-width: 340px; color: var(--text-light); font-size: 0.88rem; line-height: 1.6; }
-        .success-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .success-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; margin-bottom: 13px; border-radius: 999px; background: #f0fdf4; color: #15803d; font-size: 0.64rem; font-weight: 800; letter-spacing: 0.04em; position: relative; z-index: 2; }
+        .success-modal-container h2 { margin: 0 0 9px; color: #172033; font-size: clamp(1.55rem, 5vw, 2rem); font-weight: 900; letter-spacing: -0.035em; position: relative; z-index: 2; }
+        .success-modal-container > p { margin: 0 auto 24px; max-width: 340px; color: var(--text-light); font-size: 0.88rem; line-height: 1.6; position: relative; z-index: 2; }
+        .success-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; position: relative; z-index: 2; }
         .success-dashboard-button, .success-home-button { min-height: 47px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 15px; border-radius: 12px; font-size: 0.82rem; font-weight: 800; cursor: pointer; transition: var(--transition); border: none; }
         .success-dashboard-button { color: #ffffff; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); box-shadow: 0 8px 20px rgba(106, 17, 203, 0.20); }
         .success-home-button { color: #475569; background: rgba(241, 245, 249, 0.8); }
         .success-dashboard-button:hover, .success-home-button:hover { transform: translateY(-2px); }
         .success-home-button:hover { background: #e2e8f0; }
-        .success-modal-footer { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 18px; color: #94a3b8; font-size: 0.65rem; line-height: 1.5; }
+        .success-modal-footer { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 18px; color: #94a3b8; font-size: 0.65rem; line-height: 1.5; position: relative; z-index: 2; }
         .success-modal-footer i { color: #94a3b8; }
+
+        /* SKELETON LOADER */
+        .order-skeleton-card { border-bottom: 1px solid #eef2f7; padding-bottom: 16px; margin-bottom: 16px; }
+        .skeleton-flex { display: flex; justify-content: space-between; align-items: flex-start; }
+        .skeleton-left { display: flex; align-items: flex-start; gap: 12px; }
+        .skeleton-img { width: 40px; height: 40px; border-radius: 12px; background: #e2e8f0; }
+        .skeleton-text-group { display: flex; flex-direction: column; gap: 6px; }
+        .skeleton-title { width: 120px; height: 12px; background: #e2e8f0; border-radius: 4px; }
+        .skeleton-sub { width: 80px; height: 10px; background: #e2e8f0; border-radius: 4px; }
+        .skeleton-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .skeleton-price { width: 50px; height: 12px; background: #e2e8f0; border-radius: 4px; }
+        .skeleton-qty { width: 40px; height: 10px; background: #e2e8f0; border-radius: 4px; }
+        .skeleton-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+        .skeleton-remove { width: 60px; height: 10px; background: #e2e8f0; border-radius: 4px; }
+        .skeleton-qty-control { width: 80px; height: 24px; background: #e2e8f0; border-radius: 8px; }
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #eef2f7 25%, #e2e8f0 50%, #eef2f7 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* CONFETTI ANIMATION */
+        .confetti-piece {
+            position: absolute;
+            width: 8px; height: 8px;
+            z-index: 1; pointer-events: none;
+            top: -10px; opacity: 0;
+            animation: confettiFall 2s ease-out forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(450px) rotate(720deg); opacity: 0; }
+        }
 
         /* ANIMATIONS */
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -586,7 +623,47 @@
                         <div class="order-summary-icon"><i class="fas fa-bag-shopping"></i></div>
                     </div>
 
-                    <div id="orderSummary" class="order-summary-items"></div>
+                    <!-- Skeleton Loader Added Here -->
+                    <div id="orderSummary" class="order-summary-items">
+                        <div class="order-skeleton-card">
+                            <div class="skeleton-flex">
+                                <div class="skeleton-left">
+                                    <div class="skeleton-img skeleton-shimmer"></div>
+                                    <div class="skeleton-text-group">
+                                        <div class="skeleton-title skeleton-shimmer"></div>
+                                        <div class="skeleton-sub skeleton-shimmer"></div>
+                                    </div>
+                                </div>
+                                <div class="skeleton-right">
+                                    <div class="skeleton-price skeleton-shimmer"></div>
+                                    <div class="skeleton-qty skeleton-shimmer"></div>
+                                </div>
+                            </div>
+                            <div class="skeleton-bottom">
+                                <div class="skeleton-remove skeleton-shimmer"></div>
+                                <div class="skeleton-qty-control skeleton-shimmer"></div>
+                            </div>
+                        </div>
+                        <div class="order-skeleton-card">
+                            <div class="skeleton-flex">
+                                <div class="skeleton-left">
+                                    <div class="skeleton-img skeleton-shimmer"></div>
+                                    <div class="skeleton-text-group">
+                                        <div class="skeleton-title skeleton-shimmer"></div>
+                                        <div class="skeleton-sub skeleton-shimmer"></div>
+                                    </div>
+                                </div>
+                                <div class="skeleton-right">
+                                    <div class="skeleton-price skeleton-shimmer"></div>
+                                    <div class="skeleton-qty skeleton-shimmer"></div>
+                                </div>
+                            </div>
+                            <div class="skeleton-bottom">
+                                <div class="skeleton-remove skeleton-shimmer"></div>
+                                <div class="skeleton-qty-control skeleton-shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="order-totals">
                         <div class="order-total-row">
@@ -1105,6 +1182,30 @@
         return true;
     }
 
+    // Confetti Animation Trigger
+    function triggerConfetti() {
+        const container = document.querySelector('.success-modal-container');
+        if (!container) return;
+        
+        const oldConfetti = container.querySelectorAll('.confetti-piece');
+        oldConfetti.forEach(c => c.remove());
+
+        const colors = ['#6a11cb', '#2575fc', '#22c55e', '#f59e0b', '#ef4444', '#9d4edd'];
+        for (let i = 0; i < 40; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDelay = Math.random() * 0.3 + 's';
+            piece.style.animationDuration = (Math.random() * 1.5 + 1.5) + 's';
+            piece.style.width = (Math.random() * 6 + 6) + 'px';
+            piece.style.height = (Math.random() * 6 + 6) + 'px';
+            container.appendChild(piece);
+            
+            setTimeout(() => piece.remove(), 3000);
+        }
+    }
+
     async function placeOrder() {
         if (isSubmitting) return;
 
@@ -1194,6 +1295,9 @@
             successModal.classList.remove("hidden");
             successModal.setAttribute("aria-hidden", "false");
             document.body.style.overflow = "hidden";
+            
+            // Trigger Confetti Animation
+            triggerConfetti();
             
             placeOrderBtn.innerHTML = `<span class="place-order-content"><i class="fas fa-check mr-2"></i> Order Submitted</span>`;
         } catch (error) {

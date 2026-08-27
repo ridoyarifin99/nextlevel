@@ -182,6 +182,10 @@
         .toast.success i { color: #16a34a; } .toast.error i { color: #dc2626; }
         .toast-message { font-size: 13px; font-weight: 700; line-height: 1.45; }
 
+        /* Sub Status Badge in Component List */
+        .sub-status-active { color: #15803d; font-weight: 800; background: #dcfce7; padding: 2px 6px; border-radius: 6px; font-size: 10px; }
+        .sub-status-expired { color: #b91c1c; font-weight: 800; background: #fee2e2; padding: 2px 6px; border-radius: 6px; font-size: 10px; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
@@ -260,6 +264,11 @@
                 <i class="fas fa-search"></i>
                 <input id="searchInput" type="search" placeholder="Search order, customer, email, phone or product..." autocomplete="off">
             </div>
+            <select id="subscriptionFilter" class="filter-select">
+                <option value="all">All Subscriptions</option>
+                <option value="active">Active Subscriptions</option>
+                <option value="expired">Expired Subscriptions</option>
+            </select>
             <select id="statusFilter" class="filter-select">
                 <option value="all">All Payment Status</option>
                 <option value="pending">Pending</option>
@@ -398,6 +407,7 @@
     const ordersContainer = document.getElementById("ordersContainer");
     const searchInput = document.getElementById("searchInput");
     const statusFilter = document.getElementById("statusFilter");
+    const subscriptionFilter = document.getElementById("subscriptionFilter");
     const refreshButton = document.getElementById("refreshButton");
     const refreshTopButton = document.getElementById("refreshTopButton");
     const componentModal = document.getElementById("componentModal");
@@ -430,6 +440,14 @@
         if (Number.isNaN(date.getTime())) return "";
         const pad = number => String(number).padStart(2, "0");
         return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    // Helper to check if subscription is expired
+    function isSubscriptionExpired(expiryDate) {
+        if (!expiryDate) return false;
+        const expiry = new Date(expiryDate);
+        if (isNaN(expiry.getTime())) return false;
+        return expiry < new Date();
     }
 
     function showToast(message, type = "success") {
@@ -597,9 +615,27 @@
     function getFilteredOrders() {
         const search = searchInput.value.trim().toLowerCase();
         const status = statusFilter.value;
+        const subStatus = subscriptionFilter.value;
 
         return allOrders.filter(order => {
             if (status !== "all" && order.payment_status !== status) return false;
+            
+            // Filter by Subscription Active/Expired status
+            if (subStatus !== "all") {
+                const items = orderItemsMap[order.id] || [];
+                let hasMatch = false;
+                for (const item of items) {
+                    const components = orderItemComponentsMap[item.id] || [];
+                    for (const comp of components) {
+                        const isExpired = isSubscriptionExpired(comp.subscription_expiry);
+                        if (subStatus === "active" && !isExpired) { hasMatch = true; break; }
+                        if (subStatus === "expired" && isExpired) { hasMatch = true; break; }
+                    }
+                    if (hasMatch) break;
+                }
+                if (!hasMatch) return false;
+            }
+
             if (!search) return true;
 
             const items = orderItemsMap[order.id] || [];
@@ -672,20 +708,28 @@
         if (components.length === 0) {
             return `<div style="font-size:12px; color:#6b7280; padding:5px 0;">No components added yet.</div>`;
         }
-        return components.map(comp => `
-            <div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-                <div style="min-width:0;">
-                    <div style="font-weight:700; font-size:13px; color:#111827;">${escapeHTML(comp.service_name || comp.component_name || 'Service')} (Slot ${escapeHTML(comp.slot_number || 1)})</div>
-                    <div style="font-size:11px; color:#6b7280; margin-top:2px;">
-                        Status: <strong>${escapeHTML(comp.delivery_status || 'pending')}</strong> • 
-                        Email: ${escapeHTML(comp.subscription_email || '—')}
+        return components.map(comp => {
+            const isExpired = isSubscriptionExpired(comp.subscription_expiry);
+            const subStatusBadge = isExpired ? 
+                `<span class="sub-status-expired">Expired</span>` : 
+                `<span class="sub-status-active">Active</span>`;
+                
+            return `
+                <div style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                    <div style="min-width:0;">
+                        <div style="font-weight:700; font-size:13px; color:#111827;">${escapeHTML(comp.service_name || comp.component_name || 'Service')} (Slot ${escapeHTML(comp.slot_number || 1)})</div>
+                        <div style="font-size:11px; color:#6b7280; margin-top:2px; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                            <span>Delivery: <strong>${escapeHTML(comp.delivery_status || 'pending')}</strong></span> • 
+                            <span>Sub Status: ${subStatusBadge}</span> • 
+                            <span>Email: ${escapeHTML(comp.subscription_email || '—')}</span>
+                        </div>
                     </div>
+                    <button type="button" class="action-btn btn-secondary" style="min-height:32px; padding:0 10px; font-size:12px;" onclick="openComponentModal(null, '${escapeHTML(orderItemId)}', '${escapeHTML(comp.id)}')">
+                        <i class="fas fa-pen"></i> Edit
+                    </button>
                 </div>
-                <button type="button" class="action-btn btn-secondary" style="min-height:32px; padding:0 10px; font-size:12px;" onclick="openComponentModal(null, '${escapeHTML(orderItemId)}', '${escapeHTML(comp.id)}')">
-                    <i class="fas fa-pen"></i> Edit
-                </button>
-            </div>
-        `).join("");
+            `;
+        }).join("");
     }
 
     function renderOrders() {
@@ -996,6 +1040,7 @@ Total: ৳${money(order.total)}
     ========================================================= */
     searchInput.addEventListener("input", renderOrders);
     statusFilter.addEventListener("change", renderOrders);
+    subscriptionFilter.addEventListener("change", renderOrders);
     
     refreshButton.addEventListener("click", async () => {
         refreshButton.disabled = true;
