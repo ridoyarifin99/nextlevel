@@ -1,553 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verification | Next Level Subs</title>
-
     <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            min-height: 100vh;
-
-            margin: 0;
-
-            padding: 20px;
-
-            background: #f4f4f9;
-        }
-
-        .card {
-
-            background: #ffffff;
-
-            padding: 35px 30px;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 5px 20px
-                rgba(0, 0, 0, 0.10);
-
-            text-align: center;
-
-            max-width: 430px;
-
-            width: 100%;
-        }
-
-        .spinner {
-
-            width: 36px;
-
-            height: 36px;
-
-            margin:
-                0 auto 20px;
-
-            border:
-                4px solid #e5e5e5;
-
-            border-top-color: #333;
-
-            border-radius: 50%;
-
-            animation:
-                spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        h2 {
-
-            margin:
-                0 0 12px;
-
-            color: #222;
-
-            font-size: 24px;
-        }
-
-        p {
-
-            margin: 0;
-
-            color: #666;
-
-            line-height: 1.5;
-        }
-
-        .success {
-            color: #16803c;
-        }
-
-        .error {
-            color: #d93025;
-        }
-
+        *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;background:#f4f4f9}.card{background:#fff;padding:35px 30px;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.1);text-align:center;max-width:430px;width:100%}.spinner{width:36px;height:36px;margin:0 auto 20px;border:4px solid #e5e5e5;border-top-color:#333;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}h2{margin:0 0 12px;color:#222;font-size:24px}p{margin:0;color:#666;line-height:1.5}.success{color:#16803c}.error{color:#d93025}
     </style>
-
 </head>
-
-
 <body>
-
     <div class="card">
-
-        <div
-            id="spinner"
-            class="spinner"
-        ></div>
-
-        <h2 id="status-message">
-            Verifying your email...
-        </h2>
-
-        <p id="status-description">
-            Please wait a moment.
-        </p>
-
+        <div id="spinner" class="spinner"></div>
+        <h2 id="status-message">Verifying your email...</h2>
+        <p id="status-description">Please wait a moment.</p>
     </div>
 
-
-    <!-- ======================================================
-         SUPABASE JS
-    ======================================================= -->
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-    <!-- ======================================================
-         YOUR SUPABASE CONFIG
-         
-         IMPORTANT:
-         This must load BEFORE the verification script.
-    ======================================================= -->
-
     <script src="/js/supabase-config.js"></script>
-
-
     <script>
-
         "use strict";
-
-
-        /* ====================================================
-           ELEMENTS
-        ==================================================== */
-
-        const messageEl =
-            document.getElementById(
-                "status-message"
-            );
-
-        const descriptionEl =
-            document.getElementById(
-                "status-description"
-            );
-
-        const spinnerEl =
-            document.getElementById(
-                "spinner"
-            );
-
-
-        /* ====================================================
-           WEBSITE
-        ==================================================== */
-
-        const WEBSITE_URL =
-            "https://www.nextlevelsubs.com/";
-
-
-        /* ====================================================
-           CLEAN AUTH HASH
-        ==================================================== */
+        const messageEl = document.getElementById("status-message"),
+              descriptionEl = document.getElementById("status-description"),
+              spinnerEl = document.getElementById("spinner"),
+              WEBSITE_URL = "https://www.nextlevelsubs.com/";
 
         function cleanAuthUrl() {
-
             try {
-
-                const hash =
-                    window.location.hash;
-
-                if (!hash) {
-                    return;
+                if (window.location.hash && (window.location.hash.includes("access_token") || window.location.hash.includes("type"))) {
+                    window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
                 }
-
-
-                const params =
-                    new URLSearchParams(
-                        hash.substring(1)
-                    );
-
-
-                const isAuthHash =
-                    params.has("access_token") ||
-                    params.has("refresh_token") ||
-                    params.has("type") ||
-                    params.has("expires_at") ||
-                    params.has("expires_in") ||
-                    params.has("token_type") ||
-                    params.has("error") ||
-                    params.has("error_code") ||
-                    params.has("error_description");
-
-
-                if (!isAuthHash) {
-                    return;
-                }
-
-
-                const cleanUrl =
-                    window.location.pathname +
-                    window.location.search;
-
-
-                window.history.replaceState(
-                    null,
-                    document.title,
-                    cleanUrl
-                );
-
-            } catch (error) {
-
-                console.warn(
-                    "Could not clean auth URL:",
-                    error
-                );
+            } catch (e) {
+                console.warn("Could not clean URL:", e);
             }
         }
-
-
-        /* ====================================================
-           REDIRECT
-        ==================================================== */
-
-        function redirectToWebsite() {
-
-            /*
-            Clean the current verification URL first.
-            */
-
-            cleanAuthUrl();
-
-
-            /*
-            Replace instead of href.
-
-            This prevents the verification page from being
-            added to the browser history.
-            */
-
-            window.location.replace(
-                WEBSITE_URL
-            );
-        }
-
-
-        /* ====================================================
-           SHOW SUCCESS
-        ==================================================== */
 
         function showSuccess() {
-
-            spinnerEl.style.display =
-                "none";
-
-            messageEl.textContent =
-                "Email verified successfully!";
-
-            messageEl.classList.add(
-                "success"
-            );
-
-            descriptionEl.textContent =
-                "Redirecting to Next Level Subs...";
-
+            spinnerEl.style.display = "none";
+            messageEl.textContent = "Email verified successfully!";
+            messageEl.classList.add("success");
+            descriptionEl.textContent = "Redirecting to Next Level Subs...";
         }
 
-
-        /* ====================================================
-           SHOW ERROR
-        ==================================================== */
-
-        function showError(
-            message =
-                "Verification failed or link expired."
-        ) {
-
-            spinnerEl.style.display =
-                "none";
-
-            messageEl.textContent =
-                message;
-
-            messageEl.classList.add(
-                "error"
-            );
-
-            descriptionEl.textContent =
-                "Please request a new verification email and try again.";
-
+        function showError(msg = "Verification failed or link expired.") {
+            spinnerEl.style.display = "none";
+            messageEl.textContent = msg;
+            messageEl.classList.add("error");
+            descriptionEl.textContent = "Please request a new verification email and try again.";
         }
-
-
-        /* ====================================================
-           VERIFY
-        ==================================================== */
 
         async function verifyEmail() {
-
-            /*
-            ----------------------------------------------------
-            Make sure Supabase client exists.
-            ----------------------------------------------------
-            */
-
             if (!window.supabaseClient) {
-
-                console.error(
-                    "Supabase client is not available."
-                );
-
-                showError(
-                    "Unable to connect to authentication service."
-                );
-
+                showError("Unable to connect to authentication service.");
                 return;
             }
 
+            window.supabaseClient.auth.onAuthStateChange((event, session) => {
+                if ((event === "SIGNED_IN" || event === "USER_UPDATED") && session?.user) {
+                    showSuccess();
+                    cleanAuthUrl();
+                    setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
+                }
+            });
 
-            /*
-            ----------------------------------------------------
-            Listen for authentication state changes.
-
-            This is important because Supabase processes the
-            confirmation token from the URL.
-            ----------------------------------------------------
-            */
-
-            const {
-                data: authListener
-            } =
-                window.supabaseClient.auth
-                    .onAuthStateChange(
-                        (
-                            event,
-                            session
-                        ) => {
-
-                            console.log(
-                                "Verification auth event:",
-                                event
-                            );
-
-
-                            /*
-                            ------------------------------------
-                            Successful email verification.
-                            ------------------------------------
-                            */
-
-                            if (
-                                event ===
-                                    "SIGNED_IN" &&
-                                session?.user
-                            ) {
-
-                                showSuccess();
-
-                                cleanAuthUrl();
-
-
-                                setTimeout(
-                                    function () {
-
-                                        redirectToWebsite();
-
-                                    },
-                                    1200
-                                );
-                            }
-
-
-                            /*
-                            ------------------------------------
-                            Authentication error.
-                            ------------------------------------
-                            */
-
-                            if (
-                                event ===
-                                    "USER_UPDATED" &&
-                                session?.user
-                            ) {
-
-                                /*
-                                Email confirmation can also
-                                trigger a user update.
-                                */
-
-                                console.log(
-                                    "User verification/update detected."
-                                );
-                            }
-
-                        }
-                    );
-
-
-            /*
-            ----------------------------------------------------
-            Check whether Supabase already processed the URL.
-            ----------------------------------------------------
-            */
-
-            const {
-                data,
-                error
-            } =
-                await window.supabaseClient.auth.getSession();
-
-
-            if (error) {
-
-                console.error(
-                    "Verification session error:",
-                    error
-                );
-
-                showError();
-
-                return;
-            }
-
-
-            /*
-            ----------------------------------------------------
-            If a session already exists, verification succeeded.
-            ----------------------------------------------------
-            */
-
-            if (
-                data?.session?.user
-            ) {
-
+            const { data } = await window.supabaseClient.auth.getSession();
+            if (data?.session?.user) {
                 showSuccess();
-
                 cleanAuthUrl();
-
-
-                setTimeout(
-                    function () {
-
-                        redirectToWebsite();
-
-                    },
-                    1200
-                );
-
+                setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
                 return;
             }
 
-
-            /*
-            ----------------------------------------------------
-            Give Supabase additional time to process the URL.
-            ----------------------------------------------------
-            */
-
-            setTimeout(
-                async function () {
-
-                    const {
-                        data: retryData,
-                        error: retryError
-                    } =
-                        await window.supabaseClient
-                            .auth
-                            .getSession();
-
-
-                    if (retryError) {
-
-                        console.error(
-                            "Verification retry error:",
-                            retryError
-                        );
-
-                        showError();
-
-                        return;
-                    }
-
-
-                    if (
-                        retryData?.session?.user
-                    ) {
-
-                        showSuccess();
-
-                        cleanAuthUrl();
-
-
-                        setTimeout(
-                            function () {
-
-                                redirectToWebsite();
-
-                            },
-                            1200
-                        );
-
-                    } else {
-
-                        showError();
-
-                    }
-
-                },
-                1500
-            );
+            setTimeout(async () => {
+                const { data: retryData } = await window.supabaseClient.auth.getSession();
+                if (retryData?.session?.user) {
+                    showSuccess();
+                    cleanAuthUrl();
+                    setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
+                } else {
+                    showError();
+                }
+            }, 1500);
         }
 
-
-        /* ====================================================
-           START
-        ==================================================== */
-
         verifyEmail();
-
     </script>
-
 </body>
-
 </html>
