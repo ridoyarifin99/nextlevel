@@ -25,12 +25,10 @@
         async function handleVerification() {
             const messageEl = document.getElementById('status-message');
             
-            // Helper function to extract parameters from search (?) OR hash (#)
             const getParam = (name) => {
                 const searchParams = new URLSearchParams(window.location.search);
                 if (searchParams.has(name)) return searchParams.get(name);
                 
-                // Strip the '#' symbol and parse hash parameters
                 const hashString = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
                 const hashParams = new URLSearchParams(hashString);
                 return hashParams.get(name);
@@ -41,42 +39,40 @@
             const code = getParam('code');
             const accessToken = getParam('access_token');
 
-            // If Supabase automatically logs them in via the hash fragment tokens
-            if (accessToken || tokenHash || code) {
-                let error = null;
-
-                if (tokenHash) {
-                    const res = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type });
-                    error = res.error;
-                } else if (code) {
-                    const res = await supabase.auth.exchangeCodeForSession(code);
-                    error = res.error;
-                }
-
-                // Check active session as a fallback if tokens were processed natively by Supabase client
-                const { data: { session } } = await supabase.auth.getSession();
-
-                if (error && !session) {
+            if (tokenHash) {
+                const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type });
+                if (error) {
                     messageEl.textContent = 'Verification failed or link expired. Please try again.';
                 } else {
-                    messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
-                    
-                    setTimeout(() => {
-                        window.location.href = 'https://www.nextlevelsubs.com';
-                    }, 2500);
+                    showSuccess();
                 }
+            } else if (code) {
+                const { error } = await supabase.auth.exchangeCodeForSession(code);
+                if (error) {
+                    messageEl.textContent = 'Verification failed or link expired. Please try again.';
+                } else {
+                    showSuccess();
+                }
+            } else if (accessToken) {
+                // If access token is in the hash, Supabase client handles session storage automatically
+                showSuccess();
             } else {
-                // Check if they are already logged in
+                // If there's a hash present at all (even empty or error-related), check session
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
-                    messageEl.textContent = 'Email already verified! Redirecting...';
-                    setTimeout(() => { 
-                        window.location.href = 'https://www.nextlevelsubs.com'; 
-                    }, 2000);
+                    showSuccess();
                 } else {
-                    messageEl.textContent = 'Invalid or missing verification tokens.';
+                    messageEl.textContent = 'Verification link used, expired, or invalid. Please try logging in.';
                 }
             }
+        }
+
+        function showSuccess() {
+            const messageEl = document.getElementById('status-message');
+            messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
+            setTimeout(() => {
+                window.location.href = 'https://www.nextlevelsubs.com';
+            }, 2500);
         }
 
         handleVerification();
