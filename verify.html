@@ -17,7 +17,6 @@
     <!-- Include Supabase JS SDK via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Supabase credentials configured for your project
         const SUPABASE_URL = 'https://zrptkmjdltqdjzrpogyo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7';
 
@@ -26,20 +25,24 @@
         async function handleVerification() {
             const messageEl = document.getElementById('status-message');
             
-            // Helper to check both standard parameters (?) and hash fragments (#)
+            // Helper function to extract parameters from search (?) OR hash (#)
             const getParam = (name) => {
-                const urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has(name)) return urlParams.get(name);
+                const searchParams = new URLSearchParams(window.location.search);
+                if (searchParams.has(name)) return searchParams.get(name);
                 
-                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                // Strip the '#' symbol and parse hash parameters
+                const hashString = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+                const hashParams = new URLSearchParams(hashString);
                 return hashParams.get(name);
             };
 
             const tokenHash = getParam('token_hash');
             const type = getParam('type') || 'email';
             const code = getParam('code');
+            const accessToken = getParam('access_token');
 
-            if (tokenHash || code) {
+            // If Supabase automatically logs them in via the hash fragment tokens
+            if (accessToken || tokenHash || code) {
                 let error = null;
 
                 if (tokenHash) {
@@ -50,7 +53,10 @@
                     error = res.error;
                 }
 
-                if (error) {
+                // Check active session as a fallback if tokens were processed natively by Supabase client
+                const { data: { session } } = await supabase.auth.getSession();
+
+                if (error && !session) {
                     messageEl.textContent = 'Verification failed or link expired. Please try again.';
                 } else {
                     messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
@@ -60,7 +66,7 @@
                     }, 2500);
                 }
             } else {
-                // Fallback check if user is already logged in
+                // Check if they are already logged in
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     messageEl.textContent = 'Email already verified! Redirecting...';
@@ -68,7 +74,7 @@
                         window.location.href = 'https://www.nextlevelsubs.com'; 
                     }, 2000);
                 } else {
-                    messageEl.textContent = 'Invalid verification link.';
+                    messageEl.textContent = 'Invalid or missing verification tokens.';
                 }
             }
         }
