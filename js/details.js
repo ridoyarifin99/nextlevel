@@ -2130,8 +2130,8 @@ const products = [
                 image: "./assets/cards/expressVPN.png",
                 images: [
                     "./assets/cards/expressVPN.png",
-                    "./assets/cards/expressVPN2.png",
-                    "./assets/cards/expressVPN3.png"
+                    "./assets/cards/expressVPN2.webp",
+                    "./assets/cards/expressVPN3.webp"
                 ],
                 categories: ["vpn"],
                 rating: 4.8,
