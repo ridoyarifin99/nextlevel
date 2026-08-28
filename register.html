@@ -3,528 +3,1609 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - Next Level Subs</title>
+
+    <title>Create Account | Next Level Subs</title>
     <meta name="description" content="Create your Next Level Subs account.">
     <meta name="theme-color" content="#6a11cb">
+
     <link rel="stylesheet" href="./src/output.css">
     <link rel="stylesheet" href="./src/all.min.css">
+
     <style>
-        :root{--pc:#6a11cb;--pd:#4a0699;--pl:#9d4edd;--sc:#2575fc;--td:#172033;--tl:#7f8c8d;--bc:#e5e7eb;--tr:all .3s cubic-bezier(.4,0,.2,1);}
-        *{box-sizing:border-box;}html{scroll-behavior:smooth;}
-        body{margin:0;min-height:100vh;font-family:Inter,system-ui,sans-serif;color:var(--td);background:radial-gradient(circle at 10% 20%,rgba(106,17,203,.16),transparent 30%),radial-gradient(circle at 90% 10%,rgba(37,117,252,.16),transparent 30%),linear-gradient(135deg,#f8f9ff 0%,#fff 45%,#f4f7ff 100%);overflow-x:hidden;}
-        .bg-orb{position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(70px);opacity:.25;pointer-events:none;z-index:0;animation:orb 12s ease-in-out infinite;}
-        .orb-1{top:-160px;left:-140px;background:linear-gradient(135deg,var(--pc),var(--pl));}
-        .orb-2{right:-160px;bottom:-160px;background:linear-gradient(135deg,var(--sc),#6aa9ff);animation-delay:-5s;}
-        @keyframes orb{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(35px,25px) scale(1.08);}}
-        .auth-page{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 16px;}
-        .auth-wrap{width:100%;max-width:1050px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(380px,.8fr);gap:30px;align-items:center;}
-        .brand-panel{padding:30px;animation:fsu .7s ease forwards;}
-        .brand-logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:inherit;}
-        .logo-img{width:52px;height:52px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 8px 18px rgba(106,17,203,.15));}
-        .logo-tc{position:relative;width:150px;height:26px;overflow:hidden;}
-        .logo-ti{position:absolute;inset:0;display:flex;align-items:center;font-size:14px;font-weight:700;opacity:0;animation:vs 8s linear infinite;background:linear-gradient(90deg,var(--pc),var(--sc));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-        .logo-ti:nth-child(2){animation-delay:2s;}.logo-ti:nth-child(3){animation-delay:4s;}.logo-ti:nth-child(4){animation-delay:6s;}
-        @keyframes vs{0%{transform:translateY(-100%);opacity:0;}10%,90%{opacity:1;}100%{transform:translateY(100%);opacity:0;}}
-        .brand-title{margin-top:45px;max-width:600px;font-size:clamp(2.4rem,5vw,4.3rem);line-height:1.05;font-weight:850;letter-spacing:-2px;color:#172033;}
-        .brand-title span{background:linear-gradient(90deg,var(--pc),var(--sc));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
-        .brand-desc{max-width:540px;margin-top:20px;font-size:17px;line-height:1.7;color:var(--tl);}
-        .feat-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:30px;max-width:570px;}
-        .feat-item{display:flex;align-items:center;gap:11px;padding:13px 15px;border:1px solid rgba(255,255,255,.8);border-radius:14px;background:rgba(255,255,255,.62);backdrop-filter:blur(14px);box-shadow:0 8px 25px rgba(30,41,59,.05);font-size:13px;font-weight:600;color:#475569;transition:var(--tr);}
-        .feat-item:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(106,17,203,.1);}
-        .feat-icon{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:10px;color:#fff;background:linear-gradient(135deg,var(--pc),var(--sc));box-shadow:0 5px 12px rgba(106,17,203,.2);}
-        .auth-card{position:relative;overflow:hidden;padding:34px;border:1px solid rgba(255,255,255,.75);border-radius:28px;background:rgba(255,255,255,.78);backdrop-filter:blur(25px);box-shadow:0 25px 70px rgba(30,41,59,.13);animation:fsu .7s .1s ease both;}
-        .auth-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--pc),var(--pl),var(--sc));background-size:200% 100%;animation:gm 4s linear infinite;}
-        @keyframes gm{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
-        .auth-h{font-size:27px;font-weight:800;color:#172033;}
-        .auth-sub{margin-top:6px;font-size:14px;color:var(--tl);}
-        .alert{display:none;align-items:flex-start;gap:10px;margin-top:20px;padding:13px 14px;border-radius:12px;font-size:13px;line-height:1.5;}
-        .alert.show{display:flex;animation:alertIn .3s ease;}
-        @keyframes alertIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
-        .alert.error{color:#991b1b;background:#fef2f2;border:1px solid #fecaca;}
-        .alert.success{color:#166534;background:#f0fdf4;border:1px solid #bbf7d0;}
-        .fg{margin-top:18px;}
-        .fl{display:block;margin-bottom:8px;font-size:13px;font-weight:700;color:#334155;}
-        .iw{position:relative;}
-        .ii{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none;transition:var(--tr);z-index:2;}
-        .fi{width:100%;height:50px;padding:0 46px;border:1px solid #e2e8f0;border-radius:14px;outline:none;background:rgba(255,255,255,.86);color:#172033;font-size:14px;transition:var(--tr);}
-        .fi::placeholder{color:#a1aab8;}
-        .fi:hover{border-color:#cbd5e1;}
-        .fi:focus{border-color:var(--pc);background:#fff;box-shadow:0 0 0 4px rgba(106,17,203,.09);}
-        .iw:focus-within .ii{color:var(--pc);}
-        .pt{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:9px;background:transparent;color:#94a3b8;cursor:pointer;transition:var(--tr);z-index:3;}
-        .pt:hover{background:#f1f5f9;color:var(--pc);}
-        .ps{margin-top:8px;}
-        .sb{display:flex;gap:4px;height:4px;}
-        .sbb{flex:1;border-radius:999px;background:#e2e8f0;transition:background .25s ease,transform .25s ease;}
-        .st,.ph{margin-top:5px;font-size:10px;color:#94a3b8;}
-        .ph{margin-top:6px;}
-        .terms{display:flex;align-items:flex-start;gap:9px;margin-top:18px;color:#64748b;font-size:11px;line-height:1.55;cursor:pointer;}
-        .terms input{width:15px;height:15px;flex-shrink:0;margin-top:1px;accent-color:var(--pc);cursor:pointer;}
-        .terms a{color:var(--pc);font-weight:700;text-decoration:none;}
-        .sub-btn{width:100%;height:52px;margin-top:22px;border:0;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-size:14px;font-weight:750;cursor:pointer;background:linear-gradient(135deg,var(--pc),var(--sc));box-shadow:0 10px 24px rgba(106,17,203,.22);transition:var(--tr);position:relative;overflow:hidden;}
-        .sub-btn::before{content:"";position:absolute;top:0;left:-100%;width:70%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-20deg);transition:left .7s ease;}
-        .sub-btn:hover::before{left:140%;}
-        .sub-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(106,17,203,.28);}
-        .sub-btn:active{transform:translateY(0) scale(.99);}
-        .sub-btn:disabled{opacity:.7;cursor:not-allowed;transform:none;}
-        #btnContent{display:inline-flex;align-items:center;justify-content:center;gap:10px;}
-        .btn-spin{display:block !important;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
-        @keyframes spin{to{transform:rotate(360deg);}}
-        .divider{display:flex;align-items:center;gap:12px;margin:22px 0 18px;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:1px;}
-        .divider::before,.divider::after{content:"";flex:1;height:1px;background:#e2e8f0;}
-        .switch-auth{text-align:center;color:#64748b;font-size:13px;}
-        .switch-auth a{color:var(--pc);font-weight:800;text-decoration:none;margin-left:4px;transition:var(--tr);}
-        .switch-auth a:hover{color:var(--sc);}
-        .sec-note{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:16px;color:#94a3b8;font-size:11px;}
-        .sec-note i{color:#22c55e;}
-        .page-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(248,249,255,.92);backdrop-filter:blur(12px);opacity:1;visibility:visible;transition:opacity .35s ease,visibility .35s ease;}
-        .page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
-        .loader-content{text-align:center;}
-        .loader-spinner{width:42px;height:42px;margin:auto;border:4px solid rgba(106,17,203,.12);border-top-color:var(--pc);border-right-color:var(--sc);border-radius:50%;animation:spin .8s linear infinite;}
-        .loader-text{margin-top:14px;color:#64748b;font-size:13px;font-weight:600;}
-        @keyframes fsu{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
-        @media (max-width:850px){.auth-wrap{max-width:520px;display:block;}.brand-panel{text-align:center;padding:10px 10px 25px;}.brand-logo{justify-content:center;}.brand-title{margin-top:25px;font-size:2.35rem;letter-spacing:-1px;}.brand-desc{margin-left:auto;margin-right:auto;font-size:14px;}.feat-list{max-width:450px;margin-left:auto;margin-right:auto;}}
-        @media (max-width:520px){.auth-page{padding:18px 12px;}.brand-panel{padding:5px 8px 20px;}.brand-title{font-size:2rem;margin-top:20px;}.brand-desc{display:none;}.feat-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:18px;}.feat-item{padding:9px;font-size:10px;}.feat-icon{width:28px;height:28px;font-size:11px;}.auth-card{padding:24px 18px;border-radius:22px;}.auth-h{font-size:24px;}}
-        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
-    </style>
-</head>
-<body>
-
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
-
-    <!-- PAGE LOADER -->
-    <div id="pageLoader" class="page-loader">
-        <div class="loader-content">
-            <div class="loader-spinner"></div>
-            <div class="loader-text">Checking your session...</div>
-        </div>
-    </div>
-
-    <!-- AUTH PAGE -->
-    <main class="auth-page">
-        <div class="auth-wrap">
-
-            <!-- BRAND PANEL -->
-            <section class="brand-panel">
-                <a href="index.html" class="brand-logo">
-                    <img src="/images/next_level.png" alt="Next Level Subs" class="logo-img">
-                    <div class="logo-tc">
-                        <div class="logo-ti">Trusted</div>
-                        <div class="logo-ti">Cheap</div>
-                        <div class="logo-ti">Secure</div>
-                        <div class="logo-ti">24/7 Support</div>
-                    </div>
-                </a>
-                <h1 class="brand-title">Start your<br><span>Next Level.</span></h1>
-                <p class="brand-desc">Create your account and get a simple, secure place to manage subscriptions, orders and account information.</p>
-                <div class="feat-list">
-                    <div class="feat-item"><div class="feat-icon"><i class="fas fa-user-shield"></i></div>Secure Account</div>
-                    <div class="feat-item"><div class="feat-icon"><i class="fas fa-bolt"></i></div>Fast Delivery</div>
-                    <div class="feat-item"><div class="feat-icon"><i class="fas fa-receipt"></i></div>Order Tracking</div>
-                    <div class="feat-item"><div class="feat-icon"><i class="fas fa-headset"></i></div>24/7 Support</div>
-                </div>
-            </section>
-
-            <!-- AUTH CARD -->
-            <section class="auth-card">
-                <h2 class="auth-h">Create your account ✨</h2>
-                <p class="auth-sub">It only takes a minute to get started.</p>
-
-                <!-- ALERT -->
-                <div id="alert" class="alert" role="alert" aria-live="polite">
-                    <i id="alertIcon" class="fas fa-circle-exclamation"></i>
-                    <span id="alertMessage"></span>
-                </div>
-
-                <!-- REGISTER FORM -->
-                <form id="registerForm" novalidate>
-                    <!-- FULL NAME -->
-                    <div class="fg">
-                        <label for="fullName" class="fl">Full Name</label>
-                        <div class="iw">
-                            <i class="fas fa-user ii"></i>
-                            <input id="fullName" type="text" class="fi" placeholder="Your full name" autocomplete="name" required>
-                        </div>
-                    </div>
-
-                    <!-- EMAIL -->
-                    <div class="fg">
-                        <label for="email" class="fl">Email Address</label>
-                        <div class="iw">
-                            <i class="fas fa-envelope ii"></i>
-                            <input id="email" type="email" class="fi" placeholder="you@example.com" autocomplete="email" required>
-                        </div>
-                    </div>
-
-                    <!-- PHONE -->
-                    <div class="fg">
-                        <label for="phone" class="fl">Phone Number</label>
-                        <div class="iw">
-                            <i class="fas fa-phone ii"></i>
-                            <input id="phone" type="tel" class="fi" placeholder="01XXXXXXXXX" autocomplete="tel" inputmode="tel" required>
-                        </div>
-                        <div class="ph">Used for order updates and customer support.</div>
-                    </div>
-
-                    <!-- PASSWORD -->
-                    <div class="fg">
-                        <label for="password" class="fl">Password</label>
-                        <div class="iw">
-                            <i class="fas fa-lock ii"></i>
-                            <input id="password" type="password" class="fi" placeholder="Create a strong password" autocomplete="new-password" minlength="8" required>
-                            <button type="button" id="passToggle" class="pt" aria-label="Show password">
-                                <i id="passToggleIcon" class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="ps">
-                            <div class="sb">
-                                <span class="sbb" id="s1"></span>
-                                <span class="sbb" id="s2"></span>
-                                <span class="sbb" id="s3"></span>
-                                <span class="sbb" id="s4"></span>
-                            </div>
-                            <div id="strengthText" class="st">Use at least 8 characters.</div>
-                        </div>
-                    </div>
-
-                    <!-- CONFIRM PASSWORD -->
-                    <div class="fg">
-                        <label for="confirmPassword" class="fl">Confirm Password</label>
-                        <div class="iw">
-                            <i class="fas fa-lock ii"></i>
-                            <input id="confirmPassword" type="password" class="fi" placeholder="Confirm your password" autocomplete="new-password" minlength="8" required>
-                            <button type="button" id="cpassToggle" class="pt" aria-label="Show password">
-                                <i id="cpassToggleIcon" class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- TERMS -->
-                    <label class="terms">
-                        <input id="terms" type="checkbox" required>
-                        <span>I agree to the Next Level Subs terms and understand that my account information will be used to provide the requested services.</span>
-                    </label>
-
-                    <!-- SUBMIT -->
-                    <button id="registerBtn" type="submit" class="sub-btn">
-                        <span id="btnContent">
-                            <i class="fas fa-user-plus"></i> Create Account
-                        </span>
-                    </button>
-                </form>
-
-                <div class="divider">Already registered?</div>
-
-                <div class="switch-auth">
-                    Already have an account?<a href="login.html">Sign in</a>
-                </div>
-
-                <div class="sec-note">
-                    <i class="fas fa-shield-halved"></i> Your information is securely protected
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./js/supabase-config.js"></script>
-
-    <script>
-        "use strict";
-
-        /* =====================================================
-           ELEMENTS
-        ===================================================== */
-        const $ = id => document.getElementById(id);
-        const loader = $("pageLoader"), form = $("registerForm"), fullName = $("fullName"), email = $("email"), phone = $("phone"), pass = $("password"), cpass = $("confirmPassword"), terms = $("terms"), passTgl = $("passToggle"), passIcon = $("passToggleIcon"), cpassTgl = $("cpassToggle"), cpassIcon = $("cpassToggleIcon"), btn = $("registerBtn"), btnC = $("btnContent"), alertBox = $("alert"), alertIcon = $("alertIcon"), alertMsg = $("alertMessage"), bars = [$("s1"), $("s2"), $("s3"), $("s4")], strText = $("strengthText");
-
-        /* =====================================================
-           LOADER
-        ===================================================== */
-        function hideLoader() {
-            if (loader) loader.classList.add("hidden");
+        :root{
+            --pc:#6a11cb;
+            --pd:#4a0699;
+            --pl:#9d4edd;
+            --sc:#2575fc;
+            --td:#172033;
+            --tl:#7f8c8d;
+            --tr:all .3s cubic-bezier(.4,0,.2,1);
         }
 
-        /* =====================================================
-           ALERT
-        ===================================================== */
-        function showAlert(message, type = "error") {
-            alertBox.className = "alert show " + type;
-            alertIcon.className = type === "success" ? "fas fa-circle-check" : "fas fa-circle-exclamation";
-            alertMsg.textContent = message;
-            alertBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        *{box-sizing:border-box}
+
+        html{scroll-behavior:smooth}
+
+        body{
+            margin:0;
+            min-height:100vh;
+            font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+            color:var(--td);
+            background:
+                radial-gradient(circle at 10% 20%,rgba(106,17,203,.16),transparent 30%),
+                radial-gradient(circle at 90% 10%,rgba(37,117,252,.16),transparent 30%),
+                linear-gradient(135deg,#f8f9ff 0%,#fff 45%,#f4f7ff 100%);
+            overflow-x:hidden;
         }
 
-        function hideAlert() {
-            alertBox.className = "alert";
-            alertMsg.textContent = "";
+        .bg-orb{
+            position:fixed;
+            width:420px;
+            height:420px;
+            border-radius:50%;
+            filter:blur(70px);
+            opacity:.25;
+            pointer-events:none;
+            z-index:0;
+            animation:orb 12s ease-in-out infinite;
         }
 
-        /* =====================================================
-           BUTTON LOADING
-        ===================================================== */
-        function setLoading(loading) {
-            btn.disabled = loading;
-            btnC.innerHTML = loading ? '<div class="btn-spin"></div>Creating Account...' : '<i class="fas fa-user-plus"></i> Create Account';
+        .orb-1{
+            top:-160px;
+            left:-140px;
+            background:linear-gradient(135deg,var(--pc),var(--pl));
         }
 
-        /* =====================================================
-           EMAIL VALIDATION
-        ===================================================== */
-        function isEmail(value) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        .orb-2{
+            right:-160px;
+            bottom:-160px;
+            background:linear-gradient(135deg,var(--sc),#6aa9ff);
+            animation-delay:-5s;
         }
 
-        /* =====================================================
-           PHONE NORMALIZATION
-        ===================================================== */
-        function normPhone(value) {
-            return value.replace(/[^\d+]/g, "").trim();
+        @keyframes orb{
+            0%,100%{transform:translate(0,0) scale(1)}
+            50%{transform:translate(35px,25px) scale(1.08)}
         }
 
-        function isPhone(value) {
-            const normalized = normPhone(value);
-            const digits = normalized.replace(/\D/g, "");
-            if (digits.length < 10 || digits.length > 15) return false;
-            /* Bangladesh */
-            if (/^01\d{9}$/.test(digits)) return true;
-            if (/^8801\d{9}$/.test(digits)) return true;
-            /* International */
-            return /^\+[1-9]\d{9,14}$/.test(normalized);
+        .auth-page{
+            position:relative;
+            z-index:1;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:30px 16px;
         }
 
-        /* =====================================================
-           PASSWORD TOGGLE
-        ===================================================== */
-        function togglePass(input, icon, button) {
-            const isPassword = input.type === "password";
-            input.type = isPassword ? "text" : "password";
-            icon.className = isPassword ? "fas fa-eye-slash" : "fas fa-eye";
-            button.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
+        .auth-wrap{
+            width:100%;
+            max-width:1050px;
+            display:grid;
+            grid-template-columns:minmax(0,.9fr) minmax(380px,.8fr);
+            gap:30px;
+            align-items:center;
         }
 
-        passTgl.addEventListener("click", () => togglePass(pass, passIcon, passTgl));
-        cpassTgl.addEventListener("click", () => togglePass(cpass, cpassIcon, cpassTgl));
-
-        /* =====================================================
-           PASSWORD STRENGTH
-        ===================================================== */
-        function calcStr(password) {
-            let score = 0;
-            if (password.length >= 8) score++;
-            if (/[a-z]/.test(password)) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) score++;
-            return score;
+        .brand-panel{
+            padding:30px;
+            animation:fsu .7s ease forwards;
         }
 
-        function updateStr() {
-            const password = pass.value;
-            const score = calcStr(password);
-            bars.forEach((bar, index) => {
-                if (index < score) {
-                    if (score <= 1) bar.style.background = "#ef4444";
-                    else if (score === 2) bar.style.background = "#f59e0b";
-                    else if (score === 3) bar.style.background = "#3b82f6";
-                    else bar.style.background = "#22c55e";
-                    bar.style.transform = "scaleY(1.15)";
-                } else {
-                    bar.style.background = "#e2e8f0";
-                    bar.style.transform = "scaleY(1)";
-                }
-            });
-            if (!password) strText.textContent = "Use at least 8 characters.";
-            else if (score <= 1) strText.textContent = "Weak password.";
-            else if (score === 2) strText.textContent = "Fair password.";
-            else if (score === 3) strText.textContent = "Good password.";
-            else strText.textContent = "Strong password.";
+        .brand-logo{
+            display:inline-flex;
+            align-items:center;
+            gap:12px;
+            text-decoration:none;
+            color:inherit;
         }
 
-        pass.addEventListener("input", updateStr);
+        .logo-img{
+            width:52px;
+            height:52px;
+            object-fit:contain;
+            flex-shrink:0;
+            filter:drop-shadow(0 8px 18px rgba(106,17,203,.15));
+        }
 
-        /* =====================================================
-           PHONE INPUT
-        ===================================================== */
-        phone.addEventListener("input", function () {
-            let value = phone.value.replace(/[^\d+]/g, "");
-            /* Only allow + at beginning */
-            if (value.indexOf("+") > 0) value = value.replace(/\+/g, "");
-            phone.value = value;
-        });
+        .logo-tc{
+            position:relative;
+            width:150px;
+            height:26px;
+            overflow:hidden;
+        }
 
-        /* =====================================================
-           REGISTRATION
-        ===================================================== */
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            hideAlert();
+        .logo-ti{
+            position:absolute;
+            inset:0;
+            display:flex;
+            align-items:center;
+            font-size:14px;
+            font-weight:700;
+            opacity:0;
+            animation:vs 8s linear infinite;
+            background:linear-gradient(90deg,var(--pc),var(--sc));
+            -webkit-background-clip:text;
+            background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
 
-            /* ---------------------------------------------
-               GET VALUES
-            --------------------------------------------- */
-            const fn = fullName.value.trim();
-            const em = email.value.trim().toLowerCase();
-            const ph = normPhone(phone.value);
-            const pw = pass.value;
-            const cpw = cpass.value;
+        .logo-ti:nth-child(2){animation-delay:2s}
+        .logo-ti:nth-child(3){animation-delay:4s}
+        .logo-ti:nth-child(4){animation-delay:6s}
 
-            /* ---------------------------------------------
-               VALIDATION
-            --------------------------------------------- */
-            if (!fn) { showAlert("Please enter your full name."); fullName.focus(); return; }
-            if (fn.length < 2) { showAlert("Please enter a valid name."); fullName.focus(); return; }
-            if (!em) { showAlert("Please enter your email address."); email.focus(); return; }
-            if (!isEmail(em)) { showAlert("Please enter a valid email address."); email.focus(); return; }
-            if (!ph) { showAlert("Please enter your phone number."); phone.focus(); return; }
-            if (!isPhone(ph)) { showAlert("Please enter a valid phone number."); phone.focus(); return; }
-            if (pw.length < 8) { showAlert("Your password must contain at least 8 characters."); pass.focus(); return; }
-            if (pw !== cpw) { showAlert("Passwords do not match."); cpass.focus(); return; }
-            if (!terms.checked) { showAlert("Please accept the terms before creating your account."); terms.focus(); return; }
+        @keyframes vs{
+            0%{transform:translateY(-100%);opacity:0}
+            10%,90%{opacity:1}
+            100%{transform:translateY(100%);opacity:0}
+        }
 
-            /* ---------------------------------------------
-               SUPABASE CHECK
-            --------------------------------------------- */
-            if (!window.supabaseClient) {
-                showAlert("Authentication service is unavailable. Please try again later.");
-                console.error("NEXT LEVEL SUBS: window.supabaseClient is missing.");
-                return;
+        .brand-title{
+            margin-top:45px;
+            max-width:600px;
+            font-size:clamp(2.4rem,5vw,4.3rem);
+            line-height:1.05;
+            font-weight:850;
+            letter-spacing:-2px;
+            color:#172033;
+        }
+
+        .brand-title span{
+            background:linear-gradient(90deg,var(--pc),var(--sc));
+            -webkit-background-clip:text;
+            background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .brand-desc{
+            max-width:540px;
+            margin-top:20px;
+            font-size:17px;
+            line-height:1.7;
+            color:var(--tl);
+        }
+
+        .feat-list{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:14px;
+            margin-top:30px;
+            max-width:570px;
+        }
+
+        .feat-item{
+            display:flex;
+            align-items:center;
+            gap:11px;
+            padding:13px 15px;
+            border:1px solid rgba(255,255,255,.8);
+            border-radius:14px;
+            background:rgba(255,255,255,.62);
+            backdrop-filter:blur(14px);
+            box-shadow:0 8px 25px rgba(30,41,59,.05);
+            font-size:13px;
+            font-weight:600;
+            color:#475569;
+            transition:var(--tr);
+        }
+
+        .feat-item:hover{
+            transform:translateY(-3px);
+            box-shadow:0 12px 30px rgba(106,17,203,.1);
+        }
+
+        .feat-icon{
+            width:34px;
+            height:34px;
+            flex-shrink:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:10px;
+            color:#fff;
+            background:linear-gradient(135deg,var(--pc),var(--sc));
+            box-shadow:0 5px 12px rgba(106,17,203,.2);
+        }
+
+        .auth-card{
+            position:relative;
+            overflow:hidden;
+            padding:34px;
+            border:1px solid rgba(255,255,255,.75);
+            border-radius:28px;
+            background:rgba(255,255,255,.78);
+            backdrop-filter:blur(25px);
+            box-shadow:0 25px 70px rgba(30,41,59,.13);
+            animation:fsu .7s .1s ease both;
+        }
+
+        .auth-card::before{
+            content:"";
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            height:4px;
+            background:linear-gradient(90deg,var(--pc),var(--pl),var(--sc));
+            background-size:200% 100%;
+            animation:gm 4s linear infinite;
+        }
+
+        @keyframes gm{
+            0%{background-position:0% 50%}
+            100%{background-position:200% 50%}
+        }
+
+        .auth-h{
+            font-size:27px;
+            font-weight:800;
+            color:#172033;
+        }
+
+        .auth-sub{
+            margin-top:6px;
+            font-size:14px;
+            color:var(--tl);
+        }
+
+        .alert{
+            display:none;
+            align-items:flex-start;
+            gap:10px;
+            margin-top:20px;
+            padding:13px 14px;
+            border-radius:12px;
+            font-size:13px;
+            line-height:1.5;
+        }
+
+        .alert.show{
+            display:flex;
+            animation:alertIn .3s ease;
+        }
+
+        @keyframes alertIn{
+            from{opacity:0;transform:translateY(-5px)}
+            to{opacity:1;transform:translateY(0)}
+        }
+
+        .alert.error{
+            color:#991b1b;
+            background:#fef2f2;
+            border:1px solid #fecaca;
+        }
+
+        .alert.success{
+            color:#166534;
+            background:#f0fdf4;
+            border:1px solid #bbf7d0;
+        }
+
+        .fg{margin-top:18px}
+
+        .fl{
+            display:block;
+            margin-bottom:8px;
+            font-size:13px;
+            font-weight:700;
+            color:#334155;
+        }
+
+        .iw{position:relative}
+
+        .ii{
+            position:absolute;
+            left:15px;
+            top:50%;
+            transform:translateY(-50%);
+            color:#94a3b8;
+            pointer-events:none;
+            transition:var(--tr);
+            z-index:2;
+        }
+
+        .fi{
+            width:100%;
+            height:50px;
+            padding:0 46px;
+            border:1px solid #e2e8f0;
+            border-radius:14px;
+            outline:none;
+            background:rgba(255,255,255,.86);
+            color:#172033;
+            font-size:14px;
+            transition:var(--tr);
+        }
+
+        .fi::placeholder{color:#a1aab8}
+
+        .fi:hover{border-color:#cbd5e1}
+
+        .fi:focus{
+            border-color:var(--pc);
+            background:#fff;
+            box-shadow:0 0 0 4px rgba(106,17,203,.09);
+        }
+
+        .iw:focus-within .ii{color:var(--pc)}
+
+        .pt{
+            position:absolute;
+            right:13px;
+            top:50%;
+            transform:translateY(-50%);
+            width:34px;
+            height:34px;
+            border:0;
+            border-radius:9px;
+            background:transparent;
+            color:#94a3b8;
+            cursor:pointer;
+            transition:var(--tr);
+            z-index:3;
+        }
+
+        .pt:hover{
+            background:#f1f5f9;
+            color:var(--pc);
+        }
+
+        .ps{margin-top:8px}
+
+        .sb{
+            display:flex;
+            gap:4px;
+            height:4px;
+        }
+
+        .sbb{
+            flex:1;
+            border-radius:999px;
+            background:#e2e8f0;
+            transition:background .25s ease,transform .25s ease;
+        }
+
+        .st,.ph{
+            margin-top:5px;
+            font-size:10px;
+            color:#94a3b8;
+        }
+
+        .ph{margin-top:6px}
+
+        .terms{
+            display:flex;
+            align-items:flex-start;
+            gap:9px;
+            margin-top:18px;
+            color:#64748b;
+            font-size:11px;
+            line-height:1.55;
+            cursor:pointer;
+        }
+
+        .terms input{
+            width:15px;
+            height:15px;
+            flex-shrink:0;
+            margin-top:1px;
+            accent-color:var(--pc);
+            cursor:pointer;
+        }
+
+        .terms a{
+            color:var(--pc);
+            font-weight:700;
+            text-decoration:none;
+        }
+
+        .sub-btn{
+            width:100%;
+            height:52px;
+            margin-top:22px;
+            border:0;
+            border-radius:14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            color:#fff;
+            font-size:14px;
+            font-weight:750;
+            cursor:pointer;
+            background:linear-gradient(135deg,var(--pc),var(--sc));
+            box-shadow:0 10px 24px rgba(106,17,203,.22);
+            transition:var(--tr);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .sub-btn::before{
+            content:"";
+            position:absolute;
+            top:0;
+            left:-100%;
+            width:70%;
+            height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
+            transform:skewX(-20deg);
+            transition:left .7s ease;
+        }
+
+        .sub-btn:hover::before{left:140%}
+
+        .sub-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 14px 30px rgba(106,17,203,.28);
+        }
+
+        .sub-btn:active{transform:translateY(0) scale(.99)}
+
+        .sub-btn:disabled{
+            opacity:.7;
+            cursor:not-allowed;
+            transform:none;
+        }
+
+        #btnContent{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+        }
+
+        .btn-spin{
+            display:block;
+            width:18px;
+            height:18px;
+            border:2px solid rgba(255,255,255,.35);
+            border-top-color:#fff;
+            border-radius:50%;
+            animation:spin .7s linear infinite;
+        }
+
+        @keyframes spin{
+            to{transform:rotate(360deg)}
+        }
+
+        .divider{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            margin:22px 0 18px;
+            color:#94a3b8;
+            font-size:11px;
+            text-transform:uppercase;
+            letter-spacing:1px;
+        }
+
+        .divider::before,
+        .divider::after{
+            content:"";
+            flex:1;
+            height:1px;
+            background:#e2e8f0;
+        }
+
+        .switch-auth{
+            text-align:center;
+            color:#64748b;
+            font-size:13px;
+        }
+
+        .switch-auth a{
+            color:var(--pc);
+            font-weight:800;
+            text-decoration:none;
+            margin-left:4px;
+            transition:var(--tr);
+        }
+
+        .switch-auth a:hover{color:var(--sc)}
+
+        .sec-note{
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:7px;
+            margin-top:16px;
+            color:#94a3b8;
+            font-size:11px;
+        }
+
+        .sec-note i{color:#22c55e}
+
+        .page-loader{
+            position:fixed;
+            inset:0;
+            z-index:9999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgba(248,249,255,.92);
+            backdrop-filter:blur(12px);
+            opacity:1;
+            visibility:visible;
+            transition:opacity .35s ease,visibility .35s ease;
+        }
+
+        .page-loader.hidden{
+            opacity:0;
+            visibility:hidden;
+            pointer-events:none;
+        }
+
+        .loader-content{text-align:center}
+
+        .loader-spinner{
+            width:42px;
+            height:42px;
+            margin:auto;
+            border:4px solid rgba(106,17,203,.12);
+            border-top-color:var(--pc);
+            border-right-color:var(--sc);
+            border-radius:50%;
+            animation:spin .8s linear infinite;
+        }
+
+        .loader-text{
+            margin-top:14px;
+            color:#64748b;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        @keyframes fsu{
+            from{opacity:0;transform:translateY(22px)}
+            to{opacity:1;transform:translateY(0)}
+        }
+
+        @media (max-width:850px){
+            .auth-wrap{
+                max-width:520px;
+                display:block;
             }
 
-            /* ---------------------------------------------
-               LOADING
-            --------------------------------------------- */
-            setLoading(true);
+            .brand-panel{
+                text-align:center;
+                padding:10px 10px 25px;
+            }
 
-            try {
-                /* =========================================
-                   SUPABASE SIGN UP
-                ========================================= */
-                const { data, error } = await window.supabaseClient.auth.signUp({
+            .brand-logo{justify-content:center}
+
+            .brand-title{
+                margin-top:25px;
+                font-size:2.35rem;
+                letter-spacing:-1px;
+            }
+
+            .brand-desc{
+                margin-left:auto;
+                margin-right:auto;
+                font-size:14px;
+            }
+
+            .feat-list{
+                max-width:450px;
+                margin-left:auto;
+                margin-right:auto;
+            }
+        }
+
+        @media (max-width:520px){
+            .auth-page{padding:18px 12px}
+
+            .brand-panel{padding:5px 8px 20px}
+
+            .brand-title{
+                font-size:2rem;
+                margin-top:20px;
+            }
+
+            .brand-desc{display:none}
+
+            .feat-list{
+                grid-template-columns:repeat(2,minmax(0,1fr));
+                gap:8px;
+                margin-top:18px;
+            }
+
+            .feat-item{
+                padding:9px;
+                font-size:10px;
+            }
+
+            .feat-icon{
+                width:28px;
+                height:28px;
+                font-size:11px;
+            }
+
+            .auth-card{
+                padding:24px 18px;
+                border-radius:22px;
+            }
+
+            .auth-h{font-size:24px}
+        }
+
+        @media (prefers-reduced-motion:reduce){
+            *,
+            *::before,
+            *::after{
+                animation-duration:.01ms !important;
+                animation-iteration-count:1 !important;
+                transition-duration:.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bg-orb orb-1"></div>
+<div class="bg-orb orb-2"></div>
+
+<div id="pageLoader" class="page-loader">
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Checking your session...</div>
+    </div>
+</div>
+
+<main class="auth-page">
+
+    <div class="auth-wrap">
+
+        <section class="brand-panel">
+
+            <a href="/" class="brand-logo">
+
+                <img
+                    src="/images/next_level.png"
+                    alt="Next Level Subs"
+                    class="logo-img"
+                >
+
+                <div class="logo-tc">
+                    <div class="logo-ti">Trusted</div>
+                    <div class="logo-ti">Cheap</div>
+                    <div class="logo-ti">Secure</div>
+                    <div class="logo-ti">24/7 Support</div>
+                </div>
+
+            </a>
+
+            <h1 class="brand-title">
+                Start your<br>
+                <span>Next Level.</span>
+            </h1>
+
+            <p class="brand-desc">
+                Create your account and get a simple,
+                secure place to manage subscriptions,
+                orders and account information.
+            </p>
+
+            <div class="feat-list">
+
+                <div class="feat-item">
+                    <div class="feat-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    Secure Account
+                </div>
+
+                <div class="feat-item">
+                    <div class="feat-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    Fast Delivery
+                </div>
+
+                <div class="feat-item">
+                    <div class="feat-icon">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    Order Tracking
+                </div>
+
+                <div class="feat-item">
+                    <div class="feat-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    24/7 Support
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="auth-card">
+
+            <h2 class="auth-h">
+                Create your account ✨
+            </h2>
+
+            <p class="auth-sub">
+                It only takes a minute to get started.
+            </p>
+
+            <div
+                id="alert"
+                class="alert"
+                role="alert"
+                aria-live="polite"
+            >
+                <i
+                    id="alertIcon"
+                    class="fas fa-circle-exclamation"
+                ></i>
+
+                <span id="alertMessage"></span>
+            </div>
+
+            <form id="registerForm" novalidate>
+
+                <div class="fg">
+
+                    <label
+                        for="fullName"
+                        class="fl"
+                    >
+                        Full Name
+                    </label>
+
+                    <div class="iw">
+
+                        <i class="fas fa-user ii"></i>
+
+                        <input
+                            id="fullName"
+                            type="text"
+                            class="fi"
+                            placeholder="Your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="fg">
+
+                    <label
+                        for="email"
+                        class="fl"
+                    >
+                        Email Address
+                    </label>
+
+                    <div class="iw">
+
+                        <i class="fas fa-envelope ii"></i>
+
+                        <input
+                            id="email"
+                            type="email"
+                            class="fi"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            inputmode="email"
+                            autocapitalize="none"
+                            spellcheck="false"
+                            maxlength="254"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <div class="fg">
+
+                    <label
+                        for="phone"
+                        class="fl"
+                    >
+                        Phone Number
+                    </label>
+
+                    <div class="iw">
+
+                        <i class="fas fa-phone ii"></i>
+
+                        <input
+                            id="phone"
+                            type="tel"
+                            class="fi"
+                            placeholder="01XXXXXXXXX"
+                            autocomplete="tel"
+                            inputmode="tel"
+                            maxlength="16"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="ph">
+                        Used for order updates and customer support.
+                    </div>
+
+                </div>
+
+                <div class="fg">
+
+                    <label
+                        for="password"
+                        class="fl"
+                    >
+                        Password
+                    </label>
+
+                    <div class="iw">
+
+                        <i class="fas fa-lock ii"></i>
+
+                        <input
+                            id="password"
+                            type="password"
+                            class="fi"
+                            placeholder="Create a strong password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="passToggle"
+                            class="pt"
+                            aria-label="Show password"
+                        >
+                            <i
+                                id="passToggleIcon"
+                                class="fas fa-eye"
+                            ></i>
+                        </button>
+
+                    </div>
+
+                    <div class="ps">
+
+                        <div class="sb">
+
+                            <span
+                                class="sbb"
+                                id="s1"
+                            ></span>
+
+                            <span
+                                class="sbb"
+                                id="s2"
+                            ></span>
+
+                            <span
+                                class="sbb"
+                                id="s3"
+                            ></span>
+
+                            <span
+                                class="sbb"
+                                id="s4"
+                            ></span>
+
+                        </div>
+
+                        <div
+                            id="strengthText"
+                            class="st"
+                        >
+                            Use at least 8 characters.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="fg">
+
+                    <label
+                        for="confirmPassword"
+                        class="fl"
+                    >
+                        Confirm Password
+                    </label>
+
+                    <div class="iw">
+
+                        <i class="fas fa-lock ii"></i>
+
+                        <input
+                            id="confirmPassword"
+                            type="password"
+                            class="fi"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            maxlength="128"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="cpassToggle"
+                            class="pt"
+                            aria-label="Show password"
+                        >
+                            <i
+                                id="cpassToggleIcon"
+                                class="fas fa-eye"
+                            ></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <label class="terms">
+
+                    <input
+                        id="terms"
+                        type="checkbox"
+                        required
+                    >
+
+                    <span>
+                        I agree to the Next Level Subs terms
+                        and understand that my account information
+                        will be used to provide the requested services.
+                    </span>
+
+                </label>
+
+                <button
+                    id="registerBtn"
+                    type="submit"
+                    class="sub-btn"
+                >
+
+                    <span id="btnContent">
+                        <i class="fas fa-user-plus"></i>
+                        Create Account
+                    </span>
+
+                </button>
+
+            </form>
+
+            <div class="divider">
+                Already registered?
+            </div>
+
+            <div class="switch-auth">
+                Already have an account?
+                <a href="login.html">
+                    Sign in
+                </a>
+            </div>
+
+            <div class="sec-note">
+                <i class="fas fa-shield-halved"></i>
+                Your information is securely protected
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script src="/js/nextlevel-auth.js"></script>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const loader = $("pageLoader");
+const form = $("registerForm");
+const fullName = $("fullName");
+const email = $("email");
+const phone = $("phone");
+const pass = $("password");
+const cpass = $("confirmPassword");
+const terms = $("terms");
+const passToggle = $("passToggle");
+const passIcon = $("passToggleIcon");
+const cpassToggle = $("cpassToggle");
+const cpassIcon = $("cpassToggleIcon");
+const btn = $("registerBtn");
+const btnContent = $("btnContent");
+const alertBox = $("alert");
+const alertIcon = $("alertIcon");
+const alertMessage = $("alertMessage");
+const bars = [
+    $("s1"),
+    $("s2"),
+    $("s3"),
+    $("s4")
+];
+const strengthText = $("strengthText");
+
+function hideLoader() {
+
+    if (loader) {
+        loader.classList.add("hidden");
+    }
+}
+
+function showAlert(message, type = "error") {
+
+    alertBox.className =
+        "alert show " + type;
+
+    alertIcon.className =
+        type === "success"
+            ? "fas fa-circle-check"
+            : "fas fa-circle-exclamation";
+
+    alertMessage.textContent = message;
+
+    alertBox.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+function hideAlert() {
+
+    alertBox.className = "alert";
+    alertMessage.textContent = "";
+}
+
+function setLoading(loading) {
+
+    btn.disabled = loading;
+
+    btnContent.innerHTML = loading
+        ? '<span class="btn-spin"></span>Creating Account...'
+        : '<i class="fas fa-user-plus"></i> Create Account';
+}
+
+function isEmail(value) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function normalizePhone(value) {
+
+    return value
+        .replace(/[^\d+]/g, "")
+        .trim();
+}
+
+function isPhone(value) {
+
+    const normalized =
+        normalizePhone(value);
+
+    const digits =
+        normalized.replace(/\D/g, "");
+
+    if (
+        digits.length < 10 ||
+        digits.length > 15
+    ) {
+        return false;
+    }
+
+    if (/^01\d{9}$/.test(digits)) {
+        return true;
+    }
+
+    if (/^8801\d{9}$/.test(digits)) {
+        return true;
+    }
+
+    return /^\+[1-9]\d{9,14}$/.test(
+        normalized
+    );
+}
+
+function togglePassword(
+    input,
+    icon,
+    button
+) {
+
+    const isPassword =
+        input.type === "password";
+
+    input.type =
+        isPassword ? "text" : "password";
+
+    icon.className =
+        isPassword
+            ? "fas fa-eye-slash"
+            : "fas fa-eye";
+
+    button.setAttribute(
+        "aria-label",
+        isPassword
+            ? "Hide password"
+            : "Show password"
+    );
+}
+
+passToggle.addEventListener(
+    "click",
+    () => togglePassword(
+        pass,
+        passIcon,
+        passToggle
+    )
+);
+
+cpassToggle.addEventListener(
+    "click",
+    () => togglePassword(
+        cpass,
+        cpassIcon,
+        cpassToggle
+    )
+);
+
+function calculateStrength(password) {
+
+    let score = 0;
+
+    if (password.length >= 8) {
+        score++;
+    }
+
+    if (/[a-z]/.test(password)) {
+        score++;
+    }
+
+    if (/[A-Z]/.test(password)) {
+        score++;
+    }
+
+    if (
+        /[0-9]/.test(password) ||
+        /[^A-Za-z0-9]/.test(password)
+    ) {
+        score++;
+    }
+
+    return score;
+}
+
+function updateStrength() {
+
+    const password =
+        pass.value;
+
+    const score =
+        calculateStrength(password);
+
+    bars.forEach(
+        (bar, index) => {
+
+            if (index < score) {
+
+                if (score <= 1) {
+                    bar.style.background =
+                        "#ef4444";
+                }
+                else if (score === 2) {
+                    bar.style.background =
+                        "#f59e0b";
+                }
+                else if (score === 3) {
+                    bar.style.background =
+                        "#3b82f6";
+                }
+                else {
+                    bar.style.background =
+                        "#22c55e";
+                }
+
+                bar.style.transform =
+                    "scaleY(1.15)";
+
+            } else {
+
+                bar.style.background =
+                    "#e2e8f0";
+
+                bar.style.transform =
+                    "scaleY(1)";
+            }
+        }
+    );
+
+    if (!password) {
+        strengthText.textContent =
+            "Use at least 8 characters.";
+    }
+    else if (score <= 1) {
+        strengthText.textContent =
+            "Weak password.";
+    }
+    else if (score === 2) {
+        strengthText.textContent =
+            "Fair password.";
+    }
+    else if (score === 3) {
+        strengthText.textContent =
+            "Good password.";
+    }
+    else {
+        strengthText.textContent =
+            "Strong password.";
+    }
+}
+
+pass.addEventListener(
+    "input",
+    updateStrength
+);
+
+phone.addEventListener(
+    "input",
+    function() {
+
+        let value =
+            phone.value.replace(
+                /[^\d+]/g,
+                ""
+            );
+
+        if (
+            value.indexOf("+") > 0
+        ) {
+            value =
+                value.replace(
+                    /\+/g,
+                    ""
+                );
+        }
+
+        phone.value = value;
+    }
+);
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        hideAlert();
+
+        const fn =
+            fullName.value.trim();
+
+        const em =
+            email.value
+                .trim()
+                .toLowerCase();
+
+        const ph =
+            normalizePhone(
+                phone.value
+            );
+
+        const pw =
+            pass.value;
+
+        const cpw =
+            cpass.value;
+
+        if (!fn) {
+            showAlert(
+                "Please enter your full name."
+            );
+            fullName.focus();
+            return;
+        }
+
+        if (fn.length < 2) {
+            showAlert(
+                "Please enter a valid name."
+            );
+            fullName.focus();
+            return;
+        }
+
+        if (!em) {
+            showAlert(
+                "Please enter your email address."
+            );
+            email.focus();
+            return;
+        }
+
+        if (!isEmail(em)) {
+            showAlert(
+                "Please enter a valid email address."
+            );
+            email.focus();
+            return;
+        }
+
+        if (!ph) {
+            showAlert(
+                "Please enter your phone number."
+            );
+            phone.focus();
+            return;
+        }
+
+        if (!isPhone(ph)) {
+            showAlert(
+                "Please enter a valid phone number."
+            );
+            phone.focus();
+            return;
+        }
+
+        if (pw.length < 8) {
+            showAlert(
+                "Your password must contain at least 8 characters."
+            );
+            pass.focus();
+            return;
+        }
+
+        if (pw !== cpw) {
+            showAlert(
+                "Passwords do not match."
+            );
+            cpass.focus();
+            return;
+        }
+
+        if (!terms.checked) {
+            showAlert(
+                "Please accept the terms before creating your account."
+            );
+            terms.focus();
+            return;
+        }
+
+        if (!window.supabaseClient) {
+
+            showAlert(
+                "Authentication service is unavailable. Please try again later."
+            );
+
+            console.error(
+                "NEXT LEVEL SUBS: supabaseClient is missing."
+            );
+
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await window.supabaseClient.auth.signUp({
+
                     email: em,
+
                     password: pw,
+
                     options: {
-                        /*
-                         * IMPORTANT:
-                         * This is where Supabase will
-                         * send the user after they click
-                         * the confirmation email.
-                         */
-                        emailRedirectTo: `${window.location.origin}/email-verification.html`,
-                        data: { full_name: fn, phone: ph }
+
+                        emailRedirectTo:
+                            `${window.location.origin}/email-verification.html`,
+
+                        data: {
+                            full_name: fn,
+                            phone: ph
+                        }
                     }
                 });
 
-                if (error) throw error;
-                console.log("NEXT LEVEL SUBS: Registration response:", data);
+            if (error) {
+                throw error;
+            }
 
-                /* =========================================
-                   SESSION EXISTS
-                   ========================================= */
-                if (data?.user && data?.session) {
-                    showAlert("Account created successfully. Redirecting...", "success");
-                    setTimeout(function () { window.location.replace("/dashboard.html"); }, 1000);
-                    return;
-                }
+            console.log(
+                "NEXT LEVEL SUBS: Registration response:",
+                data
+            );
 
-                /* =========================================
-                   EMAIL CONFIRMATION REQUIRED
-                   ========================================= */
-                if (data?.user && !data?.session) {
-                    /*
-                     * IMPORTANT:
-                     * Supabase can return a user without
-                     * a session when email confirmation
-                     * is enabled.
-                     *
-                     * Do NOT redirect immediately.
-                     * Let the user know to check email.
-                     */
-                    showAlert("Account created successfully! Please check your email and click the verification link to activate your account.", "success");
-                    form.reset();
-                    updateStr();
-                    setLoading(false);
-                    return;
-                }
+            if (
+                data?.user &&
+                data?.session
+            ) {
 
-                /* =========================================
-                   UNEXPECTED RESPONSE
-                   ========================================= */
-                showAlert("Your account could not be created. Please try again.");
+                showAlert(
+                    "Account created successfully. Redirecting...",
+                    "success"
+                );
+
+                setTimeout(
+                    () => {
+                        window.location.replace(
+                            "/dashboard.html"
+                        );
+                    },
+                    700
+                );
+
+                return;
+            }
+
+            if (
+                data?.user &&
+                !data?.session
+            ) {
+
+                showAlert(
+                    "Account created successfully! Please check your email and click the verification link to activate your account.",
+                    "success"
+                );
+
+                form.reset();
+                updateStrength();
+
                 setLoading(false);
 
-            } catch (error) {
-                console.error("NEXT LEVEL SUBS: Registration error:", error);
-                let message = "Unable to create your account. Please try again.";
-                const errorMessage = String(error?.message || "").toLowerCase();
-
-                /* -----------------------------------------
-                   EXISTING USER
-                   ----------------------------------------- */
-                if (errorMessage.includes("user already registered") || errorMessage.includes("already registered")) {
-                    message = "You already have an account. Please log in with your existing account.";
-                    showAlert(message);
-                    setTimeout(function () { window.location.href = "login.html"; }, 2000);
-                }
-                /* -----------------------------------------
-                   WEAK PASSWORD
-                   ----------------------------------------- */
-                else if (errorMessage.includes("password") && errorMessage.includes("weak")) {
-                    message = "Please choose a stronger password.";
-                    showAlert(message);
-                }
-                /* -----------------------------------------
-                   RATE LIMIT
-                   ----------------------------------------- */
-                else if (errorMessage.includes("rate limit")) {
-                    message = "Too many attempts. Please wait a moment and try again.";
-                    showAlert(message);
-                }
-                /* -----------------------------------------
-                   PHONE DUPLICATE
-                   ----------------------------------------- */
-                else if (errorMessage.includes("phone") && (errorMessage.includes("duplicate") || errorMessage.includes("already exists"))) {
-                    message = "This phone number is already associated with an account.";
-                    showAlert(message);
-                }
-                /* -----------------------------------------
-                   OTHER ERROR
-                   ----------------------------------------- */
-                else {
-                    showAlert(message);
-                }
-
-                setLoading(false);
+                return;
             }
-        });
 
-        /* =====================================================
-           CHECK EXISTING SESSION
-        ===================================================== */
-        async function checkSession() {
-            try {
-                if (!window.supabaseClient) {
-                    console.error("NEXT LEVEL SUBS: Supabase client unavailable.");
-                    hideLoader();
-                    return;
-                }
-                const { data, error } = await window.supabaseClient.auth.getSession();
-                if (error) throw error;
-                if (data?.session?.user) {
-                    window.location.replace("/dashboard.html");
-                    return;
-                }
-            } catch (error) {
-                console.error("NEXT LEVEL SUBS: Session check error:", error);
+            showAlert(
+                "Your account could not be created. Please try again."
+            );
+
+            setLoading(false);
+
+        } catch (error) {
+
+            console.error(
+                "NEXT LEVEL SUBS: Registration error:",
+                error
+            );
+
+            const errorMessage =
+                String(
+                    error?.message || ""
+                ).toLowerCase();
+
+            let message =
+                "Unable to create your account. Please try again.";
+
+            if (
+                errorMessage.includes(
+                    "user already registered"
+                ) ||
+                errorMessage.includes(
+                    "already registered"
+                )
+            ) {
+
+                message =
+                    "You already have an account. Please log in with your existing account.";
+
+                showAlert(message);
+
+                setTimeout(
+                    () => {
+                        window.location.href =
+                            "login.html";
+                    },
+                    1800
+                );
+
             }
+            else if (
+                errorMessage.includes("password") &&
+                errorMessage.includes("weak")
+            ) {
+
+                message =
+                    "Please choose a stronger password.";
+
+                showAlert(message);
+
+            }
+            else if (
+                errorMessage.includes(
+                    "rate limit"
+                )
+            ) {
+
+                message =
+                    "Too many attempts. Please wait a moment and try again.";
+
+                showAlert(message);
+
+            }
+            else if (
+                errorMessage.includes("email") &&
+                errorMessage.includes("invalid")
+            ) {
+
+                message =
+                    "Please enter a valid email address.";
+
+                showAlert(message);
+
+            }
+            else {
+
+                showAlert(message);
+            }
+
+            setLoading(false);
+        }
+    }
+);
+
+async function initializeRegisterPage() {
+
+    try {
+
+        if (!window.supabaseClient) {
+
+            console.error(
+                "NEXT LEVEL SUBS: Supabase client unavailable."
+            );
+
             hideLoader();
+            return;
         }
 
-        /* =====================================================
-           START
-        ===================================================== */
-        checkSession();
-    </script>
+        if (
+            !window.NextLevelAuth ||
+            typeof window.NextLevelAuth.redirectIfAuthenticated !==
+            "function"
+        ) {
+
+            console.error(
+                "NEXT LEVEL SUBS: NextLevelAuth is unavailable."
+            );
+
+            hideLoader();
+            return;
+        }
+
+        const redirected =
+            await window.NextLevelAuth
+                .redirectIfAuthenticated();
+
+        if (redirected) {
+            return;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "NEXT LEVEL SUBS: Registration initialization error:",
+            error
+        );
+    }
+
+    hideLoader();
+}
+
+initializeRegisterPage();
+</script>
+
 </body>
 </html>

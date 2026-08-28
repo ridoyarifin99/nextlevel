@@ -2,87 +2,677 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Email Verification | Next Level Subs</title>
+
+    <meta
+        name="description"
+        content="Verify your Next Level Subs email address."
+    >
+
+    <meta
+        name="theme-color"
+        content="#6a11cb"
+    >
+
     <style>
-        *{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:20px;background:#f4f4f9}.card{background:#fff;padding:35px 30px;border-radius:14px;box-shadow:0 5px 20px rgba(0,0,0,.1);text-align:center;max-width:430px;width:100%}.spinner{width:36px;height:36px;margin:0 auto 20px;border:4px solid #e5e5e5;border-top-color:#333;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}h2{margin:0 0 12px;color:#222;font-size:24px}p{margin:0;color:#666;line-height:1.5}.success{color:#16803c}.error{color:#d93025}
+        :root {
+            --pc: #6a11cb;
+            --sc: #2575fc;
+            --text: #172033;
+            --muted: #64748b;
+            --success: #16a34a;
+            --error: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background:
+                radial-gradient(
+                    circle at 15% 15%,
+                    rgba(106,17,203,.16),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 85% 85%,
+                    rgba(37,117,252,.16),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f8f9ff 0%,
+                    #fff 50%,
+                    #f4f7ff 100%
+                );
+            color: var(--text);
+        }
+
+        .orb {
+            position: fixed;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: .22;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            top: -180px;
+            left: -150px;
+            background: var(--pc);
+        }
+
+        .orb-2 {
+            right: -180px;
+            bottom: -180px;
+            background: var(--sc);
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            padding: 38px 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,.8);
+            border-radius: 26px;
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(25px);
+            box-shadow:
+                0 25px 70px rgba(30,41,59,.13);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--pc),
+                    #9d4edd,
+                    var(--sc)
+                );
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            margin-bottom: 18px;
+            filter:
+                drop-shadow(
+                    0 8px 18px rgba(106,17,203,.15)
+                );
+        }
+
+        .spinner {
+            width: 46px;
+            height: 46px;
+            margin: 0 auto 22px;
+            border: 4px solid rgba(106,17,203,.12);
+            border-top-color: var(--pc);
+            border-right-color: var(--sc);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .icon {
+            width: 62px;
+            height: 62px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 28px;
+        }
+
+        .icon.success {
+            color: var(--success);
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .icon.error {
+            color: var(--error);
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 27px;
+            line-height: 1.2;
+            font-weight: 800;
+        }
+
+        p {
+            margin: 10px auto 0;
+            max-width: 360px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .success-text {
+            color: var(--success);
+        }
+
+        .error-text {
+            color: var(--error);
+        }
+
+        .action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            height: 48px;
+            margin-top: 24px;
+            padding: 0 22px;
+            border-radius: 13px;
+            color: #fff;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--pc),
+                    var(--sc)
+                );
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 750;
+            box-shadow:
+                0 10px 24px rgba(106,17,203,.22);
+            transition: transform .25s ease,
+                        box-shadow .25s ease;
+        }
+
+        .action:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 14px 30px rgba(106,17,203,.28);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 520px) {
+
+            .card {
+                padding: 32px 22px;
+                border-radius: 22px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="card">
-        <div id="spinner" class="spinner"></div>
-        <h2 id="status-message">Verifying your email...</h2>
-        <p id="status-description">Please wait a moment.</p>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<main class="card">
+
+    <img
+        src="/images/next_level.png"
+        alt="Next Level Subs"
+        class="logo"
+    >
+
+    <div id="loadingState">
+
+        <div class="spinner"></div>
+
+        <h1>
+            Verifying your email...
+        </h1>
+
+        <p>
+            Please wait while we securely confirm
+            your email address.
+        </p>
+
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/js/supabase-config.js"></script>
-    <script>
-        "use strict";
-        const messageEl = document.getElementById("status-message"),
-              descriptionEl = document.getElementById("status-description"),
-              spinnerEl = document.getElementById("spinner"),
-              WEBSITE_URL = "https://www.nextlevelsubs.com/";
+    <div
+        id="successState"
+        class="hidden"
+    >
 
-        function cleanAuthUrl() {
-            try {
-                if (window.location.hash && (window.location.hash.includes("access_token") || window.location.hash.includes("type"))) {
-                    window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
-                }
-            } catch (e) {
-                console.warn("Could not clean URL:", e);
-            }
+        <div class="icon success">
+            ✓
+        </div>
+
+        <h1 class="success-text">
+            Email verified successfully!
+        </h1>
+
+        <p>
+            Your account is now active.
+            You will be redirected to your dashboard shortly.
+        </p>
+
+    </div>
+
+    <div
+        id="errorState"
+        class="hidden"
+    >
+
+        <div class="icon error">
+            !
+        </div>
+
+        <h1 class="error-text">
+            Verification failed
+        </h1>
+
+        <p id="errorMessage">
+            The verification link may have expired
+            or is no longer valid.
+        </p>
+
+        <a
+            href="login.html"
+            class="action"
+        >
+            Return to Login
+        </a>
+
+    </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js/supabase-config.js"></script>
+<script src="/js/nextlevel-auth.js"></script>
+
+<script>
+"use strict";
+
+const loadingState =
+    document.getElementById(
+        "loadingState"
+    );
+
+const successState =
+    document.getElementById(
+        "successState"
+    );
+
+const errorState =
+    document.getElementById(
+        "errorState"
+    );
+
+const errorMessage =
+    document.getElementById(
+        "errorMessage"
+    );
+
+let redirectStarted = false;
+
+function cleanAuthUrl() {
+
+    if (
+        window.NextLevelAuth &&
+        typeof window.NextLevelAuth.cleanAuthUrl ===
+        "function"
+    ) {
+
+        window.NextLevelAuth.cleanAuthUrl();
+
+        return;
+    }
+
+    try {
+
+        const hash =
+            window.location.hash;
+
+        if (!hash) {
+            return;
         }
 
-        function showSuccess() {
-            spinnerEl.style.display = "none";
-            messageEl.textContent = "Email verified successfully!";
-            messageEl.classList.add("success");
-            descriptionEl.textContent = "Redirecting to Next Level Subs...";
+        const params =
+            new URLSearchParams(
+                hash.substring(1)
+            );
+
+        const isAuthHash =
+            params.has("access_token") ||
+            params.has("refresh_token") ||
+            params.has("type") ||
+            params.has("error") ||
+            params.has("error_code") ||
+            params.has("error_description");
+
+        if (!isAuthHash) {
+            return;
         }
 
-        function showError(msg = "Verification failed or link expired.") {
-            spinnerEl.style.display = "none";
-            messageEl.textContent = msg;
-            messageEl.classList.add("error");
-            descriptionEl.textContent = "Please request a new verification email and try again.";
+        window.history.replaceState(
+            null,
+            document.title,
+            window.location.pathname +
+            window.location.search
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "NEXT LEVEL SUBS: Could not clean verification URL:",
+            error
+        );
+    }
+}
+
+function showSuccess() {
+
+    if (redirectStarted) {
+        return;
+    }
+
+    redirectStarted = true;
+
+    loadingState.classList.add(
+        "hidden"
+    );
+
+    errorState.classList.add(
+        "hidden"
+    );
+
+    successState.classList.remove(
+        "hidden"
+    );
+
+    cleanAuthUrl();
+
+    setTimeout(
+        () => {
+            window.location.replace(
+                "/dashboard.html"
+            );
+        },
+        1200
+    );
+}
+
+function showError(message) {
+
+    if (redirectStarted) {
+        return;
+    }
+
+    loadingState.classList.add(
+        "hidden"
+    );
+
+    successState.classList.add(
+        "hidden"
+    );
+
+    errorState.classList.remove(
+        "hidden"
+    );
+
+    if (message) {
+        errorMessage.textContent =
+            message;
+    }
+}
+
+function hasAuthErrorInUrl() {
+
+    const searchParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const hashParams =
+        new URLSearchParams(
+            window.location.hash
+                ? window.location.hash.substring(1)
+                : ""
+        );
+
+    return (
+        searchParams.has("error") ||
+        searchParams.has("error_code") ||
+        searchParams.has("error_description") ||
+        hashParams.has("error") ||
+        hashParams.has("error_code") ||
+        hashParams.has("error_description")
+    );
+}
+
+function getAuthErrorMessage() {
+
+    const searchParams =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const hashParams =
+        new URLSearchParams(
+            window.location.hash
+                ? window.location.hash.substring(1)
+                : ""
+        );
+
+    const description =
+        searchParams.get(
+            "error_description"
+        ) ||
+        hashParams.get(
+            "error_description"
+        );
+
+    if (!description) {
+        return null;
+    }
+
+    return decodeURIComponent(
+        description.replace(
+            /\+/g,
+            " "
+        )
+    );
+}
+
+async function verifyEmail() {
+
+    if (!window.supabaseClient) {
+
+        showError(
+            "Authentication service is unavailable. Please try again later."
+        );
+
+        return;
+    }
+
+    if (
+        hasAuthErrorInUrl()
+    ) {
+
+        const message =
+            getAuthErrorMessage();
+
+        showError(
+            message ||
+            "The verification link is invalid or has expired."
+        );
+
+        cleanAuthUrl();
+
+        return;
+    }
+
+    try {
+
+        /*
+        --------------------------------------------------------
+        IMPORTANT
+
+        NextLevelAuth has already registered the global
+        Supabase auth listener.
+
+        We do NOT create another onAuthStateChange listener here.
+        --------------------------------------------------------
+        */
+
+        const session =
+            await window.NextLevelAuth.getSession();
+
+        if (
+            session?.user
+        ) {
+
+            showSuccess();
+
+            return;
         }
 
-        async function verifyEmail() {
-            if (!window.supabaseClient) {
-                showError("Unable to connect to authentication service.");
-                return;
-            }
+        /*
+        --------------------------------------------------------
+        Supabase may need a short moment to process the
+        confirmation URL and establish the session.
+        --------------------------------------------------------
+        */
 
-            window.supabaseClient.auth.onAuthStateChange((event, session) => {
-                if ((event === "SIGNED_IN" || event === "USER_UPDATED") && session?.user) {
-                    showSuccess();
-                    cleanAuthUrl();
-                    setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
-                }
-            });
+        const timeout =
+            Date.now() + 6000;
 
-            const { data } = await window.supabaseClient.auth.getSession();
-            if (data?.session?.user) {
+        while (
+            Date.now() < timeout
+        ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        300
+                    )
+            );
+
+            const currentSession =
+                await window.NextLevelAuth
+                    .getSession();
+
+            if (
+                currentSession?.user
+            ) {
+
                 showSuccess();
-                cleanAuthUrl();
-                setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
+
                 return;
             }
-
-            setTimeout(async () => {
-                const { data: retryData } = await window.supabaseClient.auth.getSession();
-                if (retryData?.session?.user) {
-                    showSuccess();
-                    cleanAuthUrl();
-                    setTimeout(() => window.location.replace(WEBSITE_URL), 1200);
-                } else {
-                    showError();
-                }
-            }, 1500);
         }
 
-        verifyEmail();
-    </script>
+        showError(
+            "We could not confirm your email. The verification link may have expired or already been used."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "NEXT LEVEL SUBS: Email verification error:",
+            error
+        );
+
+        showError(
+            "We could not verify your email right now. Please try again."
+        );
+    }
+}
+
+async function initializeVerificationPage() {
+
+    try {
+
+        if (
+            !window.NextLevelAuth
+        ) {
+
+            showError(
+                "Authentication service is unavailable."
+            );
+
+            return;
+        }
+
+        await verifyEmail();
+
+    } catch (error) {
+
+        console.error(
+            "NEXT LEVEL SUBS: Verification initialization error:",
+            error
+        );
+
+        showError(
+            "Unable to complete email verification."
+        );
+    }
+}
+
+initializeVerificationPage();
+</script>
+
 </body>
 </html>
