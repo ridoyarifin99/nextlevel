@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verification</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 90%; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 id="status-message">Verifying your email...</h2>
+        <p>Please wait a moment.</p>
+    </div>
+
+    <!-- Include Supabase JS SDK via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase credentials configured for your project
+        const SUPABASE_URL = 'https://zrptkmjdltqdjzrpogyo.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleVerification() {
+            const messageEl = document.getElementById('status-message');
+            
+            // Helper to check both standard parameters (?) and hash fragments (#)
+            const getParam = (name) => {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has(name)) return urlParams.get(name);
+                
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                return hashParams.get(name);
+            };
+
+            const tokenHash = getParam('token_hash');
+            const type = getParam('type') || 'email';
+            const code = getParam('code');
+
+            if (tokenHash || code) {
+                let error = null;
+
+                if (tokenHash) {
+                    const res = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type });
+                    error = res.error;
+                } else if (code) {
+                    const res = await supabase.auth.exchangeCodeForSession(code);
+                    error = res.error;
+                }
+
+                if (error) {
+                    messageEl.textContent = 'Verification failed or link expired. Please try again.';
+                } else {
+                    messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'https://www.nextlevelsubs.com';
+                    }, 2500);
+                }
+            } else {
+                // Fallback check if user is already logged in
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    messageEl.textContent = 'Email already verified! Redirecting...';
+                    setTimeout(() => { 
+                        window.location.href = 'https://www.nextlevelsubs.com'; 
+                    }, 2000);
+                } else {
+                    messageEl.textContent = 'Invalid verification link.';
+                }
+            }
+        }
+
+        handleVerification();
+    </script>
+</body>
+</html>
