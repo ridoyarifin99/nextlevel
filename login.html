@@ -128,7 +128,7 @@ const hideLoader=()=>loader&&loader.classList.add("hidden");
 const showAlert=(m,t="error")=>{if(!alertBox)return;alertBox.className="alert show "+t;alertIcon.className=t==="success"?"fas fa-circle-check":"fas fa-circle-exclamation";alertMsg.textContent=m;};
 const hideAlert=()=>{if(alertBox){alertBox.className="alert";alertMsg.textContent="";}};
 const setLoading=l=>{if(!btn||!btnC)return;btn.disabled=l;btnC.innerHTML=l?'<span class="btn-spinner"></span>Signing in...':'<i class="fas fa-right-to-bracket"></i>Sign In';};
-const isEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isEmail=/^[^\s@]+@[^\s@]+**\\.**[^\s@]+$/.test(v);
 const getRedirect=()=>{const p=new URLSearchParams(location.search).get("redirect");return(p&&p.startsWith("/")&&!p.startsWith("//"))?p:"/dashboard.html";};
 passTgl&&passTgl.addEventListener("click",()=>{const isP=pass.type==="password";pass.type=isP?"text":"password";passIcon.className=isP?"fas fa-eye-slash":"fas fa-eye";});
 const loadEmail=()=>{try{const s=localStorage.getItem(E_KEY);if(s){email.value=s;remember.checked=true;}}catch(e){}};
@@ -150,7 +150,7 @@ if(error)throw error;
 if(!data?.user)throw new Error("Login was unsuccessful.");
 
 // Explicit Email Confirmation Check
-if(!data.user.email_confirmed_at&&!data.user.confirmed_at){
+if (!data.user.email_confirmed_at) {
 await c.auth.signOut();
 throw new Error("Email not confirmed");
 }
