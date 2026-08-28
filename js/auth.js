@@ -15,6 +15,12 @@ LOGGED IN:
 USERNAME CLICK:
     /dashboard.html
 
+EMAIL VERIFICATION:
+    Supabase processes the confirmation URL
+    -> Session created
+    -> SIGNED_IN event
+    -> Authentication URL cleaned
+
 No dropdown.
 No account settings.
 No logout button.
@@ -58,8 +64,7 @@ window.NextLevelAuth = {
 
             return data?.session || null;
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "NEXT LEVEL SUBS: getSession error:",
@@ -100,8 +105,7 @@ window.NextLevelAuth = {
 
             return data?.user || null;
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(
                 "NEXT LEVEL SUBS: getUser error:",
@@ -140,9 +144,10 @@ window.NextLevelAuth = {
             return String(name).trim();
         }
 
+
         /*
         --------------------------------------------------------
-        Fallback to email username
+        FALLBACK TO EMAIL USERNAME
         --------------------------------------------------------
         */
 
@@ -161,6 +166,101 @@ window.NextLevelAuth = {
 
 
     /* ========================================================
+       CLEAN SUPABASE AUTH URL
+    ======================================================== */
+
+    cleanAuthUrl() {
+
+        try {
+
+            const hash =
+                window.location.hash;
+
+            /*
+            ----------------------------------------------------
+            Nothing to clean
+            ----------------------------------------------------
+            */
+
+            if (!hash) {
+                return;
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Read hash parameters.
+            ----------------------------------------------------
+            */
+
+            const hashParams =
+                new URLSearchParams(
+                    hash.substring(1)
+                );
+
+
+            /*
+            ----------------------------------------------------
+            Detect Supabase authentication hash.
+            ----------------------------------------------------
+            */
+
+            const isSupabaseAuthHash =
+                hashParams.has("access_token") ||
+                hashParams.has("refresh_token") ||
+                hashParams.has("expires_at") ||
+                hashParams.has("expires_in") ||
+                hashParams.has("token_type") ||
+                hashParams.has("type") ||
+                hashParams.has("error") ||
+                hashParams.has("error_code") ||
+                hashParams.has("error_description");
+
+
+            /*
+            ----------------------------------------------------
+            Do not remove normal website hashes.
+            ----------------------------------------------------
+            */
+
+            if (!isSupabaseAuthHash) {
+                return;
+            }
+
+
+            /*
+            ----------------------------------------------------
+            Keep pathname and query string.
+            Remove only authentication hash.
+            ----------------------------------------------------
+            */
+
+            const cleanUrl =
+                window.location.pathname +
+                window.location.search;
+
+            window.history.replaceState(
+                null,
+                document.title,
+                cleanUrl
+            );
+
+
+            console.log(
+                "NEXT LEVEL SUBS: Authentication URL cleaned."
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "NEXT LEVEL SUBS: Could not clean auth URL:",
+                error
+            );
+        }
+    },
+
+
+    /* ========================================================
        SET USERNAME NAVIGATION
     ======================================================== */
 
@@ -175,9 +275,10 @@ window.NextLevelAuth = {
             return;
         }
 
+
         /*
         --------------------------------------------------------
-        Prevent duplicate listener
+        Prevent duplicate listener.
         --------------------------------------------------------
         */
 
@@ -194,7 +295,7 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Force dashboard navigation
+        Dashboard navigation.
         --------------------------------------------------------
         */
 
@@ -236,7 +337,7 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        No authentication elements
+        No authentication elements.
         --------------------------------------------------------
         */
 
@@ -273,7 +374,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Show username
+            Show Username
             ----------------------------------------------------
             */
 
@@ -294,7 +395,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Display username
+            Display Username
             ----------------------------------------------------
             */
 
@@ -307,7 +408,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Generic user elements
+            Generic user elements.
             ----------------------------------------------------
             */
 
@@ -352,7 +453,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Authentication state
+            Authentication state.
             ----------------------------------------------------
             */
 
@@ -398,7 +499,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Reset username
+            Reset Username
             ----------------------------------------------------
             */
 
@@ -411,7 +512,7 @@ window.NextLevelAuth = {
 
             /*
             ----------------------------------------------------
-            Authentication state
+            Authentication state.
             ----------------------------------------------------
             */
 
@@ -421,6 +522,108 @@ window.NextLevelAuth = {
                     "false"
                 );
         }
+    },
+
+
+    /* ========================================================
+       HANDLE AUTH STATE CHANGE
+    ======================================================== */
+
+    handleAuthStateChange(
+        event,
+        session
+    ) {
+
+        const user =
+            session?.user || null;
+
+
+        console.log(
+            "NEXT LEVEL SUBS AUTH EVENT:",
+            event
+        );
+
+
+        /*
+        --------------------------------------------------------
+        Authentication events.
+        --------------------------------------------------------
+        */
+
+        if (
+            event === "SIGNED_IN" ||
+            event === "INITIAL_SESSION" ||
+            event === "TOKEN_REFRESHED"
+        ) {
+
+            if (session?.user) {
+
+                console.log(
+                    "NEXT LEVEL SUBS: Authenticated:",
+                    session.user.email
+                );
+            }
+        }
+
+
+        /*
+        --------------------------------------------------------
+        Clean Supabase authentication hash.
+
+        This removes:
+
+        #access_token=...
+        #refresh_token=...
+        #type=signup
+
+        from the browser URL.
+        --------------------------------------------------------
+        */
+
+        if (
+            event === "SIGNED_IN" ||
+            event === "INITIAL_SESSION"
+        ) {
+
+            this.cleanAuthUrl();
+        }
+
+
+        /*
+        --------------------------------------------------------
+        Update navbar.
+        --------------------------------------------------------
+        */
+
+        setTimeout(
+            function () {
+
+                window.NextLevelAuth
+                    .updateNavbar(user);
+
+            },
+            0
+        );
+
+
+        /*
+        --------------------------------------------------------
+        Custom application event.
+        --------------------------------------------------------
+        */
+
+        window.dispatchEvent(
+            new CustomEvent(
+                "nextlevelauthchange",
+                {
+                    detail: {
+                        event: event,
+                        session: session,
+                        user: user
+                    }
+                }
+            )
+        );
     },
 
 
@@ -442,7 +645,7 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Make username navigation work
+        Username navigation.
         --------------------------------------------------------
         */
 
@@ -451,7 +654,32 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Get current session
+        IMPORTANT:
+        Register auth listener BEFORE getting the session.
+
+        This ensures we don't miss the authentication event
+        generated when Supabase processes the confirmation URL.
+        --------------------------------------------------------
+        */
+
+        window.supabaseClient.auth
+            .onAuthStateChange(
+                (
+                    event,
+                    session
+                ) => {
+
+                    this.handleAuthStateChange(
+                        event,
+                        session
+                    );
+                }
+            );
+
+
+        /*
+        --------------------------------------------------------
+        Get current session.
         --------------------------------------------------------
         */
 
@@ -464,7 +692,7 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Update navbar
+        Update navbar.
         --------------------------------------------------------
         */
 
@@ -473,49 +701,15 @@ window.NextLevelAuth = {
 
         /*
         --------------------------------------------------------
-        Listen for authentication changes
+        If an authenticated session already exists,
+        remove any leftover Supabase authentication hash.
         --------------------------------------------------------
         */
 
-        window.supabaseClient.auth
-            .onAuthStateChange(
-                function (
-                    event,
-                    session
-                ) {
+        if (session) {
 
-                    const user =
-                        session?.user || null;
-
-                    setTimeout(
-                        function () {
-
-                            window.NextLevelAuth
-                                .updateNavbar(user);
-
-                        },
-                        0
-                    );
-
-
-                    /*
-                    Custom event
-                    */
-
-                    window.dispatchEvent(
-                        new CustomEvent(
-                            "nextlevelauthchange",
-                            {
-                                detail: {
-                                    event: event,
-                                    session: session,
-                                    user: user
-                                }
-                            }
-                        )
-                    );
-                }
-            );
+            this.cleanAuthUrl();
+        }
     },
 
 
@@ -557,8 +751,7 @@ window.NextLevelAuth = {
                 error: null
             };
 
-        }
-        catch (error) {
+        } catch (error) {
 
             return {
                 success: false,
