@@ -14,68 +14,38 @@
         <p>Please wait a moment.</p>
     </div>
 
-    <!-- Include Supabase JS SDK via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://zrptkmjdltqdjzrpogyo.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7';
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function handleVerification() {
-            const messageEl = document.getElementById('status-message');
-            
-            const getParam = (name) => {
-                const searchParams = new URLSearchParams(window.location.search);
-                if (searchParams.has(name)) return searchParams.get(name);
-                
-                const hashString = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-                const hashParams = new URLSearchParams(hashString);
-                return hashParams.get(name);
-            };
-
-            const tokenHash = getParam('token_hash');
-            const type = getParam('type') || 'email';
-            const code = getParam('code');
-            const accessToken = getParam('access_token');
-
-            if (tokenHash) {
-                const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: type });
-                if (error) {
-                    messageEl.textContent = 'Verification failed or link expired. Please try again.';
-                } else {
-                    showSuccess();
-                }
-            } else if (code) {
-                const { error } = await supabase.auth.exchangeCodeForSession(code);
-                if (error) {
-                    messageEl.textContent = 'Verification failed or link expired. Please try again.';
-                } else {
-                    showSuccess();
-                }
-            } else if (accessToken) {
-                // If access token is in the hash, Supabase client handles session storage automatically
-                showSuccess();
-            } else {
-                // If there's a hash present at all (even empty or error-related), check session
-                const { data: { session } } = await supabase.auth.getSession();
-                if (session) {
-                    showSuccess();
-                } else {
-                    messageEl.textContent = 'Verification link used, expired, or invalid. Please try logging in.';
-                }
+        // Initialize Supabase with auto-session detection enabled
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                detectSessionInUrl: true,
+                persistSession: true
             }
-        }
+        });
 
-        function showSuccess() {
+        async function verifyUser() {
             const messageEl = document.getElementById('status-message');
-            messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
-            setTimeout(() => {
-                window.location.href = 'https://www.nextlevelsubs.com';
-            }, 2500);
+
+            // Give Supabase a brief moment to process tokens from the URL/hash automatically
+            setTimeout(async () => {
+                const { data: { session }, error } = await supabase.auth.getSession();
+
+                if (session) {
+                    messageEl.textContent = 'Email verified successfully! Redirecting to nextlevelsubs.com...';
+                    setTimeout(() => {
+                        window.location.href = 'https://www.nextlevelsubs.com';
+                    }, 2000);
+                } else {
+                    messageEl.textContent = 'Verification failed or link expired. Please try again.';
+                }
+            }, 1000);
         }
 
-        handleVerification();
+        verifyUser();
     </script>
 </body>
 </html>
