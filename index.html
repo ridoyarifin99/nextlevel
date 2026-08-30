@@ -189,6 +189,1581 @@
     const contentDiv = document.getElementById('contentDiv');
     toggleButton.addEventListener('click', () => { contentDiv.classList.toggle('hidden'); });
   </script>
+<section class="mega-grid">
+  <div class="mg-layout">
+
+    <!-- BIG MAIN BANNER -->
+    <div class="mg-main">
+      <a id="mgMainLink"
+         href="#"
+         target="_blank"
+         rel="noopener"
+         aria-label="বিস্তারিত দেখতে ট্যাপ করুন">
+
+        <img id="mgMain"
+             src="/assets/giveaway/giveaway-1.jpg"
+             alt="Next Level Subs Mega Giveaway">
+
+        <!-- CLICK HINT -->
+        <span class="mg-click-hint">
+          <span class="mg-hand">☝</span>
+          <span class="mg-tap-text">ট্যাপ করুন</span>
+        </span>
+
+      </a>
+
+      <!-- NAVIGATION -->
+      <button class="mg-arrow mg-prev"
+              type="button"
+              aria-label="আগের ব্যানার">
+        ‹
+      </button>
+
+      <button class="mg-arrow mg-next"
+              type="button"
+              aria-label="পরের ব্যানার">
+        ›
+      </button>
+    </div>
+
+
+    <!-- TWO SMALL BANNERS -->
+    <div class="mg-side">
+
+      <div class="mg-small">
+        <a id="mgSide1Link"
+           href="#"
+           target="_blank"
+           rel="noopener"
+           aria-label="বিস্তারিত দেখতে ট্যাপ করুন">
+
+          <img id="mgSide1"
+               src="/assets/giveaway/giveaway-2.jpg"
+               alt="Next Level Subs">
+
+          <span class="mg-small-click">
+            <span class="mg-hand">☝</span>
+          </span>
+
+        </a>
+      </div>
+
+
+      <div class="mg-small">
+        <a id="mgSide2Link"
+           href="#"
+           target="_blank"
+           rel="noopener"
+           aria-label="বিস্তারিত দেখতে ট্যাপ করুন">
+
+          <img id="mgSide2"
+               src="/assets/giveaway/giveaway-3.jpg"
+               alt="Next Level Subs">
+
+          <span class="mg-small-click">
+            <span class="mg-hand">☝</span>
+          </span>
+
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<style>
+
+/* =====================================================
+   RESET ONLY FOR THIS COMPONENT
+===================================================== */
+
+.mega-grid,
+.mega-grid *,
+.mega-grid *::before,
+.mega-grid *::after{
+  box-sizing:border-box;
+}
+
+
+/* =====================================================
+   MAIN SECTION
+===================================================== */
+
+.mega-grid{
+  width:100%;
+
+  margin:0;
+
+  padding:30px 0;
+
+  overflow:hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(124,58,237,.12),
+      transparent 65%
+    ),
+    #07070b;
+
+  line-height:normal;
+}
+
+
+/* =====================================================
+   DESKTOP LAYOUT
+   BIG LEFT + TWO RIGHT
+===================================================== */
+
+.mg-layout{
+
+  width:min(1300px,94%);
+
+  margin:0 auto;
+
+  padding:0;
+
+  display:grid;
+
+  grid-template-columns:
+    2fr 1fr;
+
+  gap:16px;
+
+  align-items:stretch;
+
+}
+
+
+/* =====================================================
+   BIG MAIN BANNER
+===================================================== */
+
+.mg-main{
+
+  position:relative;
+
+  width:100%;
+
+  aspect-ratio:16 / 9;
+
+  margin:0;
+  padding:0;
+
+  overflow:hidden;
+
+  border-radius:22px;
+
+  background:#101016;
+
+  border:1px solid
+    rgba(255,255,255,.14);
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.6);
+
+}
+
+
+/* =====================================================
+   MAIN LINK
+===================================================== */
+
+.mg-main > a{
+
+  position:relative;
+
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  margin:0;
+  padding:0;
+
+  overflow:hidden;
+
+  cursor:pointer;
+
+  line-height:0;
+
+}
+
+
+/* =====================================================
+   ALL IMAGES
+   FULL IMAGE — NO CROPPING
+===================================================== */
+
+.mg-main img,
+.mg-small img{
+
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  margin:0;
+  padding:0;
+
+  object-fit:contain;
+
+  object-position:center;
+
+  background:#101016;
+
+  user-select:none;
+
+  pointer-events:none;
+
+  transition:
+    transform .4s ease,
+    filter .4s ease;
+
+}
+
+
+/* =====================================================
+   MAIN HOVER
+===================================================== */
+
+.mg-main > a:hover img{
+
+  transform:scale(1.025);
+
+  filter:brightness(1.05);
+
+}
+
+
+/* =====================================================
+   MAIN CLICKABLE BORDER
+===================================================== */
+
+.mg-main > a::after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  border-radius:inherit;
+
+  border:2px solid
+    rgba(167,139,250,.75);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.35s ease;
+
+}
+
+
+.mg-main > a:hover::after{
+  opacity:1;
+}
+
+
+/* =====================================================
+   MAIN CLICK HINT
+===================================================== */
+
+.mg-click-hint{
+
+  position:absolute;
+
+  z-index:6;
+
+  right:15px;
+  bottom:15px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:7px;
+
+  padding:
+    7px
+    11px
+    7px
+    8px;
+
+  border-radius:30px;
+
+  color:#fff;
+
+  background:
+    rgba(8,8,14,.84);
+
+  border:1px solid
+    rgba(255,255,255,.22);
+
+  backdrop-filter:blur(12px);
+
+  box-shadow:
+    0 8px 25px
+    rgba(0,0,0,.45);
+
+  pointer-events:none;
+
+  animation:
+    mgHintFloat 2s ease-in-out infinite;
+
+}
+
+
+.mg-hand{
+
+  display:inline-flex;
+
+  align-items:center;
+  justify-content:center;
+
+  font-size:23px;
+
+  line-height:1;
+
+  transform-origin:
+    60% 80%;
+
+  animation:
+    mgClick 1.8s ease-in-out infinite;
+
+}
+
+
+.mg-tap-text{
+
+  font-size:13px;
+
+  font-weight:700;
+
+  white-space:nowrap;
+
+}
+
+
+/* =====================================================
+   CLICK ANIMATION
+===================================================== */
+
+@keyframes mgClick{
+
+  0%,100%{
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+  15%{
+    transform:
+      translateY(3px)
+      scale(.86);
+  }
+
+  30%{
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+  45%{
+    transform:
+      translateY(3px)
+      scale(.86);
+  }
+
+  60%{
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+}
+
+
+@keyframes mgHintFloat{
+
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-3px);
+  }
+
+}
+
+
+/* =====================================================
+   RIGHT SIDE
+===================================================== */
+
+.mg-side{
+
+  display:grid;
+
+  grid-template-rows:
+    1fr 1fr;
+
+  gap:16px;
+
+  min-width:0;
+
+  margin:0;
+  padding:0;
+
+}
+
+
+/* =====================================================
+   SMALL BANNERS
+===================================================== */
+
+.mg-small{
+
+  position:relative;
+
+  min-width:0;
+  min-height:0;
+
+  width:100%;
+
+  margin:0;
+  padding:0;
+
+  overflow:hidden;
+
+  border-radius:17px;
+
+  background:#101016;
+
+  border:1px solid
+    rgba(255,255,255,.11);
+
+  box-shadow:
+    0 18px 45px
+    rgba(0,0,0,.45);
+
+  transition:
+    transform .3s ease,
+    filter .3s ease;
+
+}
+
+
+/* =====================================================
+   SMALL LINK
+===================================================== */
+
+.mg-small a{
+
+  position:relative;
+
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  margin:0;
+  padding:0;
+
+  overflow:hidden;
+
+  cursor:pointer;
+
+  line-height:0;
+
+}
+
+
+/* =====================================================
+   SMALL HOVER
+===================================================== */
+
+.mg-small:hover{
+
+  transform:translateY(-3px);
+
+  filter:brightness(1.06);
+
+}
+
+
+.mg-small:hover img{
+
+  transform:scale(1.025);
+
+}
+
+
+/* =====================================================
+   SMALL CLICK BORDER
+===================================================== */
+
+.mg-small a::after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  border-radius:inherit;
+
+  border:1px solid
+    rgba(167,139,250,.75);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  transition:.3s ease;
+
+}
+
+
+.mg-small:hover a::after{
+  opacity:1;
+}
+
+
+/* =====================================================
+   SMALL CLICK ICON
+===================================================== */
+
+.mg-small-click{
+
+  position:absolute;
+
+  z-index:5;
+
+  right:9px;
+  bottom:9px;
+
+  width:31px;
+  height:31px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:
+    rgba(8,8,14,.84);
+
+  border:1px solid
+    rgba(255,255,255,.22);
+
+  backdrop-filter:blur(10px);
+
+  pointer-events:none;
+
+}
+
+
+.mg-small-click .mg-hand{
+
+  font-size:17px;
+
+}
+
+
+/* =====================================================
+   MAIN SLIDE ANIMATION
+===================================================== */
+
+.mg-main.mg-changing img{
+
+  animation:
+    mgSlide
+    .55s
+    cubic-bezier(.2,.8,.2,1);
+
+}
+
+
+@keyframes mgSlide{
+
+  from{
+
+    opacity:0;
+
+    transform:
+      translateX(30px)
+      scale(1.02);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:
+      translateX(0)
+      scale(1);
+
+  }
+
+}
+
+
+/* =====================================================
+   NAVIGATION BUTTONS
+===================================================== */
+
+.mg-arrow{
+
+  position:absolute;
+
+  z-index:20;
+
+  top:50%;
+
+  width:55px;
+  height:55px;
+
+  margin:0;
+
+  padding:0;
+
+  transform:translateY(-50%);
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  border:1px solid
+    rgba(255,255,255,.25);
+
+  background:
+    rgba(8,8,14,.82);
+
+  backdrop-filter:blur(14px);
+
+  color:#fff;
+
+  font-size:38px;
+
+  font-weight:300;
+
+  line-height:1;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 10px 35px
+    rgba(0,0,0,.5);
+
+  transition:.3s ease;
+
+}
+
+
+.mg-prev{
+  left:15px;
+}
+
+
+.mg-next{
+  right:15px;
+}
+
+
+.mg-arrow:hover{
+
+  background:#7c3aed;
+
+  border-color:#a78bfa;
+
+  transform:
+    translateY(-50%)
+    scale(1.08);
+
+  box-shadow:
+    0 0 30px
+    rgba(124,58,237,.45);
+
+}
+
+
+/* =====================================================
+   ARROW PULSE
+===================================================== */
+
+.mg-arrow::after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:-6px;
+
+  border-radius:50%;
+
+  border:1px solid
+    rgba(167,139,250,.3);
+
+  animation:
+    mgArrowPulse 2.2s infinite;
+
+}
+
+
+@keyframes mgArrowPulse{
+
+  0%{
+    transform:scale(.9);
+    opacity:.7;
+  }
+
+  70%{
+    transform:scale(1.2);
+    opacity:0;
+  }
+
+  100%{
+    opacity:0;
+  }
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media(max-width:850px){
+
+  .mega-grid{
+
+    padding:20px 0;
+
+  }
+
+
+  .mg-layout{
+
+    width:96%;
+
+    grid-template-columns:
+      1.7fr 1fr;
+
+    gap:10px;
+
+  }
+
+
+  .mg-side{
+
+    gap:10px;
+
+  }
+
+
+  .mg-main{
+
+    border-radius:17px;
+
+  }
+
+
+  .mg-small{
+
+    border-radius:13px;
+
+  }
+
+
+  .mg-arrow{
+
+    width:46px;
+    height:46px;
+
+    font-size:31px;
+
+  }
+
+
+  .mg-prev{
+    left:9px;
+  }
+
+
+  .mg-next{
+    right:9px;
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:600px){
+
+  /*
+    IMPORTANT:
+    No bottom padding.
+  */
+
+  .mega-grid{
+
+    width:100% !important;
+
+    margin:0 !important;
+
+    padding:
+      6px
+      0
+      5px !important;
+
+    overflow:hidden;
+
+    display:block;
+
+    line-height:0;
+
+  }
+
+
+  /*
+    ONE COLUMN
+  */
+
+  .mg-layout{
+
+    width:94% !important;
+
+    margin:
+      0 auto !important;
+
+    padding:0 !important;
+
+    display:grid;
+
+    grid-template-columns:
+      1fr;
+
+    gap:5px;
+
+    line-height:0;
+
+  }
+
+
+  /*
+    BIG BANNER
+  */
+
+  .mg-main{
+
+    order:1;
+
+    width:100% !important;
+
+    height:auto !important;
+
+    aspect-ratio:16 / 9;
+
+    margin:0 !important;
+
+    padding:0 !important;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+  }
+
+
+  /*
+    RIGHT SIDE BECOMES
+    TWO COLUMNS
+  */
+
+  .mg-side{
+
+    order:2;
+
+    width:100% !important;
+
+    height:auto !important;
+
+    margin:0 !important;
+
+    padding:0 !important;
+
+    display:grid;
+
+    grid-template-columns:
+      1fr 1fr;
+
+    grid-template-rows:
+      auto;
+
+    gap:5px;
+
+    line-height:0;
+
+  }
+
+
+  /*
+    SMALL BANNERS
+  */
+
+  .mg-small{
+
+    width:100% !important;
+
+    height:auto !important;
+
+    min-height:0 !important;
+
+    aspect-ratio:16 / 9;
+
+    margin:0 !important;
+
+    padding:0 !important;
+
+    border-radius:8px;
+
+    overflow:hidden;
+
+    line-height:0;
+
+  }
+
+
+  /*
+    LINKS
+  */
+
+  .mg-main > a,
+  .mg-small a{
+
+    width:100%;
+
+    height:100%;
+
+    margin:0;
+
+    padding:0;
+
+    display:block;
+
+    line-height:0;
+
+  }
+
+
+  /*
+    IMAGES
+  */
+
+  .mg-main img,
+  .mg-small img{
+
+    display:block;
+
+    width:100%;
+
+    height:100%;
+
+    margin:0;
+
+    padding:0;
+
+    object-fit:contain;
+
+  }
+
+
+  /*
+    MAIN CLICK HINT
+  */
+
+  .mg-click-hint{
+
+    right:8px;
+
+    bottom:8px;
+
+    padding:
+      5px
+      9px
+      5px
+      6px;
+
+    gap:5px;
+
+    border-radius:25px;
+
+  }
+
+
+  .mg-hand{
+
+    font-size:19px;
+
+  }
+
+
+  .mg-tap-text{
+
+    font-size:11px;
+
+  }
+
+
+  /*
+    SMALL CLICK HINT
+  */
+
+  .mg-small-click{
+
+    width:26px;
+    height:26px;
+
+    right:6px;
+    bottom:6px;
+
+  }
+
+
+  .mg-small-click .mg-hand{
+
+    font-size:14px;
+
+  }
+
+
+  /*
+    ARROWS
+  */
+
+  .mg-arrow{
+
+    width:37px;
+
+    height:37px;
+
+    font-size:26px;
+
+  }
+
+
+  .mg-prev{
+
+    left:6px;
+
+  }
+
+
+  .mg-next{
+
+    right:6px;
+
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL PHONES
+===================================================== */
+
+@media(max-width:380px){
+
+  .mega-grid{
+
+    padding:
+      5px
+      0
+      0 !important;
+
+  }
+
+
+  .mg-layout{
+
+    width:95% !important;
+
+    gap:4px;
+
+  }
+
+
+  .mg-side{
+
+    gap:4px;
+
+  }
+
+
+  .mg-main{
+
+    border-radius:10px;
+
+  }
+
+
+  .mg-small{
+
+    border-radius:7px;
+
+  }
+
+
+  .mg-click-hint{
+
+    right:6px;
+
+    bottom:6px;
+
+    padding:
+      4px
+      7px
+      4px
+      5px;
+
+  }
+
+
+  .mg-hand{
+
+    font-size:17px;
+
+  }
+
+
+  .mg-tap-text{
+
+    font-size:10px;
+
+  }
+
+
+  .mg-small-click{
+
+    width:23px;
+    height:23px;
+
+    right:5px;
+    bottom:5px;
+
+  }
+
+
+  .mg-small-click .mg-hand{
+
+    font-size:12px;
+
+  }
+
+
+  .mg-arrow{
+
+    width:33px;
+    height:33px;
+
+    font-size:23px;
+
+  }
+
+}
+
+</style>
+
+
+<script>
+(() => {
+
+  /* =====================================================
+     BANNER DATA
+
+     Change the URL for each image.
+  ===================================================== */
+
+  const banners = [
+
+    {
+      image:
+        "/assets/giveaway/giveaway-1.jpg",
+
+      url:
+        "/giveaway"
+    },
+
+    {
+      image:
+        "/assets/giveaway/giveaway-2.jpg",
+
+      url:
+        "/"
+    },
+
+    {
+      image:
+        "/assets/giveaway/giveaway-3.jpg",
+
+      url:
+        "/"
+    }
+
+  ];
+
+
+  /* =====================================================
+     ELEMENTS
+  ===================================================== */
+
+  const main =
+    document.getElementById(
+      "mgMain"
+    );
+
+  const mainLink =
+    document.getElementById(
+      "mgMainLink"
+    );
+
+
+  const side1 =
+    document.getElementById(
+      "mgSide1"
+    );
+
+  const side1Link =
+    document.getElementById(
+      "mgSide1Link"
+    );
+
+
+  const side2 =
+    document.getElementById(
+      "mgSide2"
+    );
+
+  const side2Link =
+    document.getElementById(
+      "mgSide2Link"
+    );
+
+
+  const mainBox =
+    document.querySelector(
+      ".mg-main"
+    );
+
+
+  const prev =
+    document.querySelector(
+      ".mg-prev"
+    );
+
+
+  const next =
+    document.querySelector(
+      ".mg-next"
+    );
+
+
+  const layout =
+    document.querySelector(
+      ".mg-layout"
+    );
+
+
+  let current = 0;
+
+
+  /* =====================================================
+     SAFE INDEX
+  ===================================================== */
+
+  function getIndex(offset){
+
+    return (
+      current +
+      offset +
+      banners.length
+    ) % banners.length;
+
+  }
+
+
+  /* =====================================================
+     SET BANNER
+  ===================================================== */
+
+  function setBanner(
+    imageElement,
+    linkElement,
+    banner
+  ){
+
+    imageElement.src =
+      banner.image;
+
+    linkElement.href =
+      banner.url;
+
+  }
+
+
+  /* =====================================================
+     RENDER
+  ===================================================== */
+
+  function render(){
+
+    mainBox.classList.remove(
+      "mg-changing"
+    );
+
+    /*
+      Force animation restart
+    */
+
+    void mainBox.offsetWidth;
+
+
+    /*
+      MAIN
+    */
+
+    setBanner(
+      main,
+      mainLink,
+      banners[getIndex(0)]
+    );
+
+
+    /*
+      RIGHT TOP
+    */
+
+    setBanner(
+      side1,
+      side1Link,
+      banners[getIndex(1)]
+    );
+
+
+    /*
+      RIGHT BOTTOM
+    */
+
+    setBanner(
+      side2,
+      side2Link,
+      banners[getIndex(2)]
+    );
+
+
+    mainBox.classList.add(
+      "mg-changing"
+    );
+
+  }
+
+
+  /* =====================================================
+     NEXT
+  ===================================================== */
+
+  next.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+      current =
+        getIndex(1);
+
+      render();
+
+      resetAutoplay();
+
+    }
+  );
+
+
+  /* =====================================================
+     PREVIOUS
+  ===================================================== */
+
+  prev.addEventListener(
+    "click",
+    event => {
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+      current =
+        getIndex(-1);
+
+      render();
+
+      resetAutoplay();
+
+    }
+  );
+
+
+  /* =====================================================
+     TOUCH SWIPE
+  ===================================================== */
+
+  let startX = 0;
+
+
+  mainBox.addEventListener(
+    "touchstart",
+    event => {
+
+      startX =
+        event.touches[0].clientX;
+
+    },
+    {passive:true}
+  );
+
+
+  mainBox.addEventListener(
+    "touchend",
+    event => {
+
+      const endX =
+        event.changedTouches[0].clientX;
+
+      const distance =
+        endX - startX;
+
+
+      if(
+        Math.abs(distance) < 40
+      ){
+
+        return;
+
+      }
+
+
+      current =
+        getIndex(
+          distance < 0
+            ? 1
+            : -1
+        );
+
+
+      render();
+
+      resetAutoplay();
+
+    },
+    {passive:true}
+  );
+
+
+  /* =====================================================
+     AUTOPLAY
+  ===================================================== */
+
+  let autoplay =
+    setInterval(
+      () => {
+
+        current =
+          getIndex(1);
+
+        render();
+
+      },
+      5000
+    );
+
+
+  /* =====================================================
+     RESET AUTOPLAY
+  ===================================================== */
+
+  function resetAutoplay(){
+
+    clearInterval(
+      autoplay
+    );
+
+
+    autoplay =
+      setInterval(
+        () => {
+
+          current =
+            getIndex(1);
+
+          render();
+
+        },
+        5000
+      );
+
+  }
+
+
+  /* =====================================================
+     DESKTOP HOVER PAUSE
+  ===================================================== */
+
+  layout.addEventListener(
+    "mouseenter",
+    () => {
+
+      clearInterval(
+        autoplay
+      );
+
+    }
+  );
+
+
+  layout.addEventListener(
+    "mouseleave",
+    () => {
+
+      resetAutoplay();
+
+    }
+  );
+
+
+  /* =====================================================
+     INITIAL
+  ===================================================== */
+
+  render();
+
+})();
+</script>
   <section class="py-12 bg-gradient-to-r from-purple-600 to-blue-500 text-white" id="hero">
     <div class="container mx-auto px-4 text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-4" data-aos="fade-up">Premium Subscriptions in Bangladesh</h1>

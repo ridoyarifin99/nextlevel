@@ -1578,7 +1578,6 @@ html {
 }
 #hero {
   min-height: auto;
-  padding: 4rem 0;
 }
 ::-webkit-scrollbar {
   width: 10px;
