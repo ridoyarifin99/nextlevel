@@ -25,8 +25,7 @@ const products = [
                 features: [
                     "Single screen",
                     "Renewable",
-                    "Watch on PC/Laptop/Mobile/Tablet",
-                    "Can't be use on TV",
+                    "Watch on PC/Laptop/Mobile/Tablet/TV",
                     "Profile pin locked",
                     "3 device login limit",
                     "4K Ultra HD streaming",
