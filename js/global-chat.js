@@ -4,6 +4,7 @@
     if (document.getElementById("custom-chat-fab")) return;
 
     const style = document.createElement("style");
+
     style.innerHTML = `
         #chat-bubble-box {
             position: fixed;
@@ -11,9 +12,6 @@
             right: 26px;
             z-index: 2147483647;
             pointer-events: none;
-            opacity: 0;
-            transform: translateY(12px) scale(.96);
-            animation: chatBubbleIn .7s cubic-bezier(.22,1,.36,1) .2s forwards;
         }
 
         .chat-greeting-bubble {
@@ -21,7 +19,7 @@
             color: #333;
             padding: 9px 14px;
             border-radius: 16px 16px 4px 16px;
-            box-shadow: 0 5px 18px rgba(0,0,0,.14);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, .14);
             font-family: Arial, Helvetica, sans-serif;
             font-size: 13px;
             font-weight: 500;
@@ -30,106 +28,46 @@
         }
 
         .typing-text {
-            display: inline-block;
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 2px solid #25D366;
-            width: 0;
-            animation:
-                typing 2.2s steps(30,end) .6s forwards,
-                blink .75s step-end infinite;
+            display: inline;
         }
 
         #custom-chat-fab {
             position: fixed;
             bottom: 26px;
             right: 26px;
+            z-index: 2147483647;
+
             width: 48px !important;
             height: 48px !important;
             min-width: 48px !important;
             min-height: 48px !important;
             max-width: 48px !important;
             max-height: 48px !important;
+
             border-radius: 50% !important;
             background: #25D366 !important;
             color: #fff !important;
+
             display: flex !important;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 7px 20px rgba(37,211,102,.28);
+
+            box-shadow: 0 7px 20px rgba(37, 211, 102, .28);
             cursor: pointer;
-            z-index: 2147483647;
-            opacity: 0;
-            transform: translateY(15px) scale(.85);
-            animation: chatFabIn .7s cubic-bezier(.22,1,.36,1) forwards;
-            transition:
-                transform .25s cubic-bezier(.22,1,.36,1),
-                box-shadow .25s ease,
-                background .25s ease;
         }
 
         #custom-chat-fab:hover {
             background: #128C7E !important;
-            transform: translateY(-3px) scale(1.08);
-            box-shadow: 0 12px 26px rgba(37,211,102,.35);
         }
 
         #custom-chat-fab:active {
-            transform: scale(.92);
+            opacity: .9;
         }
 
         #custom-chat-fab svg {
             width: 25px;
             height: 25px;
             fill: #fff !important;
-        }
-
-        /* Smooth disappearing animation */
-        #custom-chat-fab.chat-hidden {
-            opacity: 0;
-            transform: translateY(18px) scale(.75);
-            pointer-events: none;
-        }
-
-        #chat-bubble-box.chat-hidden {
-            opacity: 0;
-            transform: translateY(12px) scale(.94);
-        }
-
-        @keyframes chatFabIn {
-            0% {
-                opacity: 0;
-                transform: translateY(15px) scale(.75);
-            }
-            70% {
-                opacity: 1;
-                transform: translateY(-2px) scale(1.04);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes chatBubbleIn {
-            0% {
-                opacity: 0;
-                transform: translateY(12px) scale(.94);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink {
-            0%, 100% { border-color: transparent; }
-            50% { border-color: #25D366; }
         }
 
         @media (max-width: 768px) {
@@ -141,6 +79,7 @@
             #custom-chat-fab {
                 bottom: 18px;
                 right: 18px;
+
                 width: 44px !important;
                 height: 44px !important;
                 min-width: 44px !important;
@@ -159,32 +98,20 @@
                 padding: 8px 12px;
             }
         }
-
-        @media (prefers-reduced-motion: reduce) {
-            #custom-chat-fab,
-            #chat-bubble-box {
-                animation: none;
-                opacity: 1;
-                transform: none;
-            }
-
-            .typing-text {
-                animation: none;
-                width: auto;
-                border: 0;
-            }
-        }
     `;
+
     document.head.appendChild(style);
 
     // Greeting bubble
     const bubbleBox = document.createElement("div");
     bubbleBox.id = "chat-bubble-box";
+
     bubbleBox.innerHTML = `
         <div class="chat-greeting-bubble">
             <span class="typing-text">Hi there, how can I help you?</span>
         </div>
     `;
+
     document.body.appendChild(bubbleBox);
 
     // WhatsApp button
@@ -227,17 +154,5 @@
             "noopener,noreferrer"
         );
     });
-
-    // Hide after 12 seconds
-    setTimeout(() => {
-        fabBtn.classList.add("chat-hidden");
-        bubbleBox.classList.add("chat-hidden");
-
-        // Completely remove after animation
-        setTimeout(() => {
-            fabBtn.remove();
-            bubbleBox.remove();
-        }, 600);
-    }, 12000);
 
 })();
