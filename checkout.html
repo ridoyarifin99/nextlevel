@@ -206,6 +206,13 @@ a{text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}
 @keyframes modalIn{from{opacity:0;transform:translateY(28px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes successPop{0%{opacity:0;transform:scale(0.4)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
 @keyframes checkDraw{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+
+.auth-divider{display:flex;align-items:center;gap:12px;width:100%;margin:16px 0 14px;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.auth-divider:before,.auth-divider:after{content:"";flex:1;min-width:0;height:1px;background:#e2e8f0}
+.google-auth-btn{width:100%;height:46px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;font-weight:600;color:#334155;cursor:pointer;transition:all .3s ease}
+.google-auth-btn:hover{background:#f8fafc;border-color:#cbd5e1;transform:translateY(-1px)}
+.google-auth-btn:disabled{opacity:.7;cursor:wait}
+
 @media (max-width:1100px){.checkout-layout{grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:22px}.order-summary-card{padding:20px}.payment-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.payment-method-bank{grid-column:1/-1}}
 @media (max-width:900px){.checkout-main{padding-top:30px;padding-bottom:45px}.checkout-layout{grid-template-columns:1fr;gap:30px}.checkout-sidebar{order:2}.checkout-main-column{order:1}.order-summary-card{position:relative;top:auto}}
 @media (max-width:640px){.header-inner{min-height:64px;gap:10px}.logo-image{width:38px;height:38px}.logo-text-item{font-size:.59rem!important}.header-action-btn{width:38px;height:38px;border-radius:10px;font-size:.85rem}.checkout-progress{padding:0 14px}.progress-step span{display:none}.progress-number{width:35px;height:35px;font-size:.75rem}.progress-line{width:42px;min-width:42px;height:3px;margin:0 9px}.checkout-main{padding:24px 14px 35px}.checkout-page-heading{margin-bottom:22px}.checkout-page-heading h1{font-size:1.55rem}.checkout-section{margin-bottom:25px}.checkout-section-heading{gap:10px;margin-bottom:13px}.checkout-section-icon{width:38px;height:38px;border-radius:11px;font-size:.8rem}.checkout-section-heading h2{font-size:1.05rem}.checkout-section-heading p{font-size:.72rem}.checkout-form-card,.payment-card,.order-summary-card{padding:18px}.modern-card{border-radius:20px}.checkout-form-grid{grid-template-columns:1fr;gap:0;margin-bottom:0}.form-group{margin-bottom:17px}.form-label{font-size:.78rem;margin-bottom:7px}.checkout-input{min-height:50px;padding:11px 12px 11px 39px;font-size:.86rem}.checkout-input-icon{left:13px}.checkout-textarea{font-size:.86rem;padding:13px 14px 13px 39px}.checkout-textarea-icon{left:13px}.payment-method{min-height:115px;padding:12px 8px}.payment-method-icon{width:40px;height:40px;margin-bottom:7px;border-radius:11px;font-size:1rem}.payment-method-content h3{font-size:.76rem}.payment-method-content p{font-size:.62rem}.payment-method-bank{min-height:78px;padding:11px;justify-content:flex-start}.payment-selected-check{top:7px;right:7px;width:18px;height:18px;font-size:.5rem}.place-order-button{min-height:50px;margin-top:18px;font-size:.84rem}.success-modal-container{padding:27px 18px;border-radius:23px}.success-actions{grid-template-columns:1fr;gap:8px}}
@@ -232,7 +239,8 @@ a{text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}
         <i class="fa-solid fa-basket-shopping"></i>
         <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
       </a>
-      <a href="dashboard.html" class="header-action-btn" aria-label="Profile" title="Profile"><i class="fas fa-user"></i></a>
+      <!-- FIX: Using inline style="display:none;" instead of class="hidden" to prevent Tailwind conflicts -->
+      <a href="dashboard.html" id="profileLink" class="header-action-btn" aria-label="Profile" title="Profile" style="display:none;"><i id="profileIcon" class="fas fa-user"></i></a>
     </div>
   </div>
 </header>
@@ -390,36 +398,42 @@ a{text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}
   <div class="success-modal-wrapper">
     <div class="success-modal-container" style="text-align:left;max-width:480px">
 
-      <!-- View 1: Password setup -->
+      <!-- View 1: Smart Auth -->
       <div id="setupView">
         <div class="success-icon" style="background:rgba(106,17,203,0.1);margin:0 auto 16px">
-          <div class="success-icon-inner" style="background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))"><i class="fas fa-user-plus" style="font-size:1.2rem"></i></div>
+          <div class="success-icon-inner" style="background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))"><i class="fas fa-lock" style="font-size:1.2rem"></i></div>
         </div>
-        <div class="success-status" style="margin:0 auto 12px;display:flex;justify-content:center"><i class="fas fa-shield-halved"></i> ACCOUNT REQUIRED</div>
-        <h2 style="text-align:center;font-size:1.4rem;margin-bottom:6px">Create Your Account</h2>
-        <p style="text-align:center;margin:0 auto 18px;font-size:.84rem;max-width:100%">Please set a password to create your account and complete your order. Your cart items are saved!</p>
+        <div class="success-status" style="margin:0 auto 12px;display:flex;justify-content:center"><i class="fas fa-shield-halved"></i> SECURE CHECKOUT</div>
+        <h2 style="text-align:center;font-size:1.4rem;margin-bottom:6px">Account Required</h2>
+        <p style="text-align:center;margin:0 auto 18px;font-size:.84rem;max-width:100%">Please enter a password to login to your existing account or create a new one. Your cart items are saved!</p>
         <div id="modalAlert" class="alert hidden" style="margin-bottom:14px;padding:10px 12px;border-radius:10px;font-size:12px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;display:none;align-items:center;gap:8px">
           <i class="fas fa-circle-exclamation"></i><span id="modalAlertMessage"></span>
         </div>
-        <form id="modalRegisterForm">
+        <form id="modalAuthForm">
           <div class="form-group" style="margin-bottom:14px">
-            <label class="form-label" for="modalPassword">Password <span class="required-mark">*</span></label>
-            <div class="checkout-input-wrap">
-              <i class="fas fa-lock checkout-input-icon"></i>
-              <input type="password" id="modalPassword" class="checkout-input" placeholder="At least 8 characters" minlength="8" required style="min-height:46px;padding-right:42px">
-              <button type="button" id="modalPassToggle" class="pt" aria-label="Show password"><i id="modalPassIcon" class="fas fa-eye"></i></button>
-            </div>
-            <div class="ps"><div class="sb"><span class="sbb" id="ms1"></span><span class="sbb" id="ms2"></span><span class="sbb" id="ms3"></span><span class="sbb" id="ms4"></span></div><div id="modalStrengthText" class="st">Use at least 8 characters.</div></div>
+            <label class="form-label">Email Address</label>
+            <div class="checkout-input-wrap"><i class="fas fa-envelope checkout-input-icon"></i><input type="email" id="authEmail" class="checkout-input" placeholder="john@example.com" required style="min-height:46px" disabled></div>
           </div>
           <div class="form-group" style="margin-bottom:16px">
-            <label class="form-label" for="modalConfirmPassword">Confirm Password <span class="required-mark">*</span></label>
-            <div class="checkout-input-wrap"><i class="fas fa-lock checkout-input-icon"></i><input type="password" id="modalConfirmPassword" class="checkout-input" placeholder="Confirm your password" minlength="8" required style="min-height:46px"></div>
+            <label class="form-label" for="authPassword">Password <span class="required-mark">*</span></label>
+            <div class="checkout-input-wrap">
+              <i class="fas fa-lock checkout-input-icon"></i>
+              <input type="password" id="authPassword" class="checkout-input" placeholder="Enter your password" minlength="8" required style="min-height:46px;padding-right:42px">
+              <button type="button" id="authPassToggle" class="pt" aria-label="Show password"><i id="authPassIcon" class="fas fa-eye"></i></button>
+            </div>
           </div>
-          <div class="success-actions" style="grid-template-columns:1fr 1fr;gap:10px">
-            <button type="submit" id="modalRegisterBtn" class="success-dashboard-button" style="min-height:46px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px"><span id="modalBtnContent"><i class="fas fa-user-check"></i> Create & Place Order</span></button>
+          <div class="success-actions" style="grid-template-columns:1fr;gap:10px">
+            <button type="submit" id="authSubmitBtn" class="success-dashboard-button" style="min-height:46px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px"><span id="authBtnContent"><i class="fas fa-lock"></i> Continue & Place Order</span></button>
             <button type="button" id="closeAccountSetupModal" class="success-home-button" style="min-height:46px"><i class="fas fa-xmark"></i> Cancel</button>
           </div>
+          <p style="text-align:center;margin-top:12px;font-size:.82rem;color:#64748b"><a href="#" id="forgotPasswordLink" style="color:var(--primary-color);font-weight:700;text-decoration:none">Forgot password?</a></p>
         </form>
+        
+        <div class="auth-divider">Or</div>
+        <button type="button" id="googleAuthBtn" class="google-auth-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" width="20" height="20"><path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 109.8 504 0 393.6 0 256S109.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.7h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg>
+            Continue with Google
+        </button>
       </div>
 
       <!-- View 2: Email verification -->
@@ -466,7 +480,10 @@ a{text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}
 let cart=[], selectedPaymentMethod="bkash", discountAmount=0, appliedPromoCode="", currentUser=null, isSubmitting=false;
 const PA={bkash:"01912261564",nagad:"01644490566",rocket:"016444905664",upay:"01590093965",bank_transfer:{bankName:"City Bank",accountNumber:"2302841525001",accountHolder:"Nur Mohammad",branch:"Naogaon"}};
 const $=id=>document.getElementById(id);
-const checkoutForm=$("checkoutForm"),orderSummary=$("orderSummary"),subtotalEl=$("subtotal"),taxEl=$("tax"),discountEl=$("discount"),totalEl=$("total"),promoToggle=$("promoToggle"),promoCodeSection=$("promoCodeSection"),promoCode=$("promoCode"),applyPromo=$("applyPromo"),placeOrderBtn=$("placeOrderBtn"),paymentDetails=$("paymentDetails"),paymentSenderNumber=$("paymentSenderNumber"),paymentReference=$("paymentReference"),successModal=$("successModal"),successMessage=$("successMessage"),cartCount=$("cartCount"),dashboardButton=$("dashboardButton"),homeButton=$("homeButton"),successBackdrop=$("successBackdrop"),accountSetupModal=$("accountSetupModal"),closeAccountSetupModalBtn=$("closeAccountSetupModal"),accountSetupBackdrop=$("accountSetupBackdrop"),modalRegisterForm=$("modalRegisterForm"),modalPassword=$("modalPassword"),modalConfirmPassword=$("modalConfirmPassword"),modalPassToggle=$("modalPassToggle"),modalPassIcon=$("modalPassIcon"),modalRegisterBtn=$("modalRegisterBtn"),modalBtnContent=$("modalBtnContent"),modalAlert=$("modalAlert"),modalAlertMessage=$("modalAlertMessage"),modalBars=[$("ms1"),$("ms2"),$("ms3"),$("ms4")],modalStrengthText=$("modalStrengthText"),setupView=$("setupView"),verifyView=$("verifyView"),verifyEmail=$("verifyEmail"),closeVerifyViewBtn=$("closeVerifyView");
+const checkoutForm=$("checkoutForm"),orderSummary=$("orderSummary"),subtotalEl=$("subtotal"),taxEl=$("tax"),discountEl=$("discount"),totalEl=$("total"),promoToggle=$("promoToggle"),promoCodeSection=$("promoCodeSection"),promoCode=$("promoCode"),applyPromo=$("applyPromo"),placeOrderBtn=$("placeOrderBtn"),paymentDetails=$("paymentDetails"),paymentSenderNumber=$("paymentSenderNumber"),paymentReference=$("paymentReference"),successModal=$("successModal"),successMessage=$("successMessage"),cartCount=$("cartCount"),dashboardButton=$("dashboardButton"),homeButton=$("homeButton"),successBackdrop=$("successBackdrop"),profileIcon=$("profileIcon"),profileLink=$("profileLink"),emailInput=$("email");
+
+// Modal elements
+const accountSetupModal=$("accountSetupModal"),closeAccountSetupModalBtn=$("closeAccountSetupModal"),accountSetupBackdrop=$("accountSetupBackdrop"),modalAuthForm=$("modalAuthForm"),authEmail=$("authEmail"),authPassword=$("authPassword"),authPassToggle=$("authPassToggle"),authPassIcon=$("authPassIcon"),authSubmitBtn=$("authSubmitBtn"),authBtnContent=$("authBtnContent"),modalAlert=$("modalAlert"),modalAlertMessage=$("modalAlertMessage"),setupView=$("setupView"),verifyView=$("verifyView"),verifyEmail=$("verifyEmail"),closeVerifyViewBtn=$("closeVerifyView"),forgotPasswordLink=$("forgotPasswordLink"),googleAuthBtn=$("googleAuthBtn");
 
 const esc=v=>v==null?"":String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
 const money=a=>Number(a||0).toFixed(2);
@@ -582,31 +599,28 @@ function triggerConfetti(){
   }
 }
 
-// Password strength
-function calcStrength(pw){let s=0;if(pw.length>=8)s++;if(/[a-z]/.test(pw))s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw)||/[^A-Za-z0-9]/.test(pw))s++;return s}
-function updateModalStrength(){
-  const pw=modalPassword.value,score=calcStrength(pw);
-  modalBars.forEach((bar,i)=>{
-    if(i<score){
-      bar.style.background=score<=1?"#ef4444":score===2?"#f59e0b":score===3?"#3b82f6":"#22c55e";
-      bar.style.transform="scaleY(1.15)";
-    }else{bar.style.background="#e2e8f0";bar.style.transform="scaleY(1)"}
-  });
-  modalStrengthText.textContent=!pw?"Use at least 8 characters.":score<=1?"Weak password.":score===2?"Fair password.":score===3?"Good password.":"Strong password.";
-}
-modalPassword.addEventListener("input",updateModalStrength);
-modalPassToggle.addEventListener("click",()=>{const isPw=modalPassword.type==="password";modalPassword.type=isPw?"text":"password";modalPassIcon.className=isPw?"fas fa-eye-slash":"fas fa-eye"});
+authPassToggle.addEventListener("click",()=>{const isPw=authPassword.type==="password";authPassword.type=isPw?"text":"password";authPassIcon.className=isPw?"fas fa-eye-slash":"fas fa-eye"});
 
-function showAccountSetupModal(){accountSetupModal.classList.remove("hidden");accountSetupModal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";setupView.classList.remove("hidden");verifyView.classList.add("hidden");modalRegisterBtn.disabled=false;modalBtnContent.innerHTML=`<i class="fas fa-user-check"></i> Create & Place Order`}
+function showAccountSetupModal(){
+  accountSetupModal.classList.remove("hidden");accountSetupModal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";
+  setupView.classList.remove("hidden");verifyView.classList.add("hidden");
+  authEmail.value=$("email").value;
+  authSubmitBtn.disabled=false;authBtnContent.innerHTML=`<i class="fas fa-lock"></i> Continue & Place Order`;
+  googleAuthBtn.disabled=false;
+  googleAuthBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" width="20" height="20"><path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 109.8 504 0 393.6 0 256S109.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.7h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg> Continue with Google`;
+  hideModalAlert();
+  setTimeout(()=>authPassword.focus(),100);
+}
 function hideAccountSetupModal(){accountSetupModal.classList.add("hidden");accountSetupModal.setAttribute("aria-hidden","true");document.body.style.overflow=""}
 closeAccountSetupModalBtn.addEventListener("click",hideAccountSetupModal);
 closeVerifyViewBtn.addEventListener("click",hideAccountSetupModal);
 accountSetupBackdrop.addEventListener("click",e=>{e.stopPropagation();hideAccountSetupModal()});
 
+forgotPasswordLink.addEventListener("click",e=>{e.preventDefault();window.location.href=`forgot-password.html?email=${encodeURIComponent($("email").value)}`});
+
 function showModalAlert(msg){modalAlert.style.display="flex";modalAlert.classList.remove("hidden");modalAlertMessage.textContent=msg}
 function hideModalAlert(){modalAlert.style.display="none";modalAlert.classList.add("hidden");modalAlertMessage.textContent=""}
 
-// Save & restore pending order (for after email verification)
 function savePendingOrder(email){
   const snapshot=JSON.parse(localStorage.getItem("streamHubCart")||"[]");
   localStorage.setItem("pendingCheckoutOrder",JSON.stringify({
@@ -620,13 +634,12 @@ function savePendingOrder(email){
 function restorePendingOrder(){
   try{
     const p=JSON.parse(localStorage.getItem("pendingCheckoutOrder"));if(!p)return false;
-    // Cart must match snapshot so we don't submit a stale order
     const currentCart=JSON.parse(localStorage.getItem("streamHubCart")||"[]");
     if(JSON.stringify(currentCart)!==JSON.stringify(p.cartSnapshot))return false;
-    // Expire after 24h
     if(Date.now()-(p.timestamp||0)>86400000)return false;
     $("firstName").value=p.firstName||"";$("lastName").value=p.lastName||"";
-    $("email").value=p.email||"";$("phone").value=p.phone||"";
+    $("email").value=p.email||currentUser?.email||"";
+    $("phone").value=p.phone||"";
     $("address").value=p.address||"";$("notes").value=p.notes||"";
     paymentSenderNumber.value=p.senderNumber||"";paymentReference.value=p.reference||"";
     if(p.paymentMethod)selectPaymentMethod(p.paymentMethod);
@@ -636,56 +649,97 @@ function restorePendingOrder(){
 }
 function clearPendingOrder(){localStorage.removeItem("pendingCheckoutOrder")}
 
-modalRegisterForm.addEventListener("submit",async e=>{
-  e.preventDefault();
-  hideModalAlert();
-  const pw=modalPassword.value,cpw=modalConfirmPassword.value;
-  if(pw.length<8){showModalAlert("Your password must contain at least 8 characters.");modalPassword.focus();return}
-  if(pw!==cpw){showModalAlert("Passwords do not match.");modalConfirmPassword.focus();return}
+googleAuthBtn.addEventListener("click", async () => {
+  if(!validateForm()) return; 
+  savePendingOrder($("email").value.trim());
+  googleAuthBtn.disabled = true;
+  googleAuthBtn.innerHTML = `<div class="button-spinner" style="border-color: rgba(106,17,203,.2); border-top-color: var(--primary-color); margin: 0;"></div> Connecting...`;
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + window.location.pathname }
+    });
+    if(error) throw error;
+  } catch(err) {
+    console.error("Google Auth error:", err);
+    showModalAlert("Unable to connect to Google. Please try again.");
+    googleAuthBtn.disabled = false;
+    googleAuthBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" width="20" height="20"><path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 109.8 504 0 393.6 0 256S109.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.7h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg> Continue with Google`;
+  }
+});
+
+// Smart Auth Logic: Tries to Login. If account doesn't exist, creates it.
+modalAuthForm.addEventListener("submit",async e=>{
+  e.preventDefault();hideModalAlert();
   const email=$("email").value.trim().toLowerCase();
+  const pw=authPassword.value;
+  if(pw.length<8){showModalAlert("Your password must contain at least 8 characters.");authPassword.focus();return}
   const fullName=getCustomerName();
   const phone=$("phone").value.trim();
-  const originalBtnText=modalBtnContent.innerHTML;
-  modalRegisterBtn.disabled=true;
-  // FIXED: spinner uses inline-block (via .button-spinner CSS) and parent button is inline-flex
-  modalBtnContent.innerHTML=`<span class="button-spinner"></span> Creating Account...`;
-  try{
-    const {data,error}=await supabaseClient.auth.signUp({
-      email,password:pw,
-      options:{
-        data:{full_name:fullName,phone},
-        emailRedirectTo:window.location.origin+window.location.pathname
-      }
+  const originalBtnText=authBtnContent.innerHTML;
+  authSubmitBtn.disabled=true;
+  authBtnContent.innerHTML=`<span class="button-spinner"></span> Authenticating...`;
+  
+  try {
+    // 1. Try to Log In First
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({ email, password: pw });
+    
+    if (!signInError) {
+      // Login successful
+      currentUser = signInData.user;
+      hideAccountSetupModal();
+      executeOrderSubmission();
+      return;
+    }
+    
+    // If error is NOT "Invalid login credentials", throw it directly (e.g. Email not confirmed)
+    if (!signInError.message.includes("Invalid login credentials")) {
+      throw signInError;
+    }
+    
+    // 2. If login failed because account doesn't exist, try to Sign Up
+    const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+      email, password: pw,
+      options: { data: { full_name: fullName, phone }, emailRedirectTo: window.location.origin + window.location.pathname }
     });
-    if(error)throw error;
-    if(data?.session){
-      // Email confirmation disabled — proceed immediately
-      currentUser=data.user;
+    
+    if (signUpError) {
+      if (signUpError.message.includes("User already registered")) {
+        // The login failed because of wrong password, not because user doesn't exist.
+        throw new Error("Incorrect password. You already have an account with this email. Please enter your correct password.");
+      }
+      throw signUpError;
+    }
+    
+    // Sign up successful!
+    if (signUpData?.session) {
+      // Auto-confirmed, logged in
+      currentUser = signUpData.user;
       hideAccountSetupModal();
       executeOrderSubmission();
     } else {
-      // Email verification required — save order & show verify view
+      // Needs email verification
       savePendingOrder(email);
-      verifyEmail.textContent=email;
+      verifyEmail.textContent = email;
       setupView.classList.add("hidden");
       verifyView.classList.remove("hidden");
-      modalRegisterBtn.disabled=false;
-      modalBtnContent.innerHTML=originalBtnText;
+      authSubmitBtn.disabled = false;
+      authBtnContent.innerHTML = originalBtnText;
     }
-  }catch(err){
-    console.error("Modal registration error:",err);
-    showModalAlert(err.message||"Unable to create your account. Please try again.");
-    modalRegisterBtn.disabled=false;
-    modalBtnContent.innerHTML=originalBtnText;
+  } catch(err) {
+    console.error("Auth error:",err);
+    showModalAlert(err.message||"Unable to authenticate. Please try again.");
+    authSubmitBtn.disabled=false;
+    authBtnContent.innerHTML=originalBtnText;
   }
 });
 
 async function placeOrder(){
   if(isSubmitting)return;
   if(!validateForm())return;
-  const {data:authData,error:authError}=await supabaseClient.auth.getUser();
-  if(authError||!authData?.user){showAccountSetupModal();return}
-  currentUser=authData.user;
+  const {data:authData,error:authError}=await supabaseClient.auth.getSession();
+  if(authError||!authData?.session?.user){showAccountSetupModal();return}
+  currentUser=authData.session.user;
   executeOrderSubmission();
 }
 
@@ -717,8 +771,7 @@ async function executeOrderSubmission(){
     const {error:itemsError}=await supabaseClient.from("order_items").insert(orderItems);
     if(itemsError)throw itemsError;
     localStorage.removeItem("streamHubCart");
-    cart=[];updateCartCount();
-    clearPendingOrder();
+    cart=[];updateCartCount();clearPendingOrder();
     successMessage.textContent=`Order ${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
     successModal.classList.remove("hidden");
     successModal.setAttribute("aria-hidden","false");
@@ -753,31 +806,43 @@ async function init(){
     cart=cart.map(item=>item.selectedPlan?item:{...item,selectedPlan:{price:item.price,duration:item.duration,currency:"BDT"}});
     if(!cart.length){window.location.href="./index.html";return}
     renderOrderSummary();updateCartCount();renderPaymentDetails();
-    const {data,error}=await supabaseClient.auth.getUser();
-    if(!error&&data?.user){
-      currentUser=data.user;
-      if($("email"))$("email").value=currentUser.email||"";
+    
+    const { data, error } = await supabaseClient.auth.getSession();
+    if(!error && data?.session?.user){
+      currentUser = data.session.user;
+      if(emailInput) emailInput.value = currentUser.email || "";
+      if(profileIcon) profileIcon.className = "fas fa-user-check";
+      if(profileLink) profileLink.style.display = "flex"; // Fix: Use inline style to show
+    } else {
+      if(profileLink) profileLink.style.display = "none"; // Fix: Use inline style to hide
     }
   }catch(e){console.error("Checkout init error:",e)}
 }
 
-// Listen for sign-in events — handles email verification redirect automatically
 supabaseClient.auth.onAuthStateChange((event,session)=>{
-  if(event==="SIGNED_IN"&&session?.user){
-    currentUser=session.user;
-    // Only auto-complete if we have a saved pending order from this device
-    const pending=localStorage.getItem("pendingCheckoutOrder");
-    if(pending){
-      const ok=restorePendingOrder();
-      if(ok){
-        // Close any open modal
-        if(!accountSetupModal.classList.contains("hidden"))hideAccountSetupModal();
-        clearPendingOrder();
-        // Auto-submit order now that user is verified
-        setTimeout(()=>executeOrderSubmission(),300);
+  if(event==="SIGNED_IN"||event==="INITIAL_SESSION"){
+    if(session?.user){
+      currentUser=session.user;
+      if(profileIcon)profileIcon.className="fas fa-user-check";
+      if(profileLink)profileLink.style.display = "flex"; // Fix: Show profile on login
+      if(emailInput) emailInput.value = currentUser.email || "";
+      
+      const pending=localStorage.getItem("pendingCheckoutOrder");
+      if(pending){
+        const ok=restorePendingOrder();
+        if(ok){
+          if(!accountSetupModal.classList.contains("hidden"))hideAccountSetupModal();
+          clearPendingOrder();
+          setTimeout(()=>executeOrderSubmission(),300);
+        }
       }
     }
-  }else if(event==="SIGNED_OUT"){currentUser=null}
+  }else if(event==="SIGNED_OUT"){
+    currentUser=null;
+    if(profileIcon)profileIcon.className="fas fa-user";
+    if(profileLink)profileLink.style.display = "none"; // Fix: Hide profile on logout
+    if(emailInput) emailInput.value = "";
+  }
 });
 
 init();

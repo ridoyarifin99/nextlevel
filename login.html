@@ -79,7 +79,13 @@ body{margin:0;min-height:100vh;min-height:100dvh;font-family:Inter,system-ui,-ap
 
 .divider{display:flex;align-items:center;gap:12px;width:100%;margin:22px 0 18px;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .divider:before,.divider:after{content:"";flex:1;min-width:0;height:1px;background:#e2e8f0}
-.switch-auth{text-align:center;color:#64748b;font-size:13px;line-height:1.6}
+
+.google-btn{width:100%;height:52px;border:1px solid #e2e8f0;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;gap:12px;font-size:14px;font-weight:600;color:#334155;cursor:pointer;transition:var(--tr);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.google-btn:hover{background:#f8fafc;border-color:#cbd5e1;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.06)}
+.google-btn:active{transform:translateY(0) scale(.99)}
+.google-btn svg{width:20px;height:20px}
+
+.switch-auth{text-align:center;color:#64748b;font-size:13px;line-height:1.6;margin-top:22px}
 .switch-auth a{color:var(--pc);font-weight:800;text-decoration:none;margin-left:4px}.switch-auth a:hover{color:var(--sc)}
 .sec-note{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:16px;color:#94a3b8;font-size:11px;text-align:center;line-height:1.5}
 .sec-note i{color:#22c55e;flex-shrink:0}
@@ -138,7 +144,7 @@ body{margin:0;min-height:100vh;min-height:100dvh;font-family:Inter,system-ui,-ap
 .ii{left:13px}
 .login-options{gap:8px}
 .remember,.forgot-link{font-size:11px}
-.sub-btn{height:50px}
+.sub-btn,.google-btn{height:50px}
 .switch-auth{font-size:12px}
 .sec-note{font-size:10px}
 }
@@ -171,7 +177,6 @@ body{margin:0;min-height:100vh;min-height:100dvh;font-family:Inter,system-ui,-ap
 }
 </style>
 </head>
-
 <body>
 
 <div class="bg-orb orb-1"></div>
@@ -260,7 +265,14 @@ Sign In
 
 </form>
 
-<div class="divider">New here?</div>
+<div class="divider">Or continue with</div>
+
+<button id="googleBtn" type="button" class="google-btn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+        <path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 109.8 504 0 393.6 0 256S109.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.7h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
+    </svg>
+    Continue with Google
+</button>
 
 <div class="switch-auth">
 Don't have an account?
@@ -296,6 +308,7 @@ btnContent=$("btnContent"),
 alertBox=$("alert"),
 alertIcon=$("alertIcon"),
 alertMsg=$("alertMessage"),
+googleBtn=$("googleBtn"),
 REMEMBER_KEY="nextlevel_remember_me";
 
 function hideLoader(){
@@ -369,6 +382,37 @@ function safeRedirect(destination){
         ?destination
         :"/dashboard.html";
 }
+
+// Google OAuth Handler
+googleBtn.addEventListener("click", async () => {
+    if(!window.supabaseClient){
+        showAlert("Authentication service is unavailable. Please try again later.");
+        return;
+    }
+    
+    googleBtn.disabled = true;
+    googleBtn.innerHTML = `<div class="btn-spin" style="border-color: rgba(106,17,203,.2); border-top-color: var(--pc);"></div> Connecting...`;
+    
+    const destination = window.location.origin + safeRedirect(getRedirectDestination());
+    
+    try {
+        const { data, error } = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: destination
+            }
+        });
+        
+        if(error) throw error;
+        // Supabase will automatically redirect the browser to Google, 
+        // so no further code is needed here.
+    } catch(error) {
+        console.error("Google OAuth error:", error);
+        showAlert("Unable to connect to Google. Please try again.");
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 109.8 504 0 393.6 0 256S109.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.7h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg> Continue with Google`;
+    }
+});
 
 form.addEventListener("submit",async e=>{
     e.preventDefault();
