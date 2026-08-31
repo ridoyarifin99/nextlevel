@@ -373,6 +373,20 @@
       const esc = v => String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
       const escA = v => esc(v);
 
+      // ---------- Helpers ----------
+      const pSlug = n => String(n || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+      // Safely get products array whether it's defined as a global const or on window
+      const getProducts = () => {
+        try {
+          if (typeof products !== 'undefined' && Array.isArray(products)) return products;
+        } catch (e) {}
+        try {
+          if (typeof window.products !== 'undefined' && Array.isArray(window.products)) return window.products;
+        } catch (e) {}
+        return [];
+      };
+
       // ---------- Shared shell elements ----------
       const sInp = $('searchInput'), mInp = $('mobileSearchInput'), sDrop = $('searchDropdown'),
             sResC = $('searchResults'), noSRes = $('noSearchResults'),
@@ -394,9 +408,6 @@
             fab = $('fab'), whatsappFab = $('whatsappFab');
 
       let cart = [], currentProduct = null, selectedPlan = 2, currentSlide = 0, searchTimer = null;
-
-      // ---------- Helpers ----------
-      const pSlug = n => String(n || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
       function moveDrop(w) { if (w && sDrop.parentElement !== w) w.appendChild(sDrop); }
 
@@ -449,11 +460,9 @@
         nLinks.forEach(l => l.addEventListener('click', function (e) {
           const href = this.getAttribute('href');
           if (!href || !href.startsWith('/')) return;
-          // Navigate to home with hash so index can scroll to the section
           e.preventDefault();
           window.location.href = '/' + (href.startsWith('/') ? href : '/' + href);
         }));
-        window.addEventListener('popstate', () => {});
       }
 
       // ---------- Search ----------
@@ -466,7 +475,7 @@
         clearTimeout(searchTimer);
         if (!term) { sDrop.classList.remove('active'); return; }
         searchTimer = setTimeout(() => {
-          const all = window.products || [];
+          const all = getProducts();
           const res = all.filter(p => (p.name || '').toLowerCase().includes(term) || (p.description || '').toLowerCase().includes(term) || (Array.isArray(p.categories) ? p.categories.join(' ').toLowerCase().includes(term) : false));
           dispRes(res, term);
           sDrop.classList.add('active');
@@ -507,7 +516,6 @@
         sDrop.classList.remove('active');
         clearS();
         const slug = pSlug(name);
-        // Prefer slug-based URL (matches index.html links); fallback to ?name=
         if (location.pathname.startsWith('/product/')) {
           history.pushState({}, '', `/product/${slug}`);
           loadProduct(name);
@@ -566,8 +574,9 @@
       }
 
       function findProduct(id) {
-        const all = window.products || [];
-        return all.find(p => p.name === id) || all.find(p => pSlug(p.name) === id) || null;
+        const all = getProducts();
+        if (!all.length) return null;
+        return all.find(p => p.name === id) || all.find(p => pSlug(p.name) === id) || all.find(p => p.slug === id) || null;
       }
 
       function loadProduct(id) {
@@ -615,10 +624,14 @@
       }
 
       function renderProductDetails() {
+        if (!currentProduct) return;
         const imgs = (currentProduct.images && currentProduct.images.length) ? currentProduct.images : [currentProduct.image];
         const rating = currentProduct.rating || getStableRating(currentProduct.name);
         const reviews = currentProduct.reviews || 0;
-        productDetails.innerHTML = `<div class="animate-slide-in-left" data-aos="fade-right"><div class="gallery-container"><div class="gallery-slider" id="gallerySlider">${imgs.map((i,x)=>`<div class="gallery-slide"><img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}"><div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer" onclick="toggleFavorite()"><i id="favoriteIcon" class="far fa-heart text-xl"></i></div></div>`).join('')}</div><div class="gallery-nav gallery-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div><div class="gallery-nav gallery-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div></div><div class="gallery-dots">${imgs.map((_,x)=>`<div class="gallery-dot ${x===0?'active':''}" onclick="goToSlide(${x})"></div>`).join('')}</div><div class="flex mt-4 space-x-2 overflow-x-auto pb-2">${imgs.map((i,x)=>`<img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}" class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${x===0?'active':''}" onclick="goToSlide(${x})">`).join('')}</div></div><div class="animate-slide-in-right" data-aos="fade-left"><div class="flex items-center mb-4"><img src="${escA(currentProduct.image)}" alt="${escA(currentProduct.name)}" class="w-16 h-16 rounded-lg mr-4 object-contain"><div><h1 class="text-3xl font-bold">${esc(currentProduct.name)}</h1><div class="flex items-center mt-1"><div class="flex text-yellow-400">${generateStars(rating)}</div><span class="ml-2 text-gray-600">${rating} (${reviews.toLocaleString()} reviews)</span></div></div></div><p class="text-gray-600 mb-6">${esc(currentProduct.description)}</p><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3><div class="grid grid-cols-2 gap-3">${currentProduct.pricing.map((p,i)=>`<div class="plan-card p-4 rounded-lg border border-gray-200 text-center ${p.popular?'relative':''} ${i===selectedPlan?'selected':''}" onclick="selectPlan(${i})">${p.popular?'<span class="popular-badge">Most Popular</span>':''}<div class="font-medium mt-3">${esc(p.duration)}</div><div class="text-2xl font-bold mt-1">${esc(p.currency||'৳')} ${p.price}</div>${p.discount?`<div class="text-xs text-green-500 mt-1">${esc(p.discount)}</div>`:''}</div>`).join('')}</div></div><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Key Features:</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${currentProduct.features.map((f,i)=>`<div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" style="animation-delay:${i*.1}s" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div></div><div class="flex space-x-4"><button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary"><i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart</button><button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp"><i class="fab fa-whatsapp mr-2"></i>Buy Now</button></div><div class="mt-6 pt-6 border-t border-gray-200"><div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2"><div class="flex items-center"><i class="fas fa-shield-alt mr-2"></i><span>30-Day Money Back Guarantee</span></div><div class="flex items-center"><i class="fas fa-lock mr-2"></i><span>Secure Payment</span></div><div class="flex items-center"><i class="fas fa-headset mr-2"></i><span>24/7 Support</span></div></div></div></div>`;
+        const pricing = currentProduct.pricing || [{ duration: currentProduct.duration || 'month', price: currentProduct.price || 0, currency: '৳' }];
+        const features = currentProduct.features || [];
+        
+        productDetails.innerHTML = `<div class="animate-slide-in-left" data-aos="fade-right"><div class="gallery-container"><div class="gallery-slider" id="gallerySlider">${imgs.map((i,x)=>`<div class="gallery-slide"><img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}"><div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer" onclick="toggleFavorite()"><i id="favoriteIcon" class="far fa-heart text-xl"></i></div></div>`).join('')}</div><div class="gallery-nav gallery-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div><div class="gallery-nav gallery-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div></div><div class="gallery-dots">${imgs.map((_,x)=>`<div class="gallery-dot ${x===0?'active':''}" onclick="goToSlide(${x})"></div>`).join('')}</div><div class="flex mt-4 space-x-2 overflow-x-auto pb-2">${imgs.map((i,x)=>`<img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}" class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${x===0?'active':''}" onclick="goToSlide(${x})">`).join('')}</div></div><div class="animate-slide-in-right" data-aos="fade-left"><div class="flex items-center mb-4"><img src="${escA(currentProduct.image)}" alt="${escA(currentProduct.name)}" class="w-16 h-16 rounded-lg mr-4 object-contain"><div><h1 class="text-3xl font-bold">${esc(currentProduct.name)}</h1><div class="flex items-center mt-1"><div class="flex text-yellow-400">${generateStars(rating)}</div><span class="ml-2 text-gray-600">${rating} (${reviews.toLocaleString()} reviews)</span></div></div></div><p class="text-gray-600 mb-6">${esc(currentProduct.description)}</p><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3><div class="grid grid-cols-2 gap-3">${pricing.map((p,i)=>`<div class="plan-card p-4 rounded-lg border border-gray-200 text-center ${p.popular?'relative':''} ${i===selectedPlan?'selected':''}" onclick="selectPlan(${i})">${p.popular?'<span class="popular-badge">Most Popular</span>':''}<div class="font-medium mt-3">${esc(p.duration)}</div><div class="text-2xl font-bold mt-1">${esc(p.currency||'৳')} ${p.price}</div>${p.discount?`<div class="text-xs text-green-500 mt-1">${esc(p.discount)}</div>`:''}</div>`).join('')}</div></div><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Key Features:</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${features.map((f,i)=>`<div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" style="animation-delay:${i*.1}s" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div></div><div class="flex space-x-4"><button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary"><i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart</button><button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp"><i class="fab fa-whatsapp mr-2"></i>Buy Now</button></div><div class="mt-6 pt-6 border-t border-gray-200"><div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2"><div class="flex items-center"><i class="fas fa-shield-alt mr-2"></i><span>30-Day Money Back Guarantee</span></div><div class="flex items-center"><i class="fas fa-lock mr-2"></i><span>Secure Payment</span></div><div class="flex items-center"><i class="fas fa-headset mr-2"></i><span>24/7 Support</span></div></div></div></div>`;
         setTimeout(() => {
           document.querySelectorAll('.feature-item').forEach((item, i) => setTimeout(() => item.classList.add('show'), i * 100));
         }, 500);
@@ -634,7 +647,7 @@
       }
 
       function loadRelatedProducts() {
-        const all = window.products || [];
+        const all = getProducts();
         const cats = currentProduct.categories || [];
         let rel = all.filter(p => p.name !== currentProduct.name && p.categories && p.categories.some(c => cats.includes(c))).slice(0, 5);
         if (rel.length < 5) {
@@ -643,7 +656,7 @@
         }
         relatedProducts.innerHTML = '';
         rel.forEach((p, i) => {
-          const slug = pSlug(p.name);
+          const slug = p.slug || pSlug(p.name);
           const price = (p.pricing && p.pricing[2]) ? p.pricing[2].price : (p.price || 0);
           const duration = (p.pricing && p.pricing[2]) ? p.pricing[2].duration : (p.duration || 'month');
           const rating = p.rating || getStableRating(p.name);
@@ -678,7 +691,8 @@
           if (t === 'description') {
             tabContent.innerHTML = `<div class="prose max-w-none"><p class="text-gray-700 mb-4">${esc(currentProduct.description)}</p><h3 class="text-xl font-semibold mb-3">Why Choose ${esc(currentProduct.name)}?</h3><p class="text-gray-700 mb-4">${esc(currentProduct.name)} offers an unparalleled experience with a vast library of content. From premium features to exclusive benefits, there's something for everyone.</p><p class="text-gray-700 mb-4">With our subscription, you get unlimited access to all features without any ads or interruptions. Experience the best quality service with our premium offerings.</p><h3 class="text-xl font-semibold mb-3">What's Included?</h3><ul class="list-disc list-inside text-gray-700 space-y-2"><li>Full access to all features</li><li>Premium quality service</li><li>Download for offline use (where applicable)</li><li>Multiple device access</li><li>Personalized experience</li><li>24/7 customer support</li></ul></div>`;
           } else if (t === 'features') {
-            tabContent.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${currentProduct.features.map((f, i) => `<div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div>`;
+            const features = currentProduct.features || [];
+            tabContent.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${features.map((f, i) => `<div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div>`;
           } else if (t === 'reviews') {
             let r = '';
             if (currentProduct.customerReviews.length) {
@@ -734,7 +748,7 @@
       function goToSlide(i) { currentSlide = i; updateGallery(); }
 
       function addToCart() {
-        const plan = currentProduct.pricing[selectedPlan];
+        const plan = currentProduct.pricing ? currentProduct.pricing[selectedPlan] : { duration: currentProduct.duration, price: currentProduct.price, currency: '৳' };
         const item = { ...currentProduct, selectedPlan: plan, quantity: 1 };
         const e = cart.findIndex(x => x.name === currentProduct.name);
         if (e !== -1) cart[e] = item; else cart.push(item);
@@ -742,7 +756,7 @@
         successModal.classList.remove('hidden');
       }
       function buyNow() {
-        const plan = currentProduct.pricing[selectedPlan];
+        const plan = currentProduct.pricing ? currentProduct.pricing[selectedPlan] : { duration: currentProduct.duration, price: currentProduct.price, currency: '৳' };
         const item = { ...currentProduct, selectedPlan: plan, quantity: 1 };
         const e = cart.findIndex(x => x.name === currentProduct.name);
         if (e !== -1) cart[e] = item; else cart.push(item);
@@ -751,7 +765,7 @@
       }
       function sendToWhatsApp() {
         if (!currentProduct) return;
-        const p = currentProduct.pricing[selectedPlan];
+        const p = currentProduct.pricing ? currentProduct.pricing[selectedPlan] : { duration: currentProduct.duration, price: currentProduct.price, currency: '৳' };
         const m = `Hello! I'm interested in purchasing the following subscription:\n\n*Product:* ${currentProduct.name}\n*Plan:* ${p.duration}\n*Price:* ${p.currency || '৳'} ${p.price}\n${p.discount ? `*Discount:* ${p.discount}\n` : ''}\nPlease provide me with the payment details and activation instructions.\n\nThank you!`;
         window.open(`https://wa.me/8801644490566?text=${encodeURIComponent(m)}`, '_blank');
       }
@@ -822,7 +836,8 @@
 
         // Wait for /js/details.js to populate window.products
         const tryLoad = () => {
-          if (window.products && window.products.length) {
+          const prods = getProducts();
+          if (prods.length) {
             const id = getProductIdFromUrl();
             if (id) {
               loadProduct(id);
