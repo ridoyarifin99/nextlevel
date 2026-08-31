@@ -375,7 +375,7 @@
       const SITE_URL="https://nextlevelsubs.com",PBP="/product",SAP="/api/product";
       const pSlug=n=>String(n||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
       const enrich=p=>({...p,slug:p.slug||pSlug(p.name),url:`${PBP}/${p.slug}`,canonicalUrl:`${SITE_URL}${PBP}/${p.slug}`,seoApiUrl:`${SAP}?slug=${encodeURIComponent(p.slug)}`});
-      const rawSubscripton=[{name:'Netflix Premium',price:379,duration:'month',image:'/assets/cards/netflix.webp',icon:'fa-solid fa-film',color:'#E50914',description:'Watch unlimited movies and TV shows',categories:['best-selling','popular-streaming']},{name:'Amazon Prime Video',price:129,duration:'month',image:'/assets/cards/prime_video.svg',icon:'fab fa-amazon',color:'#FF9900',description:'Thousands of movies and TV shows',categories:['best-selling','popular-streaming']},
+      const rawSubscriptions=[{name:'Netflix Premium',price:379,duration:'month',image:'/assets/cards/netflix.webp',icon:'fa-solid fa-film',color:'#E50914',description:'Watch unlimited movies and TV shows',categories:['best-selling','popular-streaming']},{name:'Amazon Prime Video',price:129,duration:'month',image:'/assets/cards/prime_video.svg',icon:'fab fa-amazon',color:'#FF9900',description:'Thousands of movies and TV shows',categories:['best-selling','popular-streaming']},
             { name: "Netflix Premium", price: 379, duration: "month", image: "/assets/cards/netflix.webp", icon: "fa-solid fa-film", color: "#E50914", description: "Watch unlimited movies and TV shows", categories: ["best-selling", "popular-streaming"] },
         { name: "Amazon Prime Video", price: 129, duration: "month", image: "/assets/cards/prime_video.svg", icon: "fab fa-amazon", color: "#FF9900", description: "Thousands of movies and TV shows", categories: ["best-selling", "popular-streaming"] },
         { name: "HBO Max", price: 999, duration: "year", image: "/assets/cards/hbo_max.svg", icon: "fa-solid fa-play", color: "#113ccf", description: "HBO, Warner Bros., DC, Max Originals", categories: ["best-selling", "popular-streaming"] },
@@ -451,7 +451,7 @@
         { name: "Bang Bros", price: 699, duration: "year", image: "/assets/cards/bangbros.webp", icon: "fas fa-crown", color: "#FFD700", description: "High-quality, exclusive adult entertainment", categories: ["adult"] },
         { name: "Babes.com", price: 149, duration: "month", image: "/assets/cards/babes.webp", icon: "fas fa-crown", color: "#FFD700", description: "High-quality, exclusive adult video content", categories: ["adult"] }
       ];
-      const subs=raw.map(enrich);
+      const subs=rawSubscriptions.map(enrich);
 window.NextLevelSubs={subscriptions:subs,productSlug:pSlug,enrichProduct:enrich,getProductBySlug:s=>subs.find(p=>p.slug===s)||null};
       if(typeof AOS!=='undefined')AOS.init({duration:800,once:true,offset:100});
       const catConf=[{c:$('bestSellingContainer'),k:'best-selling'},{c:$('popularStreamingContainer'),k:'popular-streaming'},{c:$('musicStreamingContainer'),k:'music-streaming'},{c:$('cloudStorageContainer'),k:'cloud-storage'},{c:$('vpnContainer'),k:'vpn'},{c:$('aiDesignContainer'),k:'aiDesign'},{c:$('comboContainer'),k:'combo'},{c:$('educationContainer'),k:'education'},{c:$('adultContainer'),k:'adult'}];
