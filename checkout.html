@@ -1,1580 +1,786 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Create Account | Next Level Subs</title>
-    <meta name="description" content="Create your Next Level Subs account.">
-    <meta name="theme-color" content="#6a11cb">
-
-    <link rel="stylesheet" href="./src/output.css">
-    <link rel="stylesheet" href="./src/all.min.css">
-
-    <style>
-        :root{
-            --pc:#6a11cb;
-            --pd:#4a0699;
-            --pl:#9d4edd;
-            --sc:#2575fc;
-            --td:#172033;
-            --tl:#7f8c8d;
-            --tr:all .3s cubic-bezier(.4,0,.2,1);
-        }
-
-        *{box-sizing:border-box}
-
-        html{scroll-behavior:smooth}
-
-        body{
-            margin:0;
-            min-height:100vh;
-            font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-            color:var(--td);
-            background:
-                radial-gradient(circle at 10% 20%,rgba(106,17,203,.16),transparent 30%),
-                radial-gradient(circle at 90% 10%,rgba(37,117,252,.16),transparent 30%),
-                linear-gradient(135deg,#f8f9ff 0%,#fff 45%,#f4f7ff 100%);
-            overflow-x:hidden;
-        }
-
-        .bg-orb{
-            position:fixed;
-            width:420px;
-            height:420px;
-            border-radius:50%;
-            filter:blur(70px);
-            opacity:.25;
-            pointer-events:none;
-            z-index:0;
-            animation:orb 12s ease-in-out infinite;
-        }
-
-        .orb-1{
-            top:-160px;
-            left:-140px;
-            background:linear-gradient(135deg,var(--pc),var(--pl));
-        }
-
-        .orb-2{
-            right:-160px;
-            bottom:-160px;
-            background:linear-gradient(135deg,var(--sc),#6aa9ff);
-            animation-delay:-5s;
-        }
-
-        @keyframes orb{
-            0%,100%{transform:translate(0,0) scale(1)}
-            50%{transform:translate(35px,25px) scale(1.08)}
-        }
-
-        /* HEADER */
-        .auth-header {
-            position: sticky; top: 0; z-index: 50;
-            background: rgba(255, 255, 255, 0.75) !important;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-        }
-        .header-inner { max-width: 1440px; margin: 0 auto; padding: 12px 20px; min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 20px; position: relative; }
-        .logo-container { display: flex; align-items: center; gap: 12px; min-width: 0; flex-shrink: 0; text-decoration: none; }
-        .logo-image { width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 8px 18px rgba(106, 17, 203, .15)); }
-        .logo-text-container { display: flex; flex-direction: column; gap: 2px; line-height: 1; }
-        .logo-text-item { font-weight: 700; font-size: 0.68rem !important; line-height: 1.05; background: linear-gradient(90deg, var(--pc), var(--sc)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .auth-header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .header-action-btn { position: relative; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #f1f5f9; color: #334155; transition: var(--tr); border: none; font-size: 0.95rem; text-decoration: none; }
-        .header-action-btn:hover { background: rgba(106, 17, 203, 0.1); color: var(--pc); transform: translateY(-2px); }
-
-        .auth-page{
-            position:relative;
-            z-index:1;
-            min-height:calc(100vh - 72px);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:30px 16px;
-        }
-
-        .auth-wrap{
-            width:100%;
-            max-width:1050px;
-            display:grid;
-            grid-template-columns:minmax(0,.9fr) minmax(380px,.8fr);
-            gap:30px;
-            align-items:center;
-        }
-
-        .brand-panel{
-            padding:30px;
-            animation:fsu .7s ease forwards;
-        }
-
-        .brand-title{
-            margin-top:25px;
-            max-width:600px;
-            font-size:clamp(2.4rem,5vw,4.3rem);
-            line-height:1.05;
-            font-weight:850;
-            letter-spacing:-2px;
-            color:#172033;
-        }
-
-        .brand-title span{
-            background:linear-gradient(90deg,var(--pc),var(--sc));
-            -webkit-background-clip:text;
-            background-clip:text;
-            -webkit-text-fill-color:transparent;
-        }
-
-        .brand-desc{
-            max-width:540px;
-            margin-top:20px;
-            font-size:17px;
-            line-height:1.7;
-            color:var(--tl);
-        }
-
-        .feat-list{
-            display:grid;
-            grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:14px;
-            margin-top:30px;
-            max-width:570px;
-        }
-
-        .feat-item{
-            display:flex;
-            align-items:center;
-            gap:11px;
-            padding:13px 15px;
-            border:1px solid rgba(255,255,255,.8);
-            border-radius:14px;
-            background:rgba(255,255,255,.62);
-            backdrop-filter:blur(14px);
-            box-shadow:0 8px 25px rgba(30,41,59,.05);
-            font-size:13px;
-            font-weight:600;
-            color:#475569;
-            transition:var(--tr);
-        }
-
-        .feat-item:hover{
-            transform:translateY(-3px);
-            box-shadow:0 12px 30px rgba(106,17,203,.1);
-        }
-
-        .feat-icon{
-            width:34px;
-            height:34px;
-            flex-shrink:0;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            border-radius:10px;
-            color:#fff;
-            background:linear-gradient(135deg,var(--pc),var(--sc));
-            box-shadow:0 5px 12px rgba(106,17,203,.2);
-        }
-
-        .auth-card{
-            position:relative;
-            overflow:hidden;
-            padding:34px;
-            border:1px solid rgba(255,255,255,.75);
-            border-radius:28px;
-            background:rgba(255,255,255,.78);
-            backdrop-filter:blur(25px);
-            box-shadow:0 25px 70px rgba(30,41,59,.13);
-            animation:fsu .7s .1s ease both;
-        }
-
-        .auth-card::before{
-            content:"";
-            position:absolute;
-            top:0;
-            left:0;
-            right:0;
-            height:4px;
-            background:linear-gradient(90deg,var(--pc),var(--pl),var(--sc));
-            background-size:200% 100%;
-            animation:gm 4s linear infinite;
-        }
-
-        @keyframes gm{
-            0%{background-position:0% 50%}
-            100%{background-position:200% 50%}
-        }
-
-        .auth-h{
-            font-size:27px;
-            font-weight:800;
-            color:#172033;
-        }
-
-        .auth-sub{
-            margin-top:6px;
-            font-size:14px;
-            color:var(--tl);
-        }
-
-        .alert{
-            display:none;
-            align-items:flex-start;
-            gap:10px;
-            margin-top:20px;
-            padding:13px 14px;
-            border-radius:12px;
-            font-size:13px;
-            line-height:1.5;
-        }
-
-        .alert.show{
-            display:flex;
-            animation:alertIn .3s ease;
-        }
-
-        @keyframes alertIn{
-            from{opacity:0;transform:translateY(-5px)}
-            to{opacity:1;transform:translateY(0)}
-        }
-
-        .alert.error{
-            color:#991b1b;
-            background:#fef2f2;
-            border:1px solid #fecaca;
-        }
-
-        .alert.success{
-            color:#166534;
-            background:#f0fdf4;
-            border:1px solid #bbf7d0;
-        }
-
-        .fg{margin-top:18px}
-
-        .fl{
-            display:block;
-            margin-bottom:8px;
-            font-size:13px;
-            font-weight:700;
-            color:#334155;
-        }
-
-        .iw{position:relative}
-
-        .ii{
-            position:absolute;
-            left:15px;
-            top:50%;
-            transform:translateY(-50%);
-            color:#94a3b8;
-            pointer-events:none;
-            transition:var(--tr);
-            z-index:2;
-        }
-
-        .fi{
-            width:100%;
-            height:50px;
-            padding:0 46px;
-            border:1px solid #e2e8f0;
-            border-radius:14px;
-            outline:none;
-            background:rgba(255,255,255,.86);
-            color:#172033;
-            font-size:14px;
-            transition:var(--tr);
-        }
-
-        .fi::placeholder{color:#a1aab8}
-
-        .fi:hover{border-color:#cbd5e1}
-
-        .fi:focus{
-            border-color:var(--pc);
-            background:#fff;
-            box-shadow:0 0 0 4px rgba(106,17,203,.09);
-        }
-
-        .iw:focus-within .ii{color:var(--pc)}
-
-        .pt{
-            position:absolute;
-            right:13px;
-            top:50%;
-            transform:translateY(-50%);
-            width:34px;
-            height:34px;
-            border:0;
-            border-radius:9px;
-            background:transparent;
-            color:#94a3b8;
-            cursor:pointer;
-            transition:var(--tr);
-            z-index:3;
-        }
-
-        .pt:hover{
-            background:#f1f5f9;
-            color:var(--pc);
-        }
-
-        .ps{margin-top:8px}
-
-        .sb{
-            display:flex;
-            gap:4px;
-            height:4px;
-        }
-
-        .sbb{
-            flex:1;
-            border-radius:999px;
-            background:#e2e8f0;
-            transition:background .25s ease,transform .25s ease;
-        }
-
-        .st,.ph{
-            margin-top:5px;
-            font-size:10px;
-            color:#94a3b8;
-        }
-
-        .ph{margin-top:6px}
-
-        .terms{
-            display:flex;
-            align-items:flex-start;
-            gap:9px;
-            margin-top:18px;
-            color:#64748b;
-            font-size:11px;
-            line-height:1.55;
-            cursor:pointer;
-        }
-
-        .terms input{
-            width:15px;
-            height:15px;
-            flex-shrink:0;
-            margin-top:1px;
-            accent-color:var(--pc);
-            cursor:pointer;
-        }
-
-        .terms a{
-            color:var(--pc);
-            font-weight:700;
-            text-decoration:none;
-        }
-
-        .sub-btn{
-            width:100%;
-            height:52px;
-            margin-top:22px;
-            border:0;
-            border-radius:14px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:10px;
-            color:#fff;
-            font-size:14px;
-            font-weight:750;
-            cursor:pointer;
-            background:linear-gradient(135deg,var(--pc),var(--sc));
-            box-shadow:0 10px 24px rgba(106,17,203,.22);
-            transition:var(--tr);
-            position:relative;
-            overflow:hidden;
-        }
-
-        .sub-btn::before{
-            content:"";
-            position:absolute;
-            top:0;
-            left:-100%;
-            width:70%;
-            height:100%;
-            background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);
-            transform:skewX(-20deg);
-            transition:left .7s ease;
-        }
-
-        .sub-btn:hover::before{left:140%}
-
-        .sub-btn:hover{
-            transform:translateY(-2px);
-            box-shadow:0 14px 30px rgba(106,17,203,.28);
-        }
-
-        .sub-btn:active{transform:translateY(0) scale(.99)}
-
-        .sub-btn:disabled{
-            opacity:.7;
-            cursor:not-allowed;
-            transform:none;
-        }
-
-        #btnContent{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            gap:10px;
-        }
-
-        .btn-spin{
-            display:block;
-            width:18px;
-            height:18px;
-            border:2px solid rgba(255,255,255,.35);
-            border-top-color:#fff;
-            border-radius:50%;
-            animation:spin .7s linear infinite;
-        }
-
-        @keyframes spin{
-            to{transform:rotate(360deg)}
-        }
-
-        .divider{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            margin:22px 0 18px;
-            color:#94a3b8;
-            font-size:11px;
-            text-transform:uppercase;
-            letter-spacing:1px;
-        }
-
-        .divider::before,
-        .divider::after{
-            content:"";
-            flex:1;
-            height:1px;
-            background:#e2e8f0;
-        }
-
-        .switch-auth{
-            text-align:center;
-            color:#64748b;
-            font-size:13px;
-        }
-
-        .switch-auth a{
-            color:var(--pc);
-            font-weight:800;
-            text-decoration:none;
-            margin-left:4px;
-            transition:var(--tr);
-        }
-
-        .switch-auth a:hover{color:var(--sc)}
-
-        .sec-note{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            gap:7px;
-            margin-top:16px;
-            color:#94a3b8;
-            font-size:11px;
-        }
-
-        .sec-note i{color:#22c55e}
-
-        .page-loader{
-            position:fixed;
-            inset:0;
-            z-index:9999;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:rgba(248,249,255,.92);
-            backdrop-filter:blur(12px);
-            opacity:1;
-            visibility:visible;
-            transition:opacity .35s ease,visibility .35s ease;
-        }
-
-        .page-loader.hidden{
-            opacity:0;
-            visibility:hidden;
-            pointer-events:none;
-        }
-
-        .loader-content{text-align:center}
-
-        .loader-spinner{
-            width:42px;
-            height:42px;
-            margin:auto;
-            border:4px solid rgba(106,17,203,.12);
-            border-top-color:var(--pc);
-            border-right-color:var(--sc);
-            border-radius:50%;
-            animation:spin .8s linear infinite;
-        }
-
-        .loader-text{
-            margin-top:14px;
-            color:#64748b;
-            font-size:13px;
-            font-weight:600;
-        }
-
-        @keyframes fsu{
-            from{opacity:0;transform:translateY(22px)}
-            to{opacity:1;transform:translateY(0)}
-        }
-
-        @media (max-width:850px){
-            .auth-wrap{
-                max-width:520px;
-                display:block;
-            }
-
-            .brand-panel{
-                text-align:center;
-                padding:10px 10px 25px;
-            }
-
-            .brand-title{
-                margin-top:25px;
-                font-size:2.35rem;
-                letter-spacing:-1px;
-            }
-
-            .brand-desc{
-                margin-left:auto;
-                margin-right:auto;
-                font-size:14px;
-            }
-
-            .feat-list{
-                max-width:450px;
-                margin-left:auto;
-                margin-right:auto;
-            }
-        }
-
-        @media (max-width:520px){
-            .auth-page{padding:18px 12px}
-
-            .brand-panel{padding:5px 8px 20px}
-
-            .brand-title{
-                font-size:2rem;
-                margin-top:20px;
-            }
-
-            .brand-desc{display:none}
-
-            .feat-list{
-                grid-template-columns:repeat(2,minmax(0,1fr));
-                gap:8px;
-                margin-top:18px;
-            }
-
-            .feat-item{
-                padding:9px;
-                font-size:10px;
-            }
-
-            .feat-icon{
-                width:28px;
-                height:28px;
-                font-size:11px;
-            }
-
-            .auth-card{
-                padding:24px 18px;
-                border-radius:22px;
-            }
-
-            .auth-h{font-size:24px}
-        }
-
-        @media (prefers-reduced-motion:reduce){
-            *,
-            *::before,
-            *::after{
-                animation-duration:.01ms !important;
-                animation-iteration-count:1 !important;
-                transition-duration:.01ms !important;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6a11cb">
+<title>Checkout - Next Level Subs</title>
+<link rel="stylesheet" href="./src/output.css">
+<link rel="stylesheet" href="./src/all.min.css">
+<style>
+:root{--primary-color:#6a11cb;--primary-dark:#4a0699;--primary-light:#9d4edd;--secondary-color:#2575fc;--accent-color:#E74C3C;--text-dark:#2C3E50;--text-light:#7F8C8D;--border-color:#e8eaf0;--transition:all .3s cubic-bezier(.4,0,.2,1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text-dark);background:radial-gradient(circle at 10% 20%,rgba(106,17,203,.16),transparent 30%),radial-gradient(circle at 90% 10%,rgba(37,117,252,.16),transparent 30%),linear-gradient(135deg,#f8f9ff 0%,#ffffff 45%,#f4f7ff 100%);overflow-x:hidden}
+a{text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}
+.background-orb{position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(70px);opacity:.25;pointer-events:none;z-index:0;animation:orbFloat 12s ease-in-out infinite}
+.orb-one{top:-160px;left:-140px;background:linear-gradient(135deg,var(--primary-color),var(--primary-light))}
+.orb-two{right:-160px;bottom:-160px;background:linear-gradient(135deg,var(--secondary-color),#6aa9ff);animation-delay:-5s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(35px,25px) scale(1.08)}}
+.checkout-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.75)!important;border-bottom:1px solid rgba(226,232,240,0.6);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.header-inner{max-width:1440px;margin:0 auto;padding:12px 20px;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative}
+.logo-container{display:flex;align-items:center;gap:12px;min-width:0;flex-shrink:0}
+.logo-image{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(106,17,203,.15))}
+.logo-text-container{display:flex;flex-direction:column;gap:2px;line-height:1}
+.logo-text-item{font-weight:700;font-size:.68rem!important;line-height:1.05;background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.checkout-header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.header-action-btn{position:relative;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#f1f5f9;color:#334155;transition:var(--transition);border:none;font-size:.95rem}
+.header-action-btn:hover{background:rgba(106,17,203,0.1);color:var(--primary-color);transform:translateY(-2px)}
+#cartCount{box-shadow:0 3px 8px rgba(220,38,38,0.3)}
+.checkout-progress-section{position:relative;z-index:1;background:rgba(255,255,255,0.6);border-bottom:1px solid #eef2f7;padding:18px 0;backdrop-filter:blur(10px)}
+.checkout-progress{width:100%;max-width:1440px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:center;gap:0}
+.progress-step{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;white-space:nowrap;color:#64748b}
+.progress-step.active-step{color:var(--primary-color)}
+.progress-number{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;background:#e2e8f0;color:#94a3b8;transition:var(--transition)}
+.progress-number.active{color:white;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));box-shadow:0 8px 20px rgba(106,17,203,0.25)}
+.progress-line{width:72px;height:4px;margin:0 14px;border-radius:999px;background:#dbeafe;transition:var(--transition)}
+.progress-line.active-line{background:linear-gradient(90deg,var(--primary-color),var(--secondary-color))}
+.checkout-main{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:42px 20px 70px}
+.checkout-page-heading{margin-bottom:30px;animation:fadeSlideUp .7s ease forwards}
+.checkout-eyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--primary-color);font-size:.7rem;font-weight:800;letter-spacing:.08em}
+.checkout-eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--primary-color);box-shadow:0 0 0 4px rgba(106,17,203,0.09)}
+.checkout-page-heading h1{margin:8px 0 8px;font-size:clamp(1.7rem,4vw,2.4rem);line-height:1.15;font-weight:850;letter-spacing:-0.035em;color:#172033}
+.checkout-page-heading p{margin:0;color:var(--text-light);font-size:.95rem}
+.checkout-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,390px);align-items:start;gap:30px}
+.checkout-main-column{min-width:0;animation:fadeSlideUp .7s .1s ease both}
+.checkout-sidebar{min-width:0;animation:fadeSlideUp .7s .2s ease both}
+.checkout-section{margin-bottom:32px}.checkout-section:last-child{margin-bottom:0}
+.checkout-section-heading{display:flex;align-items:center;gap:13px;margin-bottom:17px}
+.checkout-section-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:13px;color:var(--primary-color);background:rgba(106,17,203,0.08)}
+.checkout-section-heading h2{margin:0;color:#172033;font-size:1.25rem;font-weight:800;letter-spacing:-0.025em}
+.checkout-section-heading p{margin:3px 0 0;color:var(--text-light);font-size:.82rem}
+.modern-card{position:relative;overflow:hidden;background:rgba(255,255,255,0.78);border:1px solid rgba(255,255,255,0.75);border-radius:24px;backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);box-shadow:0 20px 50px rgba(30,41,59,0.09);transition:var(--transition)}
+.modern-card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--primary-color),var(--primary-light),var(--secondary-color));background-size:200% 100%;animation:gradientMove 4s linear infinite}
+@keyframes gradientMove{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+.checkout-form-card,.payment-card,.order-summary-card{padding:26px}
+.checkout-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
+.form-group{margin-bottom:20px}
+.form-label{display:block;margin-bottom:8px;color:#334155;font-size:.84rem;font-weight:700}
+.required-mark{color:#ef4444;margin-left:2px}
+.optional-label{margin-left:5px;color:#94a3b8;font-size:.72rem;font-weight:500}
+.checkout-input-wrap,.checkout-textarea-wrap{position:relative}
+.checkout-input{width:100%;min-height:52px;padding:12px 14px 12px 43px;border:1px solid #e2e8f0;border-radius:14px;background:rgba(255,255,255,0.86);color:#172033;outline:none;font-size:.92rem;transition:var(--transition);box-shadow:inset 0 1px 2px rgba(15,23,42,0.02)}
+.checkout-input:hover{border-color:#cbd5e1}
+.checkout-input:focus{border-color:var(--primary-color);background:white;box-shadow:0 0 0 4px rgba(106,17,203,0.09)}
+.checkout-input::placeholder{color:#a1aab8}
+.checkout-input-icon{position:absolute;left:15px;top:50%;z-index:2;transform:translateY(-50%);color:#94a3b8;font-size:.82rem;pointer-events:none;transition:var(--transition)}
+.checkout-input-wrap:focus-within .checkout-input-icon,.checkout-textarea-wrap:focus-within .checkout-textarea-icon{color:var(--primary-color)}
+.checkout-textarea{width:100%;min-height:100px;padding:13px 14px 13px 43px;resize:vertical;border:1px solid #e2e8f0;border-radius:14px;background:rgba(255,255,255,0.86);color:#172033;outline:none;font-size:.92rem;line-height:1.5;transition:var(--transition)}
+.checkout-textarea:focus{border-color:var(--primary-color);background:white;box-shadow:0 0 0 4px rgba(106,17,203,0.09)}
+.checkout-textarea::placeholder{color:#a1aab8}
+.checkout-textarea-icon{position:absolute;left:15px;top:16px;color:#94a3b8;font-size:.82rem;pointer-events:none;transition:var(--transition)}
+.pt{position:absolute;right:13px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:9px;background:transparent;color:#94a3b8;cursor:pointer;transition:var(--transition);z-index:3;display:flex;align-items:center;justify-content:center}
+.pt:hover{background:#f1f5f9;color:var(--primary-color)}
+.ps{margin-top:8px}.sb{display:flex;gap:4px;height:4px}.sbb{flex:1;border-radius:999px;background:#e2e8f0;transition:background .25s ease,transform .25s ease}
+.st{margin-top:5px;font-size:10px;color:#94a3b8}
+.payment-security-notice{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:12px 14px;border:1px solid rgba(106,17,203,0.15);border-radius:14px;background:linear-gradient(135deg,rgba(106,17,203,0.05),rgba(37,117,252,0.05))}
+.payment-security-icon{width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px;background:rgba(106,17,203,0.1);color:var(--primary-color)}
+.payment-security-notice strong{display:block;color:#1e3a8a;font-size:.78rem}
+.payment-security-notice span{display:block;margin-top:2px;color:#64748b;font-size:.72rem}
+.payment-method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.payment-method{position:relative;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:128px;padding:16px;border:1px solid rgba(226,232,240,0.8)!important;border-radius:16px;background:rgba(255,255,255,0.6);cursor:pointer;overflow:hidden;transition:var(--transition);backdrop-filter:blur(8px)}
+.payment-method::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--primary-color),var(--secondary-color));transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.payment-method:hover{transform:translateY(-3px);border-color:rgba(106,17,203,0.3)!important;box-shadow:0 10px 24px rgba(106,17,203,0.08)}
+.payment-method.selected{border-color:var(--primary-color)!important;background:linear-gradient(145deg,rgba(106,17,203,0.05),#ffffff);box-shadow:0 8px 24px rgba(106,17,203,0.12);transform:translateY(-2px)}
+.payment-method.selected::before{transform:scaleX(1)}
+.payment-method-icon{width:46px;height:46px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;border-radius:13px;font-size:1.15rem;transition:var(--transition)}
+.payment-method:hover .payment-method-icon,.payment-method.selected .payment-method-icon{transform:scale(1.08)}
+.payment-method-content h3{margin:0;color:#172033;font-size:.82rem;font-weight:800}
+.payment-method-content p{margin:3px 0 0;color:#64748b;font-size:.68rem}
+.payment-selected-check{position:absolute;top:9px;right:9px;width:21px;height:21px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--primary-color);color:white;font-size:.58rem;opacity:0;transform:scale(0.6);transition:var(--transition)}
+.payment-method.selected .payment-selected-check{opacity:1;transform:scale(1)}
+.payment-method-bank{grid-column:1/-1;min-height:95px;flex-direction:row;gap:13px}
+.payment-method-bank .payment-method-icon{margin-bottom:0}
+.payment-method-bank .payment-method-content{text-align:left}
+.payment-details{margin-top:20px;padding:18px;border:1px solid #e2e8f0;border-radius:16px;background:rgba(248,250,252,0.6);animation:fadeSlideUp 0.3s ease}
+.payment-account{display:flex;align-items:center;justify-content:space-between;gap:12px;background:white;border:1px solid #e5e7eb;border-radius:14px;padding:14px 16px;box-shadow:0 4px 12px rgba(15,23,42,0.03);margin-bottom:10px}
+.payment-account:last-child{margin-bottom:0}
+.account-number{font-size:1.1rem;font-weight:800;letter-spacing:0.04em;color:var(--text-dark)}
+.payment-proof-section{margin-top:20px;padding:19px;border:1px solid rgba(106,17,203,0.15);border-radius:17px;background:linear-gradient(145deg,rgba(106,17,203,0.03),rgba(37,117,252,0.03))}
+.payment-proof-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.payment-proof-icon{width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:11px;background:rgba(106,17,203,0.1);color:var(--primary-color)}
+.payment-proof-heading h3{margin:0;color:#172033;font-size:.95rem;font-weight:800}
+.payment-proof-heading p{margin:4px 0 0;color:#64748b;font-size:.76rem;line-height:1.5}
+.order-summary-card{position:sticky;top:94px;overflow:hidden}
+.order-summary-header{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px}
+.order-summary-header h2{margin:5px 0 4px;color:#172033;font-size:1.3rem;font-weight:850;letter-spacing:-0.025em}
+.order-summary-header p{margin:0;color:var(--text-light);font-size:.75rem;line-height:1.45}
+.order-summary-icon{width:43px;height:43px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:13px;color:var(--primary-color);background:rgba(106,17,203,0.08)}
+.order-summary-items{max-height:390px;overflow-y:auto;padding-right:3px;scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent}
+.order-summary-items::-webkit-scrollbar{width:5px}
+.order-summary-items::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+.order-summary-items::-webkit-scrollbar-track{background:transparent}
+.order-item{border-bottom:1px solid #eef2f7;padding-bottom:16px;margin-bottom:16px;animation:fadeSlideUp 0.3s ease}
+.order-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.quantity-control{display:flex;align-items:center;gap:6px}
+.quantity-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#f1f5f9;color:#374151;transition:var(--transition);border:none}
+.quantity-btn:hover{background:rgba(106,17,203,0.1);color:var(--primary-color);transform:scale(1.06)}
+.quantity-input{width:35px;text-align:center;font-weight:700;border:none;background:transparent;outline:none}
+.remove-btn{color:#ef4444;cursor:pointer;transition:var(--transition);background:none;border:none;padding:0;font-size:.75rem;font-weight:600}
+.remove-btn:hover{color:#b91c1c;transform:translateX(2px)}
+.order-totals{margin-top:18px;padding-top:18px;border-top:1px solid #e2e8f0}
+.order-total-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:11px;color:#64748b;font-size:.82rem}
+.order-total-row strong{color:#172033;font-weight:700}
+.order-total-row small{color:#94a3b8;font-size:.68rem}
+.discount-row strong{color:#16a34a}
+.order-total-final{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:15px;padding-top:15px;border-top:1px dashed #cbd5e1}
+.order-total-final div{display:flex;flex-direction:column}
+.order-total-final span{color:#172033;font-size:1rem;font-weight:800}
+.order-total-final small{margin-top:2px;color:#94a3b8;font-size:.65rem;font-weight:700;letter-spacing:.08em}
+.order-total-final strong{color:var(--primary-color);font-size:1.55rem;font-weight:900;letter-spacing:-0.025em}
+.promo-section{margin-top:21px;padding-top:19px;border-top:1px solid #eef2f7}
+.promo-header{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.promo-heading{display:flex;align-items:center;gap:10px;min-width:0}
+.promo-icon{width:35px;height:35px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:10px;background:#fef3c7;color:#d97706;font-size:.8rem}
+.promo-heading strong,.promo-heading span{display:block}
+.promo-heading strong{color:#334155;font-size:.78rem}
+.promo-heading span{margin-top:2px;color:#94a3b8;font-size:.67rem}
+.toggle-switch{position:relative;width:46px;height:25px;display:inline-block;flex-shrink:0}
+.toggle-switch input{position:absolute;opacity:0;width:0;height:0}
+.toggle-switch .slider{position:absolute;inset:0;cursor:pointer;background:#cbd5e1;border-radius:999px;transition:var(--transition)}
+.toggle-switch .slider::before{content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;background:white;border-radius:50%;box-shadow:0 2px 5px rgba(15,23,42,0.15);transition:var(--transition)}
+.toggle-switch input:checked+.slider{background:var(--primary-color)}
+.toggle-switch input:checked+.slider::before{transform:translateX(21px)}
+.promo-code-section{margin-top:12px;animation:fadeSlideUp 0.2s ease}
+.promo-input-group{display:flex;width:100%}
+.promo-input-group input{width:100%;min-width:0;min-height:44px;padding:10px 13px;border:1px solid #dbe2ea;border-right:0;border-radius:11px 0 0 11px;background:rgba(255,255,255,0.86);outline:none;color:#172033;font-size:.82rem}
+.promo-input-group input:focus{border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(106,17,203,0.08)}
+.promo-input-group button{min-width:72px;border-radius:0 11px 11px 0;background:rgba(106,17,203,0.1);color:var(--primary-color);font-size:.78rem;font-weight:800;cursor:pointer;transition:var(--transition);border:none}
+.promo-input-group button:hover{background:var(--primary-color);color:white}
+.place-order-button{width:100%;min-height:52px;margin-top:22px;border:0;border-radius:14px;color:white;font-size:.92rem;font-weight:750;cursor:pointer;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));box-shadow:0 10px 24px rgba(106,17,203,0.22);transition:var(--transition);position:relative;overflow:hidden}
+.place-order-button::before{content:"";position:absolute;top:0;left:-100%;width:70%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);transform:skewX(-20deg);transition:left 0.7s ease}
+.place-order-button:hover::before{left:140%}
+.place-order-button:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(106,17,203,0.28)}
+.place-order-button:active{transform:translateY(0) scale(0.99)}
+.place-order-button:disabled{opacity:0.7;cursor:not-allowed;transform:none}
+.place-order-content{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;gap:9px}
+.button-spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.35);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle}
+.checkout-security{display:flex;align-items:center;gap:10px;margin-top:17px;padding:11px;border-radius:11px;background:rgba(248,250,252,0.6)}
+.security-icon{width:31px;height:31px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:9px;background:#dcfce7;color:#16a34a;font-size:.75rem}
+.checkout-security strong,.checkout-security span{display:block}
+.checkout-security strong{color:#334155;font-size:.72rem}
+.checkout-security span{margin-top:1px;color:#94a3b8;font-size:.64rem}
+.checkout-support{display:flex;align-items:center;gap:10px;margin-top:10px;padding:12px;border:1px solid rgba(106,17,203,0.1);border-radius:11px;background:linear-gradient(135deg,rgba(106,17,203,0.03),rgba(37,117,252,0.03))}
+.support-icon{width:31px;height:31px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:9px;background:rgba(106,17,203,0.1);color:var(--primary-color);font-size:.75rem}
+.checkout-support strong,.checkout-support span{display:block}
+.checkout-support strong{color:#1e3a8a;font-size:.72rem}
+.checkout-support span{margin-top:1px;color:#64748b;font-size:.64rem}
+#successModal,#accountSetupModal{z-index:99999;pointer-events:none}
+#successModal:not(.hidden),#accountSetupModal:not(.hidden){pointer-events:auto}
+.modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,0.65);backdrop-filter:blur(8px);pointer-events:auto;animation:modalBackdropIn 0.25s ease}
+.success-modal-wrapper{position:relative;z-index:2;min-height:100vh;width:100%;padding:18px;display:flex;align-items:center;justify-content:center;overflow-y:auto}
+.success-modal-container{width:100%;max-width:460px;padding:34px 30px;border-radius:28px;background:rgba(255,255,255,0.85);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);text-align:center;box-shadow:0 25px 70px rgba(30,41,59,0.15);border:1px solid rgba(255,255,255,0.6);animation:modalIn 0.35s cubic-bezier(0.16,1,0.3,1);overflow:hidden;position:relative}
+.success-icon{width:78px;height:78px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;border-radius:50%;background:#dcfce7;animation:successPop 0.55s cubic-bezier(0.16,1,0.3,1);position:relative;z-index:2}
+.success-icon-inner{width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#22c55e;color:white;box-shadow:0 8px 20px rgba(34,197,94,0.25)}
+.success-check{font-size:1.4rem;animation:checkDraw 0.45s ease 0.25s both}
+.success-status{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;margin-bottom:13px;border-radius:999px;background:#f0fdf4;color:#15803d;font-size:.64rem;font-weight:800;letter-spacing:.04em;position:relative;z-index:2}
+.success-modal-container h2{margin:0 0 9px;color:#172033;font-size:clamp(1.55rem,5vw,2rem);font-weight:900;letter-spacing:-0.035em;position:relative;z-index:2}
+.success-modal-container>p{margin:0 auto 24px;max-width:340px;color:var(--text-light);font-size:.88rem;line-height:1.6;position:relative;z-index:2}
+.success-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;z-index:2}
+.success-dashboard-button,.success-home-button{min-height:47px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 15px;border-radius:12px;font-size:.82rem;font-weight:800;cursor:pointer;transition:var(--transition);border:none}
+.success-dashboard-button{color:#ffffff;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));box-shadow:0 8px 20px rgba(106,17,203,0.20)}
+.success-home-button{color:#475569;background:rgba(241,245,249,0.8)}
+.success-dashboard-button:hover,.success-home-button:hover{transform:translateY(-2px)}
+.success-home-button:hover{background:#e2e8f0}
+.success-modal-footer{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:18px;color:#94a3b8;font-size:.65rem;line-height:1.5;position:relative;z-index:2}
+.success-modal-footer i{color:#94a3b8}
+.order-skeleton-card{border-bottom:1px solid #eef2f7;padding-bottom:16px;margin-bottom:16px}
+.skeleton-flex{display:flex;justify-content:space-between;align-items:flex-start}
+.skeleton-left{display:flex;align-items:flex-start;gap:12px}
+.skeleton-img{width:40px;height:40px;border-radius:12px;background:#e2e8f0}
+.skeleton-text-group{display:flex;flex-direction:column;gap:6px}
+.skeleton-title{width:120px;height:12px;background:#e2e8f0;border-radius:4px}
+.skeleton-sub{width:80px;height:10px;background:#e2e8f0;border-radius:4px}
+.skeleton-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.skeleton-price{width:50px;height:12px;background:#e2e8f0;border-radius:4px}
+.skeleton-qty{width:40px;height:10px;background:#e2e8f0;border-radius:4px}
+.skeleton-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.skeleton-remove{width:60px;height:10px;background:#e2e8f0;border-radius:4px}
+.skeleton-qty-control{width:80px;height:24px;background:#e2e8f0;border-radius:8px}
+.skeleton-shimmer{background:linear-gradient(90deg,#eef2f7 25%,#e2e8f0 50%,#eef2f7 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.confetti-piece{position:absolute;width:8px;height:8px;z-index:1;pointer-events:none;top:-10px;opacity:0;animation:confettiFall 2s ease-out forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(450px) rotate(720deg);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes modalBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes modalIn{from{opacity:0;transform:translateY(28px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes successPop{0%{opacity:0;transform:scale(0.4)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@keyframes checkDraw{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+@media (max-width:1100px){.checkout-layout{grid-template-columns:minmax(0,1fr) minmax(290px,340px);gap:22px}.order-summary-card{padding:20px}.payment-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.payment-method-bank{grid-column:1/-1}}
+@media (max-width:900px){.checkout-main{padding-top:30px;padding-bottom:45px}.checkout-layout{grid-template-columns:1fr;gap:30px}.checkout-sidebar{order:2}.checkout-main-column{order:1}.order-summary-card{position:relative;top:auto}}
+@media (max-width:640px){.header-inner{min-height:64px;gap:10px}.logo-image{width:38px;height:38px}.logo-text-item{font-size:.59rem!important}.header-action-btn{width:38px;height:38px;border-radius:10px;font-size:.85rem}.checkout-progress{padding:0 14px}.progress-step span{display:none}.progress-number{width:35px;height:35px;font-size:.75rem}.progress-line{width:42px;min-width:42px;height:3px;margin:0 9px}.checkout-main{padding:24px 14px 35px}.checkout-page-heading{margin-bottom:22px}.checkout-page-heading h1{font-size:1.55rem}.checkout-section{margin-bottom:25px}.checkout-section-heading{gap:10px;margin-bottom:13px}.checkout-section-icon{width:38px;height:38px;border-radius:11px;font-size:.8rem}.checkout-section-heading h2{font-size:1.05rem}.checkout-section-heading p{font-size:.72rem}.checkout-form-card,.payment-card,.order-summary-card{padding:18px}.modern-card{border-radius:20px}.checkout-form-grid{grid-template-columns:1fr;gap:0;margin-bottom:0}.form-group{margin-bottom:17px}.form-label{font-size:.78rem;margin-bottom:7px}.checkout-input{min-height:50px;padding:11px 12px 11px 39px;font-size:.86rem}.checkout-input-icon{left:13px}.checkout-textarea{font-size:.86rem;padding:13px 14px 13px 39px}.checkout-textarea-icon{left:13px}.payment-method{min-height:115px;padding:12px 8px}.payment-method-icon{width:40px;height:40px;margin-bottom:7px;border-radius:11px;font-size:1rem}.payment-method-content h3{font-size:.76rem}.payment-method-content p{font-size:.62rem}.payment-method-bank{min-height:78px;padding:11px;justify-content:flex-start}.payment-selected-check{top:7px;right:7px;width:18px;height:18px;font-size:.5rem}.place-order-button{min-height:50px;margin-top:18px;font-size:.84rem}.success-modal-container{padding:27px 18px;border-radius:23px}.success-actions{grid-template-columns:1fr;gap:8px}}
+@media (max-width:380px){.logo-text-container{display:none}.progress-line{width:30px;min-width:30px;margin:0 6px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}}
+</style>
 </head>
+<body class="checkout-page">
+<div class="background-orb orb-one"></div>
+<div class="background-orb orb-two"></div>
 
-<body>
-
-<div class="bg-orb orb-1"></div>
-<div class="bg-orb orb-2"></div>
-
-<div id="pageLoader" class="page-loader">
-    <div class="loader-content">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">Checking your session...</div>
+<header class="checkout-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-container" aria-label="Next Level Subs Home">
+      <img src="/images/next_level.png" alt="Next Level Subs" class="logo-image">
+      <div class="logo-text-container">
+        <div class="logo-text-item">Next Level Subs</div>
+        <div class="logo-text-item" style="font-size:0.6rem!important;opacity:0.8;font-weight:500">Secure Checkout</div>
+      </div>
+    </a>
+    <div class="checkout-header-actions">
+      <a href="index.html" class="header-action-btn" aria-label="Home" title="Home"><i class="fas fa-house"></i></a>
+      <a href="checkout.html" class="header-action-btn" aria-label="Cart" title="Cart">
+        <i class="fa-solid fa-basket-shopping"></i>
+        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">0</span>
+      </a>
+      <a href="dashboard.html" class="header-action-btn" aria-label="Profile" title="Profile"><i class="fas fa-user"></i></a>
     </div>
-</div>
-
-<header class="auth-header">
-    <div class="header-inner">
-        <a href="index.html" class="logo-container" aria-label="Next Level Subs Home">
-            <img src="/images/next_level.png" alt="Next Level Subs" class="logo-image">
-            <div class="logo-text-container">
-                <div class="logo-text-item">Next Level Subs</div>
-                <div class="logo-text-item" style="font-size: 0.6rem !important; opacity: 0.8; font-weight: 500;">Account Portal</div>
-            </div>
-        </a>
-        <div class="auth-header-actions">
-            <a href="index.html" class="header-action-btn" aria-label="Home" title="Home">
-                <i class="fas fa-house"></i>
-            </a>
-            <a href="dashboard.html" class="header-action-btn" aria-label="User Profile" title="Profile">
-                <i class="fas fa-user"></i>
-            </a>
-        </div>
-    </div>
+  </div>
 </header>
 
-<main class="auth-page">
+<section class="checkout-progress-section">
+  <div class="checkout-progress">
+    <div class="progress-step active-step"><div class="progress-number active"><i class="fas fa-shopping-cart"></i></div><span>Cart</span></div>
+    <div class="progress-line active-line"></div>
+    <div class="progress-step active-step"><div class="progress-number active"><i class="fas fa-user"></i></div><span>Details</span></div>
+    <div class="progress-line"></div>
+    <div class="progress-step"><div class="progress-number"><i class="fas fa-check"></i></div><span class="text-gray-400">Complete</span></div>
+  </div>
+</section>
 
-    <div class="auth-wrap">
-
-        <section class="brand-panel">
-
-            <h1 class="brand-title">
-                Start your<br>
-                <span>Next Level.</span>
-            </h1>
-
-            <p class="brand-desc">
-                Create your account and get a simple,
-                secure place to manage subscriptions,
-                orders and account information.
-            </p>
-
-            <div class="feat-list">
-
-                <div class="feat-item">
-                    <div class="feat-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    Secure Account
-                </div>
-
-                <div class="feat-item">
-                    <div class="feat-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    Fast Delivery
-                </div>
-
-                <div class="feat-item">
-                    <div class="feat-icon">
-                        <i class="fas fa-receipt"></i>
-                    </div>
-                    Order Tracking
-                </div>
-
-                <div class="feat-item">
-                    <div class="feat-icon">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    24/7 Support
-                </div>
-
+<main class="checkout-main">
+  <div class="checkout-page-heading">
+    <div class="checkout-eyebrow"><span class="checkout-eyebrow-dot"></span>SECURE CHECKOUT</div>
+    <h1>Complete Your Order</h1>
+    <p>Enter your details and select your preferred payment method.</p>
+  </div>
+  <div class="checkout-layout">
+    <div class="checkout-main-column">
+      <section class="checkout-section">
+        <div class="checkout-section-heading">
+          <div class="checkout-section-icon"><i class="fas fa-user"></i></div>
+          <div><h2>Billing Information</h2><p>Enter your contact information</p></div>
+        </div>
+        <form id="checkoutForm" class="modern-card checkout-form-card">
+          <div class="checkout-form-grid">
+            <div class="form-group mb-0">
+              <label class="form-label" for="firstName">First Name <span class="required-mark">*</span></label>
+              <div class="checkout-input-wrap"><i class="fas fa-user checkout-input-icon"></i><input type="text" id="firstName" class="checkout-input" placeholder="John" autocomplete="given-name" required></div>
             </div>
-
-        </section>
-
-        <section class="auth-card">
-
-            <h2 class="auth-h">
-                Create your account ✨
-            </h2>
-
-            <p class="auth-sub">
-                It only takes a minute to get started.
-            </p>
-
-            <div
-                id="alert"
-                class="alert"
-                role="alert"
-                aria-live="polite"
-            >
-                <i
-                    id="alertIcon"
-                    class="fas fa-circle-exclamation"
-                ></i>
-
-                <span id="alertMessage"></span>
+            <div class="form-group mb-0">
+              <label class="form-label" for="lastName">Last Name <span class="required-mark">*</span></label>
+              <div class="checkout-input-wrap"><i class="fas fa-user checkout-input-icon"></i><input type="text" id="lastName" class="checkout-input" placeholder="Doe" autocomplete="family-name" required></div>
             </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address <span class="required-mark">*</span></label>
+            <div class="checkout-input-wrap"><i class="fas fa-envelope checkout-input-icon"></i><input type="email" id="email" class="checkout-input" placeholder="john@example.com" autocomplete="email" required></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number <span class="required-mark">*</span></label>
+            <div class="checkout-input-wrap"><i class="fas fa-phone checkout-input-icon"></i><input type="tel" id="phone" class="checkout-input" placeholder="01XXXXXXXXX" autocomplete="tel" inputmode="tel" required></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="address">Address <span class="required-mark">*</span></label>
+            <div class="checkout-textarea-wrap"><i class="fas fa-location-dot checkout-textarea-icon"></i><textarea id="address" class="checkout-textarea" rows="3" placeholder="Enter your address" autocomplete="street-address" required></textarea></div>
+          </div>
+          <div class="form-group mb-0">
+            <label class="form-label" for="notes">Order Notes <span class="optional-label">Optional</span></label>
+            <div class="checkout-textarea-wrap"><i class="fas fa-note-sticky checkout-textarea-icon"></i><textarea id="notes" class="checkout-textarea" rows="3" placeholder="Any special instructions..."></textarea></div>
+          </div>
+        </form>
+      </section>
 
-            <form id="registerForm" novalidate>
-
-                <div class="fg">
-
-                    <label
-                        for="fullName"
-                        class="fl"
-                    >
-                        Full Name
-                    </label>
-
-                    <div class="iw">
-
-                        <i class="fas fa-user ii"></i>
-
-                        <input
-                            id="fullName"
-                            type="text"
-                            class="fi"
-                            placeholder="Your full name"
-                            autocomplete="name"
-                            maxlength="100"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-                <div class="fg">
-
-                    <label
-                        for="email"
-                        class="fl"
-                    >
-                        Email Address
-                    </label>
-
-                    <div class="iw">
-
-                        <i class="fas fa-envelope ii"></i>
-
-                        <input
-                            id="email"
-                            type="email"
-                            class="fi"
-                            placeholder="you@example.com"
-                            autocomplete="email"
-                            inputmode="email"
-                            autocapitalize="none"
-                            spellcheck="false"
-                            maxlength="254"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-                <div class="fg">
-
-                    <label
-                        for="phone"
-                        class="fl"
-                    >
-                        Phone Number
-                    </label>
-
-                    <div class="iw">
-
-                        <i class="fas fa-phone ii"></i>
-
-                        <input
-                            id="phone"
-                            type="tel"
-                            class="fi"
-                            placeholder="01XXXXXXXXX"
-                            autocomplete="tel"
-                            inputmode="tel"
-                            maxlength="16"
-                            required
-                        >
-
-                    </div>
-
-                    <div class="ph">
-                        Used for order updates and customer support.
-                    </div>
-
-                </div>
-
-                <div class="fg">
-
-                    <label
-                        for="password"
-                        class="fl"
-                    >
-                        Password
-                    </label>
-
-                    <div class="iw">
-
-                        <i class="fas fa-lock ii"></i>
-
-                        <input
-                            id="password"
-                            type="password"
-                            class="fi"
-                            placeholder="Create a strong password"
-                            autocomplete="new-password"
-                            minlength="8"
-                            maxlength="128"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            id="passToggle"
-                            class="pt"
-                            aria-label="Show password"
-                        >
-                            <i
-                                id="passToggleIcon"
-                                class="fas fa-eye"
-                            ></i>
-                        </button>
-
-                    </div>
-
-                    <div class="ps">
-
-                        <div class="sb">
-
-                            <span
-                                class="sbb"
-                                id="s1"
-                            ></span>
-
-                            <span
-                                class="sbb"
-                                id="s2"
-                            ></span>
-
-                            <span
-                                class="sbb"
-                                id="s3"
-                            ></span>
-
-                            <span
-                                class="sbb"
-                                id="s4"
-                            ></span>
-
-                        </div>
-
-                        <div
-                            id="strengthText"
-                            class="st"
-                        >
-                            Use at least 8 characters.
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="fg">
-
-                    <label
-                        for="confirmPassword"
-                        class="fl"
-                    >
-                        Confirm Password
-                    </label>
-
-                    <div class="iw">
-
-                        <i class="fas fa-lock ii"></i>
-
-                        <input
-                            id="confirmPassword"
-                            type="password"
-                            class="fi"
-                            placeholder="Confirm your password"
-                            autocomplete="new-password"
-                            minlength="8"
-                            maxlength="128"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            id="cpassToggle"
-                            class="pt"
-                            aria-label="Show password"
-                        >
-                            <i
-                                id="cpassToggleIcon"
-                                class="fas fa-eye"
-                            ></i>
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <label class="terms">
-
-                    <input
-                        id="terms"
-                        type="checkbox"
-                        required
-                    >
-
-                    <span>
-                        I agree to the Next Level Subs terms
-                        and understand that my account information
-                        will be used to provide the requested services.
-                    </span>
-
-                </label>
-
-                <button
-                    id="registerBtn"
-                    type="submit"
-                    class="sub-btn"
-                >
-
-                    <span id="btnContent">
-                        <i class="fas fa-user-plus"></i>
-                        Create Account
-                    </span>
-
-                </button>
-
-            </form>
-
-            <div class="divider">
-                Already registered?
+      <section class="checkout-section">
+        <div class="checkout-section-heading">
+          <div class="checkout-section-icon"><i class="fas fa-credit-card"></i></div>
+          <div><h2>Payment Method</h2><p>Choose how you want to pay</p></div>
+        </div>
+        <div class="modern-card payment-card">
+          <div class="payment-security-notice">
+            <div class="payment-security-icon"><i class="fas fa-shield-halved"></i></div>
+            <div><strong>Secure payment</strong><span>Your payment information is handled securely.</span></div>
+          </div>
+          <div class="payment-method-grid">
+            <button type="button" class="payment-method group" data-method="bkash">
+              <div class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-pink-50 ring-1 ring-pink-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-pink-100"><img src="/images/payment/bkash.png" alt="bKash" class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"></div>
+              <div class="payment-method-content"><h3 class="font-semibold leading-tight text-gray-900">bKash</h3><p class="mt-1 text-sm leading-5 text-gray-500">Send Money</p></div>
+              <div class="payment-selected-check mt-3 flex justify-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300">✓</span></div>
+            </button>
+            <button type="button" class="payment-method group" data-method="nagad">
+              <div class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-orange-50 ring-1 ring-orange-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-orange-100"><img src="/images/payment/nagad.svg" alt="Nagad" class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"></div>
+              <div class="payment-method-content"><h3 class="font-semibold leading-tight text-gray-900">Nagad</h3><p class="mt-1 text-sm leading-5 text-gray-500">Send Money</p></div>
+              <div class="payment-selected-check mt-3 flex justify-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300">✓</span></div>
+            </button>
+            <button type="button" class="payment-method group" data-method="rocket">
+              <div class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-purple-50 ring-1 ring-purple-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-purple-100"><img src="/images/payment/rocket.png" alt="Rocket" class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"></div>
+              <div class="payment-method-content"><h3 class="font-semibold leading-tight text-gray-900">Rocket</h3><p class="mt-1 text-sm leading-5 text-gray-500">Send Money</p></div>
+              <div class="payment-selected-check mt-3 flex justify-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300">✓</span></div>
+            </button>
+            <button type="button" class="payment-method group" data-method="upay">
+              <div class="payment-method-icon mx-auto mb-3 flex h-16 w-20 items-center justify-center overflow-hidden rounded-2xl bg-green-50 ring-1 ring-green-100 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105 group-hover:bg-green-100"><img src="/images/payment/upay.png" alt="Upay" class="h-12 w-12 object-contain drop-shadow-sm transition-transform duration-300 ease-out group-hover:scale-110"></div>
+              <div class="payment-method-content"><h3 class="font-semibold leading-tight text-gray-900">Upay</h3><p class="mt-1 text-sm leading-5 text-gray-500">Send Money</p></div>
+              <div class="payment-selected-check mt-3 flex justify-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition-all duration-300">✓</span></div>
+            </button>
+            <button type="button" class="payment-method payment-method-bank group" data-method="bank_transfer">
+              <div class="payment-method-icon mx-auto mb-3 flex !h-16 !w-24 items-center justify-center rounded-2xl bg-slate-50 ring-1 ring-slate-200 transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:bg-blue-50 group-hover:ring-blue-200"><img src="/images/payment/city_bank.png" alt="City Bank" class="!h-14 !w-auto !max-w-[110px] object-contain transition-transform duration-300 ease-out group-hover:scale-110"></div>
+              <div class="payment-method-content"><h3 class="font-semibold leading-tight text-gray-900">Bank Transfer</h3><p class="mt-1 text-sm leading-5 text-gray-500">Direct bank transfer</p></div>
+              <div class="payment-selected-check mt-3 flex justify-center"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white shadow-md shadow-blue-600/20">✓</span></div>
+            </button>
+          </div>
+          <div id="paymentDetails" class="payment-details"></div>
+          <div id="paymentProofSection" class="payment-proof-section">
+            <div class="payment-proof-heading">
+              <div class="payment-proof-icon"><i class="fas fa-receipt"></i></div>
+              <div><h3>Payment Verification</h3><p>Enter the details from your payment so we can verify your transaction.</p></div>
             </div>
-
-            <div class="switch-auth">
-                Already have an account?
-                <a href="login.html">
-                    Sign in
-                </a>
+            <div class="form-group">
+              <label class="form-label" for="paymentSenderNumber">Payment Sender Number <span class="required-mark">*</span></label>
+              <div class="checkout-input-wrap"><i class="fas fa-phone checkout-input-icon"></i><input type="tel" id="paymentSenderNumber" class="checkout-input" placeholder="01XXXXXXXXX" inputmode="tel" required></div>
             </div>
-
-            <div class="sec-note">
-                <i class="fas fa-shield-halved"></i>
-                Your information is securely protected
+            <div class="form-group mb-0">
+              <label class="form-label" for="paymentReference">Transaction ID / Payment Reference <span class="required-mark">*</span></label>
+              <div class="checkout-input-wrap"><i class="fas fa-hashtag checkout-input-icon"></i><input type="text" id="paymentReference" class="checkout-input" placeholder="Enter transaction ID" autocomplete="off" required></div>
             </div>
-
-        </section>
-
+          </div>
+        </div>
+      </section>
     </div>
 
+    <aside class="checkout-sidebar">
+      <div class="modern-card order-summary-card">
+        <div class="order-summary-header">
+          <div>
+            <div class="checkout-eyebrow"><span class="checkout-eyebrow-dot"></span>YOUR ORDER</div>
+            <h2>Order Summary</h2><p>Review your order before placing it.</p>
+          </div>
+          <div class="order-summary-icon"><i class="fas fa-bag-shopping"></i></div>
+        </div>
+        <div id="orderSummary" class="order-summary-items">
+          <div class="order-skeleton-card">
+            <div class="skeleton-flex"><div class="skeleton-left"><div class="skeleton-img skeleton-shimmer"></div><div class="skeleton-text-group"><div class="skeleton-title skeleton-shimmer"></div><div class="skeleton-sub skeleton-shimmer"></div></div></div><div class="skeleton-right"><div class="skeleton-price skeleton-shimmer"></div><div class="skeleton-qty skeleton-shimmer"></div></div></div>
+            <div class="skeleton-bottom"><div class="skeleton-remove skeleton-shimmer"></div><div class="skeleton-qty-control skeleton-shimmer"></div></div>
+          </div>
+        </div>
+        <div class="order-totals">
+          <div class="order-total-row"><span>Subtotal</span><strong id="subtotal">৳0.00</strong></div>
+          <div class="order-total-row"><span>Tax <small>1.85%</small></span><strong id="tax">৳0.00</strong></div>
+          <div class="order-total-row discount-row"><span>Discount</span><strong id="discount">-৳0.00</strong></div>
+          <div class="order-total-final"><div><span>Total</span><small>BDT</small></div><strong id="total">৳0.00</strong></div>
+        </div>
+        <div class="promo-section">
+          <div class="promo-header">
+            <div class="promo-heading"><div class="promo-icon"><i class="fas fa-tag"></i></div><div><strong>Have a promo code?</strong><span>Apply your discount</span></div></div>
+            <label class="toggle-switch"><input type="checkbox" id="promoToggle"><span class="slider"></span></label>
+          </div>
+          <div id="promoCodeSection" class="promo-code-section hidden">
+            <div class="promo-input-group"><input type="text" id="promoCode" placeholder="Enter promo code" autocomplete="off"><button id="applyPromo" type="button">Apply</button></div>
+          </div>
+        </div>
+        <button id="placeOrderBtn" type="button" class="place-order-button"><span class="place-order-content"><i class="fas fa-lock"></i><span>Place Order</span></span></button>
+        <div class="checkout-security"><div class="security-icon"><i class="fas fa-shield-halved"></i></div><div><strong>Secure Checkout</strong><span>Your information is protected.</span></div></div>
+        <div class="checkout-support"><div class="support-icon"><i class="fas fa-headset"></i></div><div><strong>Need help?</strong><span>Our support team is available 24/7.</span></div></div>
+      </div>
+    </aside>
+  </div>
 </main>
+
+<!-- ACCOUNT SETUP MODAL -->
+<div id="accountSetupModal" class="fixed inset-0 hidden" aria-hidden="true">
+  <div class="modal-backdrop" id="accountSetupBackdrop"></div>
+  <div class="success-modal-wrapper">
+    <div class="success-modal-container" style="text-align:left;max-width:480px">
+
+      <!-- View 1: Password setup -->
+      <div id="setupView">
+        <div class="success-icon" style="background:rgba(106,17,203,0.1);margin:0 auto 16px">
+          <div class="success-icon-inner" style="background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))"><i class="fas fa-user-plus" style="font-size:1.2rem"></i></div>
+        </div>
+        <div class="success-status" style="margin:0 auto 12px;display:flex;justify-content:center"><i class="fas fa-shield-halved"></i> ACCOUNT REQUIRED</div>
+        <h2 style="text-align:center;font-size:1.4rem;margin-bottom:6px">Create Your Account</h2>
+        <p style="text-align:center;margin:0 auto 18px;font-size:.84rem;max-width:100%">Please set a password to create your account and complete your order. Your cart items are saved!</p>
+        <div id="modalAlert" class="alert hidden" style="margin-bottom:14px;padding:10px 12px;border-radius:10px;font-size:12px;background:#fef2f2;color:#991b1b;border:1px solid #fecaca;display:none;align-items:center;gap:8px">
+          <i class="fas fa-circle-exclamation"></i><span id="modalAlertMessage"></span>
+        </div>
+        <form id="modalRegisterForm">
+          <div class="form-group" style="margin-bottom:14px">
+            <label class="form-label" for="modalPassword">Password <span class="required-mark">*</span></label>
+            <div class="checkout-input-wrap">
+              <i class="fas fa-lock checkout-input-icon"></i>
+              <input type="password" id="modalPassword" class="checkout-input" placeholder="At least 8 characters" minlength="8" required style="min-height:46px;padding-right:42px">
+              <button type="button" id="modalPassToggle" class="pt" aria-label="Show password"><i id="modalPassIcon" class="fas fa-eye"></i></button>
+            </div>
+            <div class="ps"><div class="sb"><span class="sbb" id="ms1"></span><span class="sbb" id="ms2"></span><span class="sbb" id="ms3"></span><span class="sbb" id="ms4"></span></div><div id="modalStrengthText" class="st">Use at least 8 characters.</div></div>
+          </div>
+          <div class="form-group" style="margin-bottom:16px">
+            <label class="form-label" for="modalConfirmPassword">Confirm Password <span class="required-mark">*</span></label>
+            <div class="checkout-input-wrap"><i class="fas fa-lock checkout-input-icon"></i><input type="password" id="modalConfirmPassword" class="checkout-input" placeholder="Confirm your password" minlength="8" required style="min-height:46px"></div>
+          </div>
+          <div class="success-actions" style="grid-template-columns:1fr 1fr;gap:10px">
+            <button type="submit" id="modalRegisterBtn" class="success-dashboard-button" style="min-height:46px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:8px"><span id="modalBtnContent"><i class="fas fa-user-check"></i> Create & Place Order</span></button>
+            <button type="button" id="closeAccountSetupModal" class="success-home-button" style="min-height:46px"><i class="fas fa-xmark"></i> Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- View 2: Email verification -->
+      <div id="verifyView" class="hidden" style="text-align:center">
+        <div class="success-icon" style="background:rgba(106,17,203,0.1);margin:0 auto 16px">
+          <div class="success-icon-inner" style="background:linear-gradient(135deg,var(--primary-color),var(--secondary-color))"><i class="fas fa-envelope-circle-check" style="font-size:1.2rem"></i></div>
+        </div>
+        <div class="success-status" style="margin:0 auto 12px;display:flex;justify-content:center"><i class="fas fa-shield-halved"></i> VERIFY YOUR EMAIL</div>
+        <h2 style="text-align:center;font-size:1.4rem;margin-bottom:6px">Check Your Email</h2>
+        <p style="text-align:center;margin:0 auto 18px;font-size:.84rem;line-height:1.6">We've sent a verification link to <strong id="verifyEmail"></strong>.<br>Click the link to verify your account & automatically complete your order.<br><br><i class="fas fa-basket-shopping text-purple-600"></i> <strong>Your cart items are saved!</strong></p>
+        <div class="success-actions" style="grid-template-columns:1fr">
+          <button type="button" id="closeVerifyView" class="success-home-button" style="min-height:46px"><i class="fas fa-xmark"></i> I'll verify later</button>
+        </div>
+        <div class="success-modal-footer" style="margin-top:14px"><i class="fas fa-circle-info"></i> After verifying, you'll return here automatically.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" class="fixed inset-0 hidden" aria-hidden="true">
+  <div class="modal-backdrop" id="successBackdrop"></div>
+  <div class="success-modal-wrapper">
+    <div class="success-modal-container">
+      <div class="success-icon"><div class="success-icon-inner"><i class="success-check fas fa-check"></i></div></div>
+      <div class="success-status"><i class="fas fa-circle-check"></i> ORDER SUBMITTED</div>
+      <h2>Payment Submitted!</h2>
+      <p id="successMessage">Your order has been submitted successfully.</p>
+      <div class="success-actions">
+        <a id="dashboardButton" href="./dashboard.html" class="success-dashboard-button"><span><i class="fas fa-gauge-high"></i> Dashboard</span></a>
+        <a id="homeButton" href="./index.html" class="success-home-button"><i class="fas fa-house"></i> Home</a>
+      </div>
+      <div class="success-modal-footer"><i class="fas fa-circle-info"></i> You can track your order status from your dashboard.</div>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./js/supabase-config.js"></script>
 <script src="./js/nextlevel-auth.js"></script>
-
 <script>
 "use strict";
+let cart=[], selectedPaymentMethod="bkash", discountAmount=0, appliedPromoCode="", currentUser=null, isSubmitting=false;
+const PA={bkash:"01912261564",nagad:"01644490566",rocket:"016444905664",upay:"01590093965",bank_transfer:{bankName:"City Bank",accountNumber:"2302841525001",accountHolder:"Nur Mohammad",branch:"Naogaon"}};
+const $=id=>document.getElementById(id);
+const checkoutForm=$("checkoutForm"),orderSummary=$("orderSummary"),subtotalEl=$("subtotal"),taxEl=$("tax"),discountEl=$("discount"),totalEl=$("total"),promoToggle=$("promoToggle"),promoCodeSection=$("promoCodeSection"),promoCode=$("promoCode"),applyPromo=$("applyPromo"),placeOrderBtn=$("placeOrderBtn"),paymentDetails=$("paymentDetails"),paymentSenderNumber=$("paymentSenderNumber"),paymentReference=$("paymentReference"),successModal=$("successModal"),successMessage=$("successMessage"),cartCount=$("cartCount"),dashboardButton=$("dashboardButton"),homeButton=$("homeButton"),successBackdrop=$("successBackdrop"),accountSetupModal=$("accountSetupModal"),closeAccountSetupModalBtn=$("closeAccountSetupModal"),accountSetupBackdrop=$("accountSetupBackdrop"),modalRegisterForm=$("modalRegisterForm"),modalPassword=$("modalPassword"),modalConfirmPassword=$("modalConfirmPassword"),modalPassToggle=$("modalPassToggle"),modalPassIcon=$("modalPassIcon"),modalRegisterBtn=$("modalRegisterBtn"),modalBtnContent=$("modalBtnContent"),modalAlert=$("modalAlert"),modalAlertMessage=$("modalAlertMessage"),modalBars=[$("ms1"),$("ms2"),$("ms3"),$("ms4")],modalStrengthText=$("modalStrengthText"),setupView=$("setupView"),verifyView=$("verifyView"),verifyEmail=$("verifyEmail"),closeVerifyViewBtn=$("closeVerifyView");
 
-const $ = id => document.getElementById(id);
+const esc=v=>v==null?"":String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+const money=a=>Number(a||0).toFixed(2);
+const orderNum=()=>{const d=new Date();return `NLS-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}-${Math.floor(100000+Math.random()*900000)}`};
+const payLabel=m=>({bkash:"bKash",nagad:"Nagad",rocket:"Rocket",upay:"Upay",bank_transfer:"Bank Transfer"})[m]||"Unknown";
+const calcTax=p=>Number(p||0)*0.0185;
 
-const loader = $("pageLoader");
-const form = $("registerForm");
-const fullName = $("fullName");
-const email = $("email");
-const phone = $("phone");
-const pass = $("password");
-const cpass = $("confirmPassword");
-const terms = $("terms");
-const passToggle = $("passToggle");
-const passIcon = $("passToggleIcon");
-const cpassToggle = $("cpassToggle");
-const cpassIcon = $("cpassToggleIcon");
-const btn = $("registerBtn");
-const btnContent = $("btnContent");
-const alertBox = $("alert");
-const alertIcon = $("alertIcon");
-const alertMessage = $("alertMessage");
-const bars = [
-    $("s1"),
-    $("s2"),
-    $("s3"),
-    $("s4")
-];
-const strengthText = $("strengthText");
-
-function hideLoader() {
-
-    if (loader) {
-        loader.classList.add("hidden");
-    }
+function renderPaymentDetails(){
+  paymentDetails.style.animation="none";void paymentDetails.offsetWidth;paymentDetails.style.animation="fadeSlideUp 0.3s ease";
+  if(selectedPaymentMethod==="bank_transfer"){
+    const b=PA.bank_transfer;
+    paymentDetails.innerHTML=`<div class="flex items-start gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0"><i class="fas fa-building-columns"></i></div><div><h3 class="font-bold text-gray-900">Bank Transfer Instructions</h3><p class="text-sm text-gray-500 mt-1">Transfer the exact total to this account.</p></div></div><div class="space-y-3 text-sm"><div class="payment-account"><span class="text-gray-500">Bank</span><strong>${esc(b.bankName)}</strong></div><div class="payment-account"><span class="text-gray-500">Account Name</span><strong>${esc(b.accountHolder)}</strong></div><div class="payment-account"><span class="text-gray-500">Account Number</span><span class="account-number">${esc(b.accountNumber)}</span></div><div class="payment-account"><span class="text-gray-500">Branch</span><strong>${esc(b.branch)}</strong></div></div>`;
+    paymentSenderNumber.placeholder="Enter your bank account number";
+    paymentReference.placeholder="Enter bank transaction/reference number";
+  } else {
+    const a=PA[selectedPaymentMethod],l=payLabel(selectedPaymentMethod);
+    paymentDetails.innerHTML=`<div class="flex items-start gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0"><i class="fas fa-mobile-screen-button"></i></div><div><h3 class="font-bold text-gray-900">${esc(l)} Payment Instructions</h3><p class="text-sm text-gray-500 mt-1">অর্ডারের যত টাকা হয়েছে, ঠিক তত টাকাই ${esc(l)} Send Money করুন.</p></div></div><div class="payment-account"><div><p class="text-xs text-gray-500 mb-1">${esc(l)} Number</p><div class="account-number">${esc(a)}</div></div><i class="fas fa-copy text-gray-400"></i></div><div class="mt-4 flex items-start gap-2 text-sm text-gray-500"><i class="fas fa-circle-info text-blue-500 mt-0.5"></i><span>টাকা পাঠানোর পর, আপনি যে নম্বর থেকে টাকা পাঠিয়েছেন, নিচে সেই নম্বর এবং Transaction ID লিখে Place Order বাটনে ক্লিক করুন</span></div>`;
+    paymentSenderNumber.placeholder="01XXXXXXXXX";
+    paymentReference.placeholder="Enter transaction ID";
+  }
 }
 
-function showAlert(message, type = "error") {
+function selectPaymentMethod(method){
+  selectedPaymentMethod=method;
+  document.querySelectorAll(".payment-method").forEach(el=>el.classList.remove("selected"));
+  const sel=document.querySelector(`.payment-method[data-method="${method}"]`);
+  if(sel) sel.classList.add("selected");
+  renderPaymentDetails();
+}
 
-    alertBox.className =
-        "alert show " + type;
+function getCartTotals(){
+  let subtotal=0,tax=0;
+  cart.forEach(item=>{const plan=item.selectedPlan||{price:item.price};const t=Number(plan.price||0)*Number(item.quantity||1);subtotal+=t;tax+=calcTax(t)});
+  return{subtotal:+subtotal.toFixed(2),tax:+tax.toFixed(2),discount:+discountAmount.toFixed(2),total:+(subtotal+tax-discountAmount).toFixed(2)};
+}
 
-    alertIcon.className =
-        type === "success"
-            ? "fas fa-circle-check"
-            : "fas fa-circle-exclamation";
+function renderOrderSummary(){
+  orderSummary.innerHTML="";let subtotal=0,totalTax=0;
+  cart.forEach(item=>{
+    const plan=item.selectedPlan||{price:item.price,duration:item.duration};
+    const qty=Number(item.quantity||1),price=Number(plan.price||0),itemTotal=price*qty;
+    subtotal+=itemTotal;totalTax+=calcTax(itemTotal);
+    const orderItem=document.createElement("div");orderItem.className="order-item";
+    const imgHTML=item.image?`<img src="${esc(item.image)}" alt="${esc(item.name||"Product")}" class="w-10 h-10 rounded-xl object-contain bg-gray-50 p-1 mr-3">`:`<div class="w-12 h-12 rounded-xl flex items-center justify-center mr-3" style="background:${esc(item.color||"#eeeeee")}20"><i class="${esc(item.icon||"fas fa-box")}" style="color:${esc(item.color||"#555555")}"></i></div>`;
+    orderItem.innerHTML=`<div class="flex justify-between items-start"><div class="flex items-start min-w-0">${imgHTML}<div class="min-w-0"><h4 class="font-semibold text-sm truncate">${esc(item.name||"Product")}</h4><p class="text-xs text-gray-500 mt-1">${esc(plan.duration||"")}</p></div></div><div class="text-right ml-3"><span class="font-bold text-sm">৳${money(itemTotal)}</span><p class="text-xs text-gray-400 mt-1">Qty ${qty}</p></div></div><div class="flex justify-between items-center mt-3"><button type="button" class="remove-btn" data-product-name="${esc(item.name)}"><i class="fas fa-trash mr-1"></i> Remove</button><div class="quantity-control"><button type="button" class="quantity-btn decrease-btn" data-product-name="${esc(item.name)}"><i class="fas fa-minus text-xs"></i></button><input type="number" class="quantity-input" value="${qty}" readonly><button type="button" class="quantity-btn increase-btn" data-product-name="${esc(item.name)}"><i class="fas fa-plus text-xs"></i></button></div></div>`;
+    orderSummary.appendChild(orderItem);
+  });
+  const total=subtotal+totalTax-discountAmount;
+  subtotalEl.textContent=`৳${money(subtotal)}`;
+  taxEl.textContent=`৳${money(totalTax)}`;
+  discountEl.textContent=`-৳${money(discountAmount)}`;
+  totalEl.textContent=`৳${money(total)}`;
+}
 
-    alertMessage.textContent = message;
+function updateCartCount(){cartCount.textContent=cart.reduce((s,i)=>s+Number(i.quantity||0),0)}
+function saveCart(){localStorage.setItem("streamHubCart",JSON.stringify(cart))}
+function removeItem(name){cart=cart.filter(i=>i.name!==name);saveCart();renderOrderSummary();updateCartCount();if(!cart.length)window.location.href="./index.html"}
+function increaseQuantity(name){const i=cart.find(i=>i.name===name);if(!i)return;i.quantity=Number(i.quantity||1)+1;saveCart();renderOrderSummary();updateCartCount()}
+function decreaseQuantity(name){const i=cart.find(i=>i.name===name);if(!i||Number(i.quantity||1)<=1)return;i.quantity=Number(i.quantity)-1;saveCart();renderOrderSummary();updateCartCount()}
 
-    alertBox.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest"
+orderSummary.addEventListener("click",e=>{
+  const rb=e.target.closest(".remove-btn");if(rb){removeItem(rb.dataset.productName);return}
+  const ib=e.target.closest(".increase-btn");if(ib){increaseQuantity(ib.dataset.productName);return}
+  const db=e.target.closest(".decrease-btn");if(db)decreaseQuantity(db.dataset.productName);
+});
+
+promoToggle.addEventListener("change",()=>{
+  if(promoToggle.checked){promoCodeSection.classList.remove("hidden")}
+  else{promoCodeSection.classList.add("hidden");discountAmount=0;appliedPromoCode="";promoCode.value="";renderOrderSummary()}
+});
+
+function applyPromoCode(){
+  const code=promoCode.value.trim().toUpperCase();
+  if(!code){showPromoResult("Enter Code",false);return}
+  const totals=getCartTotals();
+  if(code==="TAXFREE"){discountAmount=totals.tax;appliedPromoCode="TAXFREE";renderOrderSummary();showPromoResult("Tax Free!",true)}
+  else if(code==="JULY36"){discountAmount=30;appliedPromoCode="JULY36";renderOrderSummary();showPromoResult("30 Taka Off!",true)}
+  else if(code==="NEXTLEVEL10"){let s=0;cart.forEach(i=>{const p=i.selectedPlan||{price:i.price};s+=Number(p.price||0)*Number(i.quantity||1)});discountAmount=Math.round(s*0.1);appliedPromoCode="NEXTLEVEL10";renderOrderSummary();showPromoResult("10% Off!",true)}
+  else{discountAmount=0;appliedPromoCode="";renderOrderSummary();showPromoResult("Invalid",false)}
+}
+
+function showPromoResult(text,success){
+  applyPromo.textContent=text;
+  applyPromo.classList.remove("bg-gray-200","text-gray-700","bg-green-500","bg-red-500","text-white");
+  applyPromo.classList.add(success?"bg-green-500":"bg-red-500","text-white");
+  setTimeout(()=>{applyPromo.textContent="Apply";applyPromo.classList.remove("bg-green-500","bg-red-500","text-white");applyPromo.classList.add("bg-gray-200","text-gray-700")},2000);
+}
+applyPromo.addEventListener("click",applyPromoCode);
+
+const getCustomerName=()=>`${$("firstName").value.trim()} ${$("lastName").value.trim()}`.trim();
+
+function validateForm(){
+  if(!checkoutForm.checkValidity()){checkoutForm.reportValidity();return false}
+  if(!paymentSenderNumber.value.trim()){alert("Please enter the payment sender number.");paymentSenderNumber.focus();return false}
+  if(!paymentReference.value.trim()){alert("Please enter the transaction ID / payment reference.");paymentReference.focus();return false}
+  if(!cart.length){alert("Your cart is empty.");window.location.href="./index.html";return false}
+  return true;
+}
+
+function triggerConfetti(){
+  const container=document.querySelector(".success-modal-container");if(!container)return;
+  container.querySelectorAll(".confetti-piece").forEach(c=>c.remove());
+  const colors=["#6a11cb","#2575fc","#22c55e","#f59e0b","#ef4444","#9d4edd"];
+  for(let i=0;i<40;i++){
+    const p=document.createElement("div");p.className="confetti-piece";
+    p.style.left=Math.random()*100+"%";
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay=Math.random()*0.3+"s";
+    p.style.animationDuration=(Math.random()*1.5+1.5)+"s";
+    p.style.width=p.style.height=(Math.random()*6+6)+"px";
+    container.appendChild(p);
+    setTimeout(()=>p.remove(),3000);
+  }
+}
+
+// Password strength
+function calcStrength(pw){let s=0;if(pw.length>=8)s++;if(/[a-z]/.test(pw))s++;if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw)||/[^A-Za-z0-9]/.test(pw))s++;return s}
+function updateModalStrength(){
+  const pw=modalPassword.value,score=calcStrength(pw);
+  modalBars.forEach((bar,i)=>{
+    if(i<score){
+      bar.style.background=score<=1?"#ef4444":score===2?"#f59e0b":score===3?"#3b82f6":"#22c55e";
+      bar.style.transform="scaleY(1.15)";
+    }else{bar.style.background="#e2e8f0";bar.style.transform="scaleY(1)"}
+  });
+  modalStrengthText.textContent=!pw?"Use at least 8 characters.":score<=1?"Weak password.":score===2?"Fair password.":score===3?"Good password.":"Strong password.";
+}
+modalPassword.addEventListener("input",updateModalStrength);
+modalPassToggle.addEventListener("click",()=>{const isPw=modalPassword.type==="password";modalPassword.type=isPw?"text":"password";modalPassIcon.className=isPw?"fas fa-eye-slash":"fas fa-eye"});
+
+function showAccountSetupModal(){accountSetupModal.classList.remove("hidden");accountSetupModal.setAttribute("aria-hidden","false");document.body.style.overflow="hidden";setupView.classList.remove("hidden");verifyView.classList.add("hidden");modalRegisterBtn.disabled=false;modalBtnContent.innerHTML=`<i class="fas fa-user-check"></i> Create & Place Order`}
+function hideAccountSetupModal(){accountSetupModal.classList.add("hidden");accountSetupModal.setAttribute("aria-hidden","true");document.body.style.overflow=""}
+closeAccountSetupModalBtn.addEventListener("click",hideAccountSetupModal);
+closeVerifyViewBtn.addEventListener("click",hideAccountSetupModal);
+accountSetupBackdrop.addEventListener("click",e=>{e.stopPropagation();hideAccountSetupModal()});
+
+function showModalAlert(msg){modalAlert.style.display="flex";modalAlert.classList.remove("hidden");modalAlertMessage.textContent=msg}
+function hideModalAlert(){modalAlert.style.display="none";modalAlert.classList.add("hidden");modalAlertMessage.textContent=""}
+
+// Save & restore pending order (for after email verification)
+function savePendingOrder(email){
+  const snapshot=JSON.parse(localStorage.getItem("streamHubCart")||"[]");
+  localStorage.setItem("pendingCheckoutOrder",JSON.stringify({
+    email,firstName:$("firstName").value.trim(),lastName:$("lastName").value.trim(),
+    phone:$("phone").value.trim(),address:$("address").value.trim(),notes:$("notes").value.trim(),
+    senderNumber:paymentSenderNumber.value.trim(),reference:paymentReference.value.trim(),
+    paymentMethod:selectedPaymentMethod,promoCode:appliedPromoCode,discountAmount,
+    cartSnapshot:snapshot,timestamp:Date.now()
+  }));
+}
+function restorePendingOrder(){
+  try{
+    const p=JSON.parse(localStorage.getItem("pendingCheckoutOrder"));if(!p)return false;
+    // Cart must match snapshot so we don't submit a stale order
+    const currentCart=JSON.parse(localStorage.getItem("streamHubCart")||"[]");
+    if(JSON.stringify(currentCart)!==JSON.stringify(p.cartSnapshot))return false;
+    // Expire after 24h
+    if(Date.now()-(p.timestamp||0)>86400000)return false;
+    $("firstName").value=p.firstName||"";$("lastName").value=p.lastName||"";
+    $("email").value=p.email||"";$("phone").value=p.phone||"";
+    $("address").value=p.address||"";$("notes").value=p.notes||"";
+    paymentSenderNumber.value=p.senderNumber||"";paymentReference.value=p.reference||"";
+    if(p.paymentMethod)selectPaymentMethod(p.paymentMethod);
+    if(p.promoCode){appliedPromoCode=p.promoCode;discountAmount=p.discountAmount||0;promoToggle.checked=true;promoCodeSection.classList.remove("hidden");promoCode.value=p.promoCode;renderOrderSummary()}
+    return true;
+  }catch{return false}
+}
+function clearPendingOrder(){localStorage.removeItem("pendingCheckoutOrder")}
+
+modalRegisterForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  hideModalAlert();
+  const pw=modalPassword.value,cpw=modalConfirmPassword.value;
+  if(pw.length<8){showModalAlert("Your password must contain at least 8 characters.");modalPassword.focus();return}
+  if(pw!==cpw){showModalAlert("Passwords do not match.");modalConfirmPassword.focus();return}
+  const email=$("email").value.trim().toLowerCase();
+  const fullName=getCustomerName();
+  const phone=$("phone").value.trim();
+  const originalBtnText=modalBtnContent.innerHTML;
+  modalRegisterBtn.disabled=true;
+  // FIXED: spinner uses inline-block (via .button-spinner CSS) and parent button is inline-flex
+  modalBtnContent.innerHTML=`<span class="button-spinner"></span> Creating Account...`;
+  try{
+    const {data,error}=await supabaseClient.auth.signUp({
+      email,password:pw,
+      options:{
+        data:{full_name:fullName,phone},
+        emailRedirectTo:window.location.origin+window.location.pathname
+      }
     });
+    if(error)throw error;
+    if(data?.session){
+      // Email confirmation disabled — proceed immediately
+      currentUser=data.user;
+      hideAccountSetupModal();
+      executeOrderSubmission();
+    } else {
+      // Email verification required — save order & show verify view
+      savePendingOrder(email);
+      verifyEmail.textContent=email;
+      setupView.classList.add("hidden");
+      verifyView.classList.remove("hidden");
+      modalRegisterBtn.disabled=false;
+      modalBtnContent.innerHTML=originalBtnText;
+    }
+  }catch(err){
+    console.error("Modal registration error:",err);
+    showModalAlert(err.message||"Unable to create your account. Please try again.");
+    modalRegisterBtn.disabled=false;
+    modalBtnContent.innerHTML=originalBtnText;
+  }
+});
+
+async function placeOrder(){
+  if(isSubmitting)return;
+  if(!validateForm())return;
+  const {data:authData,error:authError}=await supabaseClient.auth.getUser();
+  if(authError||!authData?.user){showAccountSetupModal();return}
+  currentUser=authData.user;
+  executeOrderSubmission();
 }
 
-function hideAlert() {
-
-    alertBox.className = "alert";
-    alertMessage.textContent = "";
+async function executeOrderSubmission(){
+  isSubmitting=true;
+  const originalButtonHTML=placeOrderBtn.innerHTML;
+  placeOrderBtn.disabled=true;
+  placeOrderBtn.innerHTML=`<span class="place-order-content"><span class="button-spinner"></span> Processing Order...</span>`;
+  try{
+    const totals=getCartTotals();
+    const orderPayload={
+      order_number:orderNum(),user_id:currentUser.id,
+      customer_name:getCustomerName(),email:$("email").value.trim(),phone:$("phone").value.trim(),
+      address:$("address").value.trim(),notes:$("notes").value.trim()||null,
+      subtotal:totals.subtotal,tax:totals.tax,discount:totals.discount,total:totals.total,
+      promo_code:appliedPromoCode||null,payment_method:selectedPaymentMethod,
+      payment_status:"pending",payment_reference:paymentReference.value.trim(),
+      payment_sender_number:paymentSenderNumber.value.trim(),
+      admin_note:null,subscription_email:null,subscription_password:null,
+      delivery_note:null,subscription_start:null,subscription_expiry:null
+    };
+    const {data:createdOrder,error:orderError}=await supabaseClient.from("orders").insert(orderPayload).select("id, order_number").single();
+    if(orderError)throw orderError;
+    if(!createdOrder||!createdOrder.id)throw new Error("Order created but no order ID was returned.");
+    const orderItems=cart.map(item=>{
+      const plan=item.selectedPlan||{price:item.price,duration:item.duration};
+      return{order_id:createdOrder.id,product_name:item.name||"Product",product_image:item.image||null,plan_duration:plan.duration||null,price:Number(plan.price||0),quantity:Number(item.quantity||1)};
+    });
+    const {error:itemsError}=await supabaseClient.from("order_items").insert(orderItems);
+    if(itemsError)throw itemsError;
+    localStorage.removeItem("streamHubCart");
+    cart=[];updateCartCount();
+    clearPendingOrder();
+    successMessage.textContent=`Order ${createdOrder.order_number} has been submitted successfully. Your payment is pending verification. Once verified, your subscription/account details will appear in your dashboard.`;
+    successModal.classList.remove("hidden");
+    successModal.setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+    triggerConfetti();
+    placeOrderBtn.innerHTML=`<span class="place-order-content"><i class="fas fa-check mr-2"></i> Order Submitted</span>`;
+  }catch(error){
+    console.error("ORDER CREATION FAILED:",error);
+    let message="Unable to place your order. Please try again.";
+    if(error?.code==="23505")message="This order number already exists. Please try again.";
+    else if(error?.code==="23502")message="A required order field is missing. Please check your database columns.";
+    else if(error?.code==="42501")message="You do not have permission to place this order. Please check your Supabase RLS policies.";
+    else if(error?.code==="23503")message="Your account could not be linked to this order. Please log in again.";
+    else if(error?.code==="23514")message="Database rejected the payment method. Please check your Supabase 'orders' table CHECK constraint or ENUM type to ensure 'upay' and 'bank_transfer' are allowed.";
+    if(error?.message)message+=`\n\n[DB Error: ${error.message}]`;
+    alert(message);
+    placeOrderBtn.innerHTML=originalButtonHTML;
+    placeOrderBtn.disabled=false;
+    isSubmitting=false;
+  }
 }
 
-function setLoading(loading) {
+document.querySelectorAll(".payment-method").forEach(el=>el.addEventListener("click",()=>selectPaymentMethod(el.dataset.method)));
+placeOrderBtn.addEventListener("click",placeOrder);
+dashboardButton.addEventListener("click",e=>{e.stopPropagation();window.location.href="./dashboard.html"});
+homeButton.addEventListener("click",e=>{e.stopPropagation();window.location.href="./index.html"});
+successBackdrop.addEventListener("click",e=>e.stopPropagation());
 
-    btn.disabled = loading;
-
-    btnContent.innerHTML = loading
-        ? '<span class="btn-spin"></span>Creating Account...'
-        : '<i class="fas fa-user-plus"></i> Create Account';
+async function init(){
+  try{
+    cart=JSON.parse(localStorage.getItem("streamHubCart")||"[]");
+    cart=cart.map(item=>item.selectedPlan?item:{...item,selectedPlan:{price:item.price,duration:item.duration,currency:"BDT"}});
+    if(!cart.length){window.location.href="./index.html";return}
+    renderOrderSummary();updateCartCount();renderPaymentDetails();
+    const {data,error}=await supabaseClient.auth.getUser();
+    if(!error&&data?.user){
+      currentUser=data.user;
+      if($("email"))$("email").value=currentUser.email||"";
+    }
+  }catch(e){console.error("Checkout init error:",e)}
 }
 
-function isEmail(value) {
-
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function normalizePhone(value) {
-
-    return value
-        .replace(/[^\d+]/g, "")
-        .trim();
-}
-
-function isPhone(value) {
-
-    const normalized =
-        normalizePhone(value);
-
-    const digits =
-        normalized.replace(/\D/g, "");
-
-    if (
-        digits.length < 10 ||
-        digits.length > 15
-    ) {
-        return false;
+// Listen for sign-in events — handles email verification redirect automatically
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(event==="SIGNED_IN"&&session?.user){
+    currentUser=session.user;
+    // Only auto-complete if we have a saved pending order from this device
+    const pending=localStorage.getItem("pendingCheckoutOrder");
+    if(pending){
+      const ok=restorePendingOrder();
+      if(ok){
+        // Close any open modal
+        if(!accountSetupModal.classList.contains("hidden"))hideAccountSetupModal();
+        clearPendingOrder();
+        // Auto-submit order now that user is verified
+        setTimeout(()=>executeOrderSubmission(),300);
+      }
     }
+  }else if(event==="SIGNED_OUT"){currentUser=null}
+});
 
-    if (/^01\d{9}$/.test(digits)) {
-        return true;
-    }
-
-    if (/^8801\d{9}$/.test(digits)) {
-        return true;
-    }
-
-    return /^\+[1-9]\d{9,14}$/.test(
-        normalized
-    );
-}
-
-function togglePassword(
-    input,
-    icon,
-    button
-) {
-
-    const isPassword =
-        input.type === "password";
-
-    input.type =
-        isPassword ? "text" : "password";
-
-    icon.className =
-        isPassword
-            ? "fas fa-eye-slash"
-            : "fas fa-eye";
-
-    button.setAttribute(
-        "aria-label",
-        isPassword
-            ? "Hide password"
-            : "Show password"
-    );
-}
-
-passToggle.addEventListener(
-    "click",
-    () => togglePassword(
-        pass,
-        passIcon,
-        passToggle
-    )
-);
-
-cpassToggle.addEventListener(
-    "click",
-    () => togglePassword(
-        cpass,
-        cpassIcon,
-        cpassToggle
-    )
-);
-
-function calculateStrength(password) {
-
-    let score = 0;
-
-    if (password.length >= 8) {
-        score++;
-    }
-
-    if (/[a-z]/.test(password)) {
-        score++;
-    }
-
-    if (/[A-Z]/.test(password)) {
-        score++;
-    }
-
-    if (
-        /[0-9]/.test(password) ||
-        /[^A-Za-z0-9]/.test(password)
-    ) {
-        score++;
-    }
-
-    return score;
-}
-
-function updateStrength() {
-
-    const password =
-        pass.value;
-
-    const score =
-        calculateStrength(password);
-
-    bars.forEach(
-        (bar, index) => {
-
-            if (index < score) {
-
-                if (score <= 1) {
-                    bar.style.background =
-                        "#ef4444";
-                }
-                else if (score === 2) {
-                    bar.style.background =
-                        "#f59e0b";
-                }
-                else if (score === 3) {
-                    bar.style.background =
-                        "#3b82f6";
-                }
-                else {
-                    bar.style.background =
-                        "#22c55e";
-                }
-
-                bar.style.transform =
-                    "scaleY(1.15)";
-
-            } else {
-
-                bar.style.background =
-                    "#e2e8f0";
-
-                bar.style.transform =
-                    "scaleY(1)";
-            }
-        }
-    );
-
-    if (!password) {
-        strengthText.textContent =
-            "Use at least 8 characters.";
-    }
-    else if (score <= 1) {
-        strengthText.textContent =
-            "Weak password.";
-    }
-    else if (score === 2) {
-        strengthText.textContent =
-            "Fair password.";
-    }
-    else if (score === 3) {
-        strengthText.textContent =
-            "Good password.";
-    }
-    else {
-        strengthText.textContent =
-            "Strong password.";
-    }
-}
-
-pass.addEventListener(
-    "input",
-    updateStrength
-);
-
-phone.addEventListener(
-    "input",
-    function() {
-
-        let value =
-            phone.value.replace(
-                /[^\d+]/g,
-                ""
-            );
-
-        if (
-            value.indexOf("+") > 0
-        ) {
-            value =
-                value.replace(
-                    /\+/g,
-                    ""
-                );
-        }
-
-        phone.value = value;
-    }
-);
-
-form.addEventListener(
-    "submit",
-    async function(event) {
-
-        event.preventDefault();
-
-        hideAlert();
-
-        const fn =
-            fullName.value.trim();
-
-        const em =
-            email.value
-                .trim()
-                .toLowerCase();
-
-        const ph =
-            normalizePhone(
-                phone.value
-            );
-
-        const pw =
-            pass.value;
-
-        const cpw =
-            cpass.value;
-
-        if (!fn) {
-            showAlert(
-                "Please enter your full name."
-            );
-            fullName.focus();
-            return;
-        }
-
-        if (fn.length < 2) {
-            showAlert(
-                "Please enter a valid name."
-            );
-            fullName.focus();
-            return;
-        }
-
-        if (!em) {
-            showAlert(
-                "Please enter your email address."
-            );
-            email.focus();
-            return;
-        }
-
-        if (!isEmail(em)) {
-            showAlert(
-                "Please enter a valid email address."
-            );
-            email.focus();
-            return;
-        }
-
-        if (!ph) {
-            showAlert(
-                "Please enter your phone number."
-            );
-            phone.focus();
-            return;
-        }
-
-        if (!isPhone(ph)) {
-            showAlert(
-                "Please enter a valid phone number."
-            );
-            phone.focus();
-            return;
-        }
-
-        if (pw.length < 8) {
-            showAlert(
-                "Your password must contain at least 8 characters."
-            );
-            pass.focus();
-            return;
-        }
-
-        if (pw !== cpw) {
-            showAlert(
-                "Passwords do not match."
-            );
-            cpass.focus();
-            return;
-        }
-
-        if (!terms.checked) {
-            showAlert(
-                "Please accept the terms before creating your account."
-            );
-            terms.focus();
-            return;
-        }
-
-        if (!window.supabaseClient) {
-
-            showAlert(
-                "Authentication service is unavailable. Please try again later."
-            );
-
-            console.error(
-                "NEXT LEVEL SUBS: supabaseClient is missing."
-            );
-
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-
-            const {
-                data,
-                error
-            } =
-                await window.supabaseClient.auth.signUp({
-
-                    email: em,
-
-                    password: pw,
-
-                    options: {
-
-                        emailRedirectTo:
-                            `${window.location.origin}/email-verification.html`,
-
-                        data: {
-                            full_name: fn,
-                            phone: ph
-                        }
-                    }
-                });
-
-            if (error) {
-                throw error;
-            }
-
-            console.log(
-                "NEXT LEVEL SUBS: Registration response:",
-                data
-            );
-
-            if (
-                data?.user &&
-                data?.session
-            ) {
-
-                showAlert(
-                    "Account created successfully. Redirecting...",
-                    "success"
-                );
-
-                setTimeout(
-                    () => {
-                        window.location.replace(
-                            "./dashboard.html"
-                        );
-                    },
-                    700
-                );
-
-                return;
-            }
-
-            if (
-                data?.user &&
-                !data?.session
-            ) {
-
-                showAlert(
-                    "Account created successfully! Please check your email and click the verification link to activate your account.",
-                    "success"
-                );
-
-                form.reset();
-                updateStrength();
-
-                setLoading(false);
-
-                return;
-            }
-
-            showAlert(
-                "Your account could not be created. Please try again."
-            );
-
-            setLoading(false);
-
-        } catch (error) {
-
-            console.error(
-                "NEXT LEVEL SUBS: Registration error:",
-                error
-            );
-
-            const errorMessage =
-                String(
-                    error?.message || ""
-                ).toLowerCase();
-
-            let message =
-                "Unable to create your account. Please try again.";
-
-            if (
-                errorMessage.includes(
-                    "user already registered"
-                ) ||
-                errorMessage.includes(
-                    "already registered"
-                )
-            ) {
-
-                message =
-                    "You already have an account. Please log in with your existing account.";
-
-                showAlert(message);
-
-                setTimeout(
-                    () => {
-                        window.location.href =
-                            "login.html";
-                    },
-                    1800
-                );
-
-            }
-            else if (
-                errorMessage.includes("password") &&
-                errorMessage.includes("weak")
-            ) {
-
-                message =
-                    "Please choose a stronger password.";
-
-                showAlert(message);
-
-            }
-            else if (
-                errorMessage.includes(
-                    "rate limit"
-                )
-            ) {
-
-                message =
-                    "Too many attempts. Please wait a moment and try again.";
-
-                showAlert(message);
-
-            }
-            else if (
-                errorMessage.includes("email") &&
-                errorMessage.includes("invalid")
-            ) {
-
-                message =
-                    "Please enter a valid email address.";
-
-                showAlert(message);
-
-            }
-            else {
-
-                showAlert(message);
-            }
-
-            setLoading(false);
-        }
-    }
-);
-
-async function initializeRegisterPage() {
-
-    try {
-
-        if (!window.supabaseClient) {
-
-            console.error(
-                "NEXT LEVEL SUBS: Supabase client unavailable."
-            );
-
-            hideLoader();
-            return;
-        }
-
-        if (
-            !window.NextLevelAuth ||
-            typeof window.NextLevelAuth.redirectIfAuthenticated !==
-            "function"
-        ) {
-
-            console.error(
-                "NEXT LEVEL SUBS: NextLevelAuth is unavailable."
-            );
-
-            hideLoader();
-            return;
-        }
-
-        const redirected =
-            await window.NextLevelAuth
-                .redirectIfAuthenticated();
-
-        if (redirected) {
-            return;
-        }
-
-    } catch (error) {
-
-        console.error(
-            "NEXT LEVEL SUBS: Registration initialization error:",
-            error
-        );
-    }
-
-    hideLoader();
-}
-
-initializeRegisterPage();
+init();
 </script>
-
 </body>
 </html>
