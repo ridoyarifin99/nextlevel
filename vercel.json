@@ -5,11 +5,11 @@
   "rewrites": [
     {
       "source": "/product/:slug*",
-      "destination": "/api/product?slug=:slug*"
+      "destination": "/api/product-view?slug=:slug*"
     },
     {
       "source": "/products/:slug*",
-      "destination": "/api/product?slug=:slug*"
+      "destination": "/api/product-view?slug=:slug*"
     },
     {
       "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
