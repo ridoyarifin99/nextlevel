@@ -190,6 +190,27 @@ module.exports = function handler(req, res) {
         "@type": "Organization",
         name: "NEXT LEVEL SUBS",
         url: SITE
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: 0,
+          currency: String(item.currency || priceCurrency).toUpperCase()
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "BD"
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 10,
+            maxValue: 30,
+            unitCode: "MIN"
+          }
+        }
       }
     }));
 
