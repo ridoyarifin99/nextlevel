@@ -175,15 +175,35 @@ module.exports = function handler(req, res) {
       : [];
     const prices = pricing.map((item) => Number(item.price));
     const priceCurrency = String((pricing[0] && pricing[0].currency) || "BDT").toUpperCase();
-    const offers = prices.length
+
+    // Google Product structured data: expose every real plan as an Offer.
+    // Each Offer points to the canonical product URL instead of an invalid
+    // placeholder such as /product/0.
+    const offerList = pricing.map((item) => ({
+      "@type": "Offer",
+      url: canonical,
+      priceCurrency: String(item.currency || priceCurrency).toUpperCase(),
+      price: Number(item.price),
+      name: `${product.name} - ${String(item.duration || "Plan")}`,
+      availability: "https://schema.org/InStock",
+      seller: {
+        "@type": "Organization",
+        name: "NEXT LEVEL SUBS",
+        url: SITE
+      }
+    }));
+
+    const ratingValue = Number(product.rating);
+    const ratingCount = Number(product.reviews);
+    const aggregateRating = Number.isFinite(ratingValue) && ratingValue > 0 &&
+      Number.isFinite(ratingCount) && ratingCount > 0
       ? {
-          "@type": "AggregateOffer",
-          priceCurrency,
-          lowPrice: Math.min(...prices),
-          highPrice: Math.max(...prices),
-          offerCount: prices.length,
-          availability: "https://schema.org/InStock",
-          url: canonical
+          "@type": "AggregateRating",
+          ratingValue,
+          ratingCount,
+          reviewCount: ratingCount,
+          bestRating: 5,
+          worstRating: 1
         }
       : null;
 
@@ -210,7 +230,8 @@ module.exports = function handler(req, res) {
       url: canonical,
       brand: { "@type": "Brand", name: "NEXT LEVEL SUBS" },
       seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE },
-      ...(offers ? { offers } : {})
+      ...(offerList.length ? { offers: offerList } : {}),
+      ...(aggregateRating ? { aggregateRating } : {})
     }).replace(/</g, "\\u003c");
 
     html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHTML(title)}</title>`);
