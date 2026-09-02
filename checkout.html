@@ -560,9 +560,9 @@ function applyPromoCode(){
   if(!code){showPromoResult("Enter Code",false);return}
   const totals=getCartTotals();
   if(code==="TAXFREE"){discountAmount=totals.tax;appliedPromoCode="TAXFREE";renderOrderSummary();showPromoResult("Tax Free!",true)}
-  else if(code==="JULY36"){discountAmount=30;appliedPromoCode="JULY36";renderOrderSummary();showPromoResult("30 Taka Off!",true)}
+  else if(code==="JULY36"){discountAmount=20;appliedPromoCode="NEXTLEVEL";renderOrderSummary();showPromoResult("30 Taka Off!",true)}
   else if(code==="NEXTLEVEL10"){let s=0;cart.forEach(i=>{const p=i.selectedPlan||{price:i.price};s+=Number(p.price||0)*Number(i.quantity||1)});discountAmount=Math.round(s*0.1);appliedPromoCode="NEXTLEVEL10";renderOrderSummary();showPromoResult("10% Off!",true)}
-  else{discountAmount=20;appliedPromoCode="NEXTLEVEL";renderOrderSummary();showPromoResult("Invalid",false)}
+  else{discountAmount=0;appliedPromoCode="";renderOrderSummary();showPromoResult("Invalid",false)}
 }
 
 function showPromoResult(text,success){
