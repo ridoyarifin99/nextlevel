@@ -96,16 +96,12 @@ function cleanCandidate(value) {
 
 function getSlug(req) {
   const query = req && req.query ? req.query : {};
-
-  // Vercel rewrite value: /product/:slug -> ?slug=:slug
   const candidates = [query.slug, query.name, query.product];
   for (const candidate of candidates) {
     const value = cleanCandidate(candidate);
     if (value) return value;
   }
 
-  // Some Vercel runtimes expose only the rewritten URL. Recover the slug
-  // from its query string as a final fallback.
   const rawUrl = String((req && (req.originalUrl || req.url)) || "");
   const queryMatch = rawUrl.match(/[?&](?:slug|name|product)=([^&#]+)/i);
   if (queryMatch) {
@@ -120,6 +116,72 @@ function getSlug(req) {
 
   return "";
 }
+
+const RELATED_CARD_CSS = `
+/* Related subscription cards intentionally mirror the homepage .subscription-card system. */
+[id*="related"], [class*="related"] { width: 100%; }
+[id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
+  align-items: stretch;
+}
+[id*="related"] .subscription-card,
+[class*="related"] .subscription-card,
+[id*="related"] [class*="product-card"],
+[class*="related"] [class*="product-card"],
+[id*="related"] [class*="card"]:not(.review-card),
+[class*="related"] [class*="card"]:not(.review-card) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s cubic-bezier(.16,1,.3,1);
+}
+[id*="related"] .subscription-card:hover,
+[class*="related"] .subscription-card:hover,
+[id*="related"] [class*="product-card"]:hover,
+[class*="related"] [class*="product-card"]:hover,
+[id*="related"] [class*="card"]:not(.review-card):hover,
+[class*="related"] [class*="card"]:not(.review-card):hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 15px 10px rgba(106, 17, 203, .15);
+}
+[id*="related"] img,
+[class*="related"] img {
+  max-width: 100%;
+}
+[id*="related"] .subscription-card > *,
+[class*="related"] .subscription-card > *,
+[id*="related"] [class*="product-card"] > *,
+[class*="related"] [class*="product-card"] > * {
+  flex-shrink: 0;
+}
+[id*="related"] .subscription-card > :last-child,
+[class*="related"] .subscription-card > :last-child,
+[id*="related"] [class*="product-card"] > :last-child,
+[class*="related"] [class*="product-card"] > :last-child {
+  margin-top: auto;
+}
+@media (min-width: 1024px) {
+  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 639px) {
+  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem;
+  }
+}
+`;
 
 module.exports = function handler(req, res) {
   try {
@@ -147,9 +209,6 @@ module.exports = function handler(req, res) {
     const description = product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
     const title = `${product.name} Subscription | NEXT LEVEL SUBS`;
 
-    // Google Product rich results require at least one of offers, review,
-    // or aggregateRating. Build a real AggregateOffer from this product's
-    // published pricing so every product page has valid commercial data.
     const pricing = Array.isArray(product.pricing)
       ? product.pricing.filter((item) => Number.isFinite(Number(item && item.price)))
       : [];
@@ -169,10 +228,11 @@ module.exports = function handler(req, res) {
     html = html.replace(/<head>/i, '<head>\n  <base href="/">');
     html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i, '<script src="/api/details-script"></script>');
 
-    // Give the client-side details page an explicit product id. It is only
-    // used by the browser renderer; the visible URL remains /product/:slug.
     const productBootstrap = `<script>window.__NLS_PRODUCT_SLUG__=${JSON.stringify(canonicalSlug)};window.__NLS_PRODUCT_NAME__=${JSON.stringify(product.name)};</script>`;
     html = html.replace(/<body>/i, productBootstrap + "\n<body>");
+
+    // Keep related subscription cards visually consistent with the homepage card system.
+    html = html.replace(/<\/head>/i, `<style id="nls-related-card-style">${RELATED_CARD_CSS}</style>\n</head>`);
 
     const schema = JSON.stringify({
       "@context": "https://schema.org",
