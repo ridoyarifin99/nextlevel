@@ -46,7 +46,7 @@
   <div class="nls-drawer-overlay" id="mobileMenuOverlay"></div>
   <aside class="nls-drawer" id="mobileDrawer">
     <div class="nls-drawer-header">
-      <a href="/" class="nls-drawer-logo"><img src="/images/next_level.png" alt="Logo" class="nls-logo-img"><span>Next Level Subs</span></a>
+      <a href="/" class="nls-drawer-logo"><img src="/images/next_level.png" alt="Logo" class="nls-logo-img"></a>
       <button id="closeDrawerBtn" class="nls-drawer-close" aria-label="Close Menu"><i class="fas fa-times"></i></button>
     </div>
     <nav class="nls-drawer-nav" id="navMenuMobile">
@@ -90,6 +90,7 @@
           </div>
         </nav>
       </div>
+      
       <div class="nls-right">
         <div class="nls-search-desktop" id="desktopSearchWrapper">
           <input type="text" id="searchInput" placeholder="Search subscriptions..." aria-label="Search">
@@ -102,6 +103,8 @@
         <button id="cartBtn" class="nls-cart-btn" aria-label="Shopping cart"><i class="fa-solid fa-basket-shopping-simple"></i><span class="nls-cart-text">Cart</span><span id="cartCount" class="cart-badge">0</span></button>
       </div>
     </div>
+    
+    <!-- Clean Mobile Search Dropdown Panel -->
     <div class="nls-mobile-search-panel" id="mobileSearchPanel">
       <div class="nls-mobile-search-box" id="mobileSearchWrapper">
         <input type="text" id="mobileSearchInput" placeholder="Search subscriptions..." aria-label="Mobile Search">
@@ -120,42 +123,51 @@
     :root{--primary-color:#6a11cb;--primary-dark:#4a0699;--secondary-color:#2575fc;--ease:cubic-bezier(0.16,1,0.3,1);--shadow:0 4px 6px -1px rgba(0,0,0,0.05);--shadow-hover:0 10px 15px -3px rgba(0,0,0,0.1);--transition:all 0.3s var(--ease);--light-bg:#f8fafc;--text-dark:#1e293b;--text-light:#64748b;--primary-light:#2575fc}
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;background:#f8fafc}
-    .nls-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,0.65);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(226,232,240,0.6);box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+    .nls-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,0.75);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(226,232,240,0.6);box-shadow:0 4px 20px rgba(0,0,0,0.05)}
     .nls-container{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;height:64px}
     .nls-left{display:flex;align-items:center;gap:1.5rem;flex-grow:1;min-width:0}
     .nls-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
-    .nls-hamburger{display:none;width:40px;height:40px;position:relative;background:none;border:none;cursor:pointer;padding:0;transition:transform 0.3s var(--ease)}
-    .nls-hamburger span{display:block;position:absolute;height:3px;width:25px;background:var(--primary-color);border-radius:3px;left:7px;transition:all 0.3s var(--ease)}
+    
+    /* Premium Hamburger */
+    .nls-hamburger{display:none;width:40px;height:40px;position:relative;background:none;border:none;cursor:pointer;padding:0;transition:transform 0.2s var(--ease)}
+    .nls-hamburger span{display:block;position:absolute;height:3px;width:25px;background:linear-gradient(90deg, var(--primary-color), var(--secondary-color));border-radius:3px;left:7px;transition:all 0.3s var(--ease)}
     .nls-hamburger span:nth-child(1){top:12px}.nls-hamburger span:nth-child(2){top:19px;width:20px}.nls-hamburger span:nth-child(3){top:26px}
-    .nls-hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}.nls-hamburger.active span:nth-child(2){opacity:0;transform:translateX(-10px)}.nls-hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:25px}
+    .nls-hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);width:25px}.nls-hamburger.active span:nth-child(2){opacity:0;transform:translateX(-10px)}.nls-hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:25px}
+    
     .nls-logo-link{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-    .nls-logo-img{height:36px;width:auto;object-fit:contain;transition:transform 0.3s var(--ease)}
+    .nls-logo-img{height:36px;width:auto;object-fit:contain;transition:transform 0.2s var(--ease)}
     .nls-logo-link:hover .nls-logo-img{transform:scale(1.05)}
     .nls-logo-text-container{width:110px;height:20px;position:relative;overflow:hidden}
     .nls-logo-text-item{position:absolute;inset:0;display:flex;align-items:center;font-size:13px;font-weight:700;color:var(--primary-color);opacity:0;animation:spin 8s linear infinite}
     .nls-logo-text-item:nth-child(2){animation-delay:2s}.nls-logo-text-item:nth-child(3){animation-delay:4s}.nls-logo-text-item:nth-child(4){animation-delay:6s}
     @keyframes spin{0%{transform:translateY(-100%);opacity:0}5%,20%{transform:translateY(0);opacity:1}25%,100%{transform:translateY(100%);opacity:0}}
+    
+    /* Premium Desktop Nav */
     .nls-nav{display:flex;align-items:center;gap:0.5rem;flex-shrink:1;min-width:0}
-    .nls-nav-link{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.75rem;border-radius:8px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
-    .nls-nav-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
-    .nls-nav-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff}
+    .nls-nav-link{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.9rem;border-radius:10px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
+    .nls-nav-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateY(-1px)}
+    .nls-nav-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;box-shadow:0 4px 12px rgba(106,17,203,0.25)}
     .nls-nav-link i{font-size:0.85rem}.nls-adult{color:#db2777 !important}.nls-adult:hover{background:rgba(219,39,119,0.1) !important}
-    .nls-more-btn{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.75rem;border-radius:8px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
-    .nls-more-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
-    #navMoreChevron{font-size:0.7rem;margin-left:0.25rem;transition:transform 0.3s var(--ease)}
+    
+    .nls-more-btn{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.9rem;border-radius:10px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
+    .nls-more-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateY(-1px)}
+    #navMoreChevron{font-size:0.7rem;margin-left:0.25rem;transition:transform 0.2s var(--ease)}
     .nls-nav-more{position:relative;display:inline-flex;z-index:1002}
-    .nls-nav-more-menu{position:absolute;top:calc(100% + 8px);left:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border:1px solid rgba(226,232,240,0.6);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:0.5rem;min-width:200px;z-index:1001;display:flex;flex-direction:column;gap:0.25rem;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.3s var(--ease)}
+    .nls-nav-more-menu{position:absolute;top:calc(100% + 8px);left:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(226,232,240,0.6);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,0.1);padding:0.5rem;min-width:200px;z-index:1001;display:flex;flex-direction:column;gap:0.25rem;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.2s var(--ease)}
     .nls-nav-more.active .nls-nav-more-menu{opacity:1;visibility:visible;transform:translateY(0)}
     .nls-nav-more.active #navMoreChevron{transform:rotate(180deg)}
-    .nls-nav-more-menu .nls-nav-link{width:100%;justify-content:flex-start;padding:0.75rem 1rem;border-radius:8px}
+    .nls-nav-more-menu .nls-nav-link{width:100%;justify-content:flex-start;padding:0.75rem 1rem;border-radius:10px}
+    
     .nls-search-desktop{position:relative;width:300px;flex-shrink:0}
     .nls-search-desktop input{width:100%;height:40px;padding:0 5rem 0 1rem;border-radius:20px;border:1px solid #e2e8f0;background:rgba(255,255,255,0.8);font-size:0.9rem;color:#334155;outline:none;transition:all 0.2s ease}
     .nls-search-desktop input:focus{border-color:var(--primary-color);background:#fff;box-shadow:0 0 0 3px rgba(106,17,203,0.1)}
+    
     .nls-clear-search{position:absolute;right:44px;top:50%;transform:translateY(-50%);background:#cbd5e1;color:#fff;border:none;cursor:pointer;width:20px;height:20px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;transition:all 0.2s ease}
     .nls-clear-search:hover{background:#94a3b8}
     .nls-clear-search.visible{display:flex}
     .nls-search-btn{position:absolute;right:4px;top:4px;height:32px;width:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease}
     .nls-search-btn:hover{transform:scale(1.05)}
+    
     .nls-icon-btn{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#334155;padding:0.5rem;transition:color 0.2s}
     .nls-icon-btn:hover{color:var(--primary-color)}
     .nls-account-link{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:#334155;font-weight:600;font-size:0.9rem;padding:0.5rem 0.75rem;border-radius:8px;transition:all 0.2s ease}
@@ -165,15 +177,17 @@
     .nls-cart-btn{position:relative;display:flex;align-items:center;gap:0.5rem;background:none;border:none;cursor:pointer;color:#334155;font-weight:600;font-size:0.9rem;padding:0.5rem 0.75rem;border-radius:8px;transition:all 0.2s ease}
     .nls-cart-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
     .cart-badge{position:absolute;top:0;right:0;background:#ef4444;color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
-    .nls-cart-bump{animation:bump 0.4s var(--ease)}@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.2)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
-    .nls-mobile-search-panel{position:absolute;top:100%;left:0;right:0;padding:1rem 1.5rem;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border-bottom:1px solid #e2e8f0;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);transform:translateY(-100%);opacity:0;visibility:hidden;transition:all 0.3s var(--ease);z-index:999}
+    .nls-cart-bump{animation:bump 0.3s var(--ease)}@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.2)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
+    
+    .nls-mobile-search-panel{position:absolute;top:100%;left:0;right:0;padding:1rem 1.5rem;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid #e2e8f0;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);transform:translateY(-100%);opacity:0;visibility:hidden;transition:all 0.2s var(--ease);z-index:999}
     .nls-mobile-search-panel.active{transform:translateY(0);opacity:1;visibility:visible}
     .nls-mobile-search-box{position:relative;width:100%}
     .nls-mobile-search-panel input{width:100%;height:44px;padding:0 5rem 0 1rem;border-radius:24px;border:1px solid #e2e8f0;background:#f8fafc;font-size:1rem;outline:none;transition:all 0.2s}
     .nls-mobile-search-panel input:focus{border-color:var(--primary-color);background:#fff;box-shadow:0 0 0 3px rgba(106,17,203,0.1)}
     .nls-mobile-search-panel .nls-search-btn{height:36px;width:36px;right:4px;top:4px}
     .nls-mobile-search-panel .nls-clear-search{right:48px;top:50%}
-    .search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);max-height:400px;overflow-y:auto;z-index:999;display:none;border:1px solid rgba(226,232,240,0.6);padding:0.5rem;transform:translateY(-10px);opacity:0;transition:all 0.3s var(--ease)}
+    
+    .search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);max-height:400px;overflow-y:auto;z-index:999;display:none;border:1px solid rgba(226,232,240,0.6);padding:0.5rem;transform:translateY(-10px);opacity:0;transition:all 0.2s var(--ease)}
     .search-dropdown.active{display:block;opacity:1;transform:translateY(0)}
     .search-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:8px;cursor:pointer;transition:background 0.2s ease;border-bottom:1px solid #f1f5f9}
     .search-dropdown-item:last-child{border-bottom:none}
@@ -187,32 +201,86 @@
     .sdi-price{font-weight:700;font-size:0.9rem;color:#1e293b}
     .sdi-add-btn{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
     .sdi-add-btn:hover{opacity:0.9}
-    .nls-drawer{position:fixed;top:0;left:0;width:280px;height:100vh;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px);z-index:1001;transform:translateX(-100%);transition:transform 0.35s var(--ease);box-shadow:2px 0 10px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+    
+    /* PREMIUM MOBILE DRAWER */
+    .nls-drawer{position:fixed;top:0;left:0;width:300px;height:100vh;background:rgba(255,255,255,0.98);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);z-index:1001;transform:translateX(-100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:10px 0 40px rgba(0,0,0,0.1);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.6)}
     .nls-drawer.active{transform:translateX(0)}
-    .nls-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid #f1f5f9}
-    .nls-drawer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--primary-color);font-weight:700}
-    .nls-drawer-close{background:none;border:none;font-size:1.5rem;color:#334155;cursor:pointer;transition:transform 0.2s}
-    .nls-drawer-close:hover{transform:rotate(90deg)}
+    .nls-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.5rem 1.25rem;background:linear-gradient(135deg, rgba(106,17,203,0.05), rgba(37,117,252,0.05));border-bottom:1px solid #f1f5f9}
+    .nls-drawer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--primary-color);font-weight:800;font-size:1.1rem}
+    .nls-drawer-logo .nls-logo-img{height:32px}
+    .nls-drawer-close{width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease}
+    .nls-drawer-close:hover{background:#e2e8f0;transform:rotate(90deg);color:#ef4444}
     .nls-drawer-nav{padding:1rem;display:flex;flex-direction:column;gap:0.5rem;overflow-y:auto}
-    .nls-drawer-link{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1rem;border-radius:10px;color:#334155;text-decoration:none;font-weight:600;font-size:0.95rem;transition:all 0.2s ease}
-    .nls-drawer-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateX(5px)}
-    .nls-drawer-link.active{background:rgba(106,17,203,0.1);color:var(--primary-color)}
-    .nls-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;opacity:0;visibility:hidden;transition:all 0.35s var(--ease);backdrop-filter:blur(4px)}
+    .nls-drawer-link{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1rem;border-radius:14px;color:#334155;text-decoration:none;font-weight:600;font-size:0.95rem;background:rgba(255,255,255,0.6);box-shadow:0 1px 2px rgba(0,0,0,0.03);transition:all 0.3s var(--ease)}
+    .nls-drawer-link i{width:36px;height:36px;border-radius:10px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:var(--primary-color);font-size:1rem;transition:all 0.3s var(--ease)}
+    .nls-drawer-link:hover{background:linear-gradient(135deg, rgba(106,17,203,0.1), rgba(37,117,252,0.1));color:var(--primary-color);transform:translateX(5px);box-shadow:0 4px 12px rgba(106,17,203,0.1)}
+    .nls-drawer-link:hover i{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff}
+    .nls-drawer-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;box-shadow:0 4px 15px rgba(106,17,203,0.3)}
+    .nls-drawer-link.active i{background:rgba(255,255,255,0.2);color:#fff}
+    .nls-drawer-link.nls-adult{color:#db2777}
+    .nls-drawer-link.nls-adult i{color:#db2777}
+    .nls-drawer-link.nls-adult:hover{background:linear-gradient(135deg, rgba(219,39,119,0.1), rgba(219,39,119,0.05));color:#db2777}
+    .nls-drawer-link.nls-adult:hover i{background:#db2777;color:#fff}
+    .nls-drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:1000;opacity:0;visibility:hidden;transition:all 0.4s var(--ease);backdrop-filter:blur(8px)}
     .nls-drawer-overlay.active{opacity:1;visibility:visible}
-    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);cursor:pointer;height:100%;display:flex;flex-direction:column}
+    
+    /* Product Cards */
+    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.2s var(--ease),box-shadow 0.2s var(--ease);cursor:pointer;height:100%;display:flex;flex-direction:column}
     .subscription-card:hover{transform:translateY(-4px);box-shadow:0 10px 15px -3px rgba(0,0,0,0.1)}
     .subscription-card .card-link{text-decoration:none;display:flex;flex-direction:column;height:100%}
     .product-image-container{width:100%;aspect-ratio:16/9;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden}
-    .product-image{width:100%;height:100%;object-fit:contain;transition:transform 0.3s var(--ease)}
+    .product-image{width:100%;height:100%;object-fit:cover;transition:transform 0.2s var(--ease)}
     .subscription-card:hover .product-image{transform:scale(1.05)}.product-icon{font-size:3rem}
-    .nls-user-link{animation:appear .42s var(--ease)}@keyframes appear{0%{opacity:0;transform:translateY(-7px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
-    .nls-btn-details{position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:500;color:#4b5563;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden}
-    .nls-btn-details::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(72,176,255,0.15),transparent);transition:left 0.6s ease}
+    .nls-user-link{animation:appear .3s var(--ease)}@keyframes appear{0%{opacity:0;transform:translateY(-7px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+    .nls-btn-details{position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:500;color:#4b5563;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.2s cubic-bezier(0.4,0,0.2,1);overflow:hidden}
+    .nls-btn-details::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(72,176,255,0.15),transparent);transition:left 0.4s ease}
     .subscription-card:hover .nls-btn-details,.nls-btn-details:hover{color:#2563eb;border-color:#93c5fd;background:linear-gradient(135deg,#eff6ff 0%,#fff 100%);box-shadow:0 4px 12px rgba(37,99,235,0.12);transform:translateY(-1px)}
     .nls-btn-details:hover::before{left:100%}
-    .nls-btn-details i{font-size:0.75rem;margin-left:0.375rem;transition:transform 0.3s ease}.nls-btn-details:hover i{transform:translateX(3px)}
+    .nls-btn-details i{font-size:0.75rem;margin-left:0.375rem;transition:transform 0.2s ease}.nls-btn-details:hover i{transform:translateX(3px)}
     .nls-btn-details:active{transform:scale(0.98) translateY(0);box-shadow:0 2px 4px rgba(37,99,235,0.08)}
     .search-highlight{background-color:#fef08a;font-weight:600;padding:0 2px;border-radius:2px}
+
+    /* MODERN CART SIDEBAR STYLES */
+    .cart-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);z-index:1100;opacity:0;visibility:hidden;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+    .cart-overlay.active{opacity:1;visibility:visible}
+    .cart-sidebar{position:fixed;top:0;right:0;width:100%;max-width:420px;height:100vh;background:rgba(255,255,255,0.85);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);z-index:1101;transform:translateX(105%);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 40px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+    .cart-sidebar.open{transform:translateX(0)}
+    .cart-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem;border-bottom:1px solid rgba(226,232,240,0.6)}
+    .cart-title-wrap{display:flex;align-items:center;gap:0.75rem}
+    .cart-title-icon{color:var(--primary-color);font-size:1.25rem}
+    .cart-title{font-size:1.5rem;font-weight:800;color:#172033;margin:0}
+    .cart-item-count{background:var(--primary-color);color:white;font-size:0.75rem;font-weight:700;padding:2px 8px;border-radius:999px}
+    .cart-close-btn{width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#64748b;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease}
+    .cart-close-btn:hover{background:#e2e8f0;transform:rotate(90deg);color:#ef4444}
+    .cart-items-container{flex-grow:1;overflow-y:auto;padding:1rem 1.5rem}
+    .cart-items-container::-webkit-scrollbar{width:4px}
+    .cart-items-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+    .cart-item{display:flex;align-items:center;gap:1rem;padding:1rem;background:#fff;border:1px solid #f1f5f9;border-radius:16px;margin-bottom:1rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);animation:cartItemIn 0.4s cubic-bezier(0.16,1,0.3,1)}
+    @keyframes cartItemIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .cart-item-img{width:60px;height:60px;border-radius:12px;object-fit:contain;background:#f8fafc}
+    .cart-item-info{flex:1;min-width:0}
+    .cart-item-name{font-weight:700;font-size:0.95rem;color:#172033;margin:0 0 0.25rem 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cart-item-price{font-size:0.8rem;color:#64748b;margin:0}
+    .cart-item-controls{display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem}
+    .cart-item-remove{background:none;border:none;color:#cbd5e1;cursor:pointer;transition:color 0.2s;padding:0;line-height:1}
+    .cart-item-remove:hover{color:#ef4444}
+    .cart-qty-wrap{display:flex;align-items:center;gap:0.5rem;background:#f8fafc;padding:4px;border-radius:999px}
+    .cart-qty-btn{width:24px;height:24px;border-radius:50%;background:#fff;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:background 0.2s}
+    .cart-qty-btn:hover{background:var(--primary-color);color:#fff}
+    .cart-qty-val{font-size:0.85rem;font-weight:700;color:#172033;min-width:16px;text-align:center}
+    .cart-footer{padding:1.5rem;border-top:1px solid rgba(226,232,240,0.6);background:rgba(255,255,255,0.5)}
+    .cart-footer.hidden{display:none}
+    .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+    .cart-total-label{font-size:1rem;color:#64748b;font-weight:500}
+    .cart-total-amount{font-size:1.75rem;font-weight:800;color:#172033}
+    .cart-taxes{font-size:0.75rem;color:#94a3b8;margin-bottom:1.25rem}
+    .cart-checkout-btn{width:100%;padding:1rem;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:white;font-weight:700;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.2s ease;box-shadow:0 4px 14px rgba(106,17,203,0.3)}
+    .cart-checkout-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(106,17,203,0.4)}
+    .cart-checkout-btn:active{transform:translateY(0)}
+    .empty-cart-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:#94a3b8}
+    .empty-cart-state i{font-size:4rem;margin-bottom:1rem;color:#e2e8f0}
+    .empty-cart-state h3{font-size:1.25rem;color:#64748b;margin:0}
+    .empty-cart-state p{font-size:0.9rem;margin-top:0.5rem}
 
     /* Details-page-specific styles */
     .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
@@ -278,12 +346,19 @@
     .breadcrumb a{color:#64748b;text-decoration:none;transition:color 0.2s}
     .breadcrumb a:hover{color:var(--primary-color)}
     .details-wrapper{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+
     @media(max-width:768px){.gallery-slide{aspect-ratio:4/3}.whatsapp-fab{bottom:100px;right:30px}.gallery-nav{width:30px;height:30px}.gallery-prev{left:5px}.gallery-next{right:5px}}
     @media(max-width:1024px){
       .nls-nav,.nls-nav-more{display:none}.nls-hamburger{display:block}.nls-search-desktop{display:none}.nls-icon-btn{display:flex;align-items:center;justify-content:center}.nls-auth-text{display:none}.nls-cart-text{display:none}
       .subscription-card .card-link > div:not(.product-image-container){padding:0.75rem !important}.subscription-card h3{font-size:0.95rem !important}.subscription-card p{font-size:0.75rem !important;margin-bottom:0.5rem !important}.subscription-card .text-2xl{font-size:1.1rem !important}.subscription-card button{padding:0.4rem !important;font-size:0.8rem !important}.subscription-card .nls-btn-details{padding:0.4rem !important;font-size:0.8rem !important}
     }
-    @media(max-width:480px){.nls-logo-text-container{display:none}.nls-left{gap:0.5rem}.nls-right{gap:0.25rem}.nls-container{padding:0 1rem}.subscription-card .card-link > div:not(.product-image-container){padding:0.5rem !important}.subscription-card h3{font-size:0.85rem !important}.subscription-card .text-2xl{font-size:1rem !important}.product-image-container{padding:0}.sdi-img{width:40px;height:40px}.sdi-info h4{font-size:0.85rem}.sdi-info p{font-size:0.7rem}.sdi-action{gap:5px}.sdi-price{font-size:0.8rem}.sdi-add-btn{padding:4px 8px;font-size:0.7rem}.popular-badge{font-size:.65rem;padding:.2rem .5rem}}
+    @media(max-width:600px){
+      .nls-logo-img{height:30px}
+      .nls-logo-text-container{width:90px;font-size:11px}
+    }
+    @media(max-width:480px){
+      .nls-left{gap:0.5rem}.nls-right{gap:0.25rem}.nls-container{padding:0 1rem}.subscription-card .card-link > div:not(.product-image-container){padding:0.5rem !important}.subscription-card h3{font-size:0.85rem !important}.subscription-card .text-2xl{font-size:1rem !important}.product-image-container{padding:0}.sdi-img{width:40px;height:40px}.sdi-info h4{font-size:0.85rem}.sdi-info p{font-size:0.7rem}.sdi-action{gap:5px}.sdi-price{font-size:0.8rem}.sdi-add-btn{padding:4px 8px;font-size:0.7rem}.popular-badge{font-size:.65rem;padding:.2rem .5rem}
+    }
   </style>
 
   <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -331,18 +406,31 @@
     <div class="footer-container"><div class="footer-content"><div class="footer-section" data-aos="fade-up"><h3>About Next Level</h3><p>Your one-stop destination for premium digital subscriptions at unbeatable prices in Bangladesh. We offer a wide range of services from streaming platforms to cloud storage solutions with instant delivery.</p><div class="social-links"><a href="https://www.facebook.com/nextlevelestoresubs" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a><a href="https://wa.me/8801644490566" aria-label="Whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/groups/1181322769599462" aria-label="Instagram" target="_blank"><i class="fa-solid fa-user-group-simple"></i></a><a href="#" aria-label="LinkedIn" target="_blank"><i class="fab fa-linkedin-in"></i></a></div></div><div class="footer-section" data-aos="fade-up" data-aos-delay="100"><h3>Quick Links</h3><ul><li><a href="/#best-selling" class="footer-link">Best Sellers</a></li><li><a href="/#streaming" class="footer-link">Streaming</a></li><li><a href="/#music" class="footer-link">Music</a></li><li><a href="/#storage" class="footer-link">Cloud Storage</a></li><li><a href="/#vpn" class="footer-link">VPN</a></li><li><a href="/#aiDesign" class="footer-link">Ai & Design</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="200"><h3>Categories</h3><ul><li><a href="https://www.nextlevelsubs.com/combos" class="footer-link">Combo Packages</a></li><li><a href="https://www.nextlevelsubs.com/education" class="footer-link">Education</a></li><li><a href="https://www.nextlevelsubs.com/adult" class="footer-link">Adult Subscription</a></li><li><a href="https://www.nextlevelsubs.com/best-selling" class="footer-link">Best Selling</a></li><li><a href="https://www.nextlevelbd.store/streaming" class="footer-link">Special Offers</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="300"><h3>Support</h3><ul><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link">Help Center</a></li><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link">Contact Us</a></li><li><a href="#" class="footer-link">Privacy Policy</a></li><li><a href="#" class="footer-link">Terms of Service</a></li><li><a href="#" class="footer-link">FAQ</a></li></ul></div></div><div class="footer-bottom" data-aos="fade-up" data-aos-delay="400"><p>&copy; 2025-2026 Next Level Subs. All rights reserved. | Premium Subscriptions Store in Bangladesh</p></div></div>
   </footer>
 
+  <!-- MODERN CART HTML STRUCTURE -->
   <div id="cartOverlay" class="cart-overlay"></div>
-  <div id="cartSidebar" class="cart-sidebar">
-    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-2xl font-bold">Your Cart</h2>
-      <button id="closeCartBtn" class="text-gray-500 hover:text-gray-700" aria-label="Close cart"><i class="fas fa-times text-xl" aria-hidden="true"></i></button>
-    </div>
-    <div id="cartItems" class="p-6 flex-grow"></div>
-    <div id="cartFooter" class="hidden p-6 border-t border-gray-200">
-      <div class="flex justify-between mb-4"><span class="font-semibold">Total:</span><span id="cartTotal" class="font-bold text-xl">৳0</span></div>
-      <button id="checkoutBtn" class="w-full py-3 rounded-lg font-semibold text-white btn-primary">Proceed to Checkout</button>
-    </div>
-  </div>
+  <aside id="cartSidebar" class="cart-sidebar">
+      <div class="cart-header">
+          <div class="cart-title-wrap">
+              <i class="fas fa-shopping-cart cart-title-icon"></i>
+              <h2 class="cart-title">Your Cart</h2>
+              <span id="cartHeaderCount" class="cart-item-count">0</span>
+          </div>
+          <button id="closeCartBtn" class="cart-close-btn" aria-label="Close cart">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      <div id="cartItems" class="cart-items-container"></div>
+      <div id="cartFooter" class="cart-footer hidden">
+          <div class="cart-total-row">
+              <span class="cart-total-label">Subtotal</span>
+              <span id="cartTotal" class="cart-total-amount">৳0</span>
+          </div>
+          <p class="cart-taxes">Taxes and discounts calculated at checkout</p>
+          <button id="checkoutBtn" class="cart-checkout-btn">
+              Proceed to Checkout <i class="fas fa-arrow-right"></i>
+          </button>
+      </div>
+  </aside>
 
   <div id="notification" class="notification"><span id="notificationText">Item added to cart!</span></div>
 
@@ -397,7 +485,7 @@
             nMB = $('navMoreBtn'), nMC = $('navMoreContainer'),
             cBtn = $('cartBtn'), cSide = $('cartSidebar'), cOvl = $('cartOverlay'),
             cClose = $('closeCartBtn'), cItems = $('cartItems'), cCount = $('cartCount'),
-            cTotal = $('cartTotal'), cFoot = $('cartFooter'), cOut = $('checkoutBtn'),
+            cHeadCount = $('cartHeaderCount'), cTotal = $('cartTotal'), cFoot = $('cartFooter'), cOut = $('checkoutBtn'),
             notif = $('notification'), notifT = $('notificationText'),
             nLinks = document.querySelectorAll('.nls-nav-link, .nls-drawer-link');
 
@@ -461,7 +549,7 @@
           const href = this.getAttribute('href');
           if (!href || !href.startsWith('/')) return;
           e.preventDefault();
-          window.location.href = '/' + (href.startsWith('/') ? href : '/' + href);
+          window.location.href = href;
         }));
       }
 
@@ -525,31 +613,51 @@
         }
       }
 
-      // ---------- Cart UI ----------
+      // ---------- MODERNIZED CART UI ----------
       function updateCartUI() {
         if (!cCount || !cItems) return;
-        const totalItems = cart.reduce((s, i) => s + Number(i.quantity || 0), 0);
-        cCount.textContent = totalItems;
+        const totalQty = cart.reduce((s, i) => s + Number(i.quantity || 0), 0);
+        cCount.textContent = totalQty;
+        if (cHeadCount) cHeadCount.textContent = totalQty;
+        
         cItems.innerHTML = '';
         if (!cart.length) {
-          cItems.innerHTML = '<div id="emptyCart" class="text-center py-12"><i class="fa-solid fa-basket-shopping-simple text-5xl mb-4" style="color:#48b0ff4d;"></i><h3 class="text-xl font-semibold text-gray-600">Your cart is empty</h3><p class="text-gray-500 mt-2">Add some subscriptions to get started</p></div>';
+          cItems.innerHTML = '<div class="empty-cart-state"><i class="fa-solid fa-basket-shopping-simple"></i><h3>Your cart is empty</h3><p>Add some subscriptions to get started</p></div>';
           cFoot.classList.add('hidden');
           cTotal.textContent = '৳0';
           return;
         }
         cFoot.classList.remove('hidden');
+        
         cart.forEach(item => {
           const ci = document.createElement('div');
-          ci.className = 'flex items-center gap-3 py-4 border-b border-gray-200';
-          const iH = item.image ? `<img src="${escA(item.image)}" alt="${escA(item.name)}" class="w-10 h-10 rounded-lg object-contain flex-shrink-0">` : `<div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color:${escA(item.color || '#6a11cb')}20;"><i class="${escA(item.icon || 'fas fa-shield-alt')}" style="color:${escA(item.color || '#6a11cb')};"></i></div>`;
+          ci.className = 'cart-item';
+          const iH = item.image ? `<img src="${escA(item.image)}" alt="${escA(item.name)}" class="cart-item-img">` : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;background:${escA(item.color || '#6a11cb')}20;"><i class="${escA(item.icon || 'fas fa-shield-alt')}" style="color:${escA(item.color || '#6a11cb')};font-size:1.5rem;"></i></div>`;
           const planPrice = item.selectedPlan ? item.selectedPlan.price : item.price;
           const planDur = item.selectedPlan ? item.selectedPlan.duration : item.duration;
-          ci.innerHTML = `${iH}<div class="flex-1 min-w-0"><h4 class="font-medium text-sm text-gray-800 truncate">${esc(item.name)}</h4><p class="text-xs text-gray-500">৳${planPrice}/${esc(planDur)}</p></div><div class="flex items-center gap-2 flex-shrink-0"><div class="flex items-center border border-gray-200 rounded-lg"><button type="button" class="px-2 py-1 text-gray-600 hover:bg-gray-100 text-sm" data-cart-minus="${escA(item.name)}"><i class="fas fa-minus text-xs"></i></button><span class="px-2 text-sm font-semibold">${item.quantity}</span><button type="button" class="px-2 py-1 text-gray-600 hover:bg-gray-100 text-sm" data-cart-plus="${escA(item.name)}"><i class="fas fa-plus text-xs"></i></button></div><button type="button" class="text-gray-400 hover:text-red-500 transition-colors" data-cart-remove="${escA(item.name)}"><i class="fas fa-trash text-sm"></i></button></div>`;
+          const itemSlug = item.slug || pSlug(item.name);
+          
+          ci.innerHTML = `
+            ${iH}
+            <div class="cart-item-info">
+              <h4 class="cart-item-name">${esc(item.name)}</h4>
+              <p class="cart-item-price">৳${planPrice} / ${esc(planDur)}</p>
+            </div>
+            <div class="cart-item-controls">
+              <button type="button" class="cart-item-remove" data-cart-remove="${escA(itemSlug)}"><i class="fas fa-times-circle"></i></button>
+              <div class="cart-qty-wrap">
+                <button type="button" class="cart-qty-btn" data-cart-minus="${escA(itemSlug)}"><i class="fas fa-minus" style="font-size:10px;"></i></button>
+                <span class="cart-qty-val">${item.quantity}</span>
+                <button type="button" class="cart-qty-btn" data-cart-plus="${escA(itemSlug)}"><i class="fas fa-plus" style="font-size:10px;"></i></button>
+              </div>
+            </div>
+          `;
           ci.querySelector('[data-cart-minus]')?.addEventListener('click', () => updCartQty(item.name, item.quantity - 1));
           ci.querySelector('[data-cart-plus]')?.addEventListener('click', () => updCartQty(item.name, item.quantity + 1));
           ci.querySelector('[data-cart-remove]')?.addEventListener('click', () => rmFromCart(item.name));
           cItems.appendChild(ci);
         });
+        
         const total = cart.reduce((s, i) => {
           const p = i.selectedPlan ? i.selectedPlan.price : i.price;
           return s + Number(p || 0) * Number(i.quantity || 0);
@@ -873,5 +981,6 @@
       init();
     })();
   </script>
+  <script src="/js/global-chat.js"></script>
 </body>
 </html>
