@@ -3,13 +3,17 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const seoContent = require("./seo-content");
 
 const SITE = "https://www.nextlevelsubs.com";
 
 function slugify(value) {
   return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim()
+    .replace(/&/g, "and")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
@@ -25,9 +29,7 @@ function escapeHTML(value) {
 
 function loadProducts() {
   const file = path.join(__dirname, "..", "js", "details.js");
-  let source = fs.readFileSync(file, "utf8");
-  source = source.replace(/,\s*,/g, ",");
-
+  let source = fs.readFileSync(file, "utf8").replace(/,\s*,/g, ",");
   const marker = source.indexOf("const products");
   if (marker < 0) throw new Error("products declaration not found");
   const start = source.indexOf("[", marker);
@@ -88,99 +90,79 @@ function findProduct(slug) {
   return products.find((p) => slugify(p.slug || p.name) === key || slugify(p.name) === key);
 }
 
-function cleanCandidate(value) {
-  if (Array.isArray(value)) value = value.join("/");
-  if (typeof value !== "string") return "";
-  return value.trim();
+function getSeoEntry(product, canonicalSlug) {
+  if (!seoContent || typeof seoContent !== "object") return null;
+  const aliases = {
+    duolingo: "doulingo"
+  };
+  const candidates = [
+    canonicalSlug,
+    slugify(product && product.slug),
+    slugify(product && product.name),
+    aliases[canonicalSlug]
+  ].filter(Boolean);
+
+  for (const key of candidates) {
+    if (seoContent[key] && typeof seoContent[key] === "object") return seoContent[key];
+  }
+  return null;
 }
 
-function getSlug(req) {
-  const query = req && req.query ? req.query : {};
-  const candidates = [query.slug, query.name, query.product];
-  for (const candidate of candidates) {
-    const value = cleanCandidate(candidate);
-    if (value) return value;
-  }
+function renderSeoContent(entry, productName) {
+  if (!entry) return "";
+  const intro = typeof entry.intro === "string" ? entry.intro.trim() : "";
+  const sections = Array.isArray(entry.sections) ? entry.sections : [];
+  const renderedSections = sections.map((section) => {
+    if (!section || typeof section !== "object") return "";
+    const heading = typeof section.heading === "string" ? section.heading.trim() : "";
+    const paragraphs = Array.isArray(section.paragraphs) ? section.paragraphs : [];
+    const body = paragraphs
+      .filter((p) => typeof p === "string" && p.trim())
+      .map((p) => `<p>${escapeHTML(p.trim())}</p>`)
+      .join("\n");
+    if (!heading && !body) return "";
+    return `<section class="nls-seo-section">${heading ? `<h2>${escapeHTML(heading)}</h2>` : ""}${body}</section>`;
+  }).filter(Boolean).join("\n");
 
-  const rawUrl = String((req && (req.originalUrl || req.url)) || "");
-  const queryMatch = rawUrl.match(/[?&](?:slug|name|product)=([^&#]+)/i);
-  if (queryMatch) {
-    try { return decodeURIComponent(queryMatch[1]); } catch (_) { return queryMatch[1]; }
-  }
-
-  const cleanPath = rawUrl.split("?")[0].split("#")[0];
-  const match = cleanPath.match(/^\/(?:product|products)\/(.+?)\/?$/i);
-  if (match) {
-    try { return decodeURIComponent(match[1]); } catch (_) { return match[1]; }
-  }
-
-  return "";
+  if (!intro && !renderedSections) return "";
+  return `
+<section id="product-seo-content" class="nls-product-seo" aria-label="${escapeHTML(productName)} information">
+  ${intro ? `<p class="nls-seo-intro">${escapeHTML(intro)}</p>` : ""}
+  ${renderedSections}
+</section>`;
 }
 
 const RELATED_CARD_CSS = `
-/* Related subscription cards intentionally mirror the homepage .subscription-card system. */
 [id*="related"], [class*="related"] { width: 100%; }
-[id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
-  align-items: stretch;
-}
-[id*="related"] .subscription-card,
-[class*="related"] .subscription-card,
-[id*="related"] [class*="product-card"],
-[class*="related"] [class*="product-card"],
-[id*="related"] [class*="card"]:not(.review-card),
-[class*="related"] [class*="card"]:not(.review-card) {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+[id*="related"] [class*="grid"], [class*="related"] [class*="grid"] { align-items: stretch; }
+[id*="related"] .subscription-card, [class*="related"] .subscription-card,
+[id*="related"] [class*="product-card"], [class*="related"] [class*="product-card"],
+[id*="related"] [class*="card"]:not(.review-card), [class*="related"] [class*="card"]:not(.review-card) {
+  width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column;
+  overflow: hidden; border-radius: 1rem; background: #fff;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
   transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s cubic-bezier(.16,1,.3,1);
 }
-[id*="related"] .subscription-card:hover,
-[class*="related"] .subscription-card:hover,
-[id*="related"] [class*="product-card"]:hover,
-[class*="related"] [class*="product-card"]:hover,
-[id*="related"] [class*="card"]:not(.review-card):hover,
-[class*="related"] [class*="card"]:not(.review-card):hover {
-  transform: translateY(-8px);
-  box-shadow: 0 0 15px 10px rgba(106, 17, 203, .15);
+[id*="related"] .subscription-card:hover, [class*="related"] .subscription-card:hover,
+[id*="related"] [class*="product-card"]:hover, [class*="related"] [class*="product-card"]:hover,
+[id*="related"] [class*="card"]:not(.review-card):hover, [class*="related"] [class*="card"]:not(.review-card):hover {
+  transform: translateY(-8px); box-shadow: 0 0 15px 10px rgba(106, 17, 203, .15);
 }
-[id*="related"] img,
-[class*="related"] img {
-  max-width: 100%;
-}
-[id*="related"] .subscription-card > *,
-[class*="related"] .subscription-card > *,
-[id*="related"] [class*="product-card"] > *,
-[class*="related"] [class*="product-card"] > * {
-  flex-shrink: 0;
-}
-[id*="related"] .subscription-card > :last-child,
-[class*="related"] .subscription-card > :last-child,
-[id*="related"] [class*="product-card"] > :last-child,
-[class*="related"] [class*="product-card"] > :last-child {
-  margin-top: auto;
-}
-@media (min-width: 1024px) {
-  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (min-width: 640px) and (max-width: 1023px) {
-  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 639px) {
-  [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .75rem;
-  }
-}
+[id*="related"] img, [class*="related"] img { max-width: 100%; }
+[id*="related"] .subscription-card > *, [class*="related"] .subscription-card > *,
+[id*="related"] [class*="product-card"] > *, [class*="related"] [class*="product-card"] > * { flex-shrink: 0; }
+[id*="related"] .subscription-card > :last-child, [class*="related"] .subscription-card > :last-child,
+[id*="related"] [class*="product-card"] > :last-child, [class*="related"] [class*="product-card"] > :last-child { margin-top: auto; }
+@media (min-width: 1024px) { [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (min-width: 640px) and (max-width: 1023px) { [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 639px) { [id*="related"] [class*="grid"], [class*="related"] [class*="grid"] { grid-template-columns: repeat(2, minmax(0,1fr)); gap: .75rem; } }
+`;
+
+const SEO_CONTENT_CSS = `
+.nls-product-seo { max-width: 1100px; margin: 2rem auto; padding: 1.5rem; line-height: 1.75; }
+.nls-product-seo h2 { margin: 1.5rem 0 .65rem; line-height: 1.3; }
+.nls-product-seo p { margin: .6rem 0; }
+.nls-product-seo .nls-seo-intro { font-size: 1.05rem; }
 `;
 
 module.exports = function handler(req, res) {
@@ -194,21 +176,25 @@ module.exports = function handler(req, res) {
 
     const requestedSlug = getSlug(req);
     const product = findProduct(requestedSlug);
-
     if (!product) {
       res.statusCode = 404;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.setHeader("X-Robots-Tag", "noindex, nofollow");
-      return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><title>Product Not Found | Next Level Subs</title></head><body><h1>Product Not Found</h1><p>Requested product: " + escapeHTML(requestedSlug || "(empty slug)") + "</p><p><a href=\"/\">Return home</a></p></body></html>");
+      return res.end(`<!doctype html><html><head><meta charset="utf-8"><title>Product Not Found | Next Level Subs</title></head><body><h1>Product Not Found</h1><p>Requested product: ${escapeHTML(requestedSlug || "(empty slug)")}</p><p><a href="/">Return home</a></p></body></html>`);
     }
 
     const canonicalSlug = slugify(product.slug || product.name);
     const canonical = SITE + "/product/" + canonicalSlug;
+    const seo = getSeoEntry(product, canonicalSlug);
+    const seoDescription = seo && typeof seo.description === "string" ? seo.description.trim() : "";
+    const description = seoDescription || product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
+    const title = seo && typeof seo.title === "string" && seo.title.trim()
+      ? seo.title.trim()
+      : `${product.name} Subscription | NEXT LEVEL SUBS`;
+    const seoHTML = renderSeoContent(seo, product.name);
+
     const image = String(product.image || "/images/next_level.png").replace(/^\.\//, "/");
     const imageURL = /^https?:\/\//i.test(image) ? image : SITE + (image.startsWith("/") ? image : "/" + image);
-    const description = product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
-    const title = `${product.name} Subscription | NEXT LEVEL SUBS`;
-
     const pricing = Array.isArray(product.pricing)
       ? product.pricing.filter((item) => Number.isFinite(Number(item && item.price)))
       : [];
@@ -227,12 +213,13 @@ module.exports = function handler(req, res) {
     let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
     html = html.replace(/<head>/i, '<head>\n  <base href="/">');
     html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i, '<script src="/api/details-script"></script>');
-
     const productBootstrap = `<script>window.__NLS_PRODUCT_SLUG__=${JSON.stringify(canonicalSlug)};window.__NLS_PRODUCT_NAME__=${JSON.stringify(product.name)};</script>`;
     html = html.replace(/<body>/i, productBootstrap + "\n<body>");
 
-    // Keep related subscription cards visually consistent with the homepage card system.
-    html = html.replace(/<\/head>/i, `<style id="nls-related-card-style">${RELATED_CARD_CSS}</style>\n</head>`);
+    html = html.replace(/<\/head>/i, `<style id="nls-related-card-style">${RELATED_CARD_CSS}</style><style id="nls-product-seo-style">${SEO_CONTENT_CSS}</style>\n</head>`);
+
+    // Server-render the product-specific SEO copy so crawlers receive it in the initial HTML.
+    if (seoHTML) html = html.replace(/<\/body>/i, `${seoHTML}\n</body>`);
 
     const schema = JSON.stringify({
       "@context": "https://schema.org",
@@ -254,7 +241,9 @@ module.exports = function handler(req, res) {
     html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHTML(description)}">`);
     html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${escapeHTML(imageURL)}">`);
     html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${escapeHTML(canonical)}">`);
-    html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/i, `<script type="application/ld+json">${schema}</script>`);
+
+    // Preserve details.html's existing Organization JSON-LD and append Product JSON-LD.
+    html = html.replace(/<\/head>/i, `<script type="application/ld+json">${schema}</script>\n</head>`);
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
