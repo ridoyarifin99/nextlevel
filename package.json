@@ -1,17 +1,13 @@
 {
-  "name": "nextlevel",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
 
   "name": "nextlevel",
   "scripts": {
     "start": "vite"
-  }
+  },
 
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ridoyarifin99/nextlevel.git"
+    "url": "https://github.com/ridoyarifin99/nextlevel.git"
   },
   "keywords": [],
   "author": "",
