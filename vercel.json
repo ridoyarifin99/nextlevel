@@ -1,16 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/product/(.+)$",
-      "dest": "/api/product-view?slug=$1"
+      "source": "/product/:slug",
+      "destination": "/api/product-view?slug=:slug"
     },
     {
-      "src": "^/products/(.+)$",
-      "dest": "/api/product-view?slug=$1"
-    },
-    {
-      "handle": "filesystem"
+      "source": "/products/:slug",
+      "destination": "/api/product-view?slug=:slug"
     }
   ]
 }
