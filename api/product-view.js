@@ -88,15 +88,37 @@ function findProduct(slug) {
   return products.find((p) => slugify(p.slug || p.name) === key || slugify(p.name) === key);
 }
 
-function getSlug(req) {
-  const query = req && req.query ? req.query.slug : "";
-  if (Array.isArray(query) && query.length) return query.join("/");
-  if (typeof query === "string" && query.trim()) return query;
+function cleanCandidate(value) {
+  if (Array.isArray(value)) value = value.join("/");
+  if (typeof value !== "string") return "";
+  return value.trim();
+}
 
+function getSlug(req) {
+  const query = req && req.query ? req.query : {};
+
+  // Vercel rewrite value: /product/:slug -> ?slug=:slug
+  const candidates = [query.slug, query.name, query.product];
+  for (const candidate of candidates) {
+    const value = cleanCandidate(candidate);
+    if (value) return value;
+  }
+
+  // Some Vercel runtimes expose only the rewritten URL. Recover the slug
+  // from its query string as a final fallback.
   const rawUrl = String((req && (req.originalUrl || req.url)) || "");
+  const queryMatch = rawUrl.match(/[?&](?:slug|name|product)=([^&#]+)/i);
+  if (queryMatch) {
+    try { return decodeURIComponent(queryMatch[1]); } catch (_) { return queryMatch[1]; }
+  }
+
   const cleanPath = rawUrl.split("?")[0].split("#")[0];
   const match = cleanPath.match(/^\/(?:product|products)\/(.+?)\/?$/i);
-  return match ? decodeURIComponent(match[1]) : "";
+  if (match) {
+    try { return decodeURIComponent(match[1]); } catch (_) { return match[1]; }
+  }
+
+  return "";
 }
 
 module.exports = function handler(req, res) {
@@ -114,6 +136,7 @@ module.exports = function handler(req, res) {
     if (!product) {
       res.statusCode = 404;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
       return res.end("<!doctype html><html><head><meta charset=\"utf-8\"><title>Product Not Found | Next Level Subs</title></head><body><h1>Product Not Found</h1><p>Requested product: " + escapeHTML(requestedSlug || "(empty slug)") + "</p><p><a href=\"/\">Return home</a></p></body></html>");
     }
 
@@ -127,6 +150,11 @@ module.exports = function handler(req, res) {
     let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
     html = html.replace(/<head>/i, '<head>\n  <base href="/">');
     html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i, '<script src="/api/details-script"></script>');
+
+    // Give the client-side details page an explicit product id. It is only
+    // used by the browser renderer; the visible URL remains /product/:slug.
+    const productBootstrap = `<script>window.__NLS_PRODUCT_SLUG__=${JSON.stringify(canonicalSlug)};window.__NLS_PRODUCT_NAME__=${JSON.stringify(product.name)};</script>`;
+    html = html.replace(/<body>/i, productBootstrap + "\n<body>");
 
     const schema = JSON.stringify({
       "@context": "https://schema.org",
