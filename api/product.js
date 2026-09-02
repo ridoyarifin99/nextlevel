@@ -1,11 +1,18 @@
 "use strict";
 
-// Vercel Node serverless handler for /product/:slug.
-// IMPORTANT: details.js is already a CommonJS data module. Do not execute it
-// inside a VM/browser sandbox; that was the source of the previous fragile
-// server-side loading path.
-const productsSource = require("../js/details.js");
-const seoContentSource = require("./seo-content.js");
+/*
+ * Vercel product SEO handler.
+ *
+ * Do NOT require js/details.js at module scope. That browser-oriented file is
+ * also used as the client data source and a top-level require can make the
+ * entire Vercel function fail before the handler/catch block runs.
+ *
+ * We first try CommonJS, then safely extract only the `products` array from
+ * details.js. The fallback never executes the browser/UI part of details.js.
+ */
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
 
 const SITE = {
     name: "NEXT LEVEL SUBS",
@@ -15,336 +22,253 @@ const SITE = {
     logo: "/assets/logo.png"
 };
 
-const slugAliases = {
+const aliases = {
     netflix: "netflix-premium",
     duolingo: "doulingo",
     "youtube-premium-nonrenewable": "youtube-premium-non-renewable"
 };
 
 function slugify(value) {
-    return String(value == null ? "" : value)
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+    return String(value == null ? "" : value).toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
 function escapeHTML(value) {
     return String(value == null ? "" : value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 function safeJSON(value) {
     try {
         return JSON.stringify(value == null ? null : value)
-            .replace(/</g, "\\u003c")
-            .replace(/>/g, "\\u003e")
-            .replace(/&/g, "\\u0026")
-            .replace(/\u2028/g, "\\u2028")
+            .replace(/</g, "\\u003c").replace(/>/g, "\\u003e")
+            .replace(/&/g, "\\u0026").replace(/\u2028/g, "\\u2028")
             .replace(/\u2029/g, "\\u2029");
-    } catch (_) {
-        return "null";
-    }
+    } catch (_) { return "null"; }
 }
 
-function normalizeProducts(source) {
-    const list = Array.isArray(source)
-        ? source
-        : source && typeof source === "object"
-            ? Object.keys(source).map((key) => source[key])
-            : [];
+function loadProducts() {
+    const file = path.join(__dirname, "..", "js", "details.js");
+    let source = fs.readFileSync(file, "utf8");
 
+    try {
+        const loaded = require(file);
+        if (Array.isArray(loaded) && loaded.length) return loaded;
+        if (loaded && Array.isArray(loaded.products) && loaded.products.length) return loaded.products;
+    } catch (error) {
+        console.warn("details.js CommonJS load failed; using data-only fallback:", error && error.message);
+    }
+
+    // Extract only: const products = [ ... ];
+    const marker = source.indexOf("const products");
+    if (marker < 0) throw new Error("Product catalog declaration not found in js/details.js");
+    const start = source.indexOf("[", marker);
+    if (start < 0) throw new Error("Product catalog array not found in js/details.js");
+
+    let depth = 0, quote = null, escaped = false, lineComment = false, blockComment = false;
+    let end = -1;
+    for (let i = start; i < source.length; i++) {
+        const c = source[i], n = source[i + 1];
+        if (lineComment) { if (c === "\n") lineComment = false; continue; }
+        if (blockComment) { if (c === "*" && n === "/") { blockComment = false; i++; } continue; }
+        if (quote) {
+            if (escaped) { escaped = false; continue; }
+            if (c === "\\") { escaped = true; continue; }
+            if (c === quote) quote = null;
+            continue;
+        }
+        if (c === "'" || c === '"' || c === "`") { quote = c; continue; }
+        if (c === "/" && n === "/") { lineComment = true; i++; continue; }
+        if (c === "/" && n === "*") { blockComment = true; i++; continue; }
+        if (c === "[") depth++;
+        else if (c === "]") {
+            depth--;
+            if (depth === 0) { end = i + 1; break; }
+        }
+    }
+    if (end < 0) throw new Error("Could not find end of product catalog array");
+
+    const arraySource = source.slice(start, end);
+    const products = vm.runInNewContext("(" + arraySource + ")", Object.create(null), { timeout: 3000 });
+    if (!Array.isArray(products)) throw new Error("Extracted product catalog is not an array");
+    return products;
+}
+
+function buildProductMap(list) {
     const map = Object.create(null);
-    for (const product of list) {
-        if (!product || typeof product !== "object" || !product.name) continue;
-        const key = slugify(product.slug || product.name);
-        if (key && !map[key]) map[key] = product;
+    for (const p of list) {
+        if (!p || typeof p !== "object" || !p.name) continue;
+        const key = slugify(p.slug || p.name);
+        if (key) map[key] = p;
     }
     return map;
 }
 
-const products = normalizeProducts(productsSource);
-const seoContent = seoContentSource && typeof seoContentSource === "object"
-    ? seoContentSource
-    : Object.create(null);
+let products;
+let productLoadError;
+try {
+    products = buildProductMap(loadProducts());
+} catch (error) {
+    productLoadError = error;
+    products = Object.create(null);
+    console.error("PRODUCT CATALOG LOAD ERROR:", error && error.stack ? error.stack : error);
+}
+
+let seoContent = Object.create(null);
+try {
+    const seo = require(path.join(__dirname, "seo-content.js"));
+    seoContent = seo && typeof seo === "object" ? seo : Object.create(null);
+} catch (error) {
+    console.warn("SEO content load failed:", error && error.message);
+}
 
 function resolveSlug(value) {
     if (typeof value !== "string") return "";
-
     let slug = value.trim();
     try { slug = decodeURIComponent(slug); } catch (_) {}
     slug = slugify(slug);
-
     if (products[slug]) return slug;
-
-    const alias = slugAliases[slug];
-    if (alias && products[alias]) return alias;
-
+    if (aliases[slug] && products[aliases[slug]]) return aliases[slug];
     for (const key of Object.keys(products)) {
         if (slugify(products[key].name) === slug) return key;
     }
-
     return "";
 }
 
 function getSlug(req) {
-    const querySlug = req && req.query && typeof req.query.slug === "string"
-        ? req.query.slug
-        : "";
-    const fromQuery = resolveSlug(querySlug);
-    if (fromQuery) return fromQuery;
-
-    const pathname = String(req && req.url ? req.url : "").split("?")[0];
-    const match = pathname.match(/^\/(?:product|products)\/([^/]+)\/?$/i);
-    return match ? resolveSlug(match[1]) : "";
+    const q = req && req.query && typeof req.query.slug === "string" ? req.query.slug : "";
+    const resolved = resolveSlug(q);
+    if (resolved) return resolved;
+    const pathname = String(req && req.url || "").split("?")[0];
+    const m = pathname.match(/^\/(?:product|products)\/([^/]+)\/?$/i);
+    return m ? resolveSlug(m[1]) : "";
 }
 
 function absoluteURL(value) {
     if (!value) return SITE.domain + SITE.logo;
-    const text = String(value).trim();
-    if (/^https?:\/\//i.test(text)) return text;
-    const clean = text.replace(/^\.\//, "/");
-    return SITE.domain + (clean.startsWith("/") ? "" : "/") + clean;
+    const v = String(value).trim();
+    if (/^https?:\/\//i.test(v)) return v;
+    return SITE.domain + "/" + v.replace(/^\.\//, "").replace(/^\//, "");
 }
 
-function categoryOf(product) {
-    if (product && typeof product.category === "string" && product.category.trim()) {
-        return product.category.trim();
-    }
-    if (product && Array.isArray(product.categories) && product.categories.length) {
-        return product.categories
-            .filter(Boolean)
-            .map((x) => String(x).replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()))
-            .join(", ");
-    }
+function categoryOf(p) {
+    if (p && typeof p.category === "string" && p.category.trim()) return p.category.trim();
+    if (p && Array.isArray(p.categories)) return p.categories.filter(Boolean).map(x => String(x).replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())).join(", ");
     return "Digital Services";
 }
 
-function pricingOf(product) {
-    if (!product || !Array.isArray(product.pricing)) return [];
-    return product.pricing
-        .filter((p) => p && p.duration && p.price != null)
-        .map((p) => ({
-            duration: String(p.duration),
-            price: Number(p.price),
-            currency: p.currency || "BDT",
-            popular: !!p.popular,
-            discount: p.discount || ""
-        }))
-        .filter((p) => Number.isFinite(p.price));
+function pricingOf(p) {
+    return p && Array.isArray(p.pricing) ? p.pricing.filter(x => x && x.duration && x.price != null).map(x => ({
+        duration: String(x.duration), price: Number(x.price), currency: x.currency || "BDT", popular: !!x.popular, discount: x.discount || ""
+    })).filter(x => Number.isFinite(x.price)) : [];
 }
 
-function seoOf(slug, product) {
-    const custom = seoContent[slug];
-    if (custom && typeof custom === "object") {
-        return {
-            title: custom.title || `${product.name} Subscription | ${SITE.name}`,
-            description: custom.description || `${product.description || "Premium subscription service"}. Get ${product.name} from ${SITE.name}.`,
-            intro: custom.intro || `Get ${product.name} from ${SITE.name}.`,
-            sections: Array.isArray(custom.sections) ? custom.sections : []
-        };
-    }
-    return {
-        title: `${product.name} Subscription | ${SITE.name}`,
-        description: `${product.description || "Premium subscription service"}. Get ${product.name} from ${SITE.name}.`,
-        intro: `Get ${product.name} from ${SITE.name}. ${product.description || "Premium subscription service."}`,
+function seoOf(slug, p) {
+    const x = seoContent[slug];
+    return x && typeof x === "object" ? {
+        title: x.title || `${p.name} Subscription | ${SITE.name}`,
+        description: x.description || `${p.description || "Premium subscription service"}. Get ${p.name} from ${SITE.name}.`,
+        intro: x.intro || `Get ${p.name} from ${SITE.name}.`,
+        sections: Array.isArray(x.sections) ? x.sections : []
+    } : {
+        title: `${p.name} Subscription | ${SITE.name}`,
+        description: `${p.description || "Premium subscription service"}. Get ${p.name} from ${SITE.name}.`,
+        intro: `Get ${p.name} from ${SITE.name}. ${p.description || "Premium subscription service."}`,
         sections: []
     };
 }
 
-function schemaProduct(product, url, image, description) {
-    const schema = {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "@id": url + "#product",
-        name: product.name,
-        description,
-        image: [image],
-        url,
-        category: categoryOf(product),
-        brand: { "@type": "Brand", name: SITE.name },
-        seller: { "@type": "Organization", name: SITE.name, url: SITE.domain }
-    };
-
-    const rating = Number(product.rating);
-    const reviews = Number(product.reviews);
-    if (Number.isFinite(rating) && Number.isFinite(reviews) && reviews > 0) {
-        schema.aggregateRating = {
-            "@type": "AggregateRating",
-            ratingValue: rating,
-            reviewCount: reviews
-        };
-    }
-
-    const pricing = pricingOf(product);
-    if (pricing.length) {
-        schema.offers = pricing.map((p) => ({
-            "@type": "Offer",
-            url,
-            priceCurrency: p.currency,
-            price: p.price,
-            name: `${product.name} - ${p.duration}`,
-            availability: "https://schema.org/InStock",
-            seller: { "@type": "Organization", name: SITE.name }
-        }));
-    }
-
-    return schema;
+function schemaProduct(p, url, image, description) {
+    const s = { "@context":"https://schema.org", "@type":"Product", "@id":url+"#product", name:p.name, description, image:[image], url, category:categoryOf(p), brand:{"@type":"Brand",name:SITE.name}, seller:{"@type":"Organization",name:SITE.name,url:SITE.domain} };
+    const rating = Number(p.rating), reviews = Number(p.reviews);
+    if (Number.isFinite(rating) && Number.isFinite(reviews) && reviews > 0) s.aggregateRating = {"@type":"AggregateRating",ratingValue:rating,reviewCount:reviews};
+    const pricing = pricingOf(p);
+    if (pricing.length) s.offers = pricing.map(x => ({"@type":"Offer",url,priceCurrency:x.currency,price:x.price,name:`${p.name} - ${x.duration}`,availability:"https://schema.org/InStock",seller:{"@type":"Organization",name:SITE.name}}));
+    return s;
 }
 
-function seoSections(seo) {
-    if (!Array.isArray(seo.sections)) return "";
-    return seo.sections.map((section) => {
-        if (!section || typeof section !== "object") return "";
-        const paragraphs = Array.isArray(section.paragraphs) ? section.paragraphs : [];
-        return `<section><h2>${escapeHTML(section.heading || "")}</h2>${paragraphs.map((p) => `<p>${escapeHTML(p)}</p>`).join("")}</section>`;
+function sectionsHTML(sections) {
+    return (Array.isArray(sections) ? sections : []).map(s => {
+        if (!s || typeof s !== "object") return "";
+        const ps = Array.isArray(s.paragraphs) ? s.paragraphs : [];
+        return `<section><h2>${escapeHTML(s.heading || "")}</h2>${ps.map(x => `<p>${escapeHTML(x)}</p>`).join("")}</section>`;
     }).join("");
 }
 
-function pricingHTML(product) {
-    return pricingOf(product).map((p) => {
-        const price = p.currency === "BDT"
-            ? `৳${escapeHTML(p.price)}`
-            : `${escapeHTML(p.price)} ${escapeHTML(p.currency)}`;
-        const discount = p.discount ? ` — ${escapeHTML(p.discount)}` : "";
-        return `<li><strong>${escapeHTML(p.duration)}</strong>: ${price}${discount}</li>`;
-    }).join("");
+function pricingHTML(p) {
+    return pricingOf(p).map(x => `<li><strong>${escapeHTML(x.duration)}</strong>: ${x.currency === "BDT" ? `৳${escapeHTML(x.price)}` : `${escapeHTML(x.price)} ${escapeHTML(x.currency)}`}${x.discount ? ` — ${escapeHTML(x.discount)}` : ""}</li>`).join("");
 }
 
-function featuresHTML(product) {
-    if (!Array.isArray(product.features)) return "";
-    const items = product.features.filter(Boolean).map((x) => `<li>${escapeHTML(x)}</li>`).join("");
-    return `<section><h2>${escapeHTML(product.name)} Features</h2><ul>${items}</ul></section>`;
+function featuresHTML(p) {
+    if (!Array.isArray(p.features)) return "";
+    return `<section><h2>${escapeHTML(p.name)} Features</h2><ul>${p.features.filter(Boolean).map(x => `<li>${escapeHTML(x)}</li>`).join("")}</ul></section>`;
 }
 
-function faqHTML(product) {
-    if (!Array.isArray(product.faq)) return "";
-    const items = product.faq.filter(Boolean).map((x) =>
-        `<details><summary>${escapeHTML(x.question || "")}</summary><p>${escapeHTML(x.answer || "")}</p></details>`
-    ).join("");
-    return `<section><h2>Frequently Asked Questions</h2>${items}</section>`;
+function faqHTML(p) {
+    if (!Array.isArray(p.faq)) return "";
+    return `<section><h2>Frequently Asked Questions</h2>${p.faq.filter(Boolean).map(x => `<details><summary>${escapeHTML(x.question || "")}</summary><p>${escapeHTML(x.answer || "")}</p></details>`).join("")}</section>`;
 }
 
-function relatedHTML(currentSlug, product) {
-    const currentCategory = categoryOf(product);
-    const items = [];
-
+function relatedHTML(current, p) {
+    const cat = categoryOf(p), out = [];
     for (const key of Object.keys(products)) {
-        if (key === currentSlug) continue;
-        const p = products[key];
-        if (p && categoryOf(p) === currentCategory) {
-            items.push({ slug: key, name: p.name });
-        }
-        if (items.length >= 8) break;
+        if (key === current) continue;
+        if (categoryOf(products[key]) === cat) out.push({slug:key,name:products[key].name});
+        if (out.length >= 8) break;
     }
-
-    if (!items.length) return "";
-    return `<section><h2>More ${escapeHTML(currentCategory)} Subscriptions</h2><ul>${items.map((x) =>
-        `<li><a href="${SITE.domain}/product/${encodeURIComponent(x.slug)}">${escapeHTML(x.name)}</a></li>`
-    ).join("")}</ul></section>`;
+    return out.length ? `<section><h2>More ${escapeHTML(cat)} Subscriptions</h2><ul>${out.map(x => `<li><a href="${SITE.domain}/product/${encodeURIComponent(x.slug)}">${escapeHTML(x.name)}</a></li>`).join("")}</ul></section>` : "";
 }
 
 function notFound(res) {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("X-Robots-Tag", "noindex, nofollow");
-    return res.end(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Product Not Found | ${escapeHTML(SITE.name)}</title></head><body><h1>Product Not Found</h1><p>The requested product could not be found.</p><a href="${SITE.domain}/">Return home</a></body></html>`);
+    return res.end(`<!doctype html><html><head><meta charset="utf-8"><title>Product Not Found</title></head><body><h1>Product Not Found</h1><a href="${SITE.domain}/">Return home</a></body></html>`);
 }
 
 module.exports = function handler(req, res) {
     try {
         if (!req || !res) throw new Error("Invalid Vercel request/response objects");
+        if (req.method !== "GET" && req.method !== "HEAD") { res.statusCode=405; res.setHeader("Allow","GET, HEAD"); return res.end("Method Not Allowed"); }
+        if (productLoadError && Object.keys(products).length === 0) throw productLoadError;
 
-        if (req.method !== "GET" && req.method !== "HEAD") {
-            res.statusCode = 405;
-            res.setHeader("Allow", "GET, HEAD");
-            return res.end("Method Not Allowed");
-        }
-
-        const slug = getSlug(req);
-        const product = slug ? products[slug] : null;
-        if (!product) return notFound(res);
+        const slug = getSlug(req), p = slug ? products[slug] : null;
+        if (!p) return notFound(res);
 
         const url = `${SITE.domain}/product/${encodeURIComponent(slug)}`;
-        const destination = `${SITE.domain}/details.html?name=${encodeURIComponent(product.name)}`;
-        const image = absoluteURL(product.image || SITE.logo);
-        const seo = seoOf(slug, product);
-        const description = seo.description || `${product.name} subscription from ${SITE.name}.`;
-        const category = categoryOf(product);
+        const destination = `${SITE.domain}/details.html?name=${encodeURIComponent(p.name)}`;
+        const image = absoluteURL(p.image || SITE.logo);
+        const seo = seoOf(slug,p), description = seo.description || `${p.name} subscription from ${SITE.name}.`, category = categoryOf(p);
 
-        res.statusCode = 200;
-        res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.setHeader("Content-Language", SITE.language);
-        res.setHeader("X-Content-Type-Options", "nosniff");
-        res.setHeader("X-Robots-Tag", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
-        res.setHeader("Cache-Control", "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400");
-
+        res.statusCode=200;
+        res.setHeader("Content-Type","text/html; charset=utf-8");
+        res.setHeader("Content-Language",SITE.language);
+        res.setHeader("X-Content-Type-Options","nosniff");
+        res.setHeader("X-Robots-Tag","index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+        res.setHeader("Cache-Control","public, max-age=300, s-maxage=3600, stale-while-revalidate=86400");
         if (req.method === "HEAD") return res.end();
 
-        const productSchema = schemaProduct(product, url, image, description);
-        const breadcrumbSchema = {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Home", item: SITE.domain + "/" },
-                { "@type": "ListItem", position: 2, name: category, item: SITE.domain + "/" },
-                { "@type": "ListItem", position: 3, name: product.name, item: url }
-            ]
-        };
+        const productSchema = schemaProduct(p,url,image,description);
+        const breadcrumbSchema = {"@context":"https://schema.org","@type":"BreadcrumbList",itemListElement:[
+            {"@type":"ListItem",position:1,name:"Home",item:SITE.domain+"/"},
+            {"@type":"ListItem",position:2,name:category,item:SITE.domain+"/"},
+            {"@type":"ListItem",position:3,name:p.name,item:url}
+        ]};
 
-        const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${escapeHTML(seo.title)}</title>
-<meta name="description" content="${escapeHTML(description)}">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<link rel="canonical" href="${escapeHTML(url)}">
-<meta property="og:type" content="product">
-<meta property="og:site_name" content="${escapeHTML(SITE.name)}">
-<meta property="og:title" content="${escapeHTML(seo.title)}">
-<meta property="og:description" content="${escapeHTML(description)}">
-<meta property="og:url" content="${escapeHTML(url)}">
-<meta property="og:image" content="${escapeHTML(image)}">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${escapeHTML(seo.title)}">
-<meta name="twitter:description" content="${escapeHTML(description)}">
-<meta name="twitter:image" content="${escapeHTML(image)}">
-<script type="application/ld+json">${safeJSON(productSchema)}</script>
-<script type="application/ld+json">${safeJSON(breadcrumbSchema)}</script>
-<style>
-html,body{margin:0;padding:0;width:100%;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
-.seo{max-width:1100px;margin:0 auto;padding:24px;box-sizing:border-box}
-.seo nav{font-size:14px;margin-bottom:18px}.seo article{line-height:1.65}.seo h1{font-size:32px;margin:0 0 12px}.seo h2{font-size:22px;margin-top:28px}.seo img{max-width:100%;height:auto;display:block;margin:18px 0;border-radius:12px}.seo li{margin:6px 0}.seo details{margin:10px 0}.seo summary{cursor:pointer;font-weight:700}
-iframe{display:block;width:100%;height:100vh;border:0;margin:0;padding:0}
-</style>
-</head>
-<body>
-<main class="seo" aria-label="${escapeHTML(product.name)}">
-<nav><a href="${SITE.domain}/">Home</a> / ${escapeHTML(category)} / ${escapeHTML(product.name)}</nav>
-<article><h1>${escapeHTML(product.name)} Subscription</h1><p>${escapeHTML(seo.intro)}</p><img src="${escapeHTML(image)}" alt="${escapeHTML(product.name)}" width="1200" height="630">${seoSections(seo)}<section><h2>Plans &amp; Prices</h2><ul>${pricingHTML(product)}</ul></section>${featuresHTML(product)}${faqHTML(product)}${relatedHTML(slug, product)}</article>
-</main>
-<iframe src="${escapeHTML(destination)}" title="${escapeHTML(product.name)}" loading="eager" allow="fullscreen"></iframe>
-</body>
-</html>`;
-
+        const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHTML(seo.title)}</title><meta name="description" content="${escapeHTML(description)}"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"><link rel="canonical" href="${escapeHTML(url)}">
+<meta property="og:type" content="product"><meta property="og:site_name" content="${escapeHTML(SITE.name)}"><meta property="og:title" content="${escapeHTML(seo.title)}"><meta property="og:description" content="${escapeHTML(description)}"><meta property="og:url" content="${escapeHTML(url)}"><meta property="og:image" content="${escapeHTML(image)}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHTML(seo.title)}"><meta name="twitter:description" content="${escapeHTML(description)}"><meta name="twitter:image" content="${escapeHTML(image)}">
+<script type="application/ld+json">${safeJSON(productSchema)}</script><script type="application/ld+json">${safeJSON(breadcrumbSchema)}</script>
+<style>html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#111;background:#fff}.seo{max-width:1100px;margin:auto;padding:24px;box-sizing:border-box;line-height:1.65}.seo h1{font-size:32px}.seo img{max-width:100%;height:auto;border-radius:12px}.seo li{margin:6px 0}iframe{display:block;width:100%;height:100vh;border:0}</style></head><body>
+<main class="seo"><nav><a href="${SITE.domain}/">Home</a> / ${escapeHTML(category)} / ${escapeHTML(p.name)}</nav><article><h1>${escapeHTML(p.name)} Subscription</h1><p>${escapeHTML(seo.intro)}</p><img src="${escapeHTML(image)}" alt="${escapeHTML(p.name)}" width="1200" height="630">${sectionsHTML(seo.sections)}<section><h2>Plans &amp; Prices</h2><ul>${pricingHTML(p)}</ul></section>${featuresHTML(p)}${faqHTML(p)}${relatedHTML(slug,p)}</article></main>
+<iframe src="${escapeHTML(destination)}" title="${escapeHTML(p.name)}" loading="eager" allow="fullscreen"></iframe></body></html>`;
         return res.end(html);
     } catch (error) {
         console.error("NEXT LEVEL SUBS product function error:", error && error.stack ? error.stack : error);
-        try {
-            res.statusCode = 500;
-            res.setHeader("Content-Type", "application/json; charset=utf-8");
-            return res.end(JSON.stringify({
-                error: "Internal Server Error",
-                message: error && error.message ? error.message : "Unknown error"
-            }));
-        } catch (_) {
-            return res.end();
-        }
+        res.statusCode=500;
+        res.setHeader("Content-Type","application/json; charset=utf-8");
+        return res.end(JSON.stringify({error:"Internal Server Error",message:error && error.message ? error.message : "Unknown error"}));
     }
 };
