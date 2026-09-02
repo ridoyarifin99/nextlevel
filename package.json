@@ -4,7 +4,9 @@
   "description": "Next Level Subs",
   "main": "index.js",
   "scripts": {
-    "start": "vite"
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
