@@ -76,10 +76,24 @@
         { name: "Babes.com", price: 149, duration: "month", image: "/assets/cards/babes.webp", icon: "fas fa-crown", color: "#FFD700", description: "High-quality, exclusive adult video content", categories: ["adult"] }
       ];
 
-      if (typeof window !== "undefined") {
-    window.raw = raw;
-}
+      // Normalize product slugs once at the data boundary so every consumer gets a valid slug.
+      const slugify = value => String(value ?? "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
 
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = raw;
-}
+      raw.forEach(product => {
+        product.slug = product.slug || slugify(product.name);
+      });
+
+      if (typeof window !== "undefined") {
+        window.raw = raw;
+      }
+
+      if (typeof module !== "undefined" && module.exports) {
+        module.exports = raw;
+      }
