@@ -1,6 +1,6 @@
       "use strict";
-      const raw=[{name:'Netflix Premium',price:379,duration:'month',image:'/assets/cards/netflix.webp',icon:'fa-solid fa-film',color:'#E50914',description:'Watch unlimited movies and TV shows',categories:['best-selling','popular-streaming']},{name:'Amazon Prime Video',price:129,duration:'month',image:'/assets/cards/prime_video.svg',icon:'fab fa-amazon',color:'#FF9900',description:'Thousands of movies and TV shows',categories:['best-selling','popular-streaming']},
-            { name: "Netflix Premium", price: 379, duration: "month", image: "/assets/cards/netflix.webp", icon: "fa-solid fa-film", color: "#E50914", description: "Watch unlimited movies and TV shows", categories: ["best-selling", "popular-streaming"] },
+      const raw=[
+        { name: "Netflix Premium", price: 379, duration: "month", image: "/assets/cards/netflix.webp", icon: "fa-solid fa-film", color: "#E50914", description: "Watch unlimited movies and TV shows", categories: ["best-selling", "popular-streaming"] },
         { name: "Amazon Prime Video", price: 129, duration: "month", image: "/assets/cards/prime_video.svg", icon: "fab fa-amazon", color: "#FF9900", description: "Thousands of movies and TV shows", categories: ["best-selling", "popular-streaming"] },
         { name: "HBO Max", price: 999, duration: "year", image: "/assets/cards/hbo_max.svg", icon: "fa-solid fa-play", color: "#113ccf", description: "HBO, Warner Bros., DC, Max Originals", categories: ["best-selling", "popular-streaming"] },
         { name: "Crunchy Roll Mega", price: 699, duration: "year", image: "/assets/cards/crunchy.png", icon: "fa-solid fa-play", color: "#113ccf", description: "Anime. Streaming. Community", categories: ["best-selling", "popular-streaming"] },

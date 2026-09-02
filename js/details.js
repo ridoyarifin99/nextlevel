@@ -4339,9 +4339,8 @@ const products = [
         ];
         //
 
-        // ============================================================
 // ============================================================
-// EXPORT FOR BOTH BROWSER AND VERCEL / NODE.JS
+// EXPORT FOR BOTH BROWSER AND NODE / VERCEL
 // ============================================================
 
 if (typeof window !== "undefined") {
@@ -4349,5 +4348,5 @@ if (typeof window !== "undefined") {
 }
 
 if (typeof module !== "undefined" && module.exports) {
-    module.exports = NextLevelSubs;
+    module.exports = products;
 }
