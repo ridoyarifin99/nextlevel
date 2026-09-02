@@ -35,24 +35,11 @@ function loadProducts() {
   const start = source.indexOf("[", marker);
   if (start < 0) throw new Error("products array not found");
 
-  let depth = 0;
-  let quote = null;
-  let escaped = false;
-  let lineComment = false;
-  let blockComment = false;
-  let end = -1;
-
+  let depth = 0, quote = null, escaped = false, lineComment = false, blockComment = false, end = -1;
   for (let i = start; i < source.length; i++) {
-    const c = source[i];
-    const n = source[i + 1];
-    if (lineComment) {
-      if (c === "\n") lineComment = false;
-      continue;
-    }
-    if (blockComment) {
-      if (c === "*" && n === "/") { blockComment = false; i++; }
-      continue;
-    }
+    const c = source[i], n = source[i + 1];
+    if (lineComment) { if (c === "\n") lineComment = false; continue; }
+    if (blockComment) { if (c === "*" && n === "/") { blockComment = false; i++; } continue; }
     if (quote) {
       if (escaped) { escaped = false; continue; }
       if (c === "\\") { escaped = true; continue; }
@@ -63,22 +50,16 @@ function loadProducts() {
     if (c === "/" && n === "/") { lineComment = true; i++; continue; }
     if (c === "/" && n === "*") { blockComment = true; i++; continue; }
     if (c === "[") depth++;
-    if (c === "]") {
-      depth--;
-      if (depth === 0) { end = i + 1; break; }
-    }
+    if (c === "]") { depth--; if (depth === 0) { end = i + 1; break; } }
   }
-
   if (end < 0) throw new Error("products array did not close");
   const list = vm.runInNewContext("(" + source.slice(start, end) + ")", {}, { timeout: 3000 });
   if (!Array.isArray(list)) throw new Error("products is not an array");
   return list;
 }
 
-let products = [];
-let loadError = null;
-try { products = loadProducts(); }
-catch (error) { loadError = error; }
+let products = [], loadError = null;
+try { products = loadProducts(); } catch (error) { loadError = error; }
 
 function findProduct(slug) {
   const wanted = slugify(slug);
@@ -90,18 +71,34 @@ function findProduct(slug) {
   return products.find((p) => slugify(p.slug || p.name) === key || slugify(p.name) === key);
 }
 
+function cleanCandidate(value) {
+  if (Array.isArray(value)) value = value.join("/");
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getSlug(req) {
+  const query = req && req.query ? req.query : {};
+  for (const candidate of [query.slug, query.name, query.product]) {
+    const value = cleanCandidate(candidate);
+    if (value) return value;
+  }
+  const rawUrl = String((req && (req.originalUrl || req.url)) || "");
+  const queryMatch = rawUrl.match(/[?&](?:slug|name|product)=([^&#]+)/i);
+  if (queryMatch) {
+    try { return decodeURIComponent(queryMatch[1]); } catch (_) { return queryMatch[1]; }
+  }
+  const cleanPath = rawUrl.split("?")[0].split("#")[0];
+  const match = cleanPath.match(/^\/(?:product|products)\/(.+?)\/?$/i);
+  if (match) {
+    try { return decodeURIComponent(match[1]); } catch (_) { return match[1]; }
+  }
+  return "";
+}
+
 function getSeoEntry(product, canonicalSlug) {
   if (!seoContent || typeof seoContent !== "object") return null;
-  const aliases = {
-    duolingo: "doulingo"
-  };
-  const candidates = [
-    canonicalSlug,
-    slugify(product && product.slug),
-    slugify(product && product.name),
-    aliases[canonicalSlug]
-  ].filter(Boolean);
-
+  const aliases = { duolingo: "doulingo" };
+  const candidates = [canonicalSlug, slugify(product && product.slug), slugify(product && product.name), aliases[canonicalSlug]].filter(Boolean);
   for (const key of candidates) {
     if (seoContent[key] && typeof seoContent[key] === "object") return seoContent[key];
   }
@@ -116,20 +113,12 @@ function renderSeoContent(entry, productName) {
     if (!section || typeof section !== "object") return "";
     const heading = typeof section.heading === "string" ? section.heading.trim() : "";
     const paragraphs = Array.isArray(section.paragraphs) ? section.paragraphs : [];
-    const body = paragraphs
-      .filter((p) => typeof p === "string" && p.trim())
-      .map((p) => `<p>${escapeHTML(p.trim())}</p>`)
-      .join("\n");
+    const body = paragraphs.filter((p) => typeof p === "string" && p.trim()).map((p) => `<p>${escapeHTML(p.trim())}</p>`).join("\n");
     if (!heading && !body) return "";
     return `<section class="nls-seo-section">${heading ? `<h2>${escapeHTML(heading)}</h2>` : ""}${body}</section>`;
   }).filter(Boolean).join("\n");
-
   if (!intro && !renderedSections) return "";
-  return `
-<section id="product-seo-content" class="nls-product-seo" aria-label="${escapeHTML(productName)} information">
-  ${intro ? `<p class="nls-seo-intro">${escapeHTML(intro)}</p>` : ""}
-  ${renderedSections}
-</section>`;
+  return `<section id="product-seo-content" class="nls-product-seo" aria-label="${escapeHTML(productName)} information"><h2 class="sr-only">About ${escapeHTML(productName)}</h2>${intro ? `<p class="nls-seo-intro">${escapeHTML(intro)}</p>` : ""}${renderedSections}</section>`;
 }
 
 const RELATED_CARD_CSS = `
@@ -138,9 +127,8 @@ const RELATED_CARD_CSS = `
 [id*="related"] .subscription-card, [class*="related"] .subscription-card,
 [id*="related"] [class*="product-card"], [class*="related"] [class*="product-card"],
 [id*="related"] [class*="card"]:not(.review-card), [class*="related"] [class*="card"]:not(.review-card) {
-  width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column;
-  overflow: hidden; border-radius: 1rem; background: #fff;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
+  width: 100%; height: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 1rem; background: #fff; box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
   transition: transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s cubic-bezier(.16,1,.3,1);
 }
 [id*="related"] .subscription-card:hover, [class*="related"] .subscription-card:hover,
@@ -163,14 +151,13 @@ const SEO_CONTENT_CSS = `
 .nls-product-seo h2 { margin: 1.5rem 0 .65rem; line-height: 1.3; }
 .nls-product-seo p { margin: .6rem 0; }
 .nls-product-seo .nls-seo-intro { font-size: 1.05rem; }
+.nls-product-seo .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 `;
 
 module.exports = function handler(req, res) {
   try {
     if (req.method !== "GET" && req.method !== "HEAD") {
-      res.statusCode = 405;
-      res.setHeader("Allow", "GET, HEAD");
-      return res.end("Method Not Allowed");
+      res.statusCode = 405; res.setHeader("Allow", "GET, HEAD"); return res.end("Method Not Allowed");
     }
     if (loadError) throw loadError;
 
@@ -188,49 +175,29 @@ module.exports = function handler(req, res) {
     const seo = getSeoEntry(product, canonicalSlug);
     const seoDescription = seo && typeof seo.description === "string" ? seo.description.trim() : "";
     const description = seoDescription || product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
-    const title = seo && typeof seo.title === "string" && seo.title.trim()
-      ? seo.title.trim()
-      : `${product.name} Subscription | NEXT LEVEL SUBS`;
+    const title = seo && typeof seo.title === "string" && seo.title.trim() ? seo.title.trim() : `${product.name} Subscription | NEXT LEVEL SUBS`;
     const seoHTML = renderSeoContent(seo, product.name);
 
     const image = String(product.image || "/images/next_level.png").replace(/^\.\//, "/");
     const imageURL = /^https?:\/\//i.test(image) ? image : SITE + (image.startsWith("/") ? image : "/" + image);
-    const pricing = Array.isArray(product.pricing)
-      ? product.pricing.filter((item) => Number.isFinite(Number(item && item.price)))
-      : [];
+    const pricing = Array.isArray(product.pricing) ? product.pricing.filter((item) => Number.isFinite(Number(item && item.price))) : [];
     const prices = pricing.map((item) => Number(item.price));
     const priceCurrency = String((pricing[0] && pricing[0].currency) || "BDT").toUpperCase();
-    const offers = prices.length ? {
-      "@type": "AggregateOffer",
-      priceCurrency,
-      lowPrice: Math.min(...prices),
-      highPrice: Math.max(...prices),
-      offerCount: prices.length,
-      availability: "https://schema.org/InStock",
-      url: canonical
-    } : null;
+    const offers = prices.length ? { "@type": "AggregateOffer", priceCurrency, lowPrice: Math.min(...prices), highPrice: Math.max(...prices), offerCount: prices.length, availability: "https://schema.org/InStock", url: canonical } : null;
 
     let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
     html = html.replace(/<head>/i, '<head>\n  <base href="/">');
     html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i, '<script src="/api/details-script"></script>');
     const productBootstrap = `<script>window.__NLS_PRODUCT_SLUG__=${JSON.stringify(canonicalSlug)};window.__NLS_PRODUCT_NAME__=${JSON.stringify(product.name)};</script>`;
     html = html.replace(/<body>/i, productBootstrap + "\n<body>");
-
     html = html.replace(/<\/head>/i, `<style id="nls-related-card-style">${RELATED_CARD_CSS}</style><style id="nls-product-seo-style">${SEO_CONTENT_CSS}</style>\n</head>`);
 
-    // Server-render the product-specific SEO copy so crawlers receive it in the initial HTML.
     if (seoHTML) html = html.replace(/<\/body>/i, `${seoHTML}\n</body>`);
 
     const schema = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Product",
-      name: product.name,
-      description,
-      image: [imageURL],
-      url: canonical,
-      brand: { "@type": "Brand", name: "NEXT LEVEL SUBS" },
-      seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE },
-      ...(offers ? { offers } : {})
+      "@context": "https://schema.org", "@type": "Product", name: product.name, description,
+      image: [imageURL], url: canonical, brand: { "@type": "Brand", name: "NEXT LEVEL SUBS" },
+      seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE }, ...(offers ? { offers } : {})
     }).replace(/</g, "\\u003c");
 
     html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHTML(title)}</title>`);
@@ -241,8 +208,6 @@ module.exports = function handler(req, res) {
     html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHTML(description)}">`);
     html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${escapeHTML(imageURL)}">`);
     html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${escapeHTML(canonical)}">`);
-
-    // Preserve details.html's existing Organization JSON-LD and append Product JSON-LD.
     html = html.replace(/<\/head>/i, `<script type="application/ld+json">${schema}</script>\n</head>`);
 
     res.statusCode = 200;
@@ -254,8 +219,6 @@ module.exports = function handler(req, res) {
     return res.end(html);
   } catch (error) {
     console.error("PRODUCT VIEW ERROR:", error && error.stack ? error.stack : error);
-    res.statusCode = 500;
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    return res.end("Internal Server Error");
+    res.statusCode = 500; res.setHeader("Content-Type", "text/plain; charset=utf-8"); return res.end("Internal Server Error");
   }
 };
