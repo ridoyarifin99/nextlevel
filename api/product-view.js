@@ -147,6 +147,24 @@ module.exports = function handler(req, res) {
     const description = product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
     const title = `${product.name} Subscription | NEXT LEVEL SUBS`;
 
+    // Google Product rich results require at least one of offers, review,
+    // or aggregateRating. Build a real AggregateOffer from this product's
+    // published pricing so every product page has valid commercial data.
+    const pricing = Array.isArray(product.pricing)
+      ? product.pricing.filter((item) => Number.isFinite(Number(item && item.price)))
+      : [];
+    const prices = pricing.map((item) => Number(item.price));
+    const priceCurrency = String((pricing[0] && pricing[0].currency) || "BDT").toUpperCase();
+    const offers = prices.length ? {
+      "@type": "AggregateOffer",
+      priceCurrency,
+      lowPrice: Math.min(...prices),
+      highPrice: Math.max(...prices),
+      offerCount: prices.length,
+      availability: "https://schema.org/InStock",
+      url: canonical
+    } : null;
+
     let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
     html = html.replace(/<head>/i, '<head>\n  <base href="/">');
     html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i, '<script src="/api/details-script"></script>');
@@ -164,7 +182,8 @@ module.exports = function handler(req, res) {
       image: [imageURL],
       url: canonical,
       brand: { "@type": "Brand", name: "NEXT LEVEL SUBS" },
-      seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE }
+      seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE },
+      ...(offers ? { offers } : {})
     }).replace(/</g, "\\u003c");
 
     html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHTML(title)}</title>`);
