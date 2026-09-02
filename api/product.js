@@ -1,44 +1,100 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
 /*
 ============================================================
 NEXT LEVEL SUBS
 PRODUCTION HYBRID PRODUCT SEO HANDLER
 ============================================================
-
-DATA SOURCES
-------------------------------------------------------------
-/js/details.js
-    → Full product data
-    → name
-    → description
-    → images
-    → categories
-    → pricing
-    → features
-    → reviews
-    → FAQ
-    → etc.
-
-/api/seo-content.js
-    → SEO title
-    → meta description
-    → intro
-    → SEO sections
-
-THIS FILE
-------------------------------------------------------------
-Combines both sources and generates:
-
-/product/netflix-premium
-/product/spotify-premium
-/product/hbo-max
-...
-============================================================
 */
 
-const products = require("../js/details.js");
-const seoContent = require("./seo-content.js");
+// ============================================================
+// SAFE DATA LOADING (Prevents Vercel Serverless Crashes)
+// ============================================================
+
+function generateSlug(value) {
+    return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
+function loadProducts() {
+    try {
+        const filePath = path.join(__dirname, "..", "js", "details.js");
+        if (!fs.existsSync(filePath)) return {};
+        
+        const fileContent = fs.readFileSync(filePath, "utf8");
+        
+        // Create a sandbox with mocked browser APIs so frontend scripts don't crash Node.js
+        const sandbox = {
+            window: {},
+            document: { 
+                createElement: () => ({ style: {} }), 
+                getElementById: () => null,
+                querySelector: () => null
+            },
+            localStorage: { 
+                getItem: () => null, 
+                setItem: () => {} 
+            },
+            console: console,
+            AOS: { init: () => {}, refresh: () => {} }
+        };
+        
+        vm.createContext(sandbox);
+        vm.runInContext(fileContent, sandbox);
+        
+        // Extract products from various possible global variables
+        let rawProducts = [];
+        if (Array.isArray(sandbox.rawSubs)) rawProducts = sandbox.rawSubs;
+        else if (Array.isArray(sandbox.products)) rawProducts = sandbox.products;
+        else if (Array.isArray(sandbox.subs)) rawProducts = sandbox.subs;
+        else if (sandbox.window) {
+            if (Array.isArray(sandbox.window.rawSubs)) rawProducts = sandbox.window.rawSubs;
+            else if (Array.isArray(sandbox.window.products)) rawProducts = sandbox.window.products;
+            else if (Array.isArray(sandbox.window.subs)) rawProducts = sandbox.window.subs;
+            else if (sandbox.window.NextLevelSubs && Array.isArray(sandbox.window.NextLevelSubs.subs)) rawProducts = sandbox.window.NextLevelSubs.subs;
+        }
+        
+        // If details.js exports an object map already, return it
+        if (!Array.isArray(rawProducts) && typeof rawProducts === "object" && rawProducts !== null) {
+            return rawProducts;
+        }
+        
+        // Convert array to object map (keyed by slug) for O(1) lookups
+        const productMap = {};
+        rawProducts.forEach(p => {
+            if (p && p.name) {
+                const slug = generateSlug(p.name);
+                if (slug && !productMap[slug]) {
+                    productMap[slug] = p;
+                }
+            }
+        });
+        
+        return productMap;
+    } catch (e) {
+        console.error("NEXT LEVEL SUBS: Failed to load products from details.js", e);
+        return {};
+    }
+}
+
+function loadSEOContent() {
+    try {
+        return require("./seo-content.js");
+    } catch (e) {
+        console.warn("NEXT LEVEL SUBS: seo-content.js not found, using default SEO.");
+        return {};
+    }
+}
+
+const products = loadProducts();
+const seoContent = loadSEOContent();
 
 // ============================================================
 // SITE CONFIG
@@ -89,18 +145,6 @@ function safeJSON(value) {
         .replace(/&/g, "\\u0026")
         .replace(/\u2028/g, "\\u2028")
         .replace(/\u2029/g, "\\u2029");
-}
-
-// ============================================================
-// GENERATE SLUG
-// ============================================================
-
-function generateSlug(value) {
-    return String(value || "")
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
 }
 
 // ============================================================
@@ -611,6 +655,7 @@ function getRelatedProducts(currentSlug, currentProduct) {
 
     return result.slice(0, 8);
 }
+
 // ============================================================
 // BUILD RELATED HTML
 // ============================================================
