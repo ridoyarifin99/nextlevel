@@ -2,19 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
 
 "rewrites": [
-    {
-      "source": "/products/:slug*",
-      "destination": "/api/product?slug=:slug*"
-    },
-    {
-      "source": "/product/:slug*",
-      "destination": "/api/product?slug=:slug*"
-    },
-{
-  "rewrites": [
-    { "source": "/product/(.*)", "destination": "/details.html" }
-  ]
-},
+
+    { "source": "/product/(.*)", "destination": "/details.html" },
+
+
     {
       "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
       "destination": "/index.html"
