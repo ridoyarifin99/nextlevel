@@ -25,7 +25,12 @@ function escapeHTML(value) {
 
 function loadProducts() {
   const file = path.join(__dirname, "..", "js", "details.js");
-  const source = fs.readFileSync(file, "utf8");
+  let source = fs.readFileSync(file, "utf8");
+
+  // The catalog contains a few accidental duplicate commas. Repair them only
+  // for server-side parsing; the original file remains untouched.
+  source = source.replace(/,\s*,/g, ",");
+
   const marker = source.indexOf("const products");
   if (marker < 0) throw new Error("products declaration not found");
   const start = source.indexOf("[", marker);
@@ -41,6 +46,7 @@ function loadProducts() {
   for (let i = start; i < source.length; i++) {
     const c = source[i];
     const n = source[i + 1];
+
     if (lineComment) {
       if (c === "\n") lineComment = false;
       continue;
@@ -89,6 +95,7 @@ function loadProducts() {
   }
 
   if (end < 0) throw new Error("products array did not close");
+
   const list = vm.runInNewContext("(" + source.slice(start, end) + ")", {}, { timeout: 3000 });
   if (!Array.isArray(list)) throw new Error("products is not an array");
   return list;
@@ -106,7 +113,6 @@ function findProduct(slug) {
   const key = slugify(slug);
   const aliases = {
     netflix: "netflix-premium",
-    doulingo: "doulingo",
     "youtube-premium-nonrenewable": "youtube-premium-non-renewable"
   };
   const wanted = aliases[key] || key;
@@ -141,19 +147,22 @@ module.exports = function handler(req, res) {
 
     const canonicalSlug = slugify(product.slug || product.name);
     const canonical = SITE + "/product/" + encodeURIComponent(canonicalSlug);
-    const detailsURL = "/details.html?name=" + encodeURIComponent(product.name);
     const image = String(product.image || "/images/next_level.png").replace(/^\.\//, "/");
     const imageURL = /^https?:\/\//i.test(image) ? image : SITE + (image.startsWith("/") ? image : "/" + image);
     const description = product.description || `Get ${product.name} subscription from NEXT LEVEL SUBS in Bangladesh.`;
 
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400");
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("X-Robots-Tag", "index, follow, max-image-preview:large");
+    let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
 
-    if (req.method === "HEAD") return res.end();
+    // details.html was designed as a root-level document. The base tag keeps
+    // its ./src, ./assets and other relative resources working on /product/*.
+    html = html.replace(/<head>/i, '<head>\n  <base href="/">');
 
+    // Use the repaired catalog endpoint so the visual page cannot be broken by
+    // the accidental duplicate commas in the source catalog.
+    html = html.replace(/<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i,
+      '<script src="/api/details-script"></script>');
+
+    const title = `${product.name} Subscription | NEXT LEVEL SUBS`;
     const schema = JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Product",
@@ -165,42 +174,24 @@ module.exports = function handler(req, res) {
       seller: { "@type": "Organization", name: "NEXT LEVEL SUBS", url: SITE }
     }).replace(/</g, "\\u003c");
 
-    // The visual product page is the first and full-screen layer.
-    // SEO text stays available to crawlers without pushing the real design below the fold.
-    const html = `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHTML(product.name)} Subscription | NEXT LEVEL SUBS</title>
-<meta name="description" content="${escapeHTML(description)}">
-<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
-<link rel="canonical" href="${escapeHTML(canonical)}">
-<meta property="og:type" content="product">
-<meta property="og:site_name" content="NEXT LEVEL SUBS">
-<meta property="og:title" content="${escapeHTML(product.name)} Subscription | NEXT LEVEL SUBS">
-<meta property="og:description" content="${escapeHTML(description)}">
-<meta property="og:url" content="${escapeHTML(canonical)}">
-<meta property="og:image" content="${escapeHTML(imageURL)}">
-<script type="application/ld+json">${schema}</script>
-<style>
-html,body{margin:0;padding:0;width:100%;height:100%;background:#fff}
-#product-page{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;background:#fff}
-#seo-content{position:absolute;left:-100000px;top:auto;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:normal}
-</style>
-</head>
-<body>
-<iframe id="product-page" src="${escapeHTML(detailsURL)}" title="${escapeHTML(product.name)}" loading="eager" allow="fullscreen"></iframe>
-<main id="seo-content" aria-hidden="true">
-<h1>${escapeHTML(product.name)} Subscription</h1>
-<p>${escapeHTML(description)}</p>
-<img src="${escapeHTML(imageURL)}" alt="${escapeHTML(product.name)}">
-<h2>${escapeHTML(product.name)} Plans &amp; Price in Bangladesh</h2>
-<p>Choose an available ${escapeHTML(product.name)} subscription plan and review the current price before ordering.</p>
-</main>
-</body>
-</html>`;
+    // Replace the generic metadata in details.html with product-specific SEO.
+    html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHTML(title)}</title>`);
+    html = html.replace(/<meta name="description"[^>]*>/i, `<meta name="description" content="${escapeHTML(description)}">`);
+    html = html.replace(/<meta name="robots"[^>]*>/i, '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">');
+    html = html.replace(/<link rel="canonical"[^>]*>/i, `<link rel="canonical" href="${escapeHTML(canonical)}">`);
+    html = html.replace(/<meta property="og:title"[^>]*>/i, `<meta property="og:title" content="${escapeHTML(title)}">`);
+    html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHTML(description)}">`);
+    html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${escapeHTML(imageURL)}">`);
+    html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${escapeHTML(canonical)}">`);
+    html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/i, `<script type="application/ld+json">${schema}</script>`);
 
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store, max-age=0");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Robots-Tag", "index, follow, max-image-preview:large");
+
+    if (req.method === "HEAD") return res.end();
     return res.end(html);
   } catch (error) {
     console.error("PRODUCT VIEW ERROR:", error && error.stack ? error.stack : error);
