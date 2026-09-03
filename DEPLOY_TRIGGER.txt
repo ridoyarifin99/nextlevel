@@ -1,1 +1,1 @@
-Vercel deployment trigger. No application behavior changes.
+Vercel deployment trigger. Current main build is valid; no application behavior changes.
