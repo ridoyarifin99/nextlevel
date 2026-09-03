@@ -45,3 +45,5 @@ jobs:
           git add index.html
           git commit -m "Fix homepage raw reference without changing design"
           git push
+
+          # This workflow is intentionally self-terminating after the repair commit.
