@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/product/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
+      "destination": "/api/product?slug=:slug*"
     },
     {
       "source": "/products/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
+      "destination": "/api/product?slug=:slug*"
     },
     {
       "source": "/src/input.css",
