@@ -1,0 +1,167 @@
+/* Next Level Subs — shared production UI fixes.
+   Loaded after page styles so the same shell behaves consistently on desktop/tablet/mobile. */
+
+/* Local Font Awesome fallback: keep icons independent of a build step/CDN. */
+@font-face {
+  font-family: "Font Awesome 6 Pro";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("/webfonts/fa-solid-900.woff2") format("woff2"),
+       url("/webfonts/fa-solid-900.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("/webfonts/fa-brands-400.woff2") format("woff2"),
+       url("/webfonts/fa-brands-400.ttf") format("truetype");
+}
+
+html { overflow-x: hidden; }
+body { max-width: 100%; overflow-x: hidden; }
+img, svg, video, canvas { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+
+/* Shared navbar width. */
+.nls-container {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+}
+
+/* Details page intentionally uses the same content width as the navbar. */
+.details-wrapper {
+  width: 100%;
+  max-width: 1500px !important;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Prevent generated product/detail grids from creating horizontal overflow. */
+#productDetails,
+#relatedProducts,
+.subscription-grid,
+.products-grid,
+.product-grid {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Tables must scroll inside their page instead of stretching the viewport. */
+.table-responsive,
+.table-wrapper,
+.overflow-x-auto,
+[class*="table-container"] {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-responsive table,
+.table-wrapper table,
+.overflow-x-auto table,
+[class*="table-container"] table {
+  min-width: 620px;
+}
+
+/* Form controls stay inside cards on narrow screens. */
+input, select, textarea { max-width: 100%; }
+
+/* Mobile shell. */
+@media (max-width: 1024px) {
+  .nls-container { padding-inline: 1rem; }
+  .details-wrapper { padding-inline: 1rem; }
+
+  .nls-left { gap: .75rem !important; }
+  .nls-right { gap: .35rem !important; }
+
+  .nls-logo-img { max-width: 150px; }
+  .nls-nav { display: none !important; }
+  .nls-hamburger { display: block !important; flex: 0 0 40px; }
+  .nls-search-desktop { display: none !important; }
+  .nls-icon-btn { display: flex !important; }
+  .nls-auth-text, .nls-cart-text { display: none !important; }
+
+  /* Detail hero becomes one clean column before tablet widths get cramped. */
+  #productDetails { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* Checkout columns stack before they become unusably narrow. */
+  .checkout-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .order-summary-card { position: static !important; }
+}
+
+@media (max-width: 768px) {
+  .details-wrapper { padding-inline: .875rem; }
+  main.py-8 { padding-top: 1.25rem !important; padding-bottom: 2.5rem !important; }
+
+  .breadcrumb { overflow: hidden; }
+  .breadcrumb ol { overflow-x: auto; white-space: nowrap; padding-inline: 0; scrollbar-width: none; }
+  .breadcrumb ol::-webkit-scrollbar { display: none; }
+
+  /* Details tabs remain usable without wrapping or squeezing. */
+  .tab-button { flex: 0 0 auto; }
+
+  /* Related products: two compact columns on phones. */
+  #relatedProducts { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .75rem !important; }
+
+  /* Cards/media never force the viewport wider than the phone. */
+  .modern-card, .checkout-form-card, .payment-card, .order-summary-card { max-width: 100%; }
+  .payment-method-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .payment-method-bank { grid-column: 1 / -1 !important; }
+
+  /* Checkout forms become single-column. */
+  .checkout-form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .checkout-main { padding: 28px 14px 50px !important; }
+  .checkout-progress { padding-inline: 14px !important; overflow-x: auto; justify-content: flex-start; }
+  .progress-line { width: 36px; margin-inline: 7px; }
+
+  /* Floating buttons stay above the mobile bottom edge and don't overlap. */
+  .fab, .whatsapp-fab { width: 50px !important; height: 50px !important; right: 16px !important; bottom: 18px !important; }
+  .whatsapp-fab { bottom: 78px !important; }
+  .fab i, .whatsapp-fab i { font-size: 20px !important; }
+
+  /* Long admin/dashboard content stays inside the viewport. */
+  .dashboard-container, .admin-container, .admin-content, .dashboard-content { max-width: 100%; min-width: 0; }
+}
+
+@media (max-width: 480px) {
+  .nls-container { padding-inline: .75rem !important; }
+  .details-wrapper { padding-inline: .75rem; }
+
+  .nls-left { gap: .35rem !important; }
+  .nls-right { gap: .15rem !important; }
+  .nls-logo-text-container { display: none !important; }
+  .nls-logo-img { height: 34px !important; max-width: 125px; }
+
+  .nls-icon-btn, .nls-account-link, .nls-cart-btn { min-width: 38px; min-height: 38px; }
+  .nls-cart-btn, .nls-account-link { padding-inline: .4rem !important; }
+
+  .payment-method-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .payment-method-bank { grid-column: auto !important; }
+  .checkout-form-card, .payment-card, .order-summary-card { padding: 18px !important; }
+
+  /* Avoid oversized headings and buttons on very small phones. */
+  h1 { overflow-wrap: anywhere; }
+  .checkout-page-heading h1 { font-size: 1.65rem !important; }
+  .checkout-section-heading h2 { font-size: 1.05rem !important; }
+
+  /* Never let code/URLs/transaction text break the page. */
+  pre, code, .account-number, .transaction-id { overflow-wrap: anywhere; word-break: break-word; }
+}
+
+/* Utility for pages with wide data tables. */
+.responsive-table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.responsive-table > table { min-width: 620px; }
+
+/* Make local Font Awesome declarations win over accidental inherited font rules. */
+.fa, .fas, .far, .fal, .fat, .fass, .fa-solid, .fa-regular, .fa-light, .fa-thin {
+  font-family: "Font Awesome 6 Pro" !important;
+  font-style: normal;
+}
+.fab, .fa-brands { font-family: "Font Awesome 6 Brands" !important; font-style: normal; }
