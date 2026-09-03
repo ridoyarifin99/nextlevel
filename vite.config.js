@@ -23,8 +23,7 @@ function copyRuntimeDirectories() {
     writeBundle() {
       const outDir = path.resolve(root, 'dist');
 
-      // Keep the existing repository structure. These are source directories;
-      // they are copied only into Vite's generated build output.
+      // Preserve the existing repository structure in the generated Vercel build.
       for (const directory of ['js', 'images', 'assets']) {
         const source = path.resolve(root, directory);
         const destination = path.resolve(outDir, directory);
@@ -37,14 +36,26 @@ function copyRuntimeDirectories() {
         }
       }
 
-      // AOS is an existing classic browser script loaded from src/aos.js.
-      // Preserve the current source location and URL in production.
-      const aosSource = path.resolve(root, 'src', 'aos.js');
-      const aosDestination = path.resolve(outDir, 'src', 'aos.js');
+      // Existing pages use classic assets directly from /src/.
+      // Copy the required source runtime files so those URLs also work in production.
+      const srcFiles = [
+        'output.css',
+        'all.min.css',
+        'aos.css',
+        'aos.js',
+        'auth.js'
+      ];
 
-      if (fs.existsSync(aosSource)) {
-        fs.mkdirSync(path.dirname(aosDestination), { recursive: true });
-        fs.copyFileSync(aosSource, aosDestination);
+      const srcDestination = path.resolve(outDir, 'src');
+      fs.mkdirSync(srcDestination, { recursive: true });
+
+      for (const file of srcFiles) {
+        const source = path.resolve(root, 'src', file);
+        const destination = path.resolve(srcDestination, file);
+
+        if (fs.existsSync(source)) {
+          fs.copyFileSync(source, destination);
+        }
       }
     }
   };
