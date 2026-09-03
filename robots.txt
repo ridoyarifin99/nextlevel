@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://www.nextlevelsubs.com/sitemap.xml
-Allow: /src/
-Allow: /css/
-Allow: /assets/
-Allow: /js/
