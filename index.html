@@ -463,7 +463,7 @@
       const SITE_URL="https://nextlevelsubs.com",PBP="/product",SAP="/api/product";
       const pSlug=n=>String(n||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
       const enrich=p=>({...p,slug:p.slug||pSlug(p.name),url:`${PBP}/${p.slug}`,canonicalUrl:`${SITE_URL}${PBP}/${p.slug}`,seoApiUrl:`${SAP}?slug=${encodeURIComponent(p.slug)}`});
-      const subs=raw.map(enrich);
+      const subs=(window.raw || []).map(enrich);
       window.NextLevelSubs={subs,pSlug,enrich,getProductBySlug:s=>subs.find(p=>p.slug===s)||null};
       
       // Optimized AOS Initialization for faster, smoother loading
