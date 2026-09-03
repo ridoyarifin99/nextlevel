@@ -1,21 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/product/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
-    },
-    {
-      "source": "/products/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
-    },
-    {
-      "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
-      "destination": "/index.html"
-    }
+    { "source": "/product/:slug*", "destination": "/index.html" },
+    { "source": "/products/:slug*", "destination": "/index.html" },
+    { "source": "/best-selling", "destination": "/index.html" },
+    { "source": "/streaming", "destination": "/index.html" },
+    { "source": "/music", "destination": "/index.html" },
+    { "source": "/storage", "destination": "/index.html" },
+    { "source": "/vpn", "destination": "/index.html" },
+    { "source": "/aiDesign", "destination": "/index.html" },
+    { "source": "/combos", "destination": "/index.html" },
+    { "source": "/education", "destination": "/index.html" },
+    { "source": "/adult", "destination": "/index.html" }
   ]
 }
