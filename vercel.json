@@ -1,60 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": null,
-  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/product/:slug",
-      "destination": "/api/product-view?slug=:slug"
-    },
-    {
-      "source": "/products/:slug",
-      "destination": "/api/product-view?slug=:slug"
-    },
-    {
-      "source": "/best-selling",
+      "source": "/",
       "destination": "/index.html"
     },
     {
-      "source": "/streaming",
-      "destination": "/index.html"
+      "source": "/product/:slug*",
+      "destination": "/api/product-view?slug=:slug*"
     },
     {
-      "source": "/music",
-      "destination": "/index.html"
+      "source": "/products/:slug*",
+      "destination": "/api/product-view?slug=:slug*"
     },
     {
-      "source": "/storage",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/vpn",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/aiDesign",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/combos",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/education",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/adult",
+      "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/product-view.js": {
-      "includeFiles": ["details.html", "js/details.js"]
-    },
-    "api/details-script.js": {
-      "includeFiles": ["js/details.js"]
-    }
-  }
+  ]
 }
