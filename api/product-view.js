@@ -188,7 +188,7 @@ module.exports = function handler(req, res) {
       : null;
 
     let html = fs.readFileSync(path.join(__dirname, "..", "details.html"), "utf8");
-    html = html.replace(/<head>/i, '<head>\n  <base href="/">');
+    html = html.replace(/<head>/i, '<head>\n  <base href="/">\n  <link rel="stylesheet" href="/src/responsive-fixes.css">');
     html = html.replace(
       /<script\s+src=["']\/js\/details\.js["']\s*><\/script>/i,
       '<script src="/api/details-script"></script>'
@@ -198,7 +198,7 @@ module.exports = function handler(req, res) {
     html = html.replace(/<body>/i, productBootstrap + "\n<body>");
     html = html.replace(
       /<\/head>/i,
-      `<style id="nls-related-card-style">${RELATED_CARD_CSS}</style>\n</head>`
+      `<style id="nls-related-card-style">${RELATED_CARD_CSS}\n.details-wrapper{width:100%;max-width:1500px!important;margin-inline:auto;}\n</style>\n</head>`
     );
 
     const schema = JSON.stringify({
