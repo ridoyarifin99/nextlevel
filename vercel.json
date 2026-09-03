@@ -10,6 +10,10 @@
       "destination": "/api/product-view?slug=:slug*"
     },
     {
+      "source": "/src/input.css",
+      "destination": "/src/output.css"
+    },
+    {
       "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
       "destination": "/index.html"
     }
