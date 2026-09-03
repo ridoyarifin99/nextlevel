@@ -57,6 +57,16 @@ function copyRuntimeDirectories() {
           fs.copyFileSync(source, destination);
         }
       }
+
+      // The repository contains the Font Awesome Pro CSS definitions, but its
+      // matching webfont binaries are not stored in the repository. Production
+      // therefore needs a reliable font source or the icon glyphs render blank.
+      // Keep the existing CSS/design and provide the matching free Font Awesome
+      // font files as a fallback for the solid/regular/brand icons used by pages.
+      const iconCss = path.resolve(srcDestination, 'all.min.css');
+      if (fs.existsSync(iconCss)) {
+        fs.appendFileSync(iconCss, `\n\n/* Next Level production icon font fallback */\n@font-face{font-family:"Font Awesome 6 Pro";font-style:normal;font-weight:900;font-display:block;src:url("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/webfonts/fa-solid-900.woff2") format("woff2")}\n@font-face{font-family:"Font Awesome 6 Pro";font-style:normal;font-weight:400;font-display:block;src:url("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/webfonts/fa-regular-400.woff2") format("woff2")}\n@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:block;src:url("https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/webfonts/fa-brands-400.woff2") format("woff2")}\n.fa-basket-shopping-simple{--fa:"\\f291"}\n`);
+      }
     }
   };
 }
