@@ -211,11 +211,6 @@ module.exports = function handler(req, res) {
             unitCode: "MIN"
           }
         }
-      },
-      hasMerchantReturnPolicy: {
-        "@type": "MerchantReturnPolicy",
-        applicableCountry: "BD",
-        returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted"
       }
     }));
 
