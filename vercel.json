@@ -11,6 +11,30 @@
     {
       "source": "/products/:slug",
       "destination": "/api/product-view?slug=:slug"
+    },
+    {
+      "source": "/product/src/:path*",
+      "destination": "/src/:path*"
+    },
+    {
+      "source": "/products/src/:path*",
+      "destination": "/src/:path*"
+    },
+    {
+      "source": "/product/js/:path*",
+      "destination": "/js/:path*"
+    },
+    {
+      "source": "/products/js/:path*",
+      "destination": "/js/:path*"
+    },
+    {
+      "source": "/product/webfonts/:path*",
+      "destination": "/webfonts/:path*"
+    },
+    {
+      "source": "/products/webfonts/:path*",
+      "destination": "/webfonts/:path*"
     }
   ],
   "functions": {
