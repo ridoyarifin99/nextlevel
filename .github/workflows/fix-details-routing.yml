@@ -1,0 +1,60 @@
+name: Fix product details routing
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fix routing
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          p = Path('vercel.json')
+          data = json.loads(p.read_text())
+          data['redirects'] = [
+              {
+                  'source': '/product/:slug*',
+                  'destination': '/details.html?name=:slug*',
+                  'permanent': False,
+              },
+              {
+                  'source': '/products/:slug*',
+                  'destination': '/details.html?name=:slug*',
+                  'permanent': False,
+              },
+          ]
+          data['rewrites'] = [
+              x for x in data.get('rewrites', [])
+              if not (str(x.get('source', '')).startswith('/product/') or str(x.get('source', '')).startswith('/products/'))
+          ]
+          p.write_text(json.dumps(data, indent=2) + '\n')
+          PY
+
+      - name: Remove temporary trigger files
+        run: |
+          rm -f vercel-details-fix.txt vercel-trigger-2.txt vercel-trigger-3.txt vercel.json.new force-deploy-details-fix.txt dummy.txt dummy2.txt
+          rm -f .github/workflows/fix-details-routing.yml
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vercel.json
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Fix product details page routing"
+          git push origin HEAD:main
