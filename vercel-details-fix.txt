@@ -1,1 +1,0 @@
-This file intentionally triggers a Vercel deployment after fixing product details routing.
