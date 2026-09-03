@@ -1,48 +1,8 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "buildCommand": null,
-  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/product/:slug",
-      "destination": "/api/product-view?slug=:slug"
-    },
-    {
-      "source": "/products/:slug",
-      "destination": "/api/product-view?slug=:slug"
-    },
-    {
-      "source": "/product/src/:path*",
-      "destination": "/src/:path*"
-    },
-    {
-      "source": "/products/src/:path*",
-      "destination": "/src/:path*"
-    },
-    {
-      "source": "/product/js/:path*",
-      "destination": "/js/:path*"
-    },
-    {
-      "source": "/products/js/:path*",
-      "destination": "/js/:path*"
-    },
-    {
-      "source": "/product/webfonts/:path*",
-      "destination": "/webfonts/:path*"
-    },
-    {
-      "source": "/products/webfonts/:path*",
-      "destination": "/webfonts/:path*"
+      "destination": "/api/product?slug=:slug"
     }
-  ],
-  "functions": {
-    "api/product-view.js": {
-      "includeFiles": "details.html"
-    },
-    "api/details-script.js": {
-      "includeFiles": "js/details.js"
-    }
-  }
+  ]
 }
