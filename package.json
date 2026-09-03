@@ -8,7 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0aa5789821aa802aa65ec31a93bd5849f2e43a5a
   },
   "repository": {
     "type": "git",
