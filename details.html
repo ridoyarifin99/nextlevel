@@ -46,7 +46,7 @@
   <div class="nls-drawer-overlay" id="mobileMenuOverlay"></div>
   <aside class="nls-drawer" id="mobileDrawer">
     <div class="nls-drawer-header">
-      <a href="/" class="nls-drawer-logo"><img src="/images/next_level.png" alt="Logo" class="nls-logo-img"><span>Next Level Subs</span></a>
+      <a href="/" class="nls-drawer-logo"><img src="/images/next_level.png" alt="Logo" class="nls-logo-img"></a>
       <button id="closeDrawerBtn" class="nls-drawer-close" aria-label="Close Menu"><i class="fas fa-times"></i></button>
     </div>
     <nav class="nls-drawer-nav" id="navMenuMobile">
@@ -117,45 +117,64 @@
   </div>
 
   <style>
-    :root{--primary-color:#6a11cb;--primary-dark:#4a0699;--secondary-color:#2575fc;--ease:cubic-bezier(0.16,1,0.3,1);--shadow:0 4px 6px -1px rgba(0,0,0,0.05);--shadow-hover:0 10px 15px -3px rgba(0,0,0,0.1);--transition:all 0.3s var(--ease);--light-bg:#f8fafc;--text-dark:#1e293b;--text-light:#64748b;--primary-light:#2575fc}
+    :root{--primary-color:#6a11cb;--primary-dark:#4a0699;--secondary-color:#2575fc;--ease:cubic-bezier(0.16,1,0.3,1);--shadow:0 4px 6px -1px rgba(0,0,0,0.05);--shadow-hover:0 20px 40px -10px rgba(106,17,203,0.15);--transition:all 0.3s var(--ease);--light-bg:#f8fafc;--text-dark:#1e293b;--text-light:#64748b;--primary-light:#2575fc}
     *{box-sizing:border-box}
+    html { scroll-behavior: smooth; }
     body{margin:0;font-family:Inter,system-ui,-apple-system,sans-serif;background:#f8fafc}
-    .nls-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,0.65);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(226,232,240,0.6);box-shadow:0 4px 20px rgba(0,0,0,0.05)}
-    .nls-container{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;height:64px}
+
+    /* Premium Header Shrink Effect */
+    .nls-header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,0.75);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(226,232,240,0.6);box-shadow:0 4px 20px rgba(0,0,0,0.05);transition:all 0.3s var(--ease)}
+    .nls-header.scrolled { box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); }
+    .nls-header.scrolled .nls-container { height: 56px; }
+    .nls-header.scrolled .nls-logo-img { height: 32px; }
+    .nls-container{max-width:1500px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;height:72px;transition:height 0.3s var(--ease)}
     .nls-left{display:flex;align-items:center;gap:1.5rem;flex-grow:1;min-width:0}
     .nls-right{display:flex;align-items:center;gap:0.5rem;flex-shrink:0}
-    .nls-hamburger{display:none;width:40px;height:40px;position:relative;background:none;border:none;cursor:pointer;padding:0;transition:transform 0.3s var(--ease)}
-    .nls-hamburger span{display:block;position:absolute;height:3px;width:25px;background:var(--primary-color);border-radius:3px;left:7px;transition:all 0.3s var(--ease)}
+
+    /* Premium Hamburger */
+    .nls-hamburger{display:none;width:40px;height:40px;position:relative;background:none;border:none;cursor:pointer;padding:0;transition:transform 0.2s var(--ease)}
+    .nls-hamburger span{display:block;position:absolute;height:3px;width:25px;background:linear-gradient(90deg, var(--primary-color), var(--secondary-color));border-radius:3px;left:7px;transition:all 0.3s var(--ease)}
     .nls-hamburger span:nth-child(1){top:12px}.nls-hamburger span:nth-child(2){top:19px;width:20px}.nls-hamburger span:nth-child(3){top:26px}
-    .nls-hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg)}.nls-hamburger.active span:nth-child(2){opacity:0;transform:translateX(-10px)}.nls-hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:25px}
+    .nls-hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);width:25px}.nls-hamburger.active span:nth-child(2){opacity:0;transform:translateX(-10px)}.nls-hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);width:25px}
+
     .nls-logo-link{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-    .nls-logo-img{height:36px;width:auto;object-fit:contain;transition:transform 0.3s var(--ease)}
-    .nls-logo-link:hover .nls-logo-img{transform:scale(1.05)}
+    .nls-logo-img{height:40px;width:auto;object-fit:contain;transition:transform 0.3s var(--ease), height 0.3s var(--ease)}
+    .nls-logo-link:hover .nls-logo-img{transform:scale(1.05) rotate(-2deg)}
     .nls-logo-text-container{width:110px;height:20px;position:relative;overflow:hidden}
     .nls-logo-text-item{position:absolute;inset:0;display:flex;align-items:center;font-size:13px;font-weight:700;color:var(--primary-color);opacity:0;animation:spin 8s linear infinite}
     .nls-logo-text-item:nth-child(2){animation-delay:2s}.nls-logo-text-item:nth-child(3){animation-delay:4s}.nls-logo-text-item:nth-child(4){animation-delay:6s}
     @keyframes spin{0%{transform:translateY(-100%);opacity:0}5%,20%{transform:translateY(0);opacity:1}25%,100%{transform:translateY(100%);opacity:0}}
+
+    /* Premium Desktop Nav */
     .nls-nav{display:flex;align-items:center;gap:0.5rem;flex-shrink:1;min-width:0}
-    .nls-nav-link{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.75rem;border-radius:8px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
-    .nls-nav-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
-    .nls-nav-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff}
+    .nls-nav-link{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.9rem;border-radius:10px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.3s var(--ease);background:none;border:none;cursor:pointer;white-space:nowrap;position:relative;overflow:hidden}
+    .nls-nav-link::before { content: ''; position: absolute; bottom: 0; left: 50%; width: 0; height: 2px; background: var(--primary-color); transition: all 0.3s var(--ease); transform: translateX(-50%); }
+    .nls-nav-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateY(-2px)}
+    .nls-nav-link:hover::before { width: 60%; }
+    .nls-nav-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;box-shadow:0 4px 12px rgba(106,17,203,0.25)}
+    .nls-nav-link.active::before { display: none; }
     .nls-nav-link i{font-size:0.85rem}.nls-adult{color:#db2777 !important}.nls-adult:hover{background:rgba(219,39,119,0.1) !important}
-    .nls-more-btn{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.75rem;border-radius:8px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
-    .nls-more-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
+
+    .nls-more-btn{font-size:0.85rem;font-weight:600;color:#334155;padding:0.5rem 0.9rem;border-radius:10px;display:flex;align-items:center;gap:0.4rem;text-decoration:none;transition:all 0.2s ease;background:none;border:none;cursor:pointer;white-space:nowrap}
+    .nls-more-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateY(-1px)}
     #navMoreChevron{font-size:0.7rem;margin-left:0.25rem;transition:transform 0.3s var(--ease)}
     .nls-nav-more{position:relative;display:inline-flex;z-index:1002}
-    .nls-nav-more-menu{position:absolute;top:calc(100% + 8px);left:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border:1px solid rgba(226,232,240,0.6);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.1);padding:0.5rem;min-width:200px;z-index:1001;display:flex;flex-direction:column;gap:0.25rem;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all 0.3s var(--ease)}
-    .nls-nav-more.active .nls-nav-more-menu{opacity:1;visibility:visible;transform:translateY(0)}
+    .nls-nav-more-menu{position:absolute;top:calc(100% + 8px);left:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(226,232,240,0.6);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,0.1);padding:0.5rem;min-width:200px;z-index:1001;display:flex;flex-direction:column;gap:0.25rem;opacity:0;visibility:hidden;transform:translateY(-10px) scale(0.95);transition:all 0.3s var(--ease)}
+    .nls-nav-more.active .nls-nav-more-menu{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
     .nls-nav-more.active #navMoreChevron{transform:rotate(180deg)}
-    .nls-nav-more-menu .nls-nav-link{width:100%;justify-content:flex-start;padding:0.75rem 1rem;border-radius:8px}
+    .nls-nav-more-menu .nls-nav-link{width:100%;justify-content:flex-start;padding:0.75rem 1rem;border-radius:10px}
+    .nls-nav-more-menu .nls-nav-link::before { display: none; }
+
     .nls-search-desktop{position:relative;width:300px;flex-shrink:0}
-    .nls-search-desktop input{width:100%;height:40px;padding:0 5rem 0 1rem;border-radius:20px;border:1px solid #e2e8f0;background:rgba(255,255,255,0.8);font-size:0.9rem;color:#334155;outline:none;transition:all 0.2s ease}
-    .nls-search-desktop input:focus{border-color:var(--primary-color);background:#fff;box-shadow:0 0 0 3px rgba(106,17,203,0.1)}
+    .nls-search-desktop input{width:100%;height:42px;padding:0 5rem 0 1rem;border-radius:21px;border:1px solid #e2e8f0;background:rgba(255,255,255,0.8);font-size:0.9rem;color:#334155;outline:none;transition:all 0.3s ease}
+    .nls-search-desktop input:focus{border-color:var(--primary-color);background:#fff;box-shadow:0 0 0 4px rgba(106,17,203,0.1)}
+
     .nls-clear-search{position:absolute;right:44px;top:50%;transform:translateY(-50%);background:#cbd5e1;color:#fff;border:none;cursor:pointer;width:20px;height:20px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;transition:all 0.2s ease}
-    .nls-clear-search:hover{background:#94a3b8}
+    .nls-clear-search:hover{background:#94a3b8;transform:translateY(-50%) scale(1.1)}
     .nls-clear-search.visible{display:flex}
-    .nls-search-btn{position:absolute;right:4px;top:4px;height:32px;width:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease}
-    .nls-search-btn:hover{transform:scale(1.05)}
+    .nls-search-btn{position:absolute;right:4px;top:4px;height:34px;width:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.3s ease, box-shadow 0.3s ease}
+    .nls-search-btn:hover{transform:scale(1.1) rotate(10deg); box-shadow: 0 4px 12px rgba(106,17,203,0.3);}
+
     .nls-icon-btn{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#334155;padding:0.5rem;transition:color 0.2s}
     .nls-icon-btn:hover{color:var(--primary-color)}
     .nls-account-link{display:flex;align-items:center;gap:0.5rem;text-decoration:none;color:#334155;font-weight:600;font-size:0.9rem;padding:0.5rem 0.75rem;border-radius:8px;transition:all 0.2s ease}
@@ -164,20 +183,23 @@
     .nls-account-link:hover .nls-account-icon{color:var(--primary-color)}
     .nls-cart-btn{position:relative;display:flex;align-items:center;gap:0.5rem;background:none;border:none;cursor:pointer;color:#334155;font-weight:600;font-size:0.9rem;padding:0.5rem 0.75rem;border-radius:8px;transition:all 0.2s ease}
     .nls-cart-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
-    .cart-badge{position:absolute;top:0;right:0;background:#ef4444;color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+    .cart-badge{position:absolute;top:0;right:0;background:#ef4444;color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow: 0 2px 6px rgba(239,68,68,0.4);}
     .nls-cart-bump{animation:bump 0.4s var(--ease)}@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.2)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
-    .nls-mobile-search-panel{position:absolute;top:100%;left:0;right:0;padding:1rem 1.5rem;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border-bottom:1px solid #e2e8f0;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);transform:translateY(-100%);opacity:0;visibility:hidden;transition:all 0.3s var(--ease);z-index:999}
+
+    .nls-mobile-search-panel{position:absolute;top:100%;left:0;right:0;padding:1rem 1.5rem;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid #e2e8f0;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);transform:translateY(-100%);opacity:0;visibility:hidden;transition:all 0.3s var(--ease);z-index:999}
     .nls-mobile-search-panel.active{transform:translateY(0);opacity:1;visibility:visible}
     .nls-mobile-search-box{position:relative;width:100%}
     .nls-mobile-search-panel input{width:100%;height:44px;padding:0 5rem 0 1rem;border-radius:24px;border:1px solid #e2e8f0;background:#f8fafc;font-size:1rem;outline:none;transition:all 0.2s}
     .nls-mobile-search-panel input:focus{border-color:var(--primary-color);background:#fff;box-shadow:0 0 0 3px rgba(106,17,203,0.1)}
     .nls-mobile-search-panel .nls-search-btn{height:36px;width:36px;right:4px;top:4px}
     .nls-mobile-search-panel .nls-clear-search{right:48px;top:50%}
-    .search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px) saturate(180%);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);max-height:400px;overflow-y:auto;z-index:999;display:none;border:1px solid rgba(226,232,240,0.6);padding:0.5rem;transform:translateY(-10px);opacity:0;transition:all 0.3s var(--ease)}
-    .search-dropdown.active{display:block;opacity:1;transform:translateY(0)}
-    .search-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:8px;cursor:pointer;transition:background 0.2s ease;border-bottom:1px solid #f1f5f9}
+
+    .search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,0.1);max-height:400px;overflow-y:auto;z-index:999;display:none;border:1px solid rgba(226,232,240,0.6);padding:0.5rem;transform:translateY(-10px) scale(0.98);opacity:0;transition:all 0.3s var(--ease)}
+    .search-dropdown.active{display:block;opacity:1;transform:translateY(0) scale(1)}
+    .search-dropdown::-webkit-scrollbar{width:6px}.search-dropdown::-webkit-scrollbar-thumb{background:var(--primary-color);border-radius:10px}
+    .search-dropdown-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border-radius:12px;cursor:pointer;transition:background 0.2s ease;border-bottom:1px solid #f1f5f9}
     .search-dropdown-item:last-child{border-bottom:none}
-    .search-dropdown-item:hover{background:#f8fafc}
+    .search-dropdown-item:hover{background:#f8fafc;transform: translateX(4px);}
     .sdi-img{width:48px;height:48px;border-radius:8px;overflow:hidden;background:#f1f5f9;flex-shrink:0;display:flex;align-items:center;justify-content:center}
     .sdi-img img{width:100%;height:100%;object-fit:contain;padding:4px}.sdi-img i{font-size:1.5rem}
     .sdi-info{flex-grow:1;margin:0;min-width:0}
@@ -185,36 +207,161 @@
     .sdi-info p{font-size:0.8rem;color:#64748b;margin:2px 0 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .sdi-action{display:flex;align-items:center;gap:10px;flex-shrink:0}
     .sdi-price{font-weight:700;font-size:0.9rem;color:#1e293b}
-    .sdi-add-btn{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:opacity 0.2s}
-    .sdi-add-btn:hover{opacity:0.9}
-    .nls-drawer{position:fixed;top:0;left:0;width:280px;height:100vh;background:rgba(255,255,255,0.98);backdrop-filter:blur(15px);z-index:1001;transform:translateX(-100%);transition:transform 0.35s var(--ease);box-shadow:2px 0 10px rgba(0,0,0,0.1);display:flex;flex-direction:column}
-    .nls-drawer.active{transform:translateX(0)}
-    .nls-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid #f1f5f9}
-    .nls-drawer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--primary-color);font-weight:700}
-    .nls-drawer-close{background:none;border:none;font-size:1.5rem;color:#334155;cursor:pointer;transition:transform 0.2s}
-    .nls-drawer-close:hover{transform:rotate(90deg)}
-    .nls-drawer-nav{padding:1rem;display:flex;flex-direction:column;gap:0.5rem;overflow-y:auto}
-    .nls-drawer-link{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1rem;border-radius:10px;color:#334155;text-decoration:none;font-weight:600;font-size:0.95rem;transition:all 0.2s ease}
-    .nls-drawer-link:hover{background:rgba(106,17,203,0.08);color:var(--primary-color);transform:translateX(5px)}
-    .nls-drawer-link.active{background:rgba(106,17,203,0.1);color:var(--primary-color)}
-    .nls-drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;opacity:0;visibility:hidden;transition:all 0.35s var(--ease);backdrop-filter:blur(4px)}
-    .nls-drawer-overlay.active{opacity:1;visibility:visible}
-    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.3s var(--ease),box-shadow 0.3s var(--ease);cursor:pointer;height:100%;display:flex;flex-direction:column}
-    .subscription-card:hover{transform:translateY(-4px);box-shadow:0 10px 15px -3px rgba(0,0,0,0.1)}
-    .subscription-card .card-link{text-decoration:none;display:flex;flex-direction:column;height:100%}
-    .product-image-container{width:100%;aspect-ratio:16/9;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden}
-    .product-image{width:100%;height:100%;object-fit:contain;transition:transform 0.3s var(--ease)}
-    .subscription-card:hover .product-image{transform:scale(1.05)}.product-icon{font-size:3rem}
-    .nls-user-link{animation:appear .42s var(--ease)}@keyframes appear{0%{opacity:0;transform:translateY(-7px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
-    .nls-btn-details{position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:500;color:#4b5563;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden}
-    .nls-btn-details::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(72,176,255,0.15),transparent);transition:left 0.6s ease}
-    .subscription-card:hover .nls-btn-details,.nls-btn-details:hover{color:#2563eb;border-color:#93c5fd;background:linear-gradient(135deg,#eff6ff 0%,#fff 100%);box-shadow:0 4px 12px rgba(37,99,235,0.12);transform:translateY(-1px)}
-    .nls-btn-details:hover::before{left:100%}
-    .nls-btn-details i{font-size:0.75rem;margin-left:0.375rem;transition:transform 0.3s ease}.nls-btn-details:hover i{transform:translateX(3px)}
-    .nls-btn-details:active{transform:scale(0.98) translateY(0);box-shadow:0 2px 4px rgba(37,99,235,0.08)}
-    .search-highlight{background-color:#fef08a;font-weight:600;padding:0 2px;border-radius:2px}
+    .sdi-add-btn{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s; box-shadow: 0 2px 8px rgba(106,17,203,0.2);}
+    .sdi-add-btn:hover{opacity:0.9; transform: scale(1.05);}
 
-    /* Details-page-specific styles */
+    /* PREMIUM MOBILE DRAWER */
+    .nls-drawer{position:fixed;top:0;left:0;width:320px;height:100vh;background:rgba(255,255,255,0.98);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);z-index:1001;transform:translateX(-100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:10px 0 40px rgba(0,0,0,0.1);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.6)}
+    .nls-drawer.active{transform:translateX(0)}
+    .nls-drawer-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.5rem 1.25rem;background:linear-gradient(135deg, rgba(106,17,203,0.05), rgba(37,117,252,0.05));border-bottom:1px solid #f1f5f9}
+    .nls-drawer-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--primary-color);font-weight:800;font-size:1.1rem}
+    .nls-drawer-logo .nls-logo-img{height:32px}
+    .nls-drawer-close{width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}
+    .nls-drawer-close:hover{background:#e2e8f0;transform:rotate(90deg);color:#ef4444}
+    .nls-drawer-nav{padding:1rem;display:flex;flex-direction:column;gap:0.5rem;overflow-y:auto}
+    .nls-drawer-link{display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1rem;border-radius:14px;color:#334155;text-decoration:none;font-weight:600;font-size:0.95rem;background:rgba(255,255,255,0.6);box-shadow:0 1px 2px rgba(0,0,0,0.03);transition:all 0.3s var(--ease)}
+    .nls-drawer-link i{width:36px;height:36px;border-radius:10px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;color:var(--primary-color);font-size:1rem;transition:all 0.3s var(--ease)}
+    .nls-drawer-link:hover{background:linear-gradient(135deg, rgba(106,17,203,0.1), rgba(37,117,252,0.1));color:var(--primary-color);transform:translateX(5px);box-shadow:0 4px 12px rgba(106,17,203,0.1)}
+    .nls-drawer-link:hover i{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;transform: scale(1.1);}
+    .nls-drawer-link.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;box-shadow:0 4px 15px rgba(106,17,203,0.3)}
+    .nls-drawer-link.active i{background:rgba(255,255,255,0.2);color:#fff}
+    .nls-drawer-link.nls-adult{color:#db2777}
+    .nls-drawer-link.nls-adult i{color:#db2777}
+    .nls-drawer-link.nls-adult:hover{background:linear-gradient(135deg, rgba(219,39,119,0.1), rgba(219,39,119,0.05));color:#db2777}
+    .nls-drawer-link.nls-adult:hover i{background:#db2777;color:#fff}
+    .nls-drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.7);z-index:1000;opacity:0;visibility:hidden;transition:all 0.4s var(--ease);backdrop-filter:blur(8px)}
+    .nls-drawer-overlay.active{opacity:1;visibility:visible}
+
+    /* PREMIUM PRODUCT CARDS */
+    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.4s var(--ease),box-shadow 0.4s var(--ease), border-color 0.4s var(--ease); border: 1px solid transparent; position: relative; cursor: pointer; height: 100%; display: flex; flex-direction: column; }
+    .subscription-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease); z-index: 2; }
+    .subscription-card:hover{transform:translateY(-8px);box-shadow:0 20px 40px -10px rgba(106,17,203,0.15); border-color: rgba(106,17,203,0.1); }
+    .subscription-card:hover::before { transform: scaleX(1); }
+    .subscription-card .card-link{text-decoration:none;display:flex;flex-direction:column;height:100%}
+    .product-image-container{width:100%;aspect-ratio:16/9;background:#f8fafc;display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden;position:relative}
+    .product-image{width:100%;height:100%;object-fit:cover;transition:transform 0.5s var(--ease)}
+    .subscription-card:hover .product-image{transform:scale(1.08)}.product-icon{font-size:3rem}
+    .nls-user-link{animation:appear .3s var(--ease)}@keyframes appear{0%{opacity:0;transform:translateY(-7px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+    /* Premium Details Button Shine Effect */
+    .nls-btn-details{position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:500;color:#4b5563;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden}
+    .nls-btn-details::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(106,17,203,0.15),transparent);transition:left 0.5s ease}
+    .subscription-card:hover .nls-btn-details,.nls-btn-details:hover{color:var(--primary-color);border-color:rgba(106,17,203,0.3);background:linear-gradient(135deg,#f8f5ff 0%,#fff 100%);box-shadow:0 4px 12px rgba(106,17,203,0.12);transform:translateY(-2px)}
+    .nls-btn-details:hover::before{left:100%}
+    .nls-btn-details i{font-size:0.75rem;margin-left:0.375rem;transition:transform 0.3s ease}.nls-btn-details:hover i{transform:translateX(5px)}
+    .nls-btn-details:active{transform:scale(0.98) translateY(0);box-shadow:0 2px 4px rgba(106,17,203,0.08)}
+
+    /* Premium Primary Button (Add to Cart) */
+    .btn-primary{background:linear-gradient(to right,var(--primary-color),var(--secondary-color));color:#fff;transition:var(--transition);border:none;border-radius:.75rem;padding:.85rem 1.5rem;font-weight:600;box-shadow:0 4px 14px rgba(106,17,203,.3);position:relative;overflow:hidden}
+    .btn-primary::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
+    .btn-primary:hover{background:linear-gradient(to right,var(--primary-dark),var(--primary-color));transform:translateY(-2px);box-shadow:0 6px 20px rgba(106,17,203,.4)}
+    .btn-primary:hover::after{left:100%}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-whatsapp{background:linear-gradient(to right,#25D366,#128C7E);color:#fff;transition:var(--transition);border:none;border-radius:.75rem;padding:.85rem 1.5rem;font-weight:600;box-shadow:0 4px 14px rgba(37,211,102,.3);position:relative;overflow:hidden}
+    .btn-whatsapp::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transition:left 0.5s}
+    .btn-whatsapp:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,211,102,.4)}
+    .btn-whatsapp:hover::after{left:100%}
+
+    /* Premium Plan Card */
+    .plan-card{transition:var(--transition);cursor:pointer;border:2px solid transparent;position:relative;overflow:hidden;border-radius:.75rem;background:#fff;box-shadow:var(--shadow)}
+    .plan-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .5s}
+    .plan-card:hover::before{left:100%}
+    .plan-card:hover{transform:translateY(-5px);box-shadow:0 12px 24px rgba(106,17,203,0.12); border-color: rgba(106,17,203,0.2);}
+    .plan-card.selected{border-color:var(--primary-color);background:linear-gradient(135deg, rgba(106,17,203,0.05), rgba(37,117,252,0.05)); box-shadow:0 8px 20px rgba(106,17,203,0.15)}
+    .popular-badge{position:absolute;top:0;left:50%;transform:translateX(-50%);background:linear-gradient(135deg, #FF4757, #ff6b81);color:#fff;font-size:.7rem;font-weight:700;padding:.3rem .9rem;z-index:10;box-shadow:0 4px 12px rgba(255,71,87,0.4); border-radius: 0 0 8px 8px; letter-spacing: 0.5px;}
+
+    .feature-item{transition:var(--transition);opacity:0;transform:translateX(-20px)}
+    .feature-item.show{opacity:1;transform:translateX(0)}
+    .feature-item:hover{transform:translateX(10px);background:rgba(106,17,203,0.05) !important;}
+
+    .gallery-container{position:relative;overflow:hidden;border-radius:1rem;box-shadow:0 20px 40px -10px rgba(106,17,203,0.15)}
+    .gallery-slider{display:flex;transition:transform .5s cubic-bezier(0.16,1,0.3,1)}
+    .gallery-slide{min-width:100%;aspect-ratio:16/9;position:relative}
+    .gallery-slide img{width:100%;height:100%;object-fit:cover}
+    .gallery-thumbnail{transition:var(--transition);cursor:pointer;opacity:.6;border:2px solid transparent}
+    .gallery-thumbnail:hover{opacity:1;transform:translateY(-3px)}
+    .gallery-thumbnail.active{opacity:1;border-color:var(--primary-color);box-shadow:0 4px 12px rgba(106,17,203,0.25)}
+    .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);z-index:5;box-shadow:0 4px 15px rgba(0,0,0,0.15)}
+    .gallery-nav:hover{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;transform:translateY(-50%) scale(1.1);box-shadow:0 6px 20px rgba(106,17,203,0.4)}
+    .gallery-prev{left:15px}.gallery-next{right:15px}
+    .gallery-dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
+    .gallery-dot{width:10px;height:10px;border-radius:50%;background-color:#cbd5e1;cursor:pointer;transition:var(--transition)}
+    .gallery-dot.active{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));transform:scale(1.3);box-shadow:0 2px 6px rgba(106,17,203,0.4)}
+
+    .tab-button{transition:var(--transition);position:relative;color:var(--text-dark);font-weight:600;font-size:0.95rem;padding:1rem 0.5rem}
+    .tab-button::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:3px;background:linear-gradient(to right,var(--primary-color),var(--secondary-color));transform:translateX(-50%);transition:width .3s ease;border-radius:3px}
+    .tab-button.active::after{width:100%}
+    .tab-button.active{color:var(--primary-color)}
+    .tab-button:hover{color:var(--primary-color);transform:translateY(-2px)}
+
+    .modal-backdrop{background-color:rgba(15,23,42,0.6);backdrop-filter:blur(8px)}
+
+    /* Back to Top & WhatsApp FAB */
+    .fab{position:fixed;bottom:30px;right:30px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg, var(--primary-color), var(--secondary-color));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(106,17,203,0.4);cursor:pointer;transition:all 0.3s var(--ease);z-index:100;opacity:0;visibility:hidden;transform:translateY(20px) scale(0.8)}
+    .fab.visible{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+    .fab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 12px 28px rgba(106,17,203,0.5)}
+    .fab i{font-size:18px}
+    .whatsapp-fab{position:fixed;bottom:30px;right:90px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg, #25D366, #128C7E);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(37,211,102,0.4);cursor:pointer;transition:all 0.3s var(--ease);z-index:100;opacity:0;visibility:hidden;transform:translateY(20px) scale(0.8)}
+    .whatsapp-fab.visible{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+    .whatsapp-fab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 12px 28px rgba(37,211,102,0.5)}
+    .whatsapp-fab i{font-size:22px}
+
+    /* PREMIUM CART SIDEBAR */
+    .cart-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(8px);z-index:1100;opacity:0;visibility:hidden;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)}
+    .cart-overlay.active{opacity:1;visibility:visible}
+    .cart-sidebar{position:fixed;top:0;right:0;width:100%;max-width:420px;height:100vh;background:rgba(255,255,255,0.85);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);z-index:1101;transform:translateX(105%);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);box-shadow:-10px 0 40px rgba(0,0,0,0.1);display:flex;flex-direction:column}
+    .cart-sidebar.open{transform:translateX(0)}
+    .cart-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem;border-bottom:1px solid rgba(226,232,240,0.6)}
+    .cart-title-wrap{display:flex;align-items:center;gap:0.75rem}
+    .cart-title-icon{color:var(--primary-color);font-size:1.25rem}
+    .cart-title{font-size:1.5rem;font-weight:800;color:#172033;margin:0}
+    .cart-item-count{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:white;font-size:0.75rem;font-weight:700;padding:2px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(106,17,203,0.3)}
+    .cart-close-btn{width:36px;height:36px;border-radius:50%;background:#f1f5f9;border:none;cursor:pointer;color:#64748b;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease}
+    .cart-close-btn:hover{background:#e2e8f0;transform:rotate(90deg);color:#ef4444}
+    .cart-items-container{flex-grow:1;overflow-y:auto;padding:1rem 1.5rem}
+    .cart-items-container::-webkit-scrollbar{width:4px}
+    .cart-items-container::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+    .cart-item{display:flex;align-items:center;gap:1rem;padding:1rem;background:#fff;border:1px solid #f1f5f9;border-radius:16px;margin-bottom:1rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);animation:cartItemIn 0.4s cubic-bezier(0.16,1,0.3,1);transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);}
+    .cart-item:hover { transform: translateX(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    @keyframes cartItemIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .cart-item-img{width:60px;height:60px;border-radius:12px;object-fit:contain;background:#f8fafc}
+    .cart-item-info{flex:1;min-width:0}
+    .cart-item-name{font-weight:700;font-size:0.95rem;color:#172033;margin:0 0 0.25rem 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cart-item-price{font-size:0.8rem;color:#64748b;margin:0}
+    .cart-item-controls{display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem}
+    .cart-item-remove{background:none;border:none;color:#cbd5e1;cursor:pointer;transition:color 0.2s;padding:0;line-height:1}
+    .cart-item-remove:hover{color:#ef4444;transform: scale(1.1);}
+    .cart-qty-wrap{display:flex;align-items:center;gap:0.5rem;background:#f8fafc;padding:4px;border-radius:999px}
+    .cart-qty-btn{width:24px;height:24px;border-radius:50%;background:#fff;border:none;color:#64748b;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.2s}
+    .cart-qty-btn:hover{background:var(--primary-color);color:#fff;transform: scale(1.1);}
+    .cart-qty-val{font-size:0.85rem;font-weight:700;color:#172033;min-width:16px;text-align:center}
+    .cart-footer{padding:1.5rem;border-top:1px solid rgba(226,232,240,0.6);background:rgba(255,255,255,0.5)}
+    .cart-footer.hidden{display:none}
+    .cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+    .cart-total-label{font-size:1rem;color:#64748b;font-weight:500}
+    .cart-total-amount{font-size:1.75rem;font-weight:800;color:#172033;background:linear-gradient(to right,var(--primary-color),var(--secondary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .cart-taxes{font-size:0.75rem;color:#94a3b8;margin-bottom:1.25rem}
+    .cart-checkout-btn{width:100%;padding:1rem;border-radius:14px;border:none;background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:white;font-weight:700;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all 0.3s ease;box-shadow:0 4px 14px rgba(106,17,203,0.3); position: relative; overflow: hidden;}
+    .cart-checkout-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+    .cart-checkout-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(106,17,203,0.4)}
+    .cart-checkout-btn:hover::after { left: 100%; }
+    .cart-checkout-btn:active{transform:translateY(0)}
+    .empty-cart-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;color:#94a3b8}
+    .empty-cart-state i{font-size:4rem;margin-bottom:1rem;color:#e2e8f0;animation: float 2s ease-in-out infinite;}
+    .empty-cart-state h3{font-size:1.25rem;color:#64748b;margin:0}
+    .empty-cart-state p{font-size:0.9rem;margin-top:0.5rem}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+    /* Premium Section Header for Related Subscriptions */
+    .category-section-header { background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; position: relative; overflow: hidden; transition: all 0.3s var(--ease); border-radius: 16px; }
+    .category-section-header::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color)); }
+    .category-section-header:hover { transform: translateX(5px); box-shadow: 0 8px 30px rgba(106,17,203,0.1) !important; }
+    .category-section-header .cat-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, rgba(106,17,203,0.12), rgba(37,117,252,0.12)); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease); }
+    .category-section-header:hover .cat-icon-wrap { background: linear-gradient(135deg,var(--primary-color),var(--secondary-color)); transform: scale(1.1) rotate(-5deg); }
+    .category-section-header:hover .cat-icon-wrap i { color: #fff !important; }
+    .category-section-header .cat-icon-wrap i { transition: color 0.3s var(--ease); }
+
+    /* Skeleton Loaders */
     .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
     @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
     .skeleton-card{background-color:#fff;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;height:auto}
@@ -223,7 +370,7 @@
     .skeleton-text{height:16px;border-radius:4px;width:90%}
     .skeleton-price{height:24px;border-radius:4px;width:30%}
     .skeleton-button{height:38px;border-radius:8px;width:100%}
-    .loading-spinner{width:60px;height:60px;border:4px solid var(--primary-light);border-top:4px solid var(--primary-color);border-radius:50%;animation:spin360 1s linear infinite}
+    .loading-spinner{width:60px;height:60px;border:4px solid rgba(106,17,203,0.2);border-top:4px solid var(--primary-color);border-radius:50%;animation:spin360 1s linear infinite}
     @keyframes spin360{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
     @keyframes fadeIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
     @keyframes slideInLeft{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:translateX(0)}}
@@ -233,43 +380,7 @@
     .animate-slide-in-left{animation:slideInLeft .8s ease-out forwards}
     .animate-slide-in-right{animation:slideInRight .8s ease-out forwards}
     ::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:var(--light-bg)}::-webkit-scrollbar-thumb{background:var(--primary-color);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--primary-dark)}
-    .btn-primary{background:linear-gradient(to right,var(--primary-color),var(--primary-light));color:#fff;transition:var(--transition);border:none;border-radius:.5rem;padding:.75rem 1.5rem;font-weight:600;box-shadow:0 4px 6px rgba(106,17,203,.2)}
-    .btn-primary:hover{background:linear-gradient(to right,var(--primary-dark),var(--primary-color));transform:translateY(-2px);box-shadow:0 6px 12px rgba(106,17,203,.3)}
-    .btn-whatsapp{background-color:#25D366;color:#fff;transition:var(--transition);border:none;border-radius:.5rem;padding:.75rem 1.5rem;font-weight:600;box-shadow:0 4px 6px rgba(37,211,102,.2)}
-    .btn-whatsapp:hover{background-color:#128C7E;transform:translateY(-2px);box-shadow:0 6px 12px rgba(37,211,102,.3)}
-    .plan-card{transition:var(--transition);cursor:pointer;border:2px solid transparent;position:relative;overflow:hidden;border-radius:.75rem;background:#fff;box-shadow:var(--shadow)}
-    .plan-card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);transition:left .5s}
-    .plan-card:hover::before{left:100%}
-    .plan-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-hover)}
-    .plan-card.selected{border-color:var(--primary-color);background-color:rgba(106,17,203,.1)}
-    .popular-badge{position:absolute;top:0;left:50%;transform:translateX(-50%);background-color:#FF4757;color:#fff;font-size:.75rem;font-weight:bold;padding:.25rem .75rem;z-index:10;box-shadow:0 2px 4px rgba(0,0,0,.2)}
-    .feature-item{transition:var(--transition);opacity:0;transform:translateX(-20px)}
-    .feature-item.show{opacity:1;transform:translateX(0)}
-    .feature-item:hover{transform:translateX(10px)}
-    .gallery-container{position:relative;overflow:hidden;border-radius:1rem;box-shadow:var(--shadow-hover)}
-    .gallery-slider{display:flex;transition:transform .5s ease-in-out}
-    .gallery-slide{min-width:100%;aspect-ratio:16/9;position:relative}
-    .gallery-slide img{width:100%;height:100%;object-fit:cover}
-    .gallery-thumbnail{transition:var(--transition);cursor:pointer;opacity:.6}
-    .gallery-thumbnail:hover{opacity:1}
-    .gallery-thumbnail.active{opacity:1;border:2px solid var(--primary-color)}
-    .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background-color:rgba(255,255,255,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);z-index:5}
-    .gallery-nav:hover{background-color:rgba(255,255,255,.9)}
-    .gallery-prev{left:10px}.gallery-next{right:10px}
-    .gallery-dots{display:flex;justify-content:center;gap:8px;margin-top:12px}
-    .gallery-dot{width:10px;height:10px;border-radius:50%;background-color:#ccc;cursor:pointer;transition:var(--transition)}
-    .gallery-dot.active{background-color:var(--primary-color);transform:scale(1.2)}
-    .tab-button{transition:var(--transition);position:relative;color:var(--text-dark);font-weight:500}
-    .tab-button::after{content:'';position:absolute;bottom:0;left:50%;width:0;height:3px;background:linear-gradient(to right,var(--primary-color),var(--secondary-color));transform:translateX(-50%);transition:width .3s ease}
-    .tab-button.active::after{width:100%}
-    .tab-button:hover{color:var(--primary-color)}
-    .modal-backdrop{background-color:rgba(0,0,0,.5);backdrop-filter:blur(5px)}
-    .fab{position:fixed;bottom:30px;right:30px;width:60px;height:60px;border-radius:50%;background:linear-gradient(to right,var(--primary-color),var(--primary-light));color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-hover);cursor:pointer;transition:var(--transition);z-index:100;opacity:0;visibility:hidden}
-    .fab:hover{background:linear-gradient(to right,var(--primary-dark),var(--primary-color));transform:scale(1.1)}
-    .fab i{font-size:24px}
-    .whatsapp-fab{position:fixed;bottom:30px;right:100px;width:60px;height:60px;border-radius:50%;background-color:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-hover);cursor:pointer;transition:var(--transition);z-index:100;opacity:0;visibility:hidden}
-    .whatsapp-fab:hover{background-color:#128C7E;transform:scale(1.1)}
-    .whatsapp-fab i{font-size:24px}
+
     .cart-badge.pulse{animation:pulseAnim .5s ease-in-out}
     .loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background-color:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
     .loading-overlay.active{opacity:1;visibility:visible}
@@ -278,10 +389,16 @@
     .breadcrumb a{color:#64748b;text-decoration:none;transition:color 0.2s}
     .breadcrumb a:hover{color:var(--primary-color)}
     .details-wrapper{max-width:1280px;margin:0 auto;padding:0 1.5rem}
-    @media(max-width:768px){.gallery-slide{aspect-ratio:4/3}.whatsapp-fab{bottom:100px;right:30px}.gallery-nav{width:30px;height:30px}.gallery-prev{left:5px}.gallery-next{right:5px}}
+    .search-highlight{background-color:#fef08a;font-weight:600;padding:0 2px;border-radius:2px}
+
     @media(max-width:1024px){
       .nls-nav,.nls-nav-more{display:none}.nls-hamburger{display:block}.nls-search-desktop{display:none}.nls-icon-btn{display:flex;align-items:center;justify-content:center}.nls-auth-text{display:none}.nls-cart-text{display:none}
       .subscription-card .card-link > div:not(.product-image-container){padding:0.75rem !important}.subscription-card h3{font-size:0.95rem !important}.subscription-card p{font-size:0.75rem !important;margin-bottom:0.5rem !important}.subscription-card .text-2xl{font-size:1.1rem !important}.subscription-card button{padding:0.4rem !important;font-size:0.8rem !important}.subscription-card .nls-btn-details{padding:0.4rem !important;font-size:0.8rem !important}
+    }
+    @media(max-width:768px){.gallery-slide{aspect-ratio:4/3}.whatsapp-fab{bottom:90px;right:30px}.gallery-nav{width:36px;height:36px}.gallery-prev{left:8px}.gallery-next{right:8px}}
+    @media(max-width:600px){
+      .nls-logo-img{height:30px}
+      .nls-logo-text-container{width:90px;font-size:11px}
     }
     @media(max-width:480px){.nls-logo-text-container{display:none}.nls-left{gap:0.5rem}.nls-right{gap:0.25rem}.nls-container{padding:0 1rem}.subscription-card .card-link > div:not(.product-image-container){padding:0.5rem !important}.subscription-card h3{font-size:0.85rem !important}.subscription-card .text-2xl{font-size:1rem !important}.product-image-container{padding:0}.sdi-img{width:40px;height:40px}.sdi-info h4{font-size:0.85rem}.sdi-info p{font-size:0.7rem}.sdi-action{gap:5px}.sdi-price{font-size:0.8rem}.sdi-add-btn{padding:4px 8px;font-size:0.7rem}.popular-badge{font-size:.65rem;padding:.2rem .5rem}}
   </style>
@@ -302,23 +419,23 @@
     <div class="details-wrapper">
       <div id="productDetails" class="grid grid-cols-1 lg:grid-cols-2 gap-8"></div>
 
-      <div class="mt-12 bg-white rounded-xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-        <div class="border-b border-gray-200">
+      <div class="mt-12 bg-white rounded-2xl shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100" style="box-shadow: 0 10px 30px -10px rgba(106,17,203,0.08); border: 1px solid rgba(226,232,240,0.6);">
+        <div class="border-b border-gray-200" style="background:linear-gradient(to bottom, rgba(106,17,203,0.02), transparent);">
           <div class="flex space-x-8 px-6 overflow-x-auto">
-            <button class="tab-button py-4 font-medium text-gray-700 hover:text-blue-500 active whitespace-nowrap" onclick="switchTab('description')">Description</button>
-            <button class="tab-button py-4 font-medium text-gray-700 hover:text-blue-500 whitespace-nowrap" onclick="switchTab('features')">Features</button>
-            <button class="tab-button py-4 font-medium text-gray-700 hover:text-blue-500 whitespace-nowrap" onclick="switchTab('reviews')">Reviews</button>
-            <button class="tab-button py-4 font-medium text-gray-700 hover:text-blue-500 whitespace-nowrap" onclick="switchTab('faq')">FAQ</button>
+            <button class="tab-button active whitespace-nowrap" onclick="switchTab('description')">Description</button>
+            <button class="tab-button whitespace-nowrap" onclick="switchTab('features')">Features</button>
+            <button class="tab-button whitespace-nowrap" onclick="switchTab('reviews')">Reviews</button>
+            <button class="tab-button whitespace-nowrap" onclick="switchTab('faq')">FAQ</button>
           </div>
         </div>
         <div class="p-6"><div id="tabContent"></div></div>
       </div>
 
       <div class="mt-12">
-        <div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="100">
-          <div class="w-10 h-10 rounded-full flex items-center justify-center mr-4" style="background-color:rgba(135,206,235,.2)"><i class="fas fa-fire text-blue-500"></i></div>
+        <div class="category-section-header flex items-center mb-5 p-4" data-aos="fade-right" data-aos-delay="100">
+          <div class="cat-icon-wrap mr-4"><i class="fa-solid fa-fire text-xl" style="color:var(--primary-color);"></i></div>
           <div>
-            <h2 class="text-2xl font-bold" style="background:linear-gradient(to right,var(--primary-color),var(--secondary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Related Subscriptions</h2>
+            <h2 class="text-2xl font-bold" style="background:linear-gradient(to right,var(--primary-color),var(--secondary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Related Subscriptions</h2>
             <p class="text-gray-500 mt-1">You might also like these services</p>
           </div>
         </div>
@@ -327,38 +444,51 @@
     </div>
   </main>
 
-  <footer>
-    <div class="footer-container"><div class="footer-content"><div class="footer-section" data-aos="fade-up"><h3>About Next Level</h3><p>Your one-stop destination for premium digital subscriptions at unbeatable prices in Bangladesh. We offer a wide range of services from streaming platforms to cloud storage solutions with instant delivery.</p><div class="social-links"><a href="https://www.facebook.com/nextlevelestoresubs" aria-label="Facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a><a href="https://wa.me/8801644490566" aria-label="Whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/groups/1181322769599462" aria-label="Instagram" target="_blank"><i class="fa-solid fa-user-group-simple"></i></a><a href="#" aria-label="LinkedIn" target="_blank"><i class="fab fa-linkedin-in"></i></a></div></div><div class="footer-section" data-aos="fade-up" data-aos-delay="100"><h3>Quick Links</h3><ul><li><a href="/#best-selling" class="footer-link">Best Sellers</a></li><li><a href="/#streaming" class="footer-link">Streaming</a></li><li><a href="/#music" class="footer-link">Music</a></li><li><a href="/#storage" class="footer-link">Cloud Storage</a></li><li><a href="/#vpn" class="footer-link">VPN</a></li><li><a href="/#aiDesign" class="footer-link">Ai & Design</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="200"><h3>Categories</h3><ul><li><a href="https://www.nextlevelsubs.com/combos" class="footer-link">Combo Packages</a></li><li><a href="https://www.nextlevelsubs.com/education" class="footer-link">Education</a></li><li><a href="https://www.nextlevelsubs.com/adult" class="footer-link">Adult Subscription</a></li><li><a href="https://www.nextlevelsubs.com/best-selling" class="footer-link">Best Selling</a></li><li><a href="https://www.nextlevelbd.store/streaming" class="footer-link">Special Offers</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="300"><h3>Support</h3><ul><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link">Help Center</a></li><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link">Contact Us</a></li><li><a href="#" class="footer-link">Privacy Policy</a></li><li><a href="#" class="footer-link">Terms of Service</a></li><li><a href="#" class="footer-link">FAQ</a></li></ul></div></div><div class="footer-bottom" data-aos="fade-up" data-aos-delay="400"><p>&copy; 2025-2026 Next Level Subs. All rights reserved. | Premium Subscriptions Store in Bangladesh</p></div></div>
+  <footer class="bg-slate-900 text-slate-300">
+    <div class="footer-container max-w-7xl mx-auto px-4 py-12"><div class="footer-content grid grid-cols-1 md:grid-cols-4 gap-8"><div class="footer-section" data-aos="fade-up"><h3 class="text-xl font-bold text-white mb-4">About Next Level</h3><p class="mb-4 text-sm">Your one-stop destination for premium digital subscriptions at unbeatable prices in Bangladesh. We offer a wide range of services from streaming platforms to cloud storage solutions with instant delivery.</p><div class="social-links flex space-x-4"><a href="https://www.facebook.com/nextlevelestoresubs" aria-label="Facebook" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors"><i class="fab fa-facebook-f"></i></a><a href="https://wa.me/8801644490566" aria-label="Whatsapp" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a><a href="https://www.facebook.com/groups/1181322769599462" aria-label="Instagram" target="_blank" class="hover:text-white transition-colors"><i class="fa-solid fa-user-group-simple"></i></a><a href="#" aria-label="LinkedIn" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-linkedin-in"></i></a></div></div><div class="footer-section" data-aos="fade-up" data-aos-delay="50"><h3 class="text-xl font-bold text-white mb-4">Quick Links</h3><ul class="space-y-2"><li><a href="/#best-selling" class="footer-link hover:text-white transition-colors text-sm">Best Sellers</a></li><li><a href="/#streaming" class="footer-link hover:text-white transition-colors text-sm">Streaming</a></li><li><a href="/#music" class="footer-link hover:text-white transition-colors text-sm">Music</a></li><li><a href="/#storage" class="footer-link hover:text-white transition-colors text-sm">Cloud Storage</a></li><li><a href="/#vpn" class="footer-link hover:text-white transition-colors text-sm">VPN</a></li><li><a href="/#aiDesign" class="footer-link hover:text-white transition-colors text-sm">Ai & Design</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="100"><h3 class="text-xl font-bold text-white mb-4">Categories</h3><ul class="space-y-2"><li><a href="https://www.nextlevelsubs.com/combos" class="footer-link hover:text-white transition-colors text-sm">Combo Packages</a></li><li><a href="https://www.nextlevelsubs.com/education" class="footer-link hover:text-white transition-colors text-sm">Education</a></li><li><a href="https://www.nextlevelsubs.com/adult" class="footer-link hover:text-white transition-colors text-sm">Adult Subscription</a></li><li><a href="https://www.nextlevelsubs.com/best-selling" class="footer-link hover:text-white transition-colors text-sm">Best Selling</a></li><li><a href="https://www.nextlevelbd.store/streaming" class="footer-link hover:text-white transition-colors text-sm">Special Offers</a></li></ul></div><div class="footer-section" data-aos="fade-up" data-aos-delay="150"><h3 class="text-xl font-bold text-white mb-4">Support</h3><ul class="space-y-2"><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link hover:text-white transition-colors text-sm">Help Center</a></li><li><a href="https://api.whatsapp.com/send/?phone=8801644490566&text&type=phone_number&app_absent=0" class="footer-link hover:text-white transition-colors text-sm">Contact Us</a></li><li><a href="#" class="footer-link hover:text-white transition-colors text-sm">Privacy Policy</a></li><li><a href="#" class="footer-link hover:text-white transition-colors text-sm">Terms of Service</a></li><li><a href="#" class="footer-link hover:text-white transition-colors text-sm">FAQ</a></li></ul></div></div><div class="footer-bottom border-t border-slate-800 mt-12 pt-6 text-center text-sm text-slate-500" data-aos="fade-up" data-aos-delay="200"><p>&copy; 2025-2026 Next Level Subs. All rights reserved. | Premium Subscriptions Store in Bangladesh</p></div></div>
   </footer>
 
+  <!-- PREMIUM CART SIDEBAR -->
   <div id="cartOverlay" class="cart-overlay"></div>
-  <div id="cartSidebar" class="cart-sidebar">
-    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-2xl font-bold">Your Cart</h2>
-      <button id="closeCartBtn" class="text-gray-500 hover:text-gray-700" aria-label="Close cart"><i class="fas fa-times text-xl" aria-hidden="true"></i></button>
-    </div>
-    <div id="cartItems" class="p-6 flex-grow"></div>
-    <div id="cartFooter" class="hidden p-6 border-t border-gray-200">
-      <div class="flex justify-between mb-4"><span class="font-semibold">Total:</span><span id="cartTotal" class="font-bold text-xl">৳0</span></div>
-      <button id="checkoutBtn" class="w-full py-3 rounded-lg font-semibold text-white btn-primary">Proceed to Checkout</button>
-    </div>
-  </div>
+  <aside id="cartSidebar" class="cart-sidebar">
+      <div class="cart-header">
+          <div class="cart-title-wrap">
+              <i class="fas fa-shopping-cart cart-title-icon"></i>
+              <h2 class="cart-title">Your Cart</h2>
+              <span id="cartHeaderCount" class="cart-item-count">0</span>
+          </div>
+          <button id="closeCartBtn" class="cart-close-btn" aria-label="Close cart">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      <div id="cartItems" class="cart-items-container"></div>
+      <div id="cartFooter" class="cart-footer hidden">
+          <div class="cart-total-row">
+              <span class="cart-total-label">Subtotal</span>
+              <span id="cartTotal" class="cart-total-amount">৳0</span>
+          </div>
+          <p class="cart-taxes">Taxes and discounts calculated at checkout</p>
+          <button id="checkoutBtn" class="cart-checkout-btn">
+              Proceed to Checkout <i class="fas fa-arrow-right"></i>
+          </button>
+      </div>
+  </aside>
 
   <div id="notification" class="notification"><span id="notificationText">Item added to cart!</span></div>
 
   <div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div></div>
-  <div id="fab" class="fab" onclick="scrollToTop()"><i class="fa-solid fa-chevrons-up"></i></div>
-  <div id="whatsappFab" class="whatsapp-fab" onclick="sendToWhatsApp()"><i class="fa-brands fa-whatsapp fa-beat-fade"></i></div>
+  <button id="fab" class="fab" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
+  <button id="whatsappFab" class="whatsapp-fab" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
   <div id="successModal" class="fixed inset-0 z-50 hidden">
     <div class="modal-backdrop absolute inset-0"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-      <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-8 text-center animate-fade-in">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center animate-fade-in relative overflow-hidden">
         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-check text-3xl text-green-500"></i></div>
         <h2 class="text-2xl font-bold mb-2">Added to Cart!</h2>
         <p class="text-gray-600 mb-6">Your subscription has been added to the cart.</p>
         <div class="flex justify-center space-x-4">
           <button onclick="closeSuccessModal()" class="px-6 py-2 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors">Continue Shopping</button>
-          <a href="checkout.html" class="px-6 py-2 rounded-lg font-semibold text-white btn-primary">View Cart</a>
+          <a href="checkout.html" class="px-6 py-2 rounded-lg font-semibold text-white btn-primary inline-flex items-center">View Cart</a>
         </div>
       </div>
     </div>
@@ -376,14 +506,9 @@
       // ---------- Helpers ----------
       const pSlug = n => String(n || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
-      // Safely get products array whether it's defined as a global const or on window
       const getProducts = () => {
-        try {
-          if (typeof products !== 'undefined' && Array.isArray(products)) return products;
-        } catch (e) {}
-        try {
-          if (typeof window.products !== 'undefined' && Array.isArray(window.products)) return window.products;
-        } catch (e) {}
+        try { if (typeof products !== 'undefined' && Array.isArray(products)) return products; } catch (e) {}
+        try { if (typeof window.products !== 'undefined' && Array.isArray(window.products)) return window.products; } catch (e) {}
         return [];
       };
 
@@ -397,15 +522,16 @@
             nMB = $('navMoreBtn'), nMC = $('navMoreContainer'),
             cBtn = $('cartBtn'), cSide = $('cartSidebar'), cOvl = $('cartOverlay'),
             cClose = $('closeCartBtn'), cItems = $('cartItems'), cCount = $('cartCount'),
-            cTotal = $('cartTotal'), cFoot = $('cartFooter'), cOut = $('checkoutBtn'),
+            cHeadCount = $('cartHeaderCount'), cTotal = $('cartTotal'), cFoot = $('cartFooter'), cOut = $('checkoutBtn'),
             notif = $('notification'), notifT = $('notificationText'),
-            nLinks = document.querySelectorAll('.nls-nav-link, .nls-drawer-link');
+            nLinks = document.querySelectorAll('.nls-nav-link, .nls-drawer-link'),
+            nlsHeader = $('nlsHeader'),
+            fab = $('fab'), whatsappFab = $('whatsappFab');
 
       // ---------- Details-page elements ----------
       const loadingOverlay = $('loadingOverlay'), productDetails = $('productDetails'),
             breadcrumbProduct = $('breadcrumbProduct'), tabContent = $('tabContent'),
-            relatedProducts = $('relatedProducts'), successModal = $('successModal'),
-            fab = $('fab'), whatsappFab = $('whatsappFab');
+            relatedProducts = $('relatedProducts'), successModal = $('successModal');
 
       let cart = [], currentProduct = null, selectedPlan = 2, currentSlide = 0, searchTimer = null;
 
@@ -525,26 +651,44 @@
         }
       }
 
-      // ---------- Cart UI ----------
+      // ---------- Premium Cart UI ----------
       function updateCartUI() {
         if (!cCount || !cItems) return;
         const totalItems = cart.reduce((s, i) => s + Number(i.quantity || 0), 0);
         cCount.textContent = totalItems;
+        if (cHeadCount) cHeadCount.textContent = totalItems;
+
         cItems.innerHTML = '';
         if (!cart.length) {
-          cItems.innerHTML = '<div id="emptyCart" class="text-center py-12"><i class="fa-solid fa-basket-shopping-simple text-5xl mb-4" style="color:#48b0ff4d;"></i><h3 class="text-xl font-semibold text-gray-600">Your cart is empty</h3><p class="text-gray-500 mt-2">Add some subscriptions to get started</p></div>';
+          cItems.innerHTML = '<div class="empty-cart-state"><i class="fa-solid fa-basket-shopping-simple"></i><h3>Your cart is empty</h3><p>Add some subscriptions to get started</p></div>';
           cFoot.classList.add('hidden');
           cTotal.textContent = '৳0';
           return;
         }
         cFoot.classList.remove('hidden');
         cart.forEach(item => {
-          const ci = document.createElement('div');
-          ci.className = 'flex items-center gap-3 py-4 border-b border-gray-200';
-          const iH = item.image ? `<img src="${escA(item.image)}" alt="${escA(item.name)}" class="w-10 h-10 rounded-lg object-contain flex-shrink-0">` : `<div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background-color:${escA(item.color || '#6a11cb')}20;"><i class="${escA(item.icon || 'fas fa-shield-alt')}" style="color:${escA(item.color || '#6a11cb')};"></i></div>`;
           const planPrice = item.selectedPlan ? item.selectedPlan.price : item.price;
-          const planDur = item.selectedPlan ? item.selectedPlan.duration : item.duration;
-          ci.innerHTML = `${iH}<div class="flex-1 min-w-0"><h4 class="font-medium text-sm text-gray-800 truncate">${esc(item.name)}</h4><p class="text-xs text-gray-500">৳${planPrice}/${esc(planDur)}</p></div><div class="flex items-center gap-2 flex-shrink-0"><div class="flex items-center border border-gray-200 rounded-lg"><button type="button" class="px-2 py-1 text-gray-600 hover:bg-gray-100 text-sm" data-cart-minus="${escA(item.name)}"><i class="fas fa-minus text-xs"></i></button><span class="px-2 text-sm font-semibold">${item.quantity}</span><button type="button" class="px-2 py-1 text-gray-600 hover:bg-gray-100 text-sm" data-cart-plus="${escA(item.name)}"><i class="fas fa-plus text-xs"></i></button></div><button type="button" class="text-gray-400 hover:text-red-500 transition-colors" data-cart-remove="${escA(item.name)}"><i class="fas fa-trash text-sm"></i></button></div>`;
+          const planDur = item.selectedPlan ? item.selectedPlan.duration : (item.duration || 'month');
+          const ci = document.createElement('div');
+          ci.className = 'cart-item';
+          const iH = item.image
+            ? `<img src="${escA(item.image)}" alt="${escA(item.name)}" class="cart-item-img">`
+            : `<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;background:${escA(item.color || '#6a11cb')}20;"><i class="${escA(item.icon || 'fas fa-shield-alt')}" style="color:${escA(item.color || '#6a11cb')};font-size:1.5rem;"></i></div>`;
+          ci.innerHTML = `
+            ${iH}
+            <div class="cart-item-info">
+                <h4 class="cart-item-name">${esc(item.name)}</h4>
+                <p class="cart-item-price">৳${planPrice} / ${esc(planDur)}</p>
+            </div>
+            <div class="cart-item-controls">
+                <button type="button" class="cart-item-remove" data-cart-remove="${escA(item.name)}" aria-label="Remove"><i class="fas fa-times-circle"></i></button>
+                <div class="cart-qty-wrap">
+                    <button type="button" class="cart-qty-btn" data-cart-minus="${escA(item.name)}" aria-label="Decrease"><i class="fas fa-minus" style="font-size:10px;"></i></button>
+                    <span class="cart-qty-val">${item.quantity}</span>
+                    <button type="button" class="cart-qty-btn" data-cart-plus="${escA(item.name)}" aria-label="Increase"><i class="fas fa-plus" style="font-size:10px;"></i></button>
+                </div>
+            </div>
+          `;
           ci.querySelector('[data-cart-minus]')?.addEventListener('click', () => updCartQty(item.name, item.quantity - 1));
           ci.querySelector('[data-cart-plus]')?.addEventListener('click', () => updCartQty(item.name, item.quantity + 1));
           ci.querySelector('[data-cart-remove]')?.addEventListener('click', () => rmFromCart(item.name));
@@ -630,8 +774,56 @@
         const reviews = currentProduct.reviews || 0;
         const pricing = currentProduct.pricing || [{ duration: currentProduct.duration || 'month', price: currentProduct.price || 0, currency: '৳' }];
         const features = currentProduct.features || [];
-        
-        productDetails.innerHTML = `<div class="animate-slide-in-left" data-aos="fade-right"><div class="gallery-container"><div class="gallery-slider" id="gallerySlider">${imgs.map((i,x)=>`<div class="gallery-slide"><img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}"><div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer" onclick="toggleFavorite()"><i id="favoriteIcon" class="far fa-heart text-xl"></i></div></div>`).join('')}</div><div class="gallery-nav gallery-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div><div class="gallery-nav gallery-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div></div><div class="gallery-dots">${imgs.map((_,x)=>`<div class="gallery-dot ${x===0?'active':''}" onclick="goToSlide(${x})"></div>`).join('')}</div><div class="flex mt-4 space-x-2 overflow-x-auto pb-2">${imgs.map((i,x)=>`<img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}" class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${x===0?'active':''}" onclick="goToSlide(${x})">`).join('')}</div></div><div class="animate-slide-in-right" data-aos="fade-left"><div class="flex items-center mb-4"><img src="${escA(currentProduct.image)}" alt="${escA(currentProduct.name)}" class="w-16 h-16 rounded-lg mr-4 object-contain"><div><h1 class="text-3xl font-bold">${esc(currentProduct.name)}</h1><div class="flex items-center mt-1"><div class="flex text-yellow-400">${generateStars(rating)}</div><span class="ml-2 text-gray-600">${rating} (${reviews.toLocaleString()} reviews)</span></div></div></div><p class="text-gray-600 mb-6">${esc(currentProduct.description)}</p><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3><div class="grid grid-cols-2 gap-3">${pricing.map((p,i)=>`<div class="plan-card p-4 rounded-lg border border-gray-200 text-center ${p.popular?'relative':''} ${i===selectedPlan?'selected':''}" onclick="selectPlan(${i})">${p.popular?'<span class="popular-badge">Most Popular</span>':''}<div class="font-medium mt-3">${esc(p.duration)}</div><div class="text-2xl font-bold mt-1">${esc(p.currency||'৳')} ${p.price}</div>${p.discount?`<div class="text-xs text-green-500 mt-1">${esc(p.discount)}</div>`:''}</div>`).join('')}</div></div><div class="mb-6"><h3 class="text-lg font-semibold mb-3">Key Features:</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${features.map((f,i)=>`<div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" style="animation-delay:${i*.1}s" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div></div><div class="flex space-x-4"><button onclick="addToCart()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-primary"><i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart</button><button onclick="buyNow()" class="flex-1 py-3 rounded-lg font-semibold text-white btn-whatsapp"><i class="fab fa-whatsapp mr-2"></i>Buy Now</button></div><div class="mt-6 pt-6 border-t border-gray-200"><div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2"><div class="flex items-center"><i class="fas fa-shield-alt mr-2"></i><span>30-Day Money Back Guarantee</span></div><div class="flex items-center"><i class="fas fa-lock mr-2"></i><span>Secure Payment</span></div><div class="flex items-center"><i class="fas fa-headset mr-2"></i><span>24/7 Support</span></div></div></div></div>`;
+
+        productDetails.innerHTML = `
+        <div class="animate-slide-in-left" data-aos="fade-right">
+          <div class="gallery-container">
+            <div class="gallery-slider" id="gallerySlider">
+              ${imgs.map((i,x)=>`<div class="gallery-slide"><img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}"><div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-md cursor-pointer hover:scale-110 transition-transform" onclick="toggleFavorite()"><i id="favoriteIcon" class="far fa-heart text-xl"></i></div></div>`).join('')}
+            </div>
+            <div class="gallery-nav gallery-prev" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></div>
+            <div class="gallery-nav gallery-next" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="gallery-dots">${imgs.map((_,x)=>`<div class="gallery-dot ${x===0?'active':''}" onclick="goToSlide(${x})"></div>`).join('')}</div>
+          <div class="flex mt-4 space-x-2 overflow-x-auto pb-2">${imgs.map((i,x)=>`<img src="${escA(i)}" alt="${escA(currentProduct.name)} ${x+1}" class="gallery-thumbnail w-20 h-20 rounded-lg object-cover flex-shrink-0 cursor-pointer ${x===0?'active':''}" onclick="goToSlide(${x})">`).join('')}</div>
+        </div>
+        <div class="animate-slide-in-right" data-aos="fade-left">
+          <div class="flex items-center mb-4">
+            <img src="${escA(currentProduct.image)}" alt="${escA(currentProduct.name)}" class="w-16 h-16 rounded-xl mr-4 object-contain" style="box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+            <div>
+              <h1 class="text-3xl font-bold" style="background:linear-gradient(to right,var(--primary-color),var(--secondary-color));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">${esc(currentProduct.name)}</h1>
+              <div class="flex items-center mt-1">
+                <div class="flex text-yellow-400">${generateStars(rating)}</div>
+                <span class="ml-2 text-gray-600">${rating} (${reviews.toLocaleString()} reviews)</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">${esc(currentProduct.description)}</p>
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3">Select Subscription Plan:</h3>
+            <div class="grid grid-cols-2 gap-3">
+              ${pricing.map((p,i)=>`<div class="plan-card p-4 rounded-xl border border-gray-200 text-center ${p.popular?'relative':''} ${i===selectedPlan?'selected':''}" onclick="selectPlan(${i})">${p.popular?'<span class="popular-badge">MOST POPULAR</span>':''}<div class="font-medium mt-3">${esc(p.duration)}</div><div class="text-2xl font-bold mt-1">${esc(p.currency||'৳')} ${p.price}</div>${p.discount?`<div class="text-xs text-green-500 mt-1 font-semibold">${esc(p.discount)}</div>`:''}</div>`).join('')}
+            </div>
+          </div>
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3">Key Features:</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${features.map((f,i)=>`<div class="feature-item flex items-center p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" style="animation-delay:${i*.1}s" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}
+            </div>
+          </div>
+          <div class="flex space-x-4">
+            <button onclick="addToCart()" class="flex-1 py-3 rounded-xl font-semibold text-white btn-primary"><i class="fa-regular fa-cart-circle-plus mr-2"></i>Add to Cart</button>
+            <button onclick="buyNow()" class="flex-1 py-3 rounded-xl font-semibold text-white btn-whatsapp"><i class="fab fa-whatsapp mr-2"></i>Buy Now</button>
+          </div>
+          <div class="mt-6 pt-6 border-t border-gray-200">
+            <div class="flex flex-wrap items-center justify-between text-sm text-gray-600 gap-2">
+              <div class="flex items-center"><i class="fas fa-shield-alt mr-2 text-purple-500"></i><span>30-Day Money Back Guarantee</span></div>
+              <div class="flex items-center"><i class="fas fa-lock mr-2 text-blue-500"></i><span>Secure Payment</span></div>
+              <div class="flex items-center"><i class="fas fa-headset mr-2 text-pink-500"></i><span>24/7 Support</span></div>
+            </div>
+          </div>
+        </div>`;
+
         setTimeout(() => {
           document.querySelectorAll('.feature-item').forEach((item, i) => setTimeout(() => item.classList.add('show'), i * 100));
         }, 500);
@@ -663,11 +855,13 @@
           const card = document.createElement('div');
           card.className = 'subscription-card';
           card.setAttribute('data-aos', 'fade-up');
-          card.setAttribute('data-aos-delay', String(i * 100));
+          card.setAttribute('data-aos-delay', String(i * 50));
           const iH = p.image ? `<img src="${escA(p.image)}" alt="${escA(p.name)}" class="product-image" loading="lazy" decoding="async">` : `<i class="${escA(p.icon || 'fas fa-shield-alt')} product-icon"></i>`;
           card.innerHTML = `<a href="/product/${escA(slug)}" class="card-link" aria-label="View ${escA(p.name)}"><div class="product-image-container">${iH}</div><div class="p-4 sm:p-5 md:p-6"><h3 class="font-bold text-lg">${esc(p.name)}</h3><p class="text-sm text-gray-500 mb-4">${esc(p.description || '')}</p><div class="flex justify-between items-center mb-4"><div><span class="text-2xl font-bold">৳${price}</span><span class="text-gray-500">/${esc(duration)}</span></div><div class="flex items-center"><i class="fas fa-star text-yellow-400"></i><span class="ml-1 text-gray-600">${rating}</span></div></div><div class="flex flex-col gap-2"><button type="button" class="w-full py-2 rounded-lg font-medium text-white btn-primary" data-add-cart="${escA(p.name)}">Add to Cart</button><span class="nls-btn-details">See Details <i class="fa-solid fa-arrow-right-long"></i></span></div></div></a>`;
           card.querySelector('[data-add-cart]')?.addEventListener('click', e => {
             e.preventDefault(); e.stopPropagation();
+            const imgEl = card.querySelector('.product-image');
+            if (imgEl) flyToCart(imgEl);
             const plan = p.pricing ? p.pricing[2] : { duration: p.duration || 'month', price: p.price || 0, currency: '৳' };
             const item = { ...p, selectedPlan: plan, quantity: 1 };
             const idx = cart.findIndex(x => x.name === p.name);
@@ -705,7 +899,7 @@
           } else if (t === 'faq') {
             let f = '';
             if (currentProduct.faq.length) {
-              f = currentProduct.faq.map((v, i) => `<div class="border border-gray-200 rounded-lg" data-aos="fade-up" data-aos-delay="${i*100}"><button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)"><span class="font-medium">${esc(v.question)}</span><i class="fas fa-chevron-down transition-transform"></i></button><div class="hidden px-4 pb-3 text-gray-700">${esc(v.answer)}</div></div>`).join('');
+              f = currentProduct.faq.map((v, i) => `<div class="border border-gray-200 rounded-lg overflow-hidden" data-aos="fade-up" data-aos-delay="${i*100}"><button class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors" onclick="toggleFAQ(this)"><span class="font-medium">${esc(v.question)}</span><i class="fas fa-chevron-down transition-transform"></i></button><div class="hidden px-4 pb-3 text-gray-700">${esc(v.answer)}</div></div>`).join('');
             } else {
               f = `<div class="text-center py-8"><i class="fas fa-question-circle text-4xl text-gray-300 mb-4"></i><p class="text-gray-600">No FAQs available for this product.</p></div>`;
             }
@@ -753,6 +947,7 @@
         const e = cart.findIndex(x => x.name === currentProduct.name);
         if (e !== -1) cart[e] = item; else cart.push(item);
         saveCart(); updateCartUI();
+        cCount.classList.add('pulse'); setTimeout(()=>cCount.classList.remove('pulse'), 500);
         successModal.classList.remove('hidden');
       }
       function buyNow() {
@@ -820,30 +1015,33 @@
         });
 
         window.addEventListener('scroll', () => {
+          // Header Shrink Effect
+          if (window.scrollY > 50) nlsHeader.classList.add('scrolled');
+          else nlsHeader.classList.remove('scrolled');
+
           if (sDrop.classList.contains('active')) { sDrop.classList.remove('active'); sInp.blur(); mInp.blur(); }
           if (mPan.classList.contains('active')) mPan.classList.remove('active');
-          const s = window.pageYOffset > 300;
-          fab.style.opacity = s ? '1' : '0';
-          fab.style.visibility = s ? 'visible' : 'hidden';
-          whatsappFab.style.opacity = s ? '1' : '0';
-          whatsappFab.style.visibility = s ? 'visible' : 'hidden';
+
+          // FAB visibility
+          const s = window.scrollY > 300;
+          if (s) { fab.classList.add('visible'); whatsappFab.classList.add('visible'); }
+          else { fab.classList.remove('visible'); whatsappFab.classList.remove('visible'); }
         }, { passive: true });
+
+        fab.addEventListener('click', scrollToTop);
+        whatsappFab.addEventListener('click', sendToWhatsApp);
 
         window.addEventListener('popstate', () => {
           const id = getProductIdFromUrl();
           if (id) loadProduct(id);
         });
 
-        // Wait for /js/details.js to populate window.products
         const tryLoad = () => {
           const prods = getProducts();
           if (prods.length) {
             const id = getProductIdFromUrl();
-            if (id) {
-              loadProduct(id);
-            } else {
-              location.href = '/';
-            }
+            if (id) loadProduct(id);
+            else location.href = '/';
             loadingOverlay.classList.remove('active');
           } else {
             setTimeout(tryLoad, 100);
@@ -869,7 +1067,7 @@
       window.closeCart = closeCart;
       window.toggleM = toggleM;
 
-      if (typeof AOS !== 'undefined') AOS.init({ duration: 800, once: true, offset: 100 });
+      if (typeof AOS !== 'undefined') AOS.init({ duration: 600, easing: 'ease-out-cubic', once: true, offset: 50 });
       init();
     })();
   </script>
