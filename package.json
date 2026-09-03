@@ -4,9 +4,7 @@
   "description": "Next Level Subs",
   "main": "index.js",
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build && mkdir -p dist/images dist/assets && cp -R images/. dist/images/ && cp -R assets/. dist/assets/"
+    "start": "vite"
   },
   "repository": {
     "type": "git",

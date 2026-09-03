@@ -1,15 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/product/:slug",
-      "destination": "/api/product-view?slug=:slug"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "source": "/products/:slug",
-      "destination": "/api/product-view?slug=:slug"
+      "source": "/product/:slug*",
+      "destination": "/api/product-view?slug=:slug*"
+    },
+    {
+      "source": "/products/:slug*",
+      "destination": "/api/product-view?slug=:slug*"
+    },
+    {
+      "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
+      "destination": "/index.html"
     }
   ]
 }
