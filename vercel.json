@@ -13,36 +13,48 @@
       "destination": "/api/product-view?slug=:slug"
     },
     {
-      "source": "/product/src/:path*",
-      "destination": "/src/:path*"
+      "source": "/best-selling",
+      "destination": "/index.html"
     },
     {
-      "source": "/products/src/:path*",
-      "destination": "/src/:path*"
+      "source": "/streaming",
+      "destination": "/index.html"
     },
     {
-      "source": "/product/js/:path*",
-      "destination": "/js/:path*"
+      "source": "/music",
+      "destination": "/index.html"
     },
     {
-      "source": "/products/js/:path*",
-      "destination": "/js/:path*"
+      "source": "/storage",
+      "destination": "/index.html"
     },
     {
-      "source": "/product/webfonts/:path*",
-      "destination": "/webfonts/:path*"
+      "source": "/vpn",
+      "destination": "/index.html"
     },
     {
-      "source": "/products/webfonts/:path*",
-      "destination": "/webfonts/:path*"
+      "source": "/aiDesign",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/combos",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/education",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/adult",
+      "destination": "/index.html"
     }
   ],
   "functions": {
     "api/product-view.js": {
-      "includeFiles": "details.html"
+      "includeFiles": ["details.html", "js/details.js"]
     },
     "api/details-script.js": {
-      "includeFiles": "js/details.js"
+      "includeFiles": ["js/details.js"]
     }
   }
 }
