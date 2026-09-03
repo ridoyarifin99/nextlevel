@@ -3,17 +3,6 @@
   "framework": null,
   "buildCommand": null,
   "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Link",
-          "value": "</src/responsive-fixes.css>; rel=stylesheet"
-        }
-      ]
-    }
-  ],
   "rewrites": [
     {
       "source": "/product/:slug",
