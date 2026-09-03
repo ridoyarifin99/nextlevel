@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/product/:slug*",
+      "destination": "/api/product?slug=:slug*"
+    },
+    {
+      "source": "/products/:slug*",
+      "destination": "/api/product?slug=:slug*"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
@@ -12,18 +20,6 @@
     {
       "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
       "destination": "/index.html"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/product/:slug*",
-      "destination": "/details.html?name=:slug*",
-      "permanent": false
-    },
-    {
-      "source": "/products/:slug*",
-      "destination": "/details.html?name=:slug*",
-      "permanent": false
     }
   ]
 }
