@@ -1,7 +1,7 @@
 {
   "name": "nextlevel",
   "version": "1.0.0",
-  "description": "Next Level Subs",
+  "description": "Next Level Subs - production static site",
   "main": "index.js",
   "scripts": {
     "start": "vite",
