@@ -26,16 +26,10 @@
   ],
   "functions": {
     "api/product-view.js": {
-      "includeFiles": [
-        "details.html",
-        "js/details.js",
-        "api/seo-content.js"
-      ]
+      "includeFiles": "details.html"
     },
     "api/details-script.js": {
-      "includeFiles": [
-        "js/details.js"
-      ]
+      "includeFiles": "js/details.js"
     }
   }
 }
