@@ -6,10 +6,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/@vite/client",
-      "destination": "/vite-client.js"
-    },
-    {
       "source": "/product/:slug*",
       "destination": "/api/product-view?slug=:slug*"
     },

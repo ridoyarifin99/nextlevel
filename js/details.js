@@ -1,3 +1,4 @@
+@ -1,4353 +1,4353 @@
 "use strict";
 
 const products = [
@@ -2139,6 +2140,7 @@ const products = [
                     { duration: "1 Month", price: 1299, currency: "BDT", popular: false },
                     { duration: "3 Months", price: 399, currency: "BDT", popular: false, discount: "Save 3498 Taka" },
                     { duration: "6 Months", price: 599, currency: "BDT", popular: true, discount: "Save 7195 Taka" },
+                    { duration: "1 Year", price: 799, currency: "BDT", popular: false, discount: "Save 114257 Taka" }
                     { duration: "1 Year", price: 699, currency: "BDT", popular: false, discount: "Save 114257 Taka" }
                 ],
                 features: [
@@ -4339,14 +4341,11 @@ const products = [
         ];
         //
 
+        // ============================================================
 // ============================================================
-// EXPORT FOR BOTH BROWSER AND NODE / VERCEL
+// EXPORT FOR BOTH BROWSER AND VERCEL / NODE.JS
 // ============================================================
-
-if (typeof window !== "undefined") {
-    window.products = products;
-}
-
 if (typeof module !== "undefined" && module.exports) {
     module.exports = products;
+    module.exports = NextLevelSubs;
 }
