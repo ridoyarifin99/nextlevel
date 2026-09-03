@@ -6,7 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build && mkdir -p dist/images dist/assets && cp -R images/. dist/images/ && cp -R assets/. dist/assets/"
+    "build": "vite build && mkdir -p dist/images dist/assets dist/js && cp -R images/. dist/images/ && cp -R assets/. dist/assets/ && cp -R js/. dist/js/"
   },
   "repository": {
     "type": "git",
