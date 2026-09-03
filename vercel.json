@@ -1,25 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/@vite/client",
-      "destination": "/vite-client.js"
-    },
-    {
-      "source": "/product/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
-    },
-    {
-      "source": "/products/:slug*",
-      "destination": "/api/product-view?slug=:slug*"
-    },
-    {
-      "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)",
-      "destination": "/index.html"
-    }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/product/:slug*", "destination": "/api/product-view?slug=:slug*" },
+    { "source": "/products/:slug*", "destination": "/api/product-view?slug=:slug*" },
+    { "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)", "destination": "/index.html" }
   ]
 }
