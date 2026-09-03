@@ -1,0 +1,47 @@
+name: Repair homepage raw reference
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Repair raw reference without changing homepage design
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path("index.html")
+          text = path.read_text(encoding="utf-8")
+          old = "const subs=raw.map(enrich);"
+          new = "const subs=(window.raw || []).map(enrich);"
+
+          if old not in text:
+              print("No vulnerable raw reference found; nothing to change.")
+              raise SystemExit(0)
+
+          path.write_text(text.replace(old, new, 1), encoding="utf-8")
+          print("Repaired homepage raw reference only.")
+
+      - name: Commit and push repair
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Fix homepage raw reference without changing design"
+          git push
