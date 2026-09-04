@@ -12,6 +12,24 @@
   function text(el) { return el ? (el.textContent || '').replace(/\s+/g,' ').trim() : ''; }
   function isExpired(card) { return /\bexpired\b/i.test(text(card)); }
 
+  // Product URLs use the same slug algorithm as /js/products.js.
+  function productSlug(name) {
+    return String(name || '')
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function getRenewUrl(card) {
+    var slug = card && card.dataset ? card.dataset.productSlug : '';
+    if (!slug) {
+      var title = card ? card.querySelector('.subscription-name') : null;
+      slug = productSlug(text(title));
+    }
+    return slug ? '/product/' + encodeURIComponent(slug) : '/';
+  }
+
   function expiryDate(card) {
     var raw = text(card);
     var m = raw.match(/\b(\d{1,2}\s+[A-Za-z]{3,9}\s+\d{4})\b/);
@@ -109,7 +127,7 @@
     if (ex && !card.querySelector('.nls-v2-renew-banner')) {
       var banner = document.createElement('div');
       banner.className = 'nls-v2-renew-banner';
-      banner.innerHTML = '<span><i class="fas fa-lock"></i> Credentials locked after expiry</span><a href="index.html" onclick="event.stopPropagation()">Renew</a>';
+      banner.innerHTML = '<span><i class="fas fa-lock"></i> Credentials locked after expiry</span><a href="' + esc(getRenewUrl(card)) + '" onclick="event.stopPropagation()">Renew</a>';
       card.appendChild(banner);
     }
     card.addEventListener('click', function () {
@@ -126,7 +144,7 @@
     for (var i=0;i<sections.length;i++) {
       var title = sections[i].querySelector('.nls-detail-section-title');
       if (!title || !/Account Credentials/i.test(text(title))) continue;
-      sections[i].innerHTML = '<div class="nls-detail-section-title"><i class="fas fa-lock"></i> Account Credentials</div><div style="padding:15px"><div class="nls-v2-modal-lock"><strong><i class="fas fa-shield-halved"></i> Credentials locked</strong><p>This subscription has expired. Login credentials are hidden after the subscription expiry date.</p><a href="index.html"><i class="fas fa-rotate"></i> Renew Subscription</a></div></div>';
+      sections[i].innerHTML = '<div class="nls-detail-section-title"><i class="fas fa-lock"></i> Account Credentials</div><div style="padding:15px"><div class="nls-v2-modal-lock"><strong><i class="fas fa-shield-halved"></i> Credentials locked</strong><p>This subscription has expired. Login credentials are hidden after the subscription expiry date.</p><a href="' + esc(getRenewUrl(document.querySelector('.nls-v2-is-expired')) ) + '"><i class="fas fa-rotate"></i> Renew Subscription</a></div></div>';
       break;
     }
   }
