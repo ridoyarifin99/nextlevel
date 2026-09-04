@@ -1,27 +1,28 @@
 /*
  * Next Level Subs - Authentication compatibility entry point
- *
- * This file is intentionally kept as the public authentication entry point
- * used by the account pages. The actual authentication implementation lives
- * in /js/auth.js so there is only one source of truth.
- *
- * Load this file after /js/supabase-config.js and before page-specific auth code.
  */
 (function () {
   'use strict';
 
-  // auth.js is the canonical implementation. If it has already been loaded,
-  // there is nothing else to do.
-  if (window.NextLevelAuth) return;
+  var isDashboard = /(^|\/)dashboard\.html$/i.test(window.location.pathname) || window.location.pathname === '/';
 
-  // Load the canonical auth implementation when this compatibility entry
-  // point is requested directly by an existing page.
-  var existing = document.querySelector('script[data-nextlevel-auth="canonical"]');
-  if (existing) return;
+  function loadScript(src, marker) {
+    if (document.querySelector('script[data-nextlevel-auth="' + marker + '"]')) return;
+    var script = document.createElement('script');
+    script.src = src;
+    script.async = false;
+    script.dataset.nextlevelAuth = marker;
+    document.head.appendChild(script);
+  }
 
-  var script = document.createElement('script');
-  script.src = '/js/auth.js';
-  script.async = false;
-  script.dataset.nextlevelAuth = 'canonical';
-  document.head.appendChild(script);
+  // auth.js remains the canonical authentication implementation.
+  if (!window.NextLevelAuth) {
+    loadScript('/js/auth.js', 'canonical');
+  }
+
+  // Dashboard-only helper: after a component expiry date passes, credentials
+  // are replaced by an expiry notice and a renewal CTA.
+  if (isDashboard) {
+    loadScript('/js/dashboard-expiry-lock.js', 'expiry-lock');
+  }
 })();
