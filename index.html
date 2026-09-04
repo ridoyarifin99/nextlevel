@@ -637,13 +637,10 @@
         backToTopBtn.addEventListener('click', () => {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-        
-        setTimeout(() => { 
-          fSubs=[...subs]; 
-          renderCats(); 
-          updateCartUI(); 
-          if(typeof AOS!=='undefined') setTimeout(()=>AOS.refresh(), 50);
-        }, 1500);
+        fSubs=[...subs];
+        renderCats();
+        updateCartUI();
+        if(typeof AOS!=='undefined') requestAnimationFrame(()=>AOS.refresh());
       }
       
       function toggleM(){ const a=mDraw.classList.contains('active'); mDraw.classList.toggle('active',!a); mOvl.classList.toggle('active',!a); mBtn.classList.toggle('active',!a); document.body.style.overflow=a?'':'hidden'; }
