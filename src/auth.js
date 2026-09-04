@@ -11,10 +11,7 @@
 
   function fixProductionAssets() {
     var icon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
-    if (icon) {
-      icon.href = "/images/next_level.png";
-      icon.type = "image/png";
-    }
+    if (icon) { icon.href = "/images/next_level.png"; icon.type = "image/png"; }
   }
 
   function installNavigation() {
@@ -29,26 +26,18 @@
   .nls-header.nls-scroll-hidden{transform:translate3d(0,-110%,0)!important}
   .nls-container,.nls-header.scrolled .nls-container{height:54px!important;min-height:54px!important;padding:0 8px!important;gap:0!important}
   .nls-left{flex:1 1 auto!important;min-width:0!important;gap:0!important}.nls-nav{display:none!important}
-  .nls-hamburger{display:flex!important;flex:0 0 40px!important;width:40px!important;height:40px!important;align-items:center!important;justify-content:center!important;margin:0!important}
-  .nls-hamburger span{left:8px!important}
+  .nls-hamburger{display:flex!important;flex:0 0 40px!important;width:40px!important;height:40px!important;align-items:center!important;justify-content:center!important;margin:0!important}.nls-hamburger span{left:8px!important}
   .nls-logo-link{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;gap:0!important;max-width:38vw!important}
   .nls-logo-img,.nls-header.scrolled .nls-logo-img{height:34px!important;width:auto!important;max-width:38vw!important}.nls-logo-text-container{display:none!important}
-  .nls-right{margin-left:auto!important;gap:2px!important;height:54px!important}
-  .nls-search-desktop{display:none!important}
+  .nls-right{margin-left:auto!important;gap:2px!important;height:54px!important}.nls-search-desktop{display:none!important}
   #mobileSearchToggle,#cartBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important;position:relative!important}
-  #mobileSearchToggle i,#cartBtn i{font-size:18px!important}
-  #loginLink,.nls-user-link{display:none!important}
-  .nls-cart-text,.nls-auth-text,.nls-account-link{display:none!important}
-  #cartBtn .cart-badge{top:0!important;right:-1px!important}
-  .nls-drawer{z-index:10004!important}.nls-drawer-overlay{z-index:10003!important}.nls-mobile-search-panel{z-index:10005!important}
-
+  #mobileSearchToggle i,#cartBtn i{font-size:18px!important}#loginLink,.nls-user-link{display:none!important}.nls-cart-text,.nls-auth-text,.nls-account-link{display:none!important}
+  #cartBtn .cart-badge{top:0!important;right:-1px!important}.nls-drawer{z-index:10004!important}.nls-drawer-overlay{z-index:10003!important}.nls-mobile-search-panel{z-index:10005!important}
   #nlsMobileBottomNav{position:fixed!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;height:54px!important;min-height:54px!important;padding:4px 5px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;align-items:stretch!important;visibility:visible!important;opacity:1!important;background:rgba(255,255,255,.98)!important;border:1px solid rgba(226,232,240,.95)!important;border-radius:17px!important;box-shadow:0 8px 24px rgba(15,23,42,.16),0 1px 5px rgba(15,23,42,.08)!important;z-index:10000!important;backdrop-filter:blur(14px) saturate(150%)!important;-webkit-backdrop-filter:blur(14px) saturate(150%)!important;transform:translate3d(0,0,0)!important;transition:transform .2s ease,opacity .15s ease!important;will-change:transform,opacity;pointer-events:auto}
   #nlsMobileBottomNav.nls-scroll-hidden{transform:translate3d(0,calc(100% + 20px),0)!important;opacity:0!important;pointer-events:none!important}
   #nlsMobileBottomNav .nls-bottom-item{position:relative;height:44px;min-width:0;margin:0;border:0;border-radius:12px;background:transparent;color:#64748b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .12s ease,color .12s ease,transform .12s ease}
-  #nlsMobileBottomNav .nls-bottom-item i{font-size:17px;line-height:17px;height:17px}
-  #nlsMobileBottomNav .nls-bottom-label{font:600 8.5px/10px Inter,system-ui,sans-serif;white-space:nowrap;letter-spacing:-.05px}
-  #nlsMobileBottomNav .nls-bottom-item.active{color:#2563eb;background:#eaf1ff}
-  #nlsMobileBottomNav .nls-bottom-item:active{transform:scale(.94);background:#eaf1ff}
+  #nlsMobileBottomNav .nls-bottom-item i{font-size:17px;line-height:17px;height:17px}.nls-bottom-label{font:600 8.5px/10px Inter,system-ui,sans-serif;white-space:nowrap;letter-spacing:-.05px}
+  #nlsMobileBottomNav .nls-bottom-item.active{color:#2563eb;background:#eaf1ff}#nlsMobileBottomNav .nls-bottom-item:active{transform:scale(.94);background:#eaf1ff}
 }
 @media (min-width:768px){#nlsMobileBottomNav{display:none!important}}
 `;
@@ -63,8 +52,6 @@
       <button class="nls-bottom-item" data-bottom-nav="offers" type="button" aria-label="Offers"><i class="fa-solid fa-tags"></i><span class="nls-bottom-label">Offers</span></button>
       <a class="nls-bottom-item" data-bottom-nav="whatsapp" href="https://wa.me/8801644490566" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="nls-bottom-label">WhatsApp</span></a>
       <a class="nls-bottom-item" data-bottom-nav="account" href="/login.html?redirect=/" aria-label="Account"><i class="fa-solid fa-circle-user"></i><span class="nls-bottom-label">Account</span></a>`;
-
-    /* Add immediately to <html> so the mobile navigation does not wait for page rendering. */
     document.documentElement.appendChild(nav);
 
     var items = Array.prototype.slice.call(nav.querySelectorAll("[data-bottom-nav]"));
@@ -95,16 +82,14 @@
       event.preventDefault();
       setActive("offers");
       var target = document.querySelector("#offers,#offer,#specialOffers,[data-offers]");
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (path !== "/") {
-        window.location.href = "/#offers";
-      }
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      else if (path !== "/") window.location.href = "/#offers";
     });
 
     function syncAccount() {
       var user = document.getElementById("userAccountArea");
       var login = document.getElementById("loginLink");
+      /* The mobile Account button follows the exact same profile destination as the existing profile/username control. */
       if (user && getComputedStyle(user).display !== "none") {
         account.href = user.getAttribute("href") || "/dashboard.html";
         account.setAttribute("aria-label", "Dashboard");
@@ -114,6 +99,11 @@
       }
     }
 
+    /* Keep Account synchronized with Supabase login/logout state. */
+    account.addEventListener("click", function () {
+      syncAccount();
+      setActive("account");
+    });
     window.addEventListener("nextlevelauthchange", syncAccount);
     document.addEventListener("DOMContentLoaded", syncAccount, { once: true });
     syncAccount();
