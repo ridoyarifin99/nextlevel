@@ -45,3 +45,14 @@ window.supabaseClient =
             }
         }
     );
+
+
+/* Load the shared cart viewport fix on pages that use the cart drawer. */
+(function () {
+    if (document.querySelector('script[data-nextlevel-cart-fix]')) return;
+    const script = document.createElement('script');
+    script.src = './js/cart-responsive-fix.js';
+    script.defer = true;
+    script.dataset.nextlevelCartFix = 'true';
+    document.head.appendChild(script);
+})();
