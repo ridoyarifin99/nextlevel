@@ -13,9 +13,8 @@
     window.location.hash.indexOf('error=') !== -1
   );
 
-  // A previous checkout attempt must never be allowed to auto-submit a new
-  // order simply because the customer later signs in with Google.
-  // Keep the pending checkout only while returning from the OAuth callback.
+  // Never allow stale checkout state to auto-submit an order on a normal
+  // checkout visit. Preserve it only while returning from OAuth.
   if (isCheckout && !isAuthCallback) {
     try {
       window.localStorage.removeItem('pendingCheckoutOrder');
@@ -33,14 +32,10 @@
     document.head.appendChild(script);
   }
 
-  // auth.js remains the canonical authentication implementation.
-  if (!window.NextLevelAuth) {
-    loadScript('/js/auth.js', 'canonical');
-  }
+  if (!window.NextLevelAuth) loadScript('/js/auth.js', 'canonical');
 
-  // Dashboard-only helper: after a component expiry date passes, credentials
-  // are replaced by an expiry notice and a renewal CTA.
   if (isDashboard) {
     loadScript('/js/dashboard-expiry-lock.js', 'expiry-lock');
+    loadScript('/js/dashboard-ui-v2.js', 'dashboard-ui-v2');
   }
 })();
