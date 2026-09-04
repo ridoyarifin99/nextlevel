@@ -1,0 +1,42 @@
+name: Apply product render fix
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch homepage
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          pattern = r"\s*setTimeout\(\(\) => \{\s*fSubs=\[\.\.\.subs\];\s*renderCats\(\);\s*updateCartUI\(\);\s*if\(typeof AOS!==['\"]undefined['\"]\) setTimeout\(\(\)=>AOS\.refresh\(\), 50\);\s*\}, 1500\);"
+          replacement = "\n        fSubs=[...subs];\n        renderCats();\n        updateCartUI();\n        if(typeof AOS!=='undefined') requestAnimationFrame(()=>AOS.refresh());"
+          s2, n = re.subn(pattern, replacement, s, count=1)
+          if n:
+              p.write_text(s2, encoding='utf-8')
+              print('PATCHED: removed 1500ms homepage product render delay')
+          else:
+              print('ALREADY PATCHED: no delayed render block found')
+          PY
+      - name: Commit homepage fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+          else
+            git commit -m 'Fix homepage product rendering delay [fix-products]'
+            git push
+          fi
