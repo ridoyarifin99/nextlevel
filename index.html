@@ -1,12 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/jpg" href="/assets/logo-DWU8JUe3.png">
-  <link rel="shortcut icon" href="/images/icon/icon.svg" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/images/icon/apple-touch-icon.png">
+  <link rel="shortcut icon" href="./images/logo.png" type="image/x-icon">
   <title>Premium Subscriptions in Bangladesh | Next Level Subs</title>
   <meta name="description" content="Shop digital subscriptions and premium services in Bangladesh at Next Level Subs. Explore streaming, music, VPN, AI, storage and other digital services.">
   <meta name="robots" content="index, follow">
@@ -35,9 +32,9 @@
   </script>
   <script src="./src/aos.js"></script>
   <script src="./src/auth.js"></script>
-  <link rel="stylesheet" crossorigin href="/src/output.css">
-  <link rel="stylesheet" crossorigin href="/src/all.min.css">
-  <link rel="stylesheet" crossorigin href="/src/aos.css">
+  <link rel="stylesheet" crossorigin href="./src/output.css">
+  <link rel="stylesheet" crossorigin href="./src/all.min.css">
+  <link rel="stylesheet" crossorigin href="./src/aos.css">
 </head>
 <script>window.AUTH_API_BASE = "http://localhost:8080";</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -188,6 +185,7 @@
     .nls-cart-btn:hover{background:rgba(106,17,203,0.08);color:var(--primary-color)}
     .cart-badge{position:absolute;top:0;right:0;background:#ef4444;color:#fff;font-size:10px;min-width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow: 0 2px 6px rgba(239,68,68,0.4);}
     .nls-cart-bump{animation:bump 0.4s var(--ease)}@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.2)}50%{transform:scale(0.9)}100%{transform:scale(1)}}
+    .pulse { animation: bump 0.4s var(--ease); }
     
     .nls-mobile-search-panel{position:absolute;top:100%;left:0;right:0;padding:1rem 1.5rem;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid #e2e8f0;box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);transform:translateY(-100%);opacity:0;visibility:hidden;transition:all 0.3s var(--ease);z-index:999}
     .nls-mobile-search-panel.active{transform:translateY(0);opacity:1;visibility:visible}
@@ -212,6 +210,7 @@
     .sdi-price{font-weight:700;font-size:0.9rem;color:#1e293b}
     .sdi-add-btn{background:linear-gradient(135deg,var(--primary-color),var(--secondary-color));color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s; box-shadow: 0 2px 8px rgba(106,17,203,0.2);}
     .sdi-add-btn:hover{opacity:0.9; transform: scale(1.05);}
+    .search-highlight { background: rgba(106, 17, 203, 0.2); color: var(--primary-dark); font-weight: 700; border-radius: 2px; padding: 0 2px; }
     
     /* PREMIUM MOBILE DRAWER */
     .nls-drawer{position:fixed;top:0;left:0;width:320px;height:100vh;background:rgba(255,255,255,0.98);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);z-index:1001;transform:translateX(-100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);box-shadow:10px 0 40px rgba(0,0,0,0.1);display:flex;flex-direction:column;border-right:1px solid rgba(255,255,255,0.6)}
@@ -236,7 +235,7 @@
     .nls-drawer-overlay.active{opacity:1;visibility:visible}
     
     /* Premium Product Cards */
-    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.4s var(--ease),box-shadow 0.4s var(--ease), border-color 0.4s var(--ease); border: 1px solid transparent; position: relative; }
+    .subscription-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);transition:transform 0.4s var(--ease),box-shadow 0.4s var(--ease), border-color 0.4s var(--ease); border: 1px solid transparent; position: relative; height: 100%; }
     .subscription-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s var(--ease); z-index: 2; }
     .subscription-card:hover{transform:translateY(-8px);box-shadow:0 20px 40px -10px rgba(106,17,203,0.15); border-color: rgba(106,17,203,0.1); }
     .subscription-card:hover::before { transform: scaleX(1); }
@@ -246,6 +245,34 @@
     .subscription-card:hover .product-image{transform:scale(1.08)}.product-icon{font-size:3rem}
     .nls-user-link{animation:appear .3s var(--ease)}@keyframes appear{0%{opacity:0;transform:translateY(-7px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
     
+    /* Best Seller & Combo Badges */
+    .best-seller-badge, .combo-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: white;
+        z-index: 5;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .best-seller-badge { background: linear-gradient(135deg, #f59e0b, #ef4444); }
+    .combo-badge { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+
+    /* Skeleton Loaders */
+    .skeleton-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%); background-size: 400% 100%; animation: skeleton-loading 1.4s ease infinite; border-radius: 4px; }
+    @keyframes skeleton-loading { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+    .skeleton-image { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; }
+    .skeleton-title { height: 16px; width: 80%; margin-bottom: 8px; }
+    .skeleton-text { height: 12px; width: 100%; margin-bottom: 8px; }
+    .skeleton-price { height: 24px; width: 60px; }
+    .skeleton-button { height: 40px; width: 100%; border-radius: 8px; margin-top: 16px; }
+
     /* Premium Details Button Shine Effect */
     .nls-btn-details{position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:500;color:#4b5563;background:linear-gradient(135deg,#fff 0%,#f9fafb 100%);border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.3s cubic-bezier(0.4,0,0.2,1);overflow:hidden}
     .nls-btn-details::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(106,17,203,0.15),transparent);transition:left 0.5s ease}
@@ -254,9 +281,27 @@
     .nls-btn-details i{font-size:0.75rem;margin-left:0.375rem;transition:transform 0.3s ease}.nls-btn-details:hover i{transform:translateX(5px)}
     .nls-btn-details:active{transform:scale(0.98) translateY(0);box-shadow:0 2px 4px rgba(106,17,203,0.08)}
 
+    /* Primary Button */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        transition: all 0.3s var(--ease);
+        box-shadow: 0 4px 14px rgba(106,17,203,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(106,17,203,0.3); }
+    .btn-primary::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
+    .btn-primary:hover::after { left: 100%; }
+
+    /* Range Slider */
+    .range-slider { -webkit-appearance: none; appearance: none; height: 6px; background: #e2e8f0; border-radius: 999px; outline: none; }
+    .range-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); cursor: pointer; box-shadow: 0 2px 6px rgba(106,17,203,0.3); }
+    .range-slider::-moz-range-thumb { width: 18px; height: 18px; border: none; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); cursor: pointer; box-shadow: 0 2px 6px rgba(106,17,203,0.3); }
+
     /* Banner Styles */
     .mega-grid,.mega-grid *,.mega-grid *::before,.mega-grid *::after{box-sizing:border-box}
-    .mega-grid{width:100%;margin:0;padding:30px 0;overflow:hidden;background:radial-gradient(circle at 50% 40%,rgba(124,58,237,.12),transparent 65%),#07070b;line-height:normal}
+    .mega-grid{width:100%;margin:0;padding:20px 0;overflow:hidden;background:radial-gradient(circle at 50% 40%,rgba(124,58,237,.12),transparent 65%),#07070b;line-height:normal}
     .mg-layout{width:100%;max-width:1500px;margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:2fr 1fr;gap:16px;align-items:stretch}
     .mg-main,.mg-small{position:relative;background:#101016;border:1px solid rgba(255,255,255,.14)}
     .mg-main::before,.mg-small::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#16161a 0%,#2a2a31 50%,#16161a 100%);background-size:200% 100%;animation:mgShimmer 2s infinite linear;z-index:0}
@@ -300,10 +345,14 @@
     .premium-phone-btn:hover::after { left: 100%; }
     .premium-phone-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
-    /* Category Section Headers */
-    .category-section > div:first-child { background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important; position: relative; overflow: hidden; transition: all 0.3s var(--ease); }
+    /* Compact Category Section Headers */
+    .category-section > div:first-child { position: relative; overflow: hidden; transition: all 0.3s var(--ease); border: 1px solid rgba(255, 255, 255, 0.8) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; padding: 0.75rem 1rem !important; margin-bottom: 1rem !important; }
     .category-section > div:first-child::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color)); }
-    .category-section > div:first-child:hover { transform: translateX(5px); box-shadow: 0 8px 30px rgba(106,17,203,0.1) !important; }
+    .category-section > div:first-child:hover { transform: translateX(5px); box-shadow: 0 8px 25px rgba(106,17,203,0.1) !important; }
+    
+    .category-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(106, 17, 203, 0.1); margin-right: 12px; flex-shrink: 0; }
+    .category-title { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin: 0; line-height: 1.2; }
+    .category-description { font-size: 0.8rem; color: #64748b; margin: 2px 0 0 0; }
 
     /* Back to Top Button */
     .back-to-top-btn { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.8); transition: all 0.3s var(--ease); z-index: 999; box-shadow: 0 4px 15px rgba(106,17,203,0.4); }
@@ -354,6 +403,10 @@
     .empty-cart-state i{font-size:4rem;margin-bottom:1rem;color:#e2e8f0;animation: float 2s ease-in-out infinite;}
     .empty-cart-state h3{font-size:1.25rem;color:#64748b;margin:0}
     .empty-cart-state p{font-size:0.9rem;margin-top:0.5rem}
+
+    /* Notification Toast */
+    .notification{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);background:#172033;color:#fff;padding:1rem 1.5rem;border-radius:12px;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,0.2);z-index:2000;opacity:0;transition:all 0.4s var(--ease);pointer-events:none}
+    .notification.show{transform:translateX(-50%) translateY(0);opacity:1}
 
     @media(max-width:1024px){
       .nls-nav,.nls-nav-more{display:none}.nls-hamburger{display:block}.nls-search-desktop{display:none}.nls-icon-btn{display:flex;align-items:center;justify-content:center}.nls-auth-text{display:none}.nls-cart-text{display:none}
@@ -407,41 +460,42 @@
   </div>
 </section>
 
-  <section class="py-16 text-white premium-hero" id="hero">
+  <section class="py-10 sm:py-12 text-white premium-hero" id="hero">
     <div class="hero-orb orb-1"></div>
     <div class="hero-orb orb-2"></div>
     <div class="container mx-auto px-4 text-center">
-      <h1 class="text-4xl md:text-6xl font-extrabold mb-4 mt-8 premium-gradient-text" data-aos="fade-up">Premium Subscriptions in Bangladesh</h1>
-      <p class="text-xl max-w-2xl mx-auto mb-8 text-purple-100" data-aos="fade-up" data-aos-delay="100">Get access to all your favorite services at unbeatable prices with instant delivery</p>
-      <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
-        <div class="premium-glass-card rounded-xl lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="250"><i class="fa-duotone fa-light fa-badge-check mr-2 text-blue-300" aria-hidden="true"></i><span class="font-medium">Instant Delivery</span></div>
-        <div class="premium-glass-card rounded-xl lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="300"><i class="fa-duotone fa-regular fa-shield-halved mr-2 text-green-300" aria-hidden="true"></i><span class="font-medium">Secure Payments</span></div>
-        <div class="premium-glass-card rounded-xl lg:p-4 p-3 flex items-center" data-aos="fade-up" data-aos-delay="350"><i class="fa-duotone fa-solid fa-user-headset mr-2 text-purple-300" aria-hidden="true"></i><span class="font-medium">24/7 Support</span></div>
+      <h1 class="text-3xl md:text-5xl font-extrabold mb-3 mt-6 premium-gradient-text" data-aos="fade-up">Premium Subscriptions in Bangladesh</h1>
+      <p class="text-lg max-w-2xl mx-auto mb-6 text-purple-100" data-aos="fade-up" data-aos-delay="100">Get access to all your favorite services at unbeatable prices with instant delivery</p>
+      <div class="flex flex-wrap justify-center gap-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="premium-glass-card rounded-xl lg:p-3 p-2 flex items-center" data-aos="fade-up" data-aos-delay="250"><i class="fa-duotone fa-light fa-badge-check mr-2 text-blue-300" aria-hidden="true"></i><span class="font-medium text-sm">Instant Delivery</span></div>
+        <div class="premium-glass-card rounded-xl lg:p-3 p-2 flex items-center" data-aos="fade-up" data-aos-delay="300"><i class="fa-duotone fa-regular fa-shield-halved mr-2 text-green-300" aria-hidden="true"></i><span class="font-medium text-sm">Secure Payments</span></div>
+        <div class="premium-glass-card rounded-xl lg:p-3 p-2 flex items-center" data-aos="fade-up" data-aos-delay="350"><i class="fa-duotone fa-solid fa-user-headset mr-2 text-purple-300" aria-hidden="true"></i><span class="font-medium text-sm">24/7 Support</span></div>
       </div>
-      <div class="dbid flex flex-wrap gap-4 justify-center items-center mt-8" data-aos="fade-up" data-aos-delay="400">
-        <h4 class="text-2xl font-bold text-purple-200">Verified By</h4>
-        <div class="h-10 flex justify-center hover:scale-110 transition-transform duration-300"><img src="/images/logo-dbid.png" alt="DBID Verification Badge"></div>
+      <div class="dbid flex flex-wrap gap-4 justify-center items-center mt-6" data-aos="fade-up" data-aos-delay="400">
+        <h4 class="text-xl font-bold text-purple-200">Verified By</h4>
+        <div class="h-8 flex justify-center hover:scale-110 transition-transform duration-300"><img src="/images/logo-dbid.png" alt="DBID Verification Badge"></div>
       </div>
-      <div class="flex justify-center mt-6 mb-8" data-aos="fade-up" data-aos-delay="450">
-        <a href="tel:01644490566" class="premium-phone-btn inline-flex items-center gap-3 px-7 py-3 rounded-full bg-gradient-to-r from-primary to-blue-500 text-white font-bold text-2xl w-fit"><i class="fa-regular fa-headset text-xl"></i>01644490566</a>
+      <div class="flex justify-center mt-4 mb-6" data-aos="fade-up" data-aos-delay="450">
+        <a href="tel:01644490566" class="premium-phone-btn inline-flex items-center gap-3 px-6 py-2.5 rounded-full bg-gradient-to-r from-primary to-blue-500 text-white font-bold text-xl w-fit"><i class="fa-regular fa-headset text-lg"></i>01644490566</a>
       </div>
     </div>
   </section>
 
-  <section class="py-8 bg-white shadow-sm sticky top-[64px] z-40 backdrop-blur-lg bg-opacity-80">
+  <!-- Filter Bar - Removed Sticky, Made Compact -->
+  <section class="py-4 sm:py-6 bg-white shadow-sm border-b border-gray-100 z-40 backdrop-blur-lg bg-opacity-80">
     <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-        <h2 class="text-2xl font-bold" data-aos="fade-right">Available Subscriptions</h2>
-        <div class="flex flex-wrap gap-4" data-aos="fade-left">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
+        <h2 class="text-lg sm:text-xl font-bold" data-aos="fade-right">Available Subscriptions</h2>
+        <div class="flex flex-wrap gap-4 w-full sm:w-auto justify-center" data-aos="fade-left">
           <div class="flex items-center">
-            <label for="priceRange" class="mr-2 text-gray-700">Price Range:</label>
+            <label for="priceRange" class="mr-2 text-xs sm:text-sm text-gray-700">Price:</label>
             <div class="flex items-center space-x-2" id="priceRange">
-              <span id="minPriceValue" class="text-sm font-medium">৳0</span><input type="range" id="minPrice" min="0" max="3300" value="0" class="range-slider w-24" aria-label="Minimum price"><span>-</span><input type="range" id="maxPrice" min="0" max="3300" value="3300" class="range-slider w-24" aria-label="Maximum price"><span id="maxPriceValue" class="text-sm font-medium">৳3300</span>
+              <span id="minPriceValue" class="text-xs font-medium">৳0</span><input type="range" id="minPrice" min="0" max="3300" value="0" class="range-slider w-16 sm:w-24" aria-label="Minimum price"><span>-</span><input type="range" id="maxPrice" min="0" max="3300" value="3300" class="range-slider w-16 sm:w-24" aria-label="Maximum price"><span id="maxPriceValue" class="text-xs font-medium">৳3300</span>
             </div>
           </div>
           <div class="flex items-center">
-            <label for="sortSelect" class="mr-2 text-gray-700">Sort By:</label>
-            <select id="sortSelect" class="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all" aria-label="Sort subscriptions">
+            <label for="sortSelect" class="mr-2 text-xs sm:text-sm text-gray-700">Sort By:</label>
+            <select id="sortSelect" class="border border-gray-300 rounded-md px-2 py-1 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-purple-300 transition-all" aria-label="Sort subscriptions">
               <option value="default">Default</option><option value="price-low">Price: Low to High</option><option value="price-high">Price: High to Low</option><option value="name">Name</option>
             </select>
           </div>
@@ -450,17 +504,17 @@
     </div>
   </section>
 
-  <main class="py-12">
+  <main class="py-8 sm:py-12">
     <div class="container mx-auto px-4">
-      <section id="best-selling" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-duotone fa-solid fa-crown text-2xl text-yellow-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Best-selling Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Our most popular services in Bangladesh</p></div></div><div id="bestSellingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="streaming" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-fire-flame text-2xl text-blue-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Popular Streaming Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Trending video and movie streaming platforms in Bangladesh</p></div></div><div id="popularStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="music" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-waveform text-2xl text-green-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Music Streaming Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Unlimited music and podcast streaming services</p></div></div><div id="musicStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="storage" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-smoke text-2xl text-blue-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Cloud Storage Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Secure and reliable cloud storage solutions</p></div></div><div id="cloudStorageContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="vpn" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-chart-network text-2xl text-green-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Premium VPN Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Secure your internet connection with premium VPN services</p></div></div><div id="vpnContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="aiDesign" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-head-side-gear text-2xl text-purple-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Ai & Design Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Power your creativity with premium AI & design tools</p></div></div><div id="aiDesignContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="combos" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fas fa-layer-group text-2xl text-red-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Combo Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Get more value with our combo packages</p></div></div><div id="comboContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="education" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fas fa-graduation-cap text-2xl text-purple-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Education-based Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Learn new skills with online courses and tutorials</p></div></div><div id="educationContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
-      <section id="adult" class="category-section"><div class="flex items-center mb-5 rounded-xl p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-face-hand-peeking text-2xl text-pink-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Adult 18+ Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Premium adult content streaming platforms</p></div></div><div id="adultContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="best-selling" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-duotone fa-solid fa-crown text-xl text-yellow-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Best-selling Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Our most popular services in Bangladesh</p></div></div><div id="bestSellingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="streaming" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-fire-flame text-xl text-blue-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Popular Streaming Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Trending video and movie streaming platforms in Bangladesh</p></div></div><div id="popularStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="music" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-waveform text-xl text-green-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Music Streaming Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Unlimited music and podcast streaming services</p></div></div><div id="musicStreamingContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="storage" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-smoke text-xl text-blue-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Cloud Storage Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Secure and reliable cloud storage solutions</p></div></div><div id="cloudStorageContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="vpn" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-chart-network text-xl text-green-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Premium VPN Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Secure your internet connection with premium VPN services</p></div></div><div id="vpnContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="aiDesign" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-head-side-gear text-xl text-purple-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Ai & Design Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Power your creativity with premium AI & design tools</p></div></div><div id="aiDesignContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="combos" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fas fa-layer-group text-xl text-red-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Combo Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Get more value with our combo packages</p></div></div><div id="comboContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="education" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fas fa-graduation-cap text-xl text-purple-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Education-based Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Learn new skills with online courses and tutorials</p></div></div><div id="educationContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
+      <section id="adult" class="category-section"><div class="flex items-center mb-4 rounded-xl p-3 sm:p-4 bg-gradient-to-r from-blue-100 to-purple-200 backdrop-blur-2xl" data-aos="fade-right" data-aos-delay="50"><div class="category-icon"><i class="fa-solid fa-face-hand-peeking text-xl text-pink-500" aria-hidden="true"></i></div><div><h2 class="category-title" data-aos="fade-right">Adult 18+ Subscriptions</h2><p class="category-description" data-aos="fade-right" data-aos-delay="50">Premium adult content streaming platforms</p></div></div><div id="adultContainer" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-5 lg:gap-6"></div></section>
       <div id="noResults" class="hidden text-center py-12"><i class="fas fa-search text-5xl text-gray-300 mb-4" aria-hidden="true"></i><h3 class="text-xl font-semibold text-gray-600">No subscriptions found</h3><p class="text-gray-500 mt-2">Try adjusting your search or filter criteria</p></div>
     </div>
   </main>
@@ -616,7 +670,7 @@
       function handlePath(){ const p=location.pathname; if(p.startsWith('/product/'))return; const id=p.substring(1); if(!id)return; const sec=$(id); if(sec)setTimeout(()=>{sec.scrollIntoView({behavior:'smooth'});updateActiveNav(id);},100); }
       
       function showSkels(){ catConf.forEach(c=>{ if(!c.c)return; const n=subs.filter(p=>p.categories.includes(c.k)).length; c.c.innerHTML=''; for(let i=0;i<n;i++)c.c.appendChild(makeSkel()); }); }
-      function makeSkel(){ const d=document.createElement('div'); d.className='skeleton-card'; d.innerHTML='<div class="product-image-container skeleton" style="aspect-ratio:16/9;"></div><div class="p-4 sm:p-5 md:p-6"><div class="flex items-center mb-4"><div class="skeleton skeleton-image"></div><div class="flex-1"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div></div></div><div class="skeleton skeleton-text mb-2" style="width:90%;height:14px;"></div><div class="skeleton skeleton-text mb-4" style="width:70%;height:14px;"></div><div class="flex justify-between items-center mb-4"><div class="skeleton skeleton-price"></div><div class="flex items-center"><div class="skeleton" style="width:20px;height:20px;border-radius:50%;margin-right:8px;"></div><div class="skeleton" style="width:30px;height:16px;border-radius:4px;"></div></div></div><div class="skeleton skeleton-button"></div></div>'; return d; }
+      function makeSkel(){ const d=document.createElement('div'); d.className='skeleton-card'; d.innerHTML='<div class="product-image-container skeleton" style="aspect-ratio:16/9;"></div><div class="p-3 sm:p-4"><div class="flex items-center mb-3"><div class="skeleton skeleton-image"></div><div class="flex-1"><div class="skeleton skeleton-title"></div><div class="skeleton skeleton-text"></div></div></div><div class="skeleton skeleton-text mb-2" style="width:90%;height:12px;"></div><div class="skeleton skeleton-text mb-3" style="width:70%;height:12px;"></div><div class="flex justify-between items-center mb-3"><div class="skeleton skeleton-price"></div><div class="flex items-center"><div class="skeleton" style="width:20px;height:20px;border-radius:50%;margin-right:8px;"></div><div class="skeleton" style="width:30px;height:14px;border-radius:4px;"></div></div></div><div class="skeleton skeleton-button"></div></div>'; return d; }
       
       function loadCart(){ try{const s=localStorage.getItem('streamHubCart');if(!s){cart=[];return;}const p=JSON.parse(s);cart=Array.isArray(p)?p:[];}catch(e){cart=[];} }
       function saveCart(){ try{localStorage.setItem('streamHubCart',JSON.stringify(cart));}catch(e){} }
@@ -625,7 +679,7 @@
       
       function handleS(e){ const t=e.target,term=t.value.toLowerCase().trim(); if(t===sInp&&mInp)mInp.value=t.value; if(t===mInp&&sInp)sInp.value=t.value; if(term.length>0){cSD.classList.add('visible');cSM.classList.add('visible');}else{cSD.classList.remove('visible');cSM.classList.remove('visible');} clearTimeout(sTimer); if(!term){sDrop.classList.remove('active');fSubs=[...subs];renderCats();return;} showSkels(); sTimer=setTimeout(()=>{ sRes=subs.filter(s=>s.name.toLowerCase().includes(term)||s.description.toLowerCase().includes(term)||s.categories.join(' ').toLowerCase().includes(term)); dispRes(term); sDrop.classList.add('active'); updateContRes(sRes); if(typeof AOS!=='undefined')AOS.refresh(); },250); }
       function updateContRes(r){ if(!r.length){noRes.classList.remove('hidden');catConf.forEach(c=>{if(c.c)c.c.innerHTML='';});return;} noRes.classList.add('hidden'); catConf.forEach(c=>{const cr=r.filter(p=>p.categories.includes(c.k));updCatRes(cr,c.c,c.k==='best-selling',c.k==='combo');}); }
-      function updCatRes(r,c,bs,co){ if(!c)return; if(!r.length){c.innerHTML='<p class="text-gray-500 text-center col-span-full">No subscriptions available in this category</p>';return;} renderSubs(r,c,bs,co); }
+      function updCatRes(r,c,bs,co){ if(!c)return; if(!r.length){c.innerHTML='<p class="text-gray-500 text-center col-span-full text-sm py-4">No subscriptions available in this category</p>';return;} renderSubs(r,c,bs,co); }
       function dispRes(term){ sResC.innerHTML=''; if(!sRes.length){noSRes.classList.remove('hidden');return;} noSRes.classList.add('hidden'); sRes.forEach(s=>{ const i=document.createElement('div'); i.className='search-dropdown-item'; const iH=s.image?`<img src="${escA(s.image)}" alt="${escA(s.name)}" style="width:100%;height:100%;object-fit:contain;">`:`<i class="${escA(s.icon)}" style="color:${escA(s.color)};font-size:1.5rem;"></i>`; i.innerHTML=`<div class="sdi-img">${iH}</div><div class="sdi-info"><h4>${hl(s.name,term)}</h4><p>${hl(s.description,term)}</p></div><div class="sdi-action"><span class="sdi-price">৳${s.price}</span><button type="button" class="sdi-add-btn" data-search-add="${escA(s.name)}">Add</button></div>`; i.querySelector('[data-search-add]')?.addEventListener('click',e=>{e.stopPropagation();addToCart(s.name);sDrop.classList.remove('active');clearS();}); i.addEventListener('click',e=>{if(!e.target.closest('[data-search-add]'))location.href=s.url;}); sResC.appendChild(i); }); }
       function hl(t,term){ if(!term)return esc(t); const sT=esc(t),sTm=esc(term); const r=new RegExp(`(${sTm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'); return sT.replace(r,'<span class="search-highlight">$1</span>'); }
       
@@ -634,7 +688,7 @@
       function sortSubs(){ filterSubs(); }
       function applySort(){ const v=sortS.value; if(v==='price-low')fSubs.sort((a,b)=>a.price-b.price); else if(v==='price-high')fSubs.sort((a,b)=>b.price-a.price); else if(v==='name')fSubs.sort((a,b)=>a.name.localeCompare(b.name)); else fSubs=subs.filter(p=>p.price>=parseFloat(minP.value||0)&&p.price<=parseFloat(maxP.value||Infinity)); renderCats(); if(typeof AOS!=='undefined')AOS.refresh(); }
       function renderCats(){ noRes.classList.add('hidden'); catConf.forEach(c=>{ if(!c.c)return; const s=fSubs.filter(p=>p.categories.includes(c.k)); renderSubs(s,c.c,c.k==='best-selling',c.k==='combo'); }); }
-      function renderSubs(p,c,bs,co){ if(!c)return; c.innerHTML=''; if(!p.length){c.innerHTML='<p class="text-gray-500 text-center col-span-full">No subscriptions available in this category</p>';return;} p.forEach((s,idx)=>{ const cd=document.createElement('div'); cd.className=`subscription-card ${co?'combo-card':''}`; cd.setAttribute('data-aos','fade-up'); cd.setAttribute('data-aos-delay',String(idx*50)); const bsb=bs?'<span class="best-seller-badge">BEST SELLER</span>':'',cb=co?'<span class="combo-badge">COMBO</span>':''; let csH=''; if(Array.isArray(s.services)&&Array.isArray(s.serviceIcons)&&Array.isArray(s.serviceColors)){csH='<div class="combo-services mt-2">';s.services.forEach((sv,i)=>{const si=s.serviceIcons[i]||'fas fa-circle',sc=s.serviceColors[i]||s.color;csH+=`<div class="flex items-center"><div class="combo-service-icon mr-1" style="background-color:${escA(sc)}20;"><i class="${escA(si)}" style="color:${escA(sc)};font-size:12px;"></i></div><span class="text-xs">${esc(sv)}</span></div>`;});csH+='</div>';} const iH=s.image?`<img src="${escA(s.image)}" alt="${escA(s.name)}" class="product-image" loading="lazy" decoding="async">`:`<i class="${escA(s.icon)} product-icon"></i>`; const rt=getRt(s.slug); cd.innerHTML=`${bsb}${cb}<a href="${escA(s.url)}" class="card-link" aria-label="View ${escA(s.name)}"><div class="product-image-container">${iH}</div><div class="p-4 sm:p-5 md:p-6"><h3 class="font-bold text-lg">${esc(s.name)}</h3><p class="text-sm text-gray-500 mb-4">${esc(s.description)}</p>${csH}<div class="flex justify-between items-center mb-4"><div><span class="text-2xl font-bold">৳${s.price}</span><span class="text-gray-500">/${esc(s.duration)}</span></div><div class="flex items-center"><i class="fas fa-star text-yellow-400"></i><span class="ml-1 text-gray-600">${rt}</span></div></div><div class="flex flex-col gap-2"><button type="button" class="w-full py-2 rounded-lg font-medium text-white btn-primary" data-add-cart="${escA(s.name)}">Add to Cart</button><span class="nls-btn-details">See Details <i class="fa-solid fa-arrow-right-long"></i></span></div></div></a>`; cd.querySelector('[data-add-cart]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();flyToCart(cd.querySelector('.product-image'));addToCart(s.name);}); c.appendChild(cd); }); }
+      function renderSubs(p,c,bs,co){ if(!c)return; c.innerHTML=''; if(!p.length){c.innerHTML='<p class="text-gray-500 text-center col-span-full text-sm py-4">No subscriptions available in this category</p>';return;} p.forEach((s,idx)=>{ const cd=document.createElement('div'); cd.className=`subscription-card ${co?'combo-card':''}`; cd.setAttribute('data-aos','fade-up'); cd.setAttribute('data-aos-delay',String(idx*50)); const bsb=bs?'<span class="best-seller-badge">BEST SELLER</span>':'',cb=co?'<span class="combo-badge">COMBO</span>':''; let csH=''; if(Array.isArray(s.services)&&Array.isArray(s.serviceIcons)&&Array.isArray(s.serviceColors)){csH='<div class="combo-services mt-2">';s.services.forEach((sv,i)=>{const si=s.serviceIcons[i]||'fas fa-circle',sc=s.serviceColors[i]||s.color;csH+=`<div class="flex items-center"><div class="combo-service-icon mr-1" style=""><i class="${escA(si)}" style="color:${escA(sc)};font-size:12px;"></i></div><span class="text-xs">${esc(sv)}</span></div>`;});csH+='</div>';} const iH=s.image?`<img src="${escA(s.image)}" alt="${escA(s.name)}" class="product-image" loading="lazy" decoding="async">`:`<i class="${escA(s.icon)} product-icon"></i>`; const rt=getRt(s.slug); cd.innerHTML=`${bsb}${cb}<a href="${escA(s.url)}" class="card-link" aria-label="View ${escA(s.name)}"><div class="product-image-container">${iH}</div><div class="p-3 sm:p-4"><h3 class="font-bold text-base sm:text-lg leading-tight mb-1">${esc(s.name)}</h3><p class="text-xs text-gray-500 mb-3 line-clamp-2" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${esc(s.description)}</p>${csH}<div class="flex justify-between items-center mb-3"><div><span class="text-lg sm:text-xl font-bold">৳${s.price}</span><span class="text-xs text-gray-500">/${esc(s.duration)}</span></div><div class="flex items-center text-xs"><i class="fas fa-star text-yellow-400"></i><span class="ml-1 text-gray-600">${rt}</span></div></div><div class="flex flex-col gap-2"><button type="button" class="w-full py-1.5 sm:py-2 rounded-lg font-medium text-white text-sm btn-primary" data-add-cart="${escA(s.name)}">Add to Cart</button><span class="nls-btn-details text-sm">See Details <i class="fa-solid fa-arrow-right-long"></i></span></div></div></a>`; cd.querySelector('[data-add-cart]')?.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();flyToCart(cd.querySelector('.product-image'));addToCart(s.name);}); c.appendChild(cd); }); }
       function getRt(s){ let h=0; for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;} return Math.min(5,4+Math.abs(h%21)/10).toFixed(1); }
       
       function addToCart(n){ const s=subs.find(p=>p.name===n); if(!s)return; const e=cart.find(i=>i.slug===s.slug); if(e){e.quantity+=1;showNotif(`${s.name} quantity updated in cart`);}else{cart.push({...s,quantity:1});showNotif(`${s.name} added to cart`);} updateCartUI(); saveCart(); cCount.classList.add('pulse'); setTimeout(()=>cCount.classList.remove('pulse'),300); }
