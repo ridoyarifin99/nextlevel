@@ -36,6 +36,14 @@
 
   if (isDashboard) {
     loadScript('/js/dashboard-expiry-lock.js', 'expiry-lock');
-    loadScript('/js/dashboard-ui-v2.js', 'dashboard-ui-v2');
+
+    // The dashboard renderer is declared by the inline script immediately
+    // after this compatibility entry point. Dynamically injecting the UI
+    // enhancer can race with that renderer and let the old cards render first.
+    // Use a parser-blocking script tag so the enhancer is guaranteed to start
+    // before the dashboard's data-fetch/render code executes.
+    if (!document.querySelector('script[data-nextlevel-auth="dashboard-ui-v2"]')) {
+      document.write('<script src="/js/dashboard-ui-v2.js" data-nextlevel-auth="dashboard-ui-v2"><\\/script>');
+    }
   }
 })();
