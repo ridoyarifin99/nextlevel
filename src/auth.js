@@ -32,21 +32,30 @@
     style.id = "nls-mobile-navigation-style";
     style.textContent = `
       @media (max-width: 767px) {
-        body { padding-bottom: calc(82px + env(safe-area-inset-bottom)); }
+        body {
+          padding-top: 58px !important;
+          padding-bottom: calc(82px + env(safe-area-inset-bottom)) !important;
+        }
 
+        /* Facebook-style fixed mobile top bar. The explicit z-index prevents
+           page sections, transforms, and stacking contexts from covering it. */
         .nls-header {
-          position: sticky !important;
+          position: fixed !important;
           top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          width: 100% !important;
+          z-index: 10001 !important;
           border-bottom: 1px solid rgba(226,232,240,.8) !important;
           box-shadow: 0 2px 14px rgba(15,23,42,.07) !important;
-          background: rgba(255,255,255,.94) !important;
+          background: rgba(255,255,255,.96) !important;
           backdrop-filter: blur(18px) saturate(160%) !important;
           -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
-          transform: translateY(0) !important;
+          transform: translate3d(0,0,0) !important;
           transition: transform .28s cubic-bezier(.16,1,.3,1) !important;
           will-change: transform;
         }
-        .nls-header.nls-scroll-hidden { transform: translateY(-105%) !important; }
+        .nls-header.nls-scroll-hidden { transform: translate3d(0,-105%,0) !important; }
 
         .nls-container,
         .nls-header.scrolled .nls-container {
@@ -115,34 +124,40 @@
         .nls-account-link { display: none !important; }
         .nls-cart-btn .cart-badge { top: 1px !important; right: 0 !important; }
 
-        .nls-mobile-search-panel { z-index: 1001 !important; }
+        .nls-mobile-search-panel { z-index: 10002 !important; }
 
+        /* Floating Facebook-style bottom navigation. z-index is intentionally
+           higher than the top bar and all normal page content. */
         #nlsMobileBottomNav {
-          position: fixed;
-          left: 10px;
-          right: 10px;
-          bottom: max(10px, env(safe-area-inset-bottom));
-          height: 64px;
-          padding: 6px 7px;
-          display: grid;
-          grid-template-columns: repeat(5, 1fr);
-          align-items: center;
-          gap: 3px;
-          background: rgba(255,255,255,.96);
-          border: 1px solid rgba(226,232,240,.9);
-          border-radius: 21px;
-          box-shadow: 0 12px 35px rgba(15,23,42,.18), 0 2px 8px rgba(15,23,42,.08);
-          z-index: 9999;
-          backdrop-filter: blur(18px) saturate(170%);
-          -webkit-backdrop-filter: blur(18px) saturate(170%);
-          transform: translateY(0);
-          transition: transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease;
+          position: fixed !important;
+          left: 10px !important;
+          right: 10px !important;
+          bottom: max(10px, env(safe-area-inset-bottom)) !important;
+          height: 64px !important;
+          min-height: 64px !important;
+          padding: 6px 7px !important;
+          display: grid !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          grid-template-columns: repeat(5, 1fr) !important;
+          align-items: center !important;
+          gap: 3px !important;
+          background: rgba(255,255,255,.97) !important;
+          border: 1px solid rgba(226,232,240,.9) !important;
+          border-radius: 21px !important;
+          box-shadow: 0 12px 35px rgba(15,23,42,.18), 0 2px 8px rgba(15,23,42,.08) !important;
+          z-index: 10000 !important;
+          backdrop-filter: blur(18px) saturate(170%) !important;
+          -webkit-backdrop-filter: blur(18px) saturate(170%) !important;
+          transform: translate3d(0,0,0) !important;
+          transition: transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease !important;
           will-change: transform;
+          pointer-events: auto;
         }
         #nlsMobileBottomNav.nls-scroll-hidden {
-          transform: translateY(calc(100% + 24px));
-          opacity: 0;
-          pointer-events: none;
+          transform: translate3d(0,calc(100% + 24px),0) !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
         }
 
         #nlsMobileBottomNav .nls-bottom-item {
@@ -181,8 +196,8 @@
           text-align: center;
         }
 
-        .nls-drawer { z-index: 10000 !important; }
-        .nls-drawer-overlay { z-index: 9998 !important; }
+        .nls-drawer { z-index: 10003 !important; }
+        .nls-drawer-overlay { z-index: 10002 !important; }
       }
 
       @media (min-width: 768px) {
