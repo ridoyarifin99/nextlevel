@@ -4,8 +4,12 @@
 (function () {
   'use strict';
 
-  var isDashboard = /(^|\/)dashboard\.html$/i.test(window.location.pathname) || window.location.pathname === '/';
-  var isCheckout = /(^|\/)checkout\.html$/i.test(window.location.pathname);
+  // Dashboard is exposed publicly as /dashboard, while dashboard.html is
+  // redirected there by vercel.json. Detect both forms so dashboard-only
+  // helpers are actually loaded on production.
+  var dashboardPath = window.location.pathname.replace(/\/+$/, '') || '/';
+  var isDashboard = dashboardPath === '/dashboard' || /\/dashboard\.html$/i.test(dashboardPath) || dashboardPath === '/';
+  var isCheckout = /(^|\/)checkout\.html$/i.test(window.location.pathname) || dashboardPath === '/checkout';
   var isAuthCallback = !!(
     new URLSearchParams(window.location.search).get('code') ||
     new URLSearchParams(window.location.search).get('error') ||
@@ -37,13 +41,16 @@
   if (isDashboard) {
     loadScript('/js/dashboard-expiry-lock.js', 'expiry-lock');
 
-    // The dashboard renderer is declared by the inline script immediately
-    // after this compatibility entry point. Dynamically injecting the UI
-    // enhancer can race with that renderer and let the old cards render first.
-    // Use a parser-blocking script tag so the enhancer is guaranteed to start
-    // before the dashboard's data-fetch/render code executes.
+    // dashboard.html is the renderer source, but production users normally
+    // arrive through /dashboard. Load the DOM-based UI enhancer explicitly
+    // for that route as well. It waits for #subscriptionsContainer and then
+    // upgrades the rendered cards, so it does not depend on inline globals.
     if (!document.querySelector('script[data-nextlevel-auth="dashboard-ui-v2"]')) {
-      document.write('<script src="/js/dashboard-ui-v2.js" data-nextlevel-auth="dashboard-ui-v2"><\\/script>');
+      var dashboardUi = document.createElement('script');
+      dashboardUi.src = '/js/dashboard-ui-v2.js?v=20260905';
+      dashboardUi.async = false;
+      dashboardUi.dataset.nextlevelAuth = 'dashboard-ui-v2';
+      document.head.appendChild(dashboardUi);
     }
   }
 })();
