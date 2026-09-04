@@ -42,7 +42,11 @@
           background: rgba(255,255,255,.94) !important;
           backdrop-filter: blur(18px) saturate(160%) !important;
           -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+          transform: translateY(0) !important;
+          transition: transform .28s cubic-bezier(.16,1,.3,1) !important;
+          will-change: transform;
         }
+        .nls-header.nls-scroll-hidden { transform: translateY(-105%) !important; }
 
         .nls-container,
         .nls-header.scrolled .nls-container {
@@ -131,6 +135,14 @@
           z-index: 9999;
           backdrop-filter: blur(18px) saturate(170%);
           -webkit-backdrop-filter: blur(18px) saturate(170%);
+          transform: translateY(0);
+          transition: transform .28s cubic-bezier(.16,1,.3,1), opacity .22s ease;
+          will-change: transform;
+        }
+        #nlsMobileBottomNav.nls-scroll-hidden {
+          transform: translateY(calc(100% + 24px));
+          opacity: 0;
+          pointer-events: none;
         }
 
         #nlsMobileBottomNav .nls-bottom-item {
@@ -212,11 +224,15 @@
     if (currentPath === "/") home.classList.add("active");
 
     categories.addEventListener("click", function () {
+      nav.classList.remove("nls-scroll-hidden");
+      header.classList.remove("nls-scroll-hidden");
       var button = document.getElementById("mobileMenuBtn");
       if (button) button.click();
     });
 
     search.addEventListener("click", function () {
+      nav.classList.remove("nls-scroll-hidden");
+      header.classList.remove("nls-scroll-hidden");
       var button = document.getElementById("mobileSearchToggle");
       if (button) button.click();
       else {
@@ -226,6 +242,8 @@
     });
 
     cart.addEventListener("click", function () {
+      nav.classList.remove("nls-scroll-hidden");
+      header.classList.remove("nls-scroll-hidden");
       var button = document.getElementById("cartBtn");
       if (button) button.click();
     });
@@ -263,6 +281,53 @@
       var authArea = document.getElementById("userAccountArea");
       if (authArea) new MutationObserver(syncAccountLink).observe(authArea, { attributes: true, attributeFilter: ["style", "class"] });
     }
+
+    // Facebook-style mobile scroll behavior:
+    // scrolling down hides the top + bottom navigation; scrolling up restores both.
+    // At the very top they are always visible. A small threshold prevents jitter.
+    var lastScrollY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    var ticking = false;
+    var scrollThreshold = 12;
+
+    function updateNavigationVisibility() {
+      var y = Math.max(0, window.scrollY || window.pageYOffset || 0);
+      var delta = y - lastScrollY;
+
+      if (y <= 10 || delta < -scrollThreshold) {
+        header.classList.remove("nls-scroll-hidden");
+        nav.classList.remove("nls-scroll-hidden");
+      } else if (delta > scrollThreshold) {
+        // Keep navigation accessible while an overlay/search/drawer is open.
+        var drawer = document.getElementById("mobileDrawer");
+        var overlay = document.getElementById("mobileMenuOverlay");
+        var searchPanel = document.getElementById("mobileSearchPanel");
+        var drawerOpen = drawer && (drawer.classList.contains("open") || drawer.classList.contains("active"));
+        var overlayOpen = overlay && (overlay.classList.contains("active") || overlay.classList.contains("open"));
+        var searchOpen = searchPanel && (searchPanel.classList.contains("active") || searchPanel.classList.contains("open"));
+
+        if (!drawerOpen && !overlayOpen && !searchOpen) {
+          header.classList.add("nls-scroll-hidden");
+          nav.classList.add("nls-scroll-hidden");
+        }
+      }
+
+      lastScrollY = y;
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNavigationVisibility);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth >= 768) {
+        header.classList.remove("nls-scroll-hidden");
+        nav.classList.remove("nls-scroll-hidden");
+      }
+    }, { passive: true });
   }
 
   function init() {
