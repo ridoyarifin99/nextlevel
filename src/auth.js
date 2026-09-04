@@ -2,6 +2,16 @@
 (function(){
   var W=window,D=document;
 
+  /* The homepage currently schedules its first real product render after 1500ms.
+     That is unnecessarily long on mobile and makes the product area look empty.
+     Only shorten that exact render timer; leave every other timer untouched. */
+  var nativeSetTimeout=W.setTimeout;
+  W.setTimeout=function(fn,delay){
+    var args=[].slice.call(arguments,2);
+    if(delay===1500 && typeof fn==='function' && /renderCats/.test(String(fn)))delay=0;
+    return nativeSetTimeout.apply(W,[fn,delay].concat(args));
+  };
+
   function fixIcon(){
     var x=D.querySelector('link[rel="icon"],link[rel="shortcut icon"]');
     if(x){x.href='/images/next_level.png';x.type='image/png'}
@@ -35,8 +45,6 @@
     if(!D.body)return;
     var existing=D.getElementById('cartSidebar');
     if(existing){
-      var existingBtn=D.getElementById('cartBtn');
-      if(existingBtn)existingBtn.addEventListener('click',openUniversalCart,{passive:true});
       updateUniversalCartCount();
       return;
     }
