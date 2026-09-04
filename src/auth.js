@@ -1,16 +1,6 @@
 "use strict";
 
-/*
-============================================================
-NEXT LEVEL SUBS
-STOREFRONT COMPATIBILITY + MOBILE NAVIGATION
-============================================================
-
-The real Supabase authentication module lives in /js/auth.js.
-This file keeps legacy compatibility and owns the mobile
-storefront navigation used by index.html and details.html.
-============================================================
-*/
+/* Legacy compatibility shim + immediate, lightweight storefront mobile navigation. */
 (function () {
   if (typeof window !== "undefined") {
     var apiBase = window.AUTH_API_BASE;
@@ -27,114 +17,71 @@ storefront navigation used by index.html and details.html.
     }
   }
 
-  function addMobileNavigation() {
-    if (document.getElementById("nlsMobileBottomNav")) return true;
-    if (!document.body) return false;
+  function installNavigation() {
+    if (!document.documentElement || document.getElementById("nlsMobileBottomNav")) return;
 
-    var style = document.getElementById("nls-mobile-navigation-style");
-    if (!style) {
-      style = document.createElement("style");
-      style.id = "nls-mobile-navigation-style";
-      style.textContent = `
+    var style = document.createElement("style");
+    style.id = "nls-mobile-navigation-style";
+    style.textContent = `
 @media (max-width:767px){
+  html{--nls-mobile-nav-h:54px}
   body{padding-top:54px!important;padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}
 
-  /* Compact Facebook-style top bar */
-  .nls-header{
-    position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;
-    height:54px!important;z-index:10010!important;background:rgba(255,255,255,.97)!important;
-    backdrop-filter:blur(18px) saturate(160%)!important;-webkit-backdrop-filter:blur(18px) saturate(160%)!important;
-    transform:translate3d(0,0,0)!important;transition:transform .24s cubic-bezier(.16,1,.3,1)!important;
-    will-change:transform
-  }
+  /* Compact Facebook-like top navigation. Search/cart intentionally removed on mobile. */
+  .nls-header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;height:54px!important;z-index:10001!important;background:rgba(255,255,255,.98)!important;backdrop-filter:blur(14px) saturate(150%)!important;-webkit-backdrop-filter:blur(14px) saturate(150%)!important;transform:translate3d(0,0,0)!important;transition:transform .2s ease!important;will-change:transform}
   .nls-header.nls-scroll-hidden{transform:translate3d(0,-110%,0)!important}
   .nls-container,.nls-header.scrolled .nls-container{height:54px!important;min-height:54px!important;padding:0 8px!important;gap:0!important}
   .nls-left{flex:1 1 auto!important;min-width:0!important;gap:0!important}
   .nls-nav{display:none!important}
   .nls-hamburger{display:flex!important;flex:0 0 40px!important;width:40px!important;height:40px!important;align-items:center!important;justify-content:center!important;margin:0!important}
   .nls-hamburger span{left:8px!important}
-  .nls-logo-link{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;gap:0!important;max-width:40vw!important}
-  .nls-logo-img,.nls-header.scrolled .nls-logo-img{height:34px!important;width:auto!important;max-width:40vw!important}
+  .nls-logo-link{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;gap:0!important;max-width:38vw!important}
+  .nls-logo-img,.nls-header.scrolled .nls-logo-img{height:34px!important;width:auto!important;max-width:38vw!important}
   .nls-logo-text-container{display:none!important}
   .nls-right{margin-left:auto!important;gap:0!important;height:54px!important}
-  .nls-search-desktop{display:none!important}
-  .nls-icon-btn,.nls-cart-btn{
-    display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;
-    padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important;position:relative!important
-  }
-  .nls-icon-btn i,.nls-cart-btn i{font-size:18px!important}
-  .nls-cart-text,.nls-auth-text,.nls-account-link{display:none!important}
-  .nls-cart-btn .cart-badge{top:0!important;right:-1px!important}
+  .nls-search-desktop,#mobileSearchToggle,#cartBtn{display:none!important}
+  #loginLink,.nls-user-link{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important}
+  #loginLink .nls-auth-text,.nls-user-link .nls-auth-text{display:none!important}
 
-  /* Compact floating bottom navigation */
-  #nlsMobileBottomNav{
-    position:fixed!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;
-    height:56px!important;min-height:56px!important;padding:4px 5px!important;
-    display:grid!important;visibility:visible!important;opacity:1!important;grid-template-columns:repeat(5,1fr)!important;
-    align-items:center!important;gap:2px!important;background:rgba(255,255,255,.98)!important;
-    border:1px solid rgba(226,232,240,.95)!important;border-radius:17px!important;
-    box-shadow:0 8px 26px rgba(15,23,42,.16),0 2px 7px rgba(15,23,42,.07)!important;
-    z-index:10000!important;backdrop-filter:blur(18px) saturate(170%)!important;
-    -webkit-backdrop-filter:blur(18px) saturate(170%)!important;transform:translate3d(0,0,0)!important;
-    transition:transform .24s cubic-bezier(.16,1,.3,1),opacity .18s ease!important;will-change:transform;pointer-events:auto
-  }
-  #nlsMobileBottomNav.nls-scroll-hidden{transform:translate3d(0,calc(100% + 18px),0)!important;opacity:0!important;pointer-events:none!important}
-  #nlsMobileBottomNav .nls-bottom-item{
-    position:relative;height:44px;min-width:0;border:0;border-radius:13px;background:transparent;color:#64748b;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;
-    transition:transform .16s ease,background .16s ease,color .16s ease;text-decoration:none;outline:none
-  }
-  #nlsMobileBottomNav .nls-bottom-item:active{transform:scale(.90)!important}
-  #nlsMobileBottomNav .nls-bottom-item.active{color:#1877f2!important;background:#e7f0ff!important}
-  #nlsMobileBottomNav .nls-bottom-item:focus-visible{box-shadow:0 0 0 2px rgba(24,119,242,.25)!important}
-  #nlsMobileBottomNav .nls-bottom-item i{font-size:19px;line-height:1}
-  #nlsMobileBottomNav .nls-bottom-badge{
-    position:absolute;top:2px;right:calc(50% - 17px);min-width:16px;height:16px;padding:0 4px;border-radius:999px;
-    background:#ef4444;color:#fff;border:2px solid #fff;font:700 8px/12px Inter,system-ui,sans-serif;text-align:center
-  }
+  /* Existing drawers always sit above both mobile bars. */
+  .nls-drawer{z-index:10004!important}
+  .nls-drawer-overlay{z-index:10003!important}
+  .nls-mobile-search-panel{z-index:10005!important}
 
-  /* Search opened from the bottom nav */
-  .nls-mobile-search-panel.nls-mobile-search-open{
-    display:block!important;visibility:visible!important;opacity:1!important;z-index:10020!important;
-    pointer-events:auto!important;transform:translateY(0)!important;max-height:120px!important
-  }
-
-  /* Existing drawers must stay above the mobile navigation */
-  .nls-drawer,.nls-drawer-overlay{z-index:10030!important}
-  .nls-drawer{max-height:calc(100vh - 72px)!important}
-  body.nls-cart-mobile-open [id*="cartDrawer"],
-  body.nls-cart-mobile-open [class*="cart-drawer"],
-  body.nls-cart-mobile-open [class*="cartDrawer"],
-  body.nls-cart-mobile-open [class*="cart-sidebar"],
-  body.nls-cart-mobile-open [class*="cartSidebar"]{
-    z-index:10040!important;bottom:calc(72px + env(safe-area-inset-bottom))!important;max-height:calc(100vh - 80px)!important
-  }
+  #nlsMobileBottomNav{position:fixed!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;height:54px!important;min-height:54px!important;padding:4px 5px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;align-items:stretch!important;visibility:visible!important;opacity:1!important;background:rgba(255,255,255,.98)!important;border:1px solid rgba(226,232,240,.95)!important;border-radius:17px!important;box-shadow:0 8px 24px rgba(15,23,42,.16),0 1px 5px rgba(15,23,42,.08)!important;z-index:10000!important;backdrop-filter:blur(14px) saturate(150%)!important;-webkit-backdrop-filter:blur(14px) saturate(150%)!important;transform:translate3d(0,0,0)!important;transition:transform .2s ease,opacity .15s ease!important;will-change:transform,opacity;pointer-events:auto}
+  #nlsMobileBottomNav.nls-scroll-hidden{transform:translate3d(0,calc(100% + 20px),0)!important;opacity:0!important;pointer-events:none!important}
+  #nlsMobileBottomNav .nls-bottom-item{position:relative;height:44px;min-width:0;margin:0;border:0;border-radius:12px;background:transparent;color:#64748b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:background .12s ease,color .12s ease,transform .12s ease}
+  #nlsMobileBottomNav .nls-bottom-item i{font-size:17px;line-height:17px;height:17px}
+  #nlsMobileBottomNav .nls-bottom-label{font:600 8.5px/10px Inter,system-ui,sans-serif;white-space:nowrap;letter-spacing:-.05px}
+  #nlsMobileBottomNav .nls-bottom-item.active{color:#2563eb;background:#eaf1ff}
+  #nlsMobileBottomNav .nls-bottom-item:active{transform:scale(.94);background:#eaf1ff}
+  #nlsMobileBottomNav .nls-bottom-badge{position:absolute;top:3px;right:calc(50% - 18px);min-width:16px;height:16px;padding:0 3px;border-radius:999px;background:#ef4444;color:#fff;border:2px solid #fff;font:700 8px/12px Inter,system-ui,sans-serif;text-align:center}
 }
 @media (min-width:768px){#nlsMobileBottomNav{display:none!important}}
-      `;
-      document.head.appendChild(style);
-    }
+`;
+    document.documentElement.appendChild(style);
 
     var nav = document.createElement("nav");
     nav.id = "nlsMobileBottomNav";
     nav.setAttribute("aria-label", "Mobile navigation");
     nav.innerHTML = `
-<a class="nls-bottom-item" data-bottom-nav="home" href="/" aria-label="Home"><i class="fa-solid fa-house"></i></a>
-<button class="nls-bottom-item" data-bottom-nav="categories" type="button" aria-label="Categories" aria-expanded="false"><i class="fa-solid fa-grid-2"></i></button>
-<button class="nls-bottom-item" data-bottom-nav="search" type="button" aria-label="Search" aria-expanded="false"><i class="fa-solid fa-magnifying-glass"></i></button>
-<button class="nls-bottom-item" data-bottom-nav="cart" type="button" aria-label="Cart" aria-expanded="false"><i class="fa-solid fa-basket-shopping-simple"></i><span class="nls-bottom-badge" id="nlsBottomCartCount" hidden>0</span></button>
-<a class="nls-bottom-item" data-bottom-nav="account" href="/login.html?redirect=/" aria-label="Account"><i class="fa-solid fa-circle-user"></i></a>`;
-    document.body.appendChild(nav);
+      <a class="nls-bottom-item" data-bottom-nav="home" href="/" aria-label="Home"><i class="fa-solid fa-house"></i><span class="nls-bottom-label">Home</span></a>
+      <button class="nls-bottom-item" data-bottom-nav="categories" type="button" aria-label="Categories"><i class="fa-solid fa-grid-2"></i><span class="nls-bottom-label">Categories</span></button>
+      <button class="nls-bottom-item" data-bottom-nav="offers" type="button" aria-label="Offers"><i class="fa-solid fa-tags"></i><span class="nls-bottom-label">Offers</span></button>
+      <a class="nls-bottom-item" data-bottom-nav="whatsapp" href="https://wa.me/8801644490566" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="nls-bottom-label">WhatsApp</span></a>
+      <a class="nls-bottom-item" data-bottom-nav="account" href="/login.html?redirect=/" aria-label="Account"><i class="fa-solid fa-circle-user"></i><span class="nls-bottom-label">Account</span></a>`;
 
-    function getHeader() { return document.querySelector(".nls-header"); }
-    function showNavigation() {
-      var header = getHeader();
-      if (header) header.classList.remove("nls-scroll-hidden");
-      nav.classList.remove("nls-scroll-hidden");
-    }
+    /* Append directly to <html>, not after DOMContentLoaded/body, so there is no navigation flash. */
+    document.documentElement.appendChild(nav);
+
+    var items = Array.prototype.slice.call(nav.querySelectorAll("[data-bottom-nav]"));
+    var home = nav.querySelector('[data-bottom-nav="home"]');
+    var categories = nav.querySelector('[data-bottom-nav="categories"]');
+    var offers = nav.querySelector('[data-bottom-nav="offers"]');
+    var account = nav.querySelector('[data-bottom-nav="account"]');
 
     function setActive(key) {
-      nav.querySelectorAll(".nls-bottom-item").forEach(function (item) {
+      items.forEach(function (item) {
         var active = item.getAttribute("data-bottom-nav") === key;
         item.classList.toggle("active", active);
         if (active) item.setAttribute("aria-current", "page");
@@ -142,88 +89,34 @@ storefront navigation used by index.html and details.html.
       });
     }
 
-    function isOpen(el) {
-      if (!el) return false;
-      var cs = window.getComputedStyle(el);
-      return el.classList.contains("open") || el.classList.contains("active") ||
-        el.getAttribute("aria-hidden") === "false" ||
-        (cs.display !== "none" && cs.visibility !== "hidden" && cs.opacity !== "0");
-    }
+    var path = window.location.pathname.replace(/\/+$/, "") || "/";
+    setActive(path === "/" ? "home" : "");
 
-    function openSearch() {
-      showNavigation();
-      var panel = document.getElementById("mobileSearchPanel");
-      var toggle = document.getElementById("mobileSearchToggle");
-      if (toggle) toggle.click();
-      if (panel) {
-        panel.classList.add("nls-mobile-search-open");
-        panel.setAttribute("aria-hidden", "false");
-      }
-      var input = document.getElementById("mobileSearchInput");
-      if (input) setTimeout(function () { input.focus(); }, 40);
-    }
-
-    function findCartDrawer() {
-      var selectors = [
-        "#cartDrawer", "#cartSidebar", "#shoppingCartDrawer", "#shoppingCartSidebar",
-        ".cart-drawer", ".cart-sidebar", ".nls-cart-drawer", ".nls-cart-sidebar",
-        "[data-cart-drawer]", "[data-cart-sidebar]"
-      ];
-      for (var i = 0; i < selectors.length; i++) {
-        var found = document.querySelector(selectors[i]);
-        if (found) return found;
-      }
-      return null;
-    }
-
-    function normalizeCartDrawer() {
-      var drawer = findCartDrawer();
-      if (!drawer) return;
-      drawer.style.zIndex = "10040";
-      drawer.style.bottom = "calc(72px + env(safe-area-inset-bottom))";
-      drawer.style.maxHeight = "calc(100vh - 80px)";
-      drawer.style.overflowY = "auto";
-      document.body.classList.add("nls-cart-mobile-open");
-    }
-
-    var home = nav.querySelector('[data-bottom-nav="home"]');
-    var categories = nav.querySelector('[data-bottom-nav="categories"]');
-    var search = nav.querySelector('[data-bottom-nav="search"]');
-    var cart = nav.querySelector('[data-bottom-nav="cart"]');
-    var account = nav.querySelector('[data-bottom-nav="account"]');
-    var currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
-    if (currentPath === "/") setActive("home");
-
-    home.addEventListener("click", function () { setActive("home"); });
-
-    categories.addEventListener("click", function () {
-      showNavigation();
+    /* Use the existing category button, but never dispatch synthetic events from the nav itself. */
+    categories.addEventListener("click", function (event) {
+      event.preventDefault();
       setActive("categories");
-      var b = document.getElementById("mobileMenuBtn");
-      if (b) {
-        b.click();
-        categories.setAttribute("aria-expanded", isOpen(document.getElementById("mobileDrawer")) ? "true" : "false");
+      var button = document.getElementById("mobileMenuBtn");
+      if (button) button.click();
+    });
+
+    /* Offers: use an existing offers section when present; otherwise return to the storefront. */
+    offers.addEventListener("click", function (event) {
+      event.preventDefault();
+      setActive("offers");
+      var target = document.querySelector("#offers,#offer,#specialOffers,[data-offers]");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (path !== "/") {
+        window.location.href = "/#offers";
+      } else {
+        var hashTarget = document.getElementById("offers");
+        if (hashTarget) hashTarget.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
 
-    search.addEventListener("click", function () {
-      setActive("search");
-      search.setAttribute("aria-expanded", "true");
-      openSearch();
-    });
-
-    cart.addEventListener("click", function () {
-      showNavigation();
-      setActive("cart");
-      cart.setAttribute("aria-expanded", "true");
-      var b = document.getElementById("cartBtn");
-      if (b) b.click();
-      setTimeout(normalizeCartDrawer, 0);
-      setTimeout(normalizeCartDrawer, 80);
-      setTimeout(normalizeCartDrawer, 250);
-    });
-
-    function syncAccountLink() {
+    /* Account link is kept live with the existing auth navbar. */
+    function syncAccount() {
       var user = document.getElementById("userAccountArea");
       var login = document.getElementById("loginLink");
       if (user && getComputedStyle(user).display !== "none") {
@@ -234,86 +127,73 @@ storefront navigation used by index.html and details.html.
         account.setAttribute("aria-label", "Account");
       }
     }
-
-    function syncCartBadge() {
-      var source = document.getElementById("cartCount");
-      var badge = document.getElementById("nlsBottomCartCount");
-      if (!badge) return;
-      var count = source ? parseInt(source.textContent || "0", 10) || 0 : 0;
-      badge.textContent = count > 99 ? "99+" : String(count);
-      badge.hidden = count <= 0;
-    }
-
-    syncAccountLink();
-    syncCartBadge();
+    syncAccount();
 
     if (window.MutationObserver) {
-      var cs = document.getElementById("cartCount");
-      if (cs) new MutationObserver(syncCartBadge).observe(cs, {childList:true,characterData:true,subtree:true,attributes:true});
-      var ua = document.getElementById("userAccountArea");
-      if (ua) new MutationObserver(syncAccountLink).observe(ua, {attributes:true,attributeFilter:["style","class","href"]});
-      var bodyObserver = new MutationObserver(function () {
-        if (document.body.classList.contains("cart-open")) normalizeCartDrawer();
-      });
-      bodyObserver.observe(document.body, {attributes:true,attributeFilter:["class"],childList:true,subtree:true});
+      var observer = new MutationObserver(syncAccount);
+      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["style", "href", "class"] });
     }
 
-    /* Keep drawers above the bottom navigation whenever they are opened. */
-    document.addEventListener("click", function () {
-      if (document.body.classList.contains("cart-open")) normalizeCartDrawer();
-    }, true);
+    /* Delegated visual state keeps taps immediate and does not interfere with page navigation. */
+    nav.addEventListener("click", function (event) {
+      var item = event.target.closest ? event.target.closest("[data-bottom-nav]") : null;
+      if (!item) return;
+      var key = item.getAttribute("data-bottom-nav");
+      if (key === "whatsapp" || key === "home" || key === "account") setActive(key);
+    }, false);
 
-    var lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
+    var lastY = window.scrollY || 0;
     var ticking = false;
-    var threshold = 12;
-    function update() {
+    var threshold = 14;
+
+    function showBars() {
+      var header = document.querySelector(".nls-header");
+      if (header) header.classList.remove("nls-scroll-hidden");
+      nav.classList.remove("nls-scroll-hidden");
+    }
+
+    function scrollUpdate() {
       var y = Math.max(0, window.scrollY || window.pageYOffset || 0);
       var delta = y - lastY;
-      var header = getHeader();
+      var header = document.querySelector(".nls-header");
       var drawer = document.getElementById("mobileDrawer");
       var overlay = document.getElementById("mobileMenuOverlay");
       var searchPanel = document.getElementById("mobileSearchPanel");
-      if (y <= 10 || delta < -threshold) {
+      var drawerOpen = function (el) { return !!el && (el.classList.contains("open") || el.classList.contains("active")); };
+
+      if (y <= 8 || delta < -threshold) {
         if (header) header.classList.remove("nls-scroll-hidden");
         nav.classList.remove("nls-scroll-hidden");
-      } else if (delta > threshold) {
-        var menuOpen = drawer && isOpen(drawer);
-        var overlayOpen = overlay && isOpen(overlay);
-        var searchOpen = searchPanel && (searchPanel.classList.contains("nls-mobile-search-open") || isOpen(searchPanel));
-        var cartOpen = document.body.classList.contains("cart-open");
-        if (!menuOpen && !overlayOpen && !searchOpen && !cartOpen) {
-          if (header) header.classList.add("nls-scroll-hidden");
-          nav.classList.add("nls-scroll-hidden");
-        }
+      } else if (delta > threshold && !drawerOpen(drawer) && !drawerOpen(overlay) && !drawerOpen(searchPanel)) {
+        if (header) header.classList.add("nls-scroll-hidden");
+        nav.classList.add("nls-scroll-hidden");
       }
       lastY = y;
       ticking = false;
     }
 
     window.addEventListener("scroll", function () {
-      if (!ticking) { requestAnimationFrame(update); ticking = true; }
-    }, {passive:true});
+      if (!ticking) {
+        window.requestAnimationFrame(scrollUpdate);
+        ticking = true;
+      }
+    }, { passive: true });
 
     window.addEventListener("resize", function () {
-      if (window.innerWidth >= 768) showNavigation();
-      if (document.body.classList.contains("cart-open")) normalizeCartDrawer();
-    }, {passive:true});
-
-    return true;
+      if (window.innerWidth >= 768) showBars();
+    }, { passive: true });
   }
 
   function init() {
     fixProductionAssets();
-    if (addMobileNavigation()) return;
-    if (window.MutationObserver && document.documentElement) {
-      var observer = new MutationObserver(function () {
-        if (addMobileNavigation()) observer.disconnect();
-      });
-      observer.observe(document.documentElement, {childList:true,subtree:true});
-      setTimeout(function () { observer.disconnect(); addMobileNavigation(); }, 5000);
-    }
+    installNavigation();
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once:true});
-  else init();
+  /* Run immediately whenever possible; this eliminates the previous DOMContentLoaded navigation flash. */
+  if (document.readyState === "loading") {
+    init();
+    document.addEventListener("DOMContentLoaded", fixProductionAssets, { once: true });
+  } else {
+    init();
+  }
 })();
