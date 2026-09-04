@@ -33,10 +33,13 @@
   .nls-hamburger span{left:8px!important}
   .nls-logo-link{position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;gap:0!important;max-width:38vw!important}
   .nls-logo-img,.nls-header.scrolled .nls-logo-img{height:34px!important;width:auto!important;max-width:38vw!important}.nls-logo-text-container{display:none!important}
-  .nls-right{margin-left:auto!important;gap:0!important;height:54px!important}
-  .nls-search-desktop,#mobileSearchToggle,#cartBtn{display:none!important}
-  #loginLink,.nls-user-link{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important}
-  #loginLink .nls-auth-text,.nls-user-link .nls-auth-text{display:none!important}
+  .nls-right{margin-left:auto!important;gap:2px!important;height:54px!important}
+  .nls-search-desktop{display:none!important}
+  #mobileSearchToggle,#cartBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important;position:relative!important}
+  #mobileSearchToggle i,#cartBtn i{font-size:18px!important}
+  #loginLink,.nls-user-link{display:none!important}
+  .nls-cart-text,.nls-auth-text,.nls-account-link{display:none!important}
+  #cartBtn .cart-badge{top:0!important;right:-1px!important}
   .nls-drawer{z-index:10004!important}.nls-drawer-overlay{z-index:10003!important}.nls-mobile-search-panel{z-index:10005!important}
 
   #nlsMobileBottomNav{position:fixed!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;height:54px!important;min-height:54px!important;padding:4px 5px!important;display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;align-items:stretch!important;visibility:visible!important;opacity:1!important;background:rgba(255,255,255,.98)!important;border:1px solid rgba(226,232,240,.95)!important;border-radius:17px!important;box-shadow:0 8px 24px rgba(15,23,42,.16),0 1px 5px rgba(15,23,42,.08)!important;z-index:10000!important;backdrop-filter:blur(14px) saturate(150%)!important;-webkit-backdrop-filter:blur(14px) saturate(150%)!important;transform:translate3d(0,0,0)!important;transition:transform .2s ease,opacity .15s ease!important;will-change:transform,opacity;pointer-events:auto}
@@ -111,7 +114,6 @@
       }
     }
 
-    /* Auth script emits this event when login state changes. No document-wide observer is used. */
     window.addEventListener("nextlevelauthchange", syncAccount);
     document.addEventListener("DOMContentLoaded", syncAccount, { once: true });
     syncAccount();
