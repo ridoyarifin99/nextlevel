@@ -169,33 +169,6 @@
     }, { passive: true });
   }
 
-  /* Initialize AOS after the page has its real layout, while keeping animations enabled. */
-  function initAOS() {
-    if (typeof window === "undefined" || !window.AOS || window.__nlsAOSReady) return;
-    window.__nlsAOSReady = true;
-    var start = function () {
-      window.requestAnimationFrame(function () {
-        window.requestAnimationFrame(function () {
-          try {
-            window.AOS.init({
-              offset: 80,
-              delay: 0,
-              duration: 500,
-              easing: "cubic-bezier(0.16,1,0.3,1)",
-              once: true,
-              startEvent: "DOMContentLoaded",
-              disableMutationObserver: false
-            });
-            window.AOS.refreshHard();
-          } catch (_) {}
-        });
-      });
-    };
-    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
-    else start();
-  }
-
   fixProductionAssets();
   installNavigation();
-  initAOS();
 })();
