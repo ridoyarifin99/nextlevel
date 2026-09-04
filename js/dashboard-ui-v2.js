@@ -49,10 +49,6 @@
     var style = document.createElement('style');
     style.id = 'nlsDashboardV2Styles';
     style.textContent = `
-      #nlsDashboardV2Summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 14px}
-      .nls-v2-summary-card{background:#fff;border:1px solid #e8eaf0;border-radius:14px;padding:14px 16px;box-shadow:0 4px 15px rgba(15,23,42,.04)}
-      .nls-v2-summary-label{font-size:10px;font-weight:800;text-transform:uppercase;color:#9ca3af;letter-spacing:.04em}
-      .nls-v2-summary-value{margin-top:3px;font-size:22px;font-weight:850;color:#18212f}
       #nlsDashboardV2Toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px solid #eef0f4;background:#fbfcff}
       .nls-v2-filter,.nls-v2-refresh{border:1px solid #e5e7eb;background:#fff;color:#4b5563;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;transition:.2s}
       .nls-v2-filter:hover,.nls-v2-filter.active,.nls-v2-refresh:hover{color:#6a11cb;border-color:#d8b4fe;background:#faf5ff}
@@ -68,7 +64,7 @@
       .nls-v2-renew-banner a{display:inline-flex;padding:7px 10px;border-radius:8px;background:#dc2626;color:#fff!important;text-decoration:none!important;white-space:nowrap}
       .nls-v2-modal-lock{padding:14px;border:1px solid #fecaca;border-radius:12px;background:#fef2f2;color:#991b1b}
       .nls-v2-modal-lock strong{font-size:13px}.nls-v2-modal-lock p{margin:5px 0 0;font-size:11px;line-height:1.55}.nls-v2-modal-lock a{display:inline-flex;margin-top:10px;padding:9px 12px;border-radius:9px;background:#dc2626;color:#fff!important;text-decoration:none!important;font-size:10px;font-weight:800}
-      @media(max-width:700px){#nlsDashboardV2Summary{grid-template-columns:1fr}.nls-v2-refresh{margin-left:0}}
+      @media(max-width:700px){.nls-v2-refresh{margin-left:0}}
     `;
     document.head.appendChild(style);
   }
@@ -77,17 +73,6 @@
     var host = readyHost();
     if (!host) return [];
     return Array.prototype.slice.call(host.querySelectorAll('.subscription-card:not(.nls-v2-processed)'));
-  }
-
-  function ensureSummary() {
-    var host = readyHost();
-    if (!host || document.getElementById('nlsDashboardV2Summary')) return;
-    var wrap = document.createElement('div');
-    wrap.id = 'nlsDashboardV2Summary';
-    wrap.innerHTML = '<div class="nls-v2-summary-card"><div class="nls-v2-summary-label">Active</div><div id="nlsV2Active" class="nls-v2-summary-value">0</div></div>' +
-      '<div class="nls-v2-summary-card"><div class="nls-v2-summary-label">Expiring Soon</div><div id="nlsV2Soon" class="nls-v2-summary-value">0</div></div>' +
-      '<div class="nls-v2-summary-card"><div class="nls-v2-summary-label">Expired</div><div id="nlsV2Expired" class="nls-v2-summary-value">0</div></div>';
-    host.parentNode.insertBefore(wrap, host);
   }
 
   function ensureToolbar() {
@@ -152,20 +137,16 @@
   function applyFilter() {
     var host = readyHost(); if (!host) return;
     var all = Array.prototype.slice.call(host.querySelectorAll('.subscription-card'));
-    var active=0,soon=0,expired=0;
     all.forEach(function(card){
       var ex=isExpired(card), d=daysLeft(card), so=!ex&&d!==null&&d<=7;
-      if(ex) expired++; else if(so) soon++; else active++;
       var show=activeFilter==='all'||(activeFilter==='expired'&&ex)||(activeFilter==='soon'&&so)||(activeFilter==='active'&&!ex&&!so);
       card.style.display=show?'':'none';
     });
-    var a=document.getElementById('nlsV2Active'),s=document.getElementById('nlsV2Soon'),e=document.getElementById('nlsV2Expired');
-    if(a)a.textContent=active;if(s)s.textContent=soon;if(e)e.textContent=expired;
   }
 
   function enhance() {
     if (!readyHost()) return false;
-    injectStyles(); ensureSummary(); ensureToolbar();
+    injectStyles(); ensureToolbar();
     cards().forEach(addCardEnhancements);
     applyFilter();
     return true;
