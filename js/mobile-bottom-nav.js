@@ -35,7 +35,7 @@
             #${NAV_ID} .nls-bn-item.active[data-bn="notifications"] i{color:#fff}
             #${NAV_ID} .nls-bn-avatar{overflow:hidden;border-radius:50%;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:2px solid rgba(255,255,255,.75)}
             #${NAV_ID} .nls-bn-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-            @media(max-width:1024px){body{padding-bottom:100px!important}#${NAV_ID}{display:block!important;visibility:visible!important;opacity:1!important;bottom:max(10px,env(safe-area-inset-bottom))!important}}
+            @media(max-width:1024px){body{padding-bottom:100px!important}#${NAV_ID}{display:block!important;visibility:visible!important;bottom:max(10px,env(safe-area-inset-bottom))!important}}
             @media(max-width:430px){#${NAV_ID}{left:8px;right:8px;height:68px;border-radius:21px}}
             @media(min-width:1025px){#${NAV_ID}{display:none!important}.nls-header.nls-scroll-hidden{transform:none!important}}
             @media(prefers-reduced-motion:reduce){#${NAV_ID},#${NAV_ID} .nls-bn-slider,#${NAV_ID} .nls-bn-item,#${NAV_ID} .nls-bn-item i,#${NAV_ID} .nls-bn-item .nls-bn-avatar,#${NAV_ID} .nls-bn-item .nls-bn-label,.nls-header{transition-duration:.01ms!important}}
@@ -108,10 +108,6 @@
         updateAccountButton(nav);
         setupScrollBehavior(nav);
         window.NLSMobileNotifications={setCount:setNotificationCount,getCount:()=>{const b=nav.querySelector('[data-bn="notifications"] .nls-bn-badge');return b&&b.style.display!=='none'?Number(b.textContent)||0:0;}};
-        nav.style.setProperty('display','block','important');
-        nav.style.setProperty('opacity','1','important');
-        nav.style.setProperty('visibility','visible','important');
-        nav.style.setProperty('transform','none','important');
         window.addEventListener('popstate',()=>setActive(nav));
         window.addEventListener('pageshow',()=>{setActive(nav);updateAccountButton(nav)});
         if(window.supabaseClient?.auth?.onAuthStateChange)window.supabaseClient.auth.onAuthStateChange(()=>updateAccountButton(nav));
