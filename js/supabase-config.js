@@ -52,7 +52,7 @@ window.supabaseClient =
     /* Mobile/tablet top + bottom navigation behavior. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-3',
+        '/js/mobile-bottom-nav.js?v=20260906-4',
         'nextlevelMobileBottomNav'
     );
 
@@ -65,7 +65,7 @@ window.supabaseClient =
 
     loadSharedScript(
         'script[data-nextlevel-profile-system]',
-        '/js/profile.js?v=20260906-1',
+        '/js/profile.js?v=20260906-2',
         'nextlevelProfileSystem'
     );
 })();
