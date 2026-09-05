@@ -24,6 +24,12 @@
             margin: 0 !important;
         }
 
+        #nls-mobile-bottom-nav.nls-scroll-hidden {
+            transform: translateY(calc(100% + 24px)) !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
         #nls-mobile-bottom-nav .nls-bn-slider {
             z-index: 0 !important;
         }
