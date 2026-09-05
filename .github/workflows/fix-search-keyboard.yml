@@ -1,0 +1,38 @@
+name: Fix search keyboard dropdown
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore and patch
+        run: |
+          git checkout 8e66e5688d199b0b99448279664cadb1f6a2ffdc -- index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old="""          if (sDrop.classList.contains('active')) { sDrop.classList.remove('active'); sInp.blur(); mInp.blur(); }
+          if (mPan.classList.contains('active')) { mPan.classList.remove('active'); }"""
+          if old not in s:
+              raise SystemExit('Expected scroll-close block not found')
+          s=s.replace(old,"""          /* Keep search open while the mobile keyboard changes the viewport. */""",1)
+          old2="setTimeout(() => mInp.focus(), 100);"
+          if old2 not in s:
+              raise SystemExit('Expected mobile focus block not found')
+          s=s.replace(old2,"setTimeout(() => mInp.focus({preventScroll:true}), 50);",1)
+          p.write_text(s)
+          PY
+          rm -f .github/workflows/fix-search-keyboard.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html .github/workflows/fix-search-keyboard.yml
+          git commit -m 'Fix mobile search dropdown keyboard behavior'
+          git push
