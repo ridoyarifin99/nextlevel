@@ -7,14 +7,21 @@
     const style = document.createElement("style");
     style.id = styleId;
     style.textContent = `
-        /* Hard override: the mobile bottom nav must always stay above page UI. */
+        /* =========================================================
+           MOBILE BOTTOM NAV — HARD VISIBILITY/LAYER FIX
+           ========================================================= */
         #nls-mobile-bottom-nav {
             position: fixed !important;
             left: 10px !important;
             right: 10px !important;
             bottom: max(10px, env(safe-area-inset-bottom)) !important;
             z-index: 2147483647 !important;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: none !important;
             pointer-events: auto !important;
+            margin: 0 !important;
         }
 
         #nls-mobile-bottom-nav .nls-bn-slider {
@@ -22,21 +29,39 @@
         }
 
         #nls-mobile-bottom-nav .nls-bn-item {
+            position: relative !important;
             z-index: 1 !important;
             pointer-events: auto !important;
         }
 
-        /* If the ready animation is interrupted, never leave the navigation invisible. */
-        @media (max-width: 1024px) {
-            #nls-mobile-bottom-nav {
-                display: block !important;
-                visibility: visible !important;
-            }
+        /* =========================================================
+           BANNER IMAGE RATIO FIX
+           Keep the existing 16:9 banner layout and never stretch
+           the artwork when the viewport becomes narrow.
+           ========================================================= */
+        .mega-grid .mg-main {
+            aspect-ratio: 16 / 9 !important;
         }
 
-        @media (min-width: 1025px) {
-            #nls-mobile-bottom-nav {
-                display: none !important;
+        .mega-grid .mg-small {
+            aspect-ratio: 16 / 9 !important;
+        }
+
+        .mega-grid .mg-main img,
+        .mega-grid .mg-small img {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: none !important;
+            max-height: none !important;
+            object-fit: cover !important;
+            object-position: center center !important;
+            aspect-ratio: auto !important;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                padding-bottom: 100px !important;
             }
         }
 
@@ -44,6 +69,14 @@
             #nls-mobile-bottom-nav {
                 left: 8px !important;
                 right: 8px !important;
+                height: 68px !important;
+                border-radius: 21px !important;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            #nls-mobile-bottom-nav {
+                display: none !important;
             }
         }
     `;
