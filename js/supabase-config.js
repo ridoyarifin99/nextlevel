@@ -52,7 +52,7 @@ window.supabaseClient =
     /* Mobile/tablet top + bottom navigation behavior. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-4',
+        '/js/mobile-bottom-nav.js?v=20260906-5',
         'nextlevelMobileBottomNav'
     );
 
