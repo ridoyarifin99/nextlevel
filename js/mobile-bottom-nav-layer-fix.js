@@ -36,8 +36,8 @@
 
         /* =========================================================
            BANNER IMAGE RATIO FIX
-           Keep the existing 16:9 banner layout and never stretch
-           the artwork when the viewport becomes narrow.
+           Preserve the artwork's original proportions. No stretch
+           and no forced crop on narrow/mobile screens.
            ========================================================= */
         .mega-grid .mg-main {
             aspect-ratio: 16 / 9 !important;
@@ -54,7 +54,7 @@
             height: 100% !important;
             max-width: none !important;
             max-height: none !important;
-            object-fit: cover !important;
+            object-fit: contain !important;
             object-position: center center !important;
             aspect-ratio: auto !important;
         }
