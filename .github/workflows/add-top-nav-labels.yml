@@ -1,0 +1,42 @@
+name: Add Menu and Search labels to mobile top nav
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[top-nav-labels]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Add top navigation labels
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/auth.js')
+          s=p.read_text()
+          old=""".nls-hamburger span{left:8px!important}.nls-logo-link"""
+          new=""".nls-hamburger{flex-direction:column!important;gap:1px!important;padding:0!important}.nls-hamburger span{left:8px!important}.nls-hamburger::after{content:'Menu';display:block!important;font:600 8.5px/10px Inter,system-ui,sans-serif!important;white-space:nowrap!important;margin-top:23px!important;color:#64748b!important}.nls-logo-link"""
+          if old not in s: raise SystemExit('Hamburger selector not found')
+          s=s.replace(old,new,1)
+          old="""#mobileSearchToggle i,#cartBtn i,#nlsDashboardSearch i,#nlsDashboardCartBtn i{font-size:17px!important;line-height:17px!important;height:17px!important}"""
+          new="""#mobileSearchToggle i,#cartBtn i,#nlsDashboardSearch i,#nlsDashboardCartBtn i{font-size:17px!important;line-height:17px!important;height:17px!important}#mobileSearchToggle::after,#nlsDashboardSearch::after{content:'Search';display:block!important;font:600 8.5px/10px Inter,system-ui,sans-serif!important;white-space:nowrap!important;color:#64748b!important;margin:0!important}"""
+          if old not in s: raise SystemExit('Search icon selector not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commit and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/auth.js
+          git commit -m "Add Menu and Search labels to mobile top nav [top-nav-labels]"
+          git rm .github/workflows/add-top-nav-labels.yml
+          git commit -m "Remove temporary top nav labels workflow"
+          git push
