@@ -13,13 +13,6 @@ window.SUPABASE_URL =
 window.SUPABASE_ANON_KEY =
     "sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7";
 
-
-/*
-============================================================
-CREATE SUPABASE CLIENT
-============================================================
-*/
-
 window.supabaseClient =
     window.supabase.createClient(
         window.SUPABASE_URL,
@@ -33,12 +26,10 @@ window.supabaseClient =
         }
     );
 
-
 /* Load shared UI fixes, mobile navigation and profile system. */
 (function () {
     const loadSharedScript = (selector, src, dataKey) => {
         if (document.querySelector(selector)) return;
-
         const script = document.createElement('script');
         script.src = src;
         script.async = false;
@@ -58,17 +49,17 @@ window.supabaseClient =
         'nextlevelNavigationFix'
     );
 
-    /* Mobile/tablet bottom navigation. */
+    /* Mobile/tablet top + bottom navigation behavior. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-2',
+        '/js/mobile-bottom-nav.js?v=20260906-3',
         'nextlevelMobileBottomNav'
     );
 
     /* Hard layer + image-ratio override. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav-layer-fix]',
-        '/js/mobile-bottom-nav-layer-fix.js?v=20260906-2',
+        '/js/mobile-bottom-nav-layer-fix.js?v=20260906-3',
         'nextlevelMobileBottomNavLayerFix'
     );
 
