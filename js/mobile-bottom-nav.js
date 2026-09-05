@@ -43,6 +43,11 @@
         document.head.appendChild(style);
     }
 
+    function removeTopProfileUI(){
+        document.getElementById("userAccountArea")?.remove();
+        document.querySelector("#loginLink .nls-account-icon")?.remove();
+    }
+
     function getCurrentPath(){return window.location.pathname.replace(/\/+$/,'').toLowerCase()||'/';}
     function isOffers(){const p=getCurrentPath();return p.includes('best-selling')||p.includes('offer');}
     function getInitials(name){const parts=String(name||'User').trim().split(/\s+/).filter(Boolean);return (parts.length>1?parts[0][0]+parts[parts.length-1][0]:(parts[0]?.[0]||'U')).toUpperCase().slice(0,2);}
@@ -103,13 +108,14 @@
     function init(){
         if(!document.body)return;
         injectStyles();
+        removeTopProfileUI();
         const nav=createNav();
         setActive(nav);
         updateAccountButton(nav);
         setupScrollBehavior(nav);
         window.NLSMobileNotifications={setCount:setNotificationCount,getCount:()=>{const b=nav.querySelector('[data-bn="notifications"] .nls-bn-badge');return b&&b.style.display!=='none'?Number(b.textContent)||0:0;}};
         window.addEventListener('popstate',()=>setActive(nav));
-        window.addEventListener('pageshow',()=>{setActive(nav);updateAccountButton(nav)});
+        window.addEventListener('pageshow',()=>{removeTopProfileUI();setActive(nav);updateAccountButton(nav)});
         if(window.supabaseClient?.auth?.onAuthStateChange)window.supabaseClient.auth.onAuthStateChange(()=>updateAccountButton(nav));
     }
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
