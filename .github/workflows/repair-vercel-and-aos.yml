@@ -1,0 +1,70 @@
+name: Repair Vercel config and AOS
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: "!contains(github.event.head_commit.message, '[repair-aos-vercel]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Repair source files
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json
+
+          p = Path('src/auth.js')
+          s = p.read_text(encoding='utf-8')
+
+          # Remove the old global 1500ms timer monkey-patch.
+          s = re.sub(
+              r'  var nativeSetTimeout=W\.setTimeout;\n'
+              r'  W\.setTimeout=function\(fn,delay\)\{\n'
+              r'    var args=\[\]\.slice\.call\(arguments,2\);\n'
+              r'    if\(delay===1500\)delay=0;\n'
+              r'    return nativeSetTimeout\.apply\(W,\[fn,delay\]\.concat\(args\)\);\n'
+              r'  \};\n', '', s, count=1)
+
+          # Remove the malformed leftover from the temporary mobile card animation.
+          s = s.replace(
+              'to{opacity:1;transform:translate3d(0,0,0)}}}',
+              '', 1
+          )
+
+          # If the old forced card animation block somehow remains, remove it completely.
+          s = re.sub(
+              r'\.subscription-card\[data-aos\]\{.*?@keyframes nlsProductEnter\{.*?\}\}',
+              '', s, count=1, flags=re.S
+          )
+
+          p.write_text(s, encoding='utf-8')
+
+          v = Path('vercel.json')
+          data = json.loads(v.read_text(encoding='utf-8'))
+          fn = data.get('functions', {}).get('api/home.js')
+          if isinstance(fn, dict) and isinstance(fn.get('includeFiles'), list):
+              fn['includeFiles'] = fn['includeFiles'][0] if fn['includeFiles'] else 'index.html'
+          v.write_text(json.dumps(data, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          PY
+
+      - name: Commit repairs and remove workflow
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/auth.js vercel.json
+          git rm .github/workflows/repair-vercel-and-aos.yml
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Repair Vercel config and AOS animation [repair-aos-vercel]'
+          git push
