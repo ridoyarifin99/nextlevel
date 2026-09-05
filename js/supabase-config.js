@@ -72,4 +72,12 @@ window.supabaseClient =
         script.dataset.nextlevelMobileBottomNav = 'true';
         document.head.appendChild(script);
     }
+
+    if (!document.querySelector('script[data-nextlevel-mobile-bottom-nav-layer-fix]')) {
+        const script = document.createElement('script');
+        script.src = '/js/mobile-bottom-nav-layer-fix.js';
+        script.defer = true;
+        script.dataset.nextlevelMobileBottomNavLayerFix = 'true';
+        document.head.appendChild(script);
+    }
 })();
