@@ -1,10 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "api/home.js": {
-      "includeFiles": "index.html"
-    }
-  },
   "redirects": [
     {
       "source": "/index.html",
@@ -28,10 +23,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/",
-      "destination": "/api/home"
-    },
     {
       "source": "/dashboard",
       "destination": "/dashboard.html"
