@@ -22,7 +22,6 @@
             #${NAV_ID} .nls-bn-item.active{color:#fff}#${NAV_ID} .nls-bn-item.active i,#${NAV_ID} .nls-bn-item.active .nls-bn-avatar{transform:translateY(-1px) scale(1.08);filter:drop-shadow(0 3px 7px rgba(0,0,0,.18))}#${NAV_ID} .nls-bn-item.active .nls-bn-label{transform:translateY(-1px)}#${NAV_ID} .nls-bn-item:active{transform:scale(.92)}
             #${NAV_ID} .nls-bn-item:focus-visible{outline:2px solid rgba(37,117,252,.55);outline-offset:-2px}
             #${NAV_ID} .nls-bn-badge{position:absolute;top:4px;right:calc(50% - 20px);min-width:15px;height:15px;padding:0 4px;display:none;align-items:center;justify-content:center;border-radius:999px;background:#ef4444;color:#fff;font-size:8px;font-weight:800;line-height:1;border:2px solid rgba(255,255,255,.9);box-shadow:0 4px 10px rgba(239,68,68,.28)}
-            #${NAV_ID} .nls-bn-badge.notification-badge{display:flex;min-width:17px;height:17px;font-size:8px}
             #${NAV_ID} .nls-bn-item[data-bn="whatsapp"] i{color:#25D366}#${NAV_ID} .nls-bn-item.active[data-bn="whatsapp"] i{color:#fff}
             #${NAV_ID} .nls-bn-item[data-bn="notifications"] i{color:#6a11cb}#${NAV_ID} .nls-bn-item.active[data-bn="notifications"] i{color:#fff}
             #${NAV_ID} .nls-bn-avatar{overflow:hidden;border-radius:50%;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:2px solid rgba(255,255,255,.75)}#${NAV_ID} .nls-bn-avatar img{width:100%;height:100%;object-fit:cover;display:block}
@@ -41,7 +40,7 @@
     function createNav(){
         if(document.getElementById(NAV_ID))return document.getElementById(NAV_ID);
         const nav=document.createElement('nav');nav.id=NAV_ID;nav.setAttribute('aria-label','Mobile navigation');
-        nav.innerHTML=`<div class="nls-bn-track"><div class="nls-bn-slider" aria-hidden="true"></div><a class="nls-bn-item" data-bn="home" href="/" aria-label="Home"><i class="fa-solid fa-house"></i><span class="nls-bn-label">Home</span></a><a class="nls-bn-item" data-bn="whatsapp" href="https://wa.me/8801644490566" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="nls-bn-label">WhatsApp</span></a><a class="nls-bn-item" data-bn="offers" href="/best-selling" aria-label="Offers"><i class="fa-solid fa-gift"></i><span class="nls-bn-label">Offers</span></a><a class="nls-bn-item" data-bn="notifications" href="#notifications" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="nls-bn-label">Notifications</span><span class="nls-bn-badge notification-badge" aria-hidden="true">0</span></a><a class="nls-bn-item" data-bn="account" href="/login.html?redirect=/dashboard.html" aria-label="Account"><span class="nls-bn-avatar"><i class="fa-solid fa-user"></i></span><span class="nls-bn-label">Account</span></a></div>`;
+        nav.innerHTML=`<div class="nls-bn-track"><div class="nls-bn-slider" aria-hidden="true"></div><a class="nls-bn-item" data-bn="home" href="/" aria-label="Home"><i class="fa-solid fa-house"></i><span class="nls-bn-label">Home</span></a><a class="nls-bn-item" data-bn="whatsapp" href="https://wa.me/8801644490566" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i><span class="nls-bn-label">WhatsApp</span></a><a class="nls-bn-item" data-bn="offers" href="/best-selling" aria-label="Offers"><i class="fa-solid fa-gift"></i><span class="nls-bn-label">Offers</span></a><a class="nls-bn-item" data-bn="notifications" href="#notifications" aria-label="Notifications"><i class="fa-solid fa-bell"></i><span class="nls-bn-label">Notifications</span><span class="nls-bn-badge" aria-hidden="true"></span></a><a class="nls-bn-item" data-bn="account" href="/login.html?redirect=/dashboard.html" aria-label="Account"><span class="nls-bn-avatar"><i class="fa-solid fa-user"></i></span><span class="nls-bn-label">Account</span></a></div>`;
         document.body.appendChild(nav);
         return nav;
     }
@@ -50,6 +49,15 @@
         const items=[...nav.querySelectorAll('.nls-bn-item')],slider=nav.querySelector('.nls-bn-slider'),p=getCurrentPath();let key='home';
         if(p.includes('dashboard')||p.includes('account')||p.includes('login')||p.includes('register')||p.includes('forgot-password')||p.includes('reset-password')||p.includes('email-verification')||p.includes('profile-settings'))key='account';else if(isOffers())key='offers';
         const active=nav.querySelector(`[data-bn="${key}"]`);items.forEach(x=>x.classList.toggle('active',x===active));if(active&&slider)slider.style.transform=`translateX(${items.indexOf(active)*100}%)`;
+    }
+
+    function setNotificationCount(count){
+        const nav=document.getElementById(NAV_ID),badge=nav?.querySelector('[data-bn="notifications"] .nls-bn-badge');
+        if(!badge)return;
+        const n=Math.max(0,Number(count)||0);
+        badge.textContent=n>99?'99+':String(n);
+        badge.style.display=n>0?'flex':'none';
+        badge.setAttribute('aria-hidden',n>0?'false':'true');
     }
 
     async function updateAccountButton(nav){
@@ -67,6 +75,7 @@
         const nav=createNav();
         setActive(nav);
         updateAccountButton(nav);
+        window.NLSMobileNotifications={setCount:setNotificationCount,getCount:()=>{const b=nav.querySelector('[data-bn="notifications"] .nls-bn-badge');return b&&b.style.display!=='none'?Number(b.textContent)||0:0;}};
         nav.style.setProperty('display','block','important');
         nav.style.setProperty('opacity','1','important');
         nav.style.setProperty('visibility','visible','important');
