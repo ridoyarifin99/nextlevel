@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Profile Settings — Next Level Subs</title>
+  <meta name="description" content="Manage your Next Level Subs profile and profile picture.">
+  <meta name="theme-color" content="#6a11cb">
+  <link rel="stylesheet" href="./src/output.css">
+  <link rel="stylesheet" href="./src/all.min.css">
+  <style>
+    :root{--pc:#6a11cb;--sc:#2575fc;--td:#172033}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--td);background:radial-gradient(circle at 10% 10%,rgba(106,17,203,.1),transparent 38%),radial-gradient(circle at 90% 20%,rgba(37,117,252,.1),transparent 38%),#f4f7ff;overflow-x:hidden}
+    .ps-header{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.78);backdrop-filter:blur(20px);border-bottom:1px solid rgba(226,232,240,.7)}.ps-header-inner{max-width:1180px;margin:auto;min-height:68px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:15px}.ps-logo img{height:38px;width:auto}.ps-back{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:11px;border:1px solid #e2e8f0;background:#fff;color:#475569;font-weight:700;font-size:.85rem;text-decoration:none;transition:.25s}.ps-back:hover{border-color:#c4b5fd;color:var(--pc);transform:translateY(-1px)}
+    .ps-main{max-width:1180px;margin:0 auto;padding:20px 20px 80px}.ps-title{text-align:center;margin:24px 0 8px;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:850;letter-spacing:-.03em}.ps-subtitle{text-align:center;color:#64748b;margin:0 0 24px}.ps-loading{text-align:center;padding:80px 20px;color:#64748b}.ps-footer{text-align:center;color:#94a3b8;font-size:.78rem;margin-top:18px}
+    @media(max-width:640px){.ps-header-inner{padding:10px 14px}.ps-logo img{height:32px}.ps-back span{display:none}.ps-main{padding:10px 0 90px}.ps-title{margin-top:18px}.ps-subtitle{padding:0 18px}}
+  </style>
+</head>
+<body>
+  <header class="ps-header"><div class="ps-header-inner"><a class="ps-logo" href="/"><img src="/images/next_level.png" alt="Next Level Subs"></a><a class="ps-back" href="/dashboard.html"><i class="fas fa-arrow-left"></i><span>Dashboard</span></a></div></header>
+  <main class="ps-main">
+    <h1 class="ps-title">Profile Settings</h1>
+    <p class="ps-subtitle">Change your profile picture and keep your account information up to date.</p>
+    <div id="profileSettingsApp"><div class="ps-loading"><i class="fas fa-spinner fa-spin"></i> Loading your profile…</div></div>
+    <div class="ps-footer">Your profile picture is stored securely in your Next Level Subs account.</div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabase-config.js"></script>
+  <script src="./js/auth.js"></script>
+</body>
+</html>
