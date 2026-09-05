@@ -47,11 +47,11 @@ window.supabaseClient =
     );
 
 
-/* Load the shared cart viewport fix on pages that use the cart drawer. */
+/* Load shared UI fixes and the mobile-only bottom navigation. */
 (function () {
     if (!document.querySelector('script[data-nextlevel-cart-fix]')) {
         const script = document.createElement('script');
-        script.src = './js/cart-responsive-fix.js';
+        script.src = '/js/cart-responsive-fix.js';
         script.defer = true;
         script.dataset.nextlevelCartFix = 'true';
         document.head.appendChild(script);
@@ -59,9 +59,17 @@ window.supabaseClient =
 
     if (!document.querySelector('script[data-nextlevel-navigation-fix]')) {
         const script = document.createElement('script');
-        script.src = './js/iframe-navigation-fix.js';
+        script.src = '/js/iframe-navigation-fix.js';
         script.defer = true;
         script.dataset.nextlevelNavigationFix = 'true';
+        document.head.appendChild(script);
+    }
+
+    if (!document.querySelector('script[data-nextlevel-mobile-bottom-nav]')) {
+        const script = document.createElement('script');
+        script.src = '/js/mobile-bottom-nav.js';
+        script.defer = true;
+        script.dataset.nextlevelMobileBottomNav = 'true';
         document.head.appendChild(script);
     }
 })();
