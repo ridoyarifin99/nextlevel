@@ -30,7 +30,9 @@
 
   function applyAvatar(url, name) {
     const safe = url ? escape(url) : "";
-    document.querySelectorAll("#userAccountArea .nls-account-icon, [data-nls-profile-avatar], .nls-profile-avatar").forEach(el => {
+
+    /* Profile pictures are intentionally kept out of the top navbar. */
+    document.querySelectorAll("[data-nls-profile-avatar], .nls-profile-avatar").forEach(el => {
       if (safe) {
         el.innerHTML = `<img src="${safe}" alt="Profile picture">`;
         el.classList.add("nls-has-avatar");
@@ -40,6 +42,7 @@
       }
     });
 
+    /* Mobile/tablet Account item remains the profile entry point. */
     const bottom = document.querySelector("#nls-mobile-bottom-nav .nls-bn-avatar");
     if (bottom) {
       if (safe) bottom.innerHTML = `<img src="${safe}" alt="Profile picture">`;
@@ -78,8 +81,6 @@
     const style = document.createElement("style");
     style.id = "nls-profile-global-styles";
     style.textContent = `
-      #userAccountArea .nls-account-icon{overflow:hidden;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;vertical-align:middle}
-      #userAccountArea .nls-account-icon img{width:100%;height:100%;object-fit:cover;display:block}
       .nls-avatar-initials{font-size:10px;font-weight:800;line-height:1}
       .nls-edit-profile-btn{margin-left:0;}
       @media(max-width:640px){.nls-edit-profile-btn{width:100%;}}
