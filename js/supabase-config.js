@@ -36,43 +36,45 @@ window.supabaseClient =
 
 /* Load shared UI fixes, mobile navigation and profile system. */
 (function () {
-    if (!document.querySelector('script[data-nextlevel-cart-fix]')) {
-        const script = document.createElement('script');
-        script.src = '/js/cart-responsive-fix.js';
-        script.defer = true;
-        script.dataset.nextlevelCartFix = 'true';
-        document.head.appendChild(script);
-    }
+    const loadSharedScript = (selector, src, dataKey) => {
+        if (document.querySelector(selector)) return;
 
-    if (!document.querySelector('script[data-nextlevel-navigation-fix]')) {
         const script = document.createElement('script');
-        script.src = '/js/iframe-navigation-fix.js';
-        script.defer = true;
-        script.dataset.nextlevelNavigationFix = 'true';
+        script.src = src;
+        script.async = false;
+        script.dataset[dataKey] = 'true';
         document.head.appendChild(script);
-    }
+    };
 
-    if (!document.querySelector('script[data-nextlevel-mobile-bottom-nav]')) {
-        const script = document.createElement('script');
-        script.src = '/js/mobile-bottom-nav.js';
-        script.defer = true;
-        script.dataset.nextlevelMobileBottomNav = 'true';
-        document.head.appendChild(script);
-    }
+    loadSharedScript(
+        'script[data-nextlevel-cart-fix]',
+        '/js/cart-responsive-fix.js?v=20260906-1',
+        'nextlevelCartFix'
+    );
 
-    if (!document.querySelector('script[data-nextlevel-mobile-bottom-nav-layer-fix]')) {
-        const script = document.createElement('script');
-        script.src = '/js/mobile-bottom-nav-layer-fix.js';
-        script.defer = true;
-        script.dataset.nextlevelMobileBottomNavLayerFix = 'true';
-        document.head.appendChild(script);
-    }
+    loadSharedScript(
+        'script[data-nextlevel-navigation-fix]',
+        '/js/iframe-navigation-fix.js?v=20260906-1',
+        'nextlevelNavigationFix'
+    );
 
-    if (!document.querySelector('script[data-nextlevel-profile-system]')) {
-        const script = document.createElement('script');
-        script.src = '/js/profile.js';
-        script.defer = true;
-        script.dataset.nextlevelProfileSystem = 'true';
-        document.head.appendChild(script);
-    }
+    /* Mobile/tablet bottom navigation. */
+    loadSharedScript(
+        'script[data-nextlevel-mobile-bottom-nav]',
+        '/js/mobile-bottom-nav.js?v=20260906-2',
+        'nextlevelMobileBottomNav'
+    );
+
+    /* Hard layer + image-ratio override. */
+    loadSharedScript(
+        'script[data-nextlevel-mobile-bottom-nav-layer-fix]',
+        '/js/mobile-bottom-nav-layer-fix.js?v=20260906-2',
+        'nextlevelMobileBottomNavLayerFix'
+    );
+
+    loadSharedScript(
+        'script[data-nextlevel-profile-system]',
+        '/js/profile.js?v=20260906-1',
+        'nextlevelProfileSystem'
+    );
 })();
