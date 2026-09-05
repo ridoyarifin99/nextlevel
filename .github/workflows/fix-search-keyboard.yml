@@ -17,17 +17,15 @@ jobs:
           git checkout 8e66e5688d199b0b99448279664cadb1f6a2ffdc -- index.html
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('index.html')
           s=p.read_text()
-          old="""          if (sDrop.classList.contains('active')) { sDrop.classList.remove('active'); sInp.blur(); mInp.blur(); }
-          if (mPan.classList.contains('active')) { mPan.classList.remove('active'); }"""
-          if old not in s:
-              raise SystemExit('Expected scroll-close block not found')
-          s=s.replace(old,"""          /* Keep search open while the mobile keyboard changes the viewport. */""",1)
-          old2="setTimeout(() => mInp.focus(), 100);"
-          if old2 not in s:
-              raise SystemExit('Expected mobile focus block not found')
-          s=s.replace(old2,"setTimeout(() => mInp.focus({preventScroll:true}), 50);",1)
+          pattern=r"\s*if \(sDrop\.classList\.contains\('active'\)\) \{ sDrop\.classList\.remove\('active'\); sInp\.blur\(\); mInp\.blur\(\); \}\s*if \(mPan\.classList\.contains\('active'\)\) \{ mPan\.classList\.remove\('active'\); \}"
+          s,n=re.subn(pattern,"\n          /* Keep search open while the mobile keyboard changes the viewport. */",s,count=1)
+          if n!=1: raise SystemExit('Search scroll-close block not found')
+          old="setTimeout(() => mInp.focus(), 100);"
+          if old not in s: raise SystemExit('Mobile focus block not found')
+          s=s.replace(old,"setTimeout(() => mInp.focus({preventScroll:true}), 50);",1)
           p.write_text(s)
           PY
           rm -f .github/workflows/fix-search-keyboard.yml
