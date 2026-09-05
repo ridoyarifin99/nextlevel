@@ -1,0 +1,75 @@
+name: Full Width Search Dropdown
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-search:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update search dropdown layout
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old = """.search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(255,255,255,0.98);backdrop-filter:blur(20px) saturate(180%);border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,0.1);max-height:400px;overflow-y:auto;z-index:999;display:none;border:1px solid rgba(226,232,240,0.6);padding:0.5rem;transform:translateY(-10px) scale(0.98);opacity:0;transition:all 0.3s var(--ease)}"""
+          new = """.search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;width:100%;max-width:none;background:rgba(255,255,255,0.99);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-radius:0 0 18px 18px;box-shadow:0 18px 45px rgba(15,23,42,0.14);max-height:min(460px,70vh);overflow-y:auto;z-index:10006;display:none;border:1px solid rgba(226,232,240,0.7);border-top:1px solid rgba(226,232,240,0.55);padding:0.65rem max(1rem,calc((100% - 1500px)/2 + 1.5rem));transform:translateY(-10px);opacity:0;transition:all 0.3s var(--ease)}"""
+          if old not in s:
+              raise SystemExit('desktop search-dropdown CSS not found')
+          s = s.replace(old, new, 1)
+
+          old = """function moveDrop(w){ if(w && sDrop.parentElement !== w) w.appendChild(sDrop); }"""
+          new = """function moveDrop(){ if(nlsHeader && sDrop.parentElement !== nlsHeader) nlsHeader.appendChild(sDrop); }"""
+          if old not in s:
+              raise SystemExit('moveDrop function not found')
+          s = s.replace(old, new, 1)
+
+          s = s.replace("moveDrop(dSW)", "moveDrop()")
+          s = s.replace("moveDrop(mSW)", "moveDrop()")
+
+          old = """.search-dropdown.active{display:block;opacity:1;transform:translateY(0) scale(1)}"""
+          new = """.search-dropdown.active{display:block;opacity:1;transform:translateY(0)}"""
+          if old not in s:
+              raise SystemExit('active search-dropdown CSS not found')
+          s = s.replace(old, new, 1)
+
+          marker = """    @media(max-width:1024px){"""
+          mobile_css = """    @media(max-width:1024px){\n      .nls-header .search-dropdown{top:calc(100% + 76px);padding:0.6rem 1rem;border-radius:0 0 16px 16px;max-height:calc(100dvh - 145px)}\n      .nls-header .search-dropdown .search-dropdown-item{padding:10px 8px}\n"""
+          if marker not in s:
+              raise SystemExit('1024px media marker not found')
+          s = s.replace(marker, mobile_css, 1)
+
+          p.write_text(s, encoding='utf-8')
+
+      - name: Commit and push
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes needed"
+            exit 0
+          fi
+          git commit -m "Make search dropdown span full top nav"
+          git push
+
+      - name: Remove temporary workflow
+        if: success()
+        shell: bash
+        run: |
+          git rm .github/workflows/full-width-search-dropdown.yml || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove temporary search dropdown workflow" || true
+          git push || true
