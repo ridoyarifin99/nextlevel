@@ -1,0 +1,44 @@
+name: Align mobile top nav style
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ !contains(github.event.head_commit.message, '[top-nav-style]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Patch top navigation styling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/auth.js')
+          s=p.read_text()
+          old="""#mobileSearchToggle,#cartBtn,#nlsDashboardSearch,#nlsDashboardCartBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important;position:relative!important}"""
+          new="""#mobileSearchToggle,#cartBtn,#nlsDashboardSearch,#nlsDashboardCartBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;color:#334155!important;position:relative!important;flex-direction:column!important;gap:1px!important;font-family:Inter,system-ui,sans-serif!important}#mobileSearchToggle i,#cartBtn i,#nlsDashboardSearch i,#nlsDashboardCartBtn i{font-size:17px!important;line-height:17px!important;height:17px!important}#mobileSearchToggle:after,#nlsDashboardSearch:after{content:'Search';font:600 8.5px/10px Inter,system-ui,sans-serif!important;white-space:nowrap!important;margin:0!important}#cartBtn .nls-cart-text,#nlsDashboardCartBtn .nls-cart-text{display:block!important;font:600 8.5px/10px Inter,system-ui,sans-serif!important;white-space:nowrap!important;margin:0!important}"""
+          if old not in s:
+              raise SystemExit('Expected top-nav selector not found')
+          s=s.replace(old,new,1)
+          old2=""".nls-cart-text,.nls-auth-text,.nls-account-link{display:none!important}"""
+          new2=""".nls-auth-text{display:none!important}.nls-account-link{display:none!important}"""
+          if old2 not in s:
+              raise SystemExit('Expected text selector not found')
+          s=s.replace(old2,new2,1)
+          p.write_text(s)
+          PY
+      - name: Commit and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/auth.js
+          git commit -m "Use bottom-nav typography for top-nav labels [top-nav-style]"
+          git rm .github/workflows/mobile-top-nav-style.yml
+          git commit -m "Remove temporary top nav styling workflow"
+          git push
