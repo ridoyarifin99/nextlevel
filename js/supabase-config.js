@@ -26,28 +26,15 @@ window.supabaseClient =
         window.SUPABASE_ANON_KEY,
         {
             auth: {
-                /*
-                Detect authentication information returned
-                in the URL after email confirmation.
-                */
                 detectSessionInUrl: true,
-
-                /*
-                Keep the authentication session between
-                page loads.
-                */
                 persistSession: true,
-
-                /*
-                Automatically refresh expired sessions.
-                */
                 autoRefreshToken: true
             }
         }
     );
 
 
-/* Load shared UI fixes and the mobile-only bottom navigation. */
+/* Load shared UI fixes, mobile navigation and profile system. */
 (function () {
     if (!document.querySelector('script[data-nextlevel-cart-fix]')) {
         const script = document.createElement('script');
@@ -78,6 +65,14 @@ window.supabaseClient =
         script.src = '/js/mobile-bottom-nav-layer-fix.js';
         script.defer = true;
         script.dataset.nextlevelMobileBottomNavLayerFix = 'true';
+        document.head.appendChild(script);
+    }
+
+    if (!document.querySelector('script[data-nextlevel-profile-system]')) {
+        const script = document.createElement('script');
+        script.src = '/js/profile.js';
+        script.defer = true;
+        script.dataset.nextlevelProfileSystem = 'true';
         document.head.appendChild(script);
     }
 })();
