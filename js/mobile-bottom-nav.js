@@ -32,7 +32,10 @@
             #${NAV_ID} .nls-bn-item.active[data-bn="notifications"] i{color:#fff}
             #${NAV_ID} .nls-bn-avatar{overflow:hidden;border-radius:50%;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:2px solid rgba(255,255,255,.75)}
             #${NAV_ID} .nls-bn-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-            @media(max-width:1024px){body{padding-bottom:100px!important}#${NAV_ID}{display:block!important;visibility:visible!important;bottom:max(10px,env(safe-area-inset-bottom))!important}}
+            /* The bottom nav is fixed and must NOT add artificial document height.
+               Adding body padding here made the page appear to have extra scroll
+               space at the bottom, triggering overscroll/reveal behavior. */
+            @media(max-width:1024px){html{scroll-padding-bottom:90px}#${NAV_ID}{display:block!important;visibility:visible!important;bottom:max(10px,env(safe-area-inset-bottom))!important}}
             @media(max-width:430px){#${NAV_ID}{left:8px;right:8px;height:68px;border-radius:21px}}
             @media(min-width:1025px){#${NAV_ID}{display:none!important}}
             @media(prefers-reduced-motion:reduce){#${NAV_ID},#${NAV_ID} .nls-bn-slider,#${NAV_ID} .nls-bn-item,#${NAV_ID} .nls-bn-item i,#${NAV_ID} .nls-bn-item .nls-bn-avatar,#${NAV_ID} .nls-bn-item .nls-bn-label{transition-duration:.01ms!important}}
