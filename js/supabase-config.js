@@ -49,10 +49,10 @@ window.supabaseClient =
         'nextlevelNavigationFix'
     );
 
-    /* Single owner for mobile/tablet top + bottom navbar scroll behavior. */
+    /* Single owner for top + bottom navbar reveal-on-scroll behavior. */
     loadSharedScript(
         'script[data-nextlevel-navbar-scroll]',
-        '/js/navbar-scroll.js?v=20260906-1',
+        '/js/navbar-scroll.js?v=20260906-2',
         'nextlevelNavbarScroll'
     );
 
