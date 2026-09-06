@@ -81,14 +81,18 @@ window.supabaseClient =
         'nextlevelDetailsFix'
     );
 
-    /* Customer review system — details.html only. */
+    /* Customer review system — loaded early so its DOMContentLoaded
+       handler runs after details.js has created the product catalog. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
-        document.addEventListener('DOMContentLoaded', () => {
-            loadSharedScript(
-                'script[data-nextlevel-reviews]',
-                '/js/reviews.js?v=20260907-1',
-                'nextlevelReviews'
-            );
-        }, { once: true });
+        loadSharedScript(
+            'script[data-nextlevel-reviews]',
+            '/js/reviews.js?v=20260907-2',
+            'nextlevelReviews'
+        );
+        loadSharedScript(
+            'script[data-nextlevel-reviews-bridge]',
+            '/js/reviews-bridge.js?v=20260907-1',
+            'nextlevelReviewsBridge'
+        );
     }
 })();
