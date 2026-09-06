@@ -58,7 +58,7 @@ window.supabaseClient =
 
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-11',
+        '/js/mobile-bottom-nav.js?v=20260906-12',
         'nextlevelMobileBottomNav'
     );
 
