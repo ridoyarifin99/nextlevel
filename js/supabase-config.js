@@ -47,13 +47,13 @@ window.supabaseClient =
 
     /* Customer reviews use the EXISTING details.html Reviews tab UI. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
-        loadSharedScript('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-1', 'nextlevelLegacyReviewCleanup');
-        loadSharedScript('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-1', 'nextlevelReviewsProductBridge');
-        loadSharedScript('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-1', 'nextlevelExistingUiReviews');
+        loadSharedScript('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-2', 'nextlevelLegacyReviewCleanup');
+        loadSharedScript('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-2', 'nextlevelReviewsProductBridge');
+        loadSharedScript('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-2', 'nextlevelExistingUiReviews');
     }
 
     /* Admin order dashboard — review management remains inside admin-orders.html. */
     if (/\/admin-orders\.html$/i.test(window.location.pathname)) {
-        loadSharedScript('script[data-nextlevel-admin-reviews-inline]', '/js/admin-reviews-inline.js?v=20260907-1', 'nextlevelAdminReviewsInline');
+        loadSharedScript('script[data-nextlevel-admin-reviews-inline]', '/js/admin-reviews-inline.js?v=20260907-2', 'nextlevelAdminReviewsInline');
     }
 })();
