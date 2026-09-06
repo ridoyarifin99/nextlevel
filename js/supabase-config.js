@@ -83,6 +83,14 @@ window.supabaseClient =
 
     /* Customer review system. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
+        /* Remove the legacy details.js customerReviews arrays before the
+           Supabase review system starts using window.products. */
+        loadSharedScript(
+            'script[data-nextlevel-legacy-review-cleanup]',
+            '/js/details-review-cleanup.js?v=20260907-1',
+            'nextlevelLegacyReviewCleanup'
+        );
+
         loadSharedScript(
             'script[data-nextlevel-reviews]',
             '/js/reviews.js?v=20260907-3',
