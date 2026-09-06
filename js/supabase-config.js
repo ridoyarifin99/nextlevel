@@ -56,6 +56,12 @@ window.supabaseClient =
     );
 
     loadSharedScript(
+        'script[data-nextlevel-nav-scroll-fix]',
+        '/js/nav-scroll-fix.js?v=20260906-1',
+        'nextlevelNavScrollFix'
+    );
+
+    loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav-layer-fix]',
         '/js/mobile-bottom-nav-layer-fix.js?v=20260906-3',
         'nextlevelMobileBottomNavLayerFix'
