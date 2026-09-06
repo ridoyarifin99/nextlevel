@@ -70,7 +70,7 @@ window.supabaseClient =
     /* Desktop navbar account avatar + customer name. */
     loadSharedScript(
         'script[data-nextlevel-desktop-profile-nav]',
-        '/js/desktop-profile-nav.js?v=20260906-1',
+        '/js/desktop-profile-nav.js?v=20260906-2',
         'nextlevelDesktopProfileNav'
     );
 })();
