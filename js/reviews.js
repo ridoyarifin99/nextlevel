@@ -3,6 +3,7 @@
 /*
  * Next Level Subs — product reviews
  * Loaded only on details.html through supabase-config.js.
+ * Reviews are published immediately; admin moderation is not required.
  */
 (() => {
   if (!/\/details\.html$/i.test(window.location.pathname)) return;
@@ -158,10 +159,12 @@
     const list = document.getElementById("nlsReviewList");
     try {
       const reviews = await loadReviews();
-      const approved = reviews.filter(r => r.status === "approved" || r.user_id === currentUser?.id);
-      renderSummary(approved);
-      await renderList(approved);
-      renderWrite(approved);
+      // Reviews are public immediately. A logged-in author can also see their own review
+      // regardless of any legacy status value left in the database.
+      const visible = reviews.filter(r => r.status !== "rejected" || r.user_id === currentUser?.id);
+      renderSummary(visible);
+      await renderList(visible);
+      renderWrite(visible);
     } catch (error) {
       console.error("Review load error:", error);
       list.innerHTML = `<div class="nls-review-error">Unable to load reviews right now. Please refresh the page.</div>`;
@@ -174,79 +177,35 @@
     const total = reviews.length;
     const average = total ? reviews.reduce((s,r) => s + Number(r.rating || 0), 0) / total : 0;
     box.innerHTML = `
-      <div class="nls-review-average"><strong>${average ? average.toFixed(1) : "0.0"}</strong><div class="nls-review-stars">${stars(average)}</div><small>${total} review${total === 1 ? "" : "s"}</small></div>
-      <div class="nls-review-bars">${[5,4,3,2,1].map((n,i) => `<div class="nls-review-bar"><span>${n}★</span><div class="nls-review-track"><div class="nls-review-fill" style="width:${total ? (counts[i]/total)*100 : 0}%"></div></div><span>${counts[i]}</span></div>`).join("")}</div>
+      <div class="nls-review-average"><strong>${average.toFixed(1)}</strong><div class="nls-review-stars">${stars(average)}</div><small>${total} review${total === 1 ? "" : "s"}</small></div>
+      <div class="nls-review-bars">${counts.map((count,i) => { const rating=5-i; const pct=total ? Math.round(count/total*100) : 0; return `<div class="nls-review-bar"><span>${rating}★</span><div class="nls-review-track"><div class="nls-review-fill" style="width:${pct}%"></div></div><span>${count}</span></div>`; }).join("")}</div>
     `;
-  }
-
-  async function renderList(reviews) {
-    const list = document.getElementById("nlsReviewList");
-    if (!reviews.length) { list.innerHTML = `<div class="nls-empty">No reviews yet. Be the first to review this product.</div>`; return; }
-    const profileIds = [...new Set(reviews.map(r => r.user_id).filter(Boolean))];
-    let profiles = {};
-    if (profileIds.length) {
-      const { data } = await supabase.from("profiles").select("id,full_name,avatar_url").in("id", profileIds);
-      (data || []).forEach(p => profiles[p.id] = p);
-    }
-    list.innerHTML = reviews.map(review => {
-      const profile = profiles[review.user_id] || {};
-      const name = review.author_name || profile.full_name || "Customer";
-      const avatar = review.user_id && profile.avatar_url ? `<img class="nls-review-avatar" src="${esc(profile.avatar_url)}" alt="${esc(name)}">` : `<div class="nls-review-avatar">${esc(name.charAt(0).toUpperCase())}</div>`;
-      const media = (review.review_media || []).sort((a,b) => a.sort_order - b.sort_order).map(renderMedia).join("");
-      const replies = (review.review_replies || []).filter(x => x.status === "approved" || x.user_id === currentUser?.id).map(renderReply).join("");
-      return `<article class="nls-review-card" data-review-id="${esc(review.id)}">
-        <div class="nls-review-author">${avatar}<div><strong>${esc(name)}${review.verified_purchase ? `<span class="nls-verified"><i class="fa-solid fa-circle-check"></i> Verified Purchase</span>` : ""}</strong><div class="nls-review-meta">${stars(review.rating)} · ${esc(formatDate(review.created_at))}</div></div></div>
-        ${review.review_text ? `<div class="nls-review-body">${esc(review.review_text)}</div>` : ""}
-        ${media ? `<div class="nls-review-gallery">${media}</div>` : ""}
-        <div class="nls-review-actions"><button class="nls-review-action" data-reply="${esc(review.id)}"><i class="fa-regular fa-comment"></i> Reply</button>${currentUser?.id === review.user_id ? `<button class="nls-review-action" data-edit-review="${esc(review.id)}"><i class="fa-regular fa-pen-to-square"></i> Edit</button>` : ""}</div>
-        <div class="nls-replies" data-replies-for="${esc(review.id)}">${replies || ""}</div>
-        <div class="nls-reply-form"><input data-reply-input="${esc(review.id)}" placeholder="Write a reply…" maxlength="1000"><button data-send-reply="${esc(review.id)}">Reply</button></div>
-      </article>`;
-    }).join("");
-
-    list.querySelectorAll("[data-reply]").forEach(btn => btn.addEventListener("click", () => focusReply(btn.dataset.reply)));
-    list.querySelectorAll("[data-send-reply]").forEach(btn => btn.addEventListener("click", () => submitReply(btn.dataset.sendReply)));
-    list.querySelectorAll("[data-edit-review]").forEach(btn => btn.addEventListener("click", () => editReview(btn.dataset.editReview, reviews)));
-    list.querySelectorAll("[data-media-url]").forEach(el => el.addEventListener("click", () => openMedia(el.dataset.mediaUrl, el.dataset.mediaType)));
-  }
-
-  function renderReply(reply) {
-    const name = reply.author_name || (reply.admin_id ? "Next Level Subs" : "Customer");
-    const media = (reply.review_media || []).sort((a,b) => a.sort_order - b.sort_order).map(renderMedia).join("");
-    return `<div class="nls-reply"><div class="nls-reply-head"><strong>${esc(name)}</strong>${reply.admin_id ? `<span class="nls-verified">Admin</span>` : ""}<span class="nls-reply-date">${esc(formatDate(reply.created_at))}</span></div>${reply.reply_text ? `<div class="nls-reply-text">${esc(reply.reply_text)}</div>` : ""}${media ? `<div class="nls-reply-gallery">${media}</div>` : ""}</div>`;
-  }
-
-  function renderMedia(item) {
-    const url = esc(item.public_url);
-    if (item.media_type === "video") return `<video data-media-url="${url}" data-media-type="video" controls preload="metadata"><source src="${url}" type="${esc(item.mime_type || "video/mp4")}"></video>`;
-    return `<img data-media-url="${url}" data-media-type="image" src="${url}" alt="Customer review photo" loading="lazy">`;
   }
 
   function renderWrite(reviews) {
     const box = document.getElementById("nlsReviewWrite");
     if (!currentUser) {
-      box.innerHTML = `<div class="nls-review-write"><h3>Share your experience</h3><div class="nls-review-login">Please <a href="/login.html?redirect=${encodeURIComponent(location.pathname + location.search)}">log in</a> to write a review or reply.</div></div>`;
+      box.innerHTML = `<div class="nls-review-write"><div class="nls-review-login">Please <a href="/login.html?redirect=${encodeURIComponent(location.pathname + location.search)}">log in</a> to write a review or reply.</div></div>`;
       return;
     }
-    const existing = reviews.find(r => r.user_id === currentUser.id);
-    if (existing && !editingReviewId) {
-      box.innerHTML = `<div class="nls-review-write"><h3>Your review</h3><p style="color:#64748b;margin:0 0 12px">You already reviewed this product. You can edit your review below.</p><button class="nls-review-submit" id="nlsStartEdit">Edit my review</button></div>`;
-      document.getElementById("nlsStartEdit").addEventListener("click", () => editReview(existing.id, reviews));
+    const mine = reviews.find(r => r.user_id === currentUser.id);
+    if (mine && !editingReviewId) {
+      box.innerHTML = `<div class="nls-review-write"><h3>Your review</h3><p style="margin:0;color:#64748b">You already reviewed this product. You can edit your review anytime.</p><div style="margin-top:14px"><button type="button" class="nls-review-submit" id="nlsEditReview">Edit my review</button></div></div>`;
+      document.getElementById("nlsEditReview")?.addEventListener("click", () => editReview(mine.id, reviews));
       return;
     }
-    box.innerHTML = `<div class="nls-review-write"><h3>${editingReviewId ? "Edit your review" : "Write a review"}</h3><div class="nls-rating-picker" aria-label="Choose rating">${[1,2,3,4,5].map(n => `<button type="button" data-rating="${n}" aria-label="${n} star">★</button>`).join("")}</div><textarea id="nlsReviewText" class="nls-review-text" maxlength="3000" placeholder="Tell others about your experience…"></textarea><div id="nlsReviewMedia" class="nls-review-media-row"></div><label class="nls-media-label"><i class="fa-solid fa-camera"></i> Add photos/videos<input id="nlsReviewFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple></label><div style="margin-top:15px"><button id="nlsSubmitReview" class="nls-review-submit">${editingReviewId ? "Update review" : "Publish review"}</button>${editingReviewId ? `<button id="nlsCancelEdit" class="nls-review-cancel">Cancel</button>` : ""}</div><div id="nlsReviewFormError"></div></div>`;
-    if (editingReviewId) {
-      const existing = reviews.find(r => r.id === editingReviewId);
-      if (existing) {
-        selectedRating = Number(existing.rating) || 0;
-        document.getElementById("nlsReviewText").value = existing.review_text || "";
-      }
-    } else selectedRating = 0;
-    updateRatingButtons();
-    document.querySelectorAll("[data-rating]").forEach(b => b.addEventListener("click", () => { selectedRating = Number(b.dataset.rating); updateRatingButtons(); }));
-    document.getElementById("nlsReviewFiles").addEventListener("change", e => addFiles([...e.target.files]));
-    document.getElementById("nlsSubmitReview").addEventListener("click", submitReview);
-    document.getElementById("nlsCancelEdit")?.addEventListener("click", () => { editingReviewId = null; selectedFiles = []; renderAll(); });
+    box.innerHTML = `
+      <div class="nls-review-write"><h3>${editingReviewId ? "Edit your review" : "Write a review"}</h3>
+      <div class="nls-rating-picker" role="radiogroup" aria-label="Rating">${[1,2,3,4,5].map(n => `<button type="button" data-rating="${n}" aria-label="${n} star">★</button>`).join("")}</div>
+      <textarea id="nlsReviewText" class="nls-review-text" maxlength="3000" placeholder="Share your experience…"></textarea>
+      <div id="nlsReviewMedia" class="nls-review-media-row"></div>
+      <label class="nls-media-label"><i class="fas fa-images"></i> Add photos/videos<input id="nlsReviewFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" multiple></label>
+      <div id="nlsReviewFormError"></div><div style="margin-top:14px"><button type="button" class="nls-review-submit" id="nlsSubmitReview">${editingReviewId ? "Update review" : "Publish review"}</button>${editingReviewId ? `<button type="button" class="nls-review-cancel" id="nlsCancelReview">Cancel</button>` : ""}</div></div>`;
+    document.querySelectorAll("[data-rating]").forEach(b => b.addEventListener("click", () => { selectedRating=Number(b.dataset.rating); updateRatingButtons(); }));
+    document.getElementById("nlsReviewFiles")?.addEventListener("change", e => addFiles(e.target.files || []));
+    document.getElementById("nlsSubmitReview")?.addEventListener("click", submitReview);
+    document.getElementById("nlsCancelReview")?.addEventListener("click", () => { editingReviewId=null; selectedFiles=[]; selectedRating=0; renderWrite(reviews); });
+    if (editingReviewId) { const r=reviews.find(x=>x.id===editingReviewId); if(r){ document.getElementById("nlsReviewText").value=r.review_text||""; updateRatingButtons(); } }
   }
 
   function updateRatingButtons() { document.querySelectorAll("[data-rating]").forEach(b => b.classList.toggle("active", Number(b.dataset.rating) <= selectedRating)); }
@@ -306,6 +265,7 @@
     try {
       const profile = await getProfile(currentUser.id);
       const verified = await isVerifiedPurchase(currentUser.id, product.slug || slugify(product.name));
+      // Auto-publish: no admin approval step.
       const payload = { product_slug:product.slug || slugify(product.name), user_id:currentUser.id, author_name:profile?.full_name || currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "Customer", rating:selectedRating, review_text:text, verified_purchase:verified, status:"approved" };
       let reviewId = editingReviewId;
       if (editingReviewId) {
