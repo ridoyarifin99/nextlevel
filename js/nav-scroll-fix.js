@@ -4,93 +4,164 @@
   if (window.__NLSNavScrollFixLoaded) return;
   window.__NLSNavScrollFixLoaded = true;
 
-  function init() {
-    const header = document.getElementById("nlsHeader") || document.querySelector(".nls-header");
-    const bottom = document.getElementById("nls-mobile-bottom-nav");
-    if (!header && !bottom) return;
+  const MOBILE_MAX = 1024;
+  const HIDE_AFTER_Y = 56;
+  const MIN_DELTA = 3;
 
-    let lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
-    let ticking = false;
-    let hidden = false;
+  let header = null;
+  let bottom = null;
+  let lastY = 0;
+  let ticking = false;
+  let hidden = false;
+  let initialized = false;
 
-    function applyHidden(value) {
-      if (hidden === value) return;
-      hidden = value;
+  function getY() {
+    return Math.max(
+      0,
+      window.scrollY ||
+      window.pageYOffset ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0
+    );
+  }
 
-      if (header) {
-        if (value) {
-          header.style.setProperty("transform", "translate3d(0,-110%,0)", "important");
-          header.style.setProperty("opacity", "0", "important");
-          header.style.setProperty("pointer-events", "none", "important");
-        } else {
-          header.style.removeProperty("transform");
-          header.style.removeProperty("opacity");
-          header.style.removeProperty("pointer-events");
-        }
-      }
+  function findElements() {
+    header = document.getElementById("nlsHeader") || document.querySelector(".nls-header");
+    bottom = document.getElementById("nls-mobile-bottom-nav");
 
-      if (bottom) {
-        if (value) {
-          bottom.style.setProperty("transform", "translate3d(0,calc(100% + 24px),0)", "important");
-          bottom.style.setProperty("opacity", "0", "important");
-          bottom.style.setProperty("pointer-events", "none", "important");
-        } else {
-          bottom.style.removeProperty("transform");
-          bottom.style.removeProperty("opacity");
-          bottom.style.removeProperty("pointer-events");
-        }
+    if (header) {
+      const height = Math.ceil(header.getBoundingClientRect().height || header.offsetHeight || 72);
+      header.style.setProperty("--nls-header-hide-offset", `${height + 4}px`);
+    }
+  }
+
+  function applyState(shouldHide) {
+    findElements();
+
+    if (hidden === shouldHide && initialized) return;
+    hidden = shouldHide;
+    initialized = true;
+
+    const mobile = window.innerWidth <= MOBILE_MAX;
+
+    if (!mobile) {
+      hidden = false;
+    }
+
+    if (header) {
+      if (hidden) {
+        /*
+         * Do not depend on transform alone. The header is position:sticky,
+         * so a negative sticky top guarantees that the entire header leaves
+         * the viewport even when another stylesheet/script touches transform.
+         */
+        header.style.setProperty("top", "calc(-1 * var(--nls-header-hide-offset, 76px))", "important");
+        header.style.setProperty("transform", "translate3d(0,-8px,0)", "important");
+        header.style.setProperty("opacity", "0", "important");
+        header.style.setProperty("pointer-events", "none", "important");
+        header.classList.add("nls-scroll-hidden");
+      } else {
+        header.style.setProperty("top", "0px", "important");
+        header.style.setProperty("transform", "translate3d(0,0,0)", "important");
+        header.style.setProperty("opacity", "1", "important");
+        header.style.setProperty("pointer-events", "auto", "important");
+        header.classList.remove("nls-scroll-hidden");
       }
     }
 
-    function update() {
-      ticking = false;
-
-      if (window.innerWidth > 1024) {
-        applyHidden(false);
-        lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
-        return;
+    if (bottom) {
+      if (hidden) {
+        bottom.style.setProperty("transform", "translate3d(0,calc(100% + 24px),0)", "important");
+        bottom.style.setProperty("opacity", "0", "important");
+        bottom.style.setProperty("pointer-events", "none", "important");
+        bottom.classList.add("nls-scroll-hidden");
+      } else {
+        bottom.style.setProperty("transform", "translate3d(0,0,0)", "important");
+        bottom.style.setProperty("opacity", "1", "important");
+        bottom.style.setProperty("pointer-events", "auto", "important");
+        bottom.classList.remove("nls-scroll-hidden");
       }
+    }
+  }
 
-      const y = Math.max(0, window.scrollY || window.pageYOffset || 0);
-      const delta = y - lastY;
+  function update() {
+    ticking = false;
+    findElements();
 
-      if (y <= 12) {
-        applyHidden(false);
-        lastY = y;
-        return;
-      }
+    if (window.innerWidth > MOBILE_MAX) {
+      applyState(false);
+      lastY = getY();
+      return;
+    }
 
-      if (Math.abs(delta) >= 4) {
-        if (delta > 0) applyHidden(true);
-        else applyHidden(false);
-      }
+    const y = getY();
+    const delta = y - lastY;
 
+    /* Always show both bars at the very top. */
+    if (y <= 12) {
+      applyState(false);
       lastY = y;
+      return;
     }
 
-    function onScroll() {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
+    /* Ignore tiny touch/trackpad movement. */
+    if (Math.abs(delta) < MIN_DELTA) {
+      lastY = y;
+      return;
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", function () {
-      lastY = Math.max(0, window.scrollY || window.pageYOffset || 0);
-      applyHidden(false);
+    /* Down = hide. Up = show. */
+    if (delta > 0 && y > HIDE_AFTER_Y) {
+      applyState(true);
+    } else if (delta < 0) {
+      applyState(false);
+    }
+
+    lastY = y;
+  }
+
+  function scheduleUpdate() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(update);
+  }
+
+  function resetAfterResize() {
+    findElements();
+    lastY = getY();
+    applyState(false);
+  }
+
+  function init() {
+    findElements();
+    lastY = getY();
+    applyState(false);
+
+    /* Window catches normal page scrolling. Capture catches nested scroll containers. */
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    document.addEventListener("scroll", scheduleUpdate, { passive: true, capture: true });
+    window.addEventListener("resize", resetAfterResize, { passive: true });
+    window.addEventListener("orientationchange", function () {
+      window.setTimeout(resetAfterResize, 120);
     }, { passive: true });
 
-    applyHidden(false);
+    /* The bottom nav is injected dynamically, so keep discovering it. */
+    if (window.MutationObserver && document.body) {
+      const observer = new MutationObserver(function () {
+        const previousBottom = bottom;
+        findElements();
+        if (!previousBottom && bottom) {
+          applyState(false);
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      init();
-      setTimeout(init, 150);
-    }, { once: true });
+    document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
     init();
-    setTimeout(init, 150);
   }
 })();
