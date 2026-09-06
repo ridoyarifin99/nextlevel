@@ -161,7 +161,75 @@
     });
   }
 
+  /*
+   * Details pages contain their own legacy inline CSS. This scoped layer is
+   * injected after that stylesheet so the viewport/floating-control rules are
+   * deterministic without redesigning the existing page.
+   */
+  function injectViewportFixCSS() {
+    if (document.getElementById("nls-details-viewport-fix")) return;
+
+    const style = document.createElement("style");
+    style.id = "nls-details-viewport-fix";
+    style.textContent = `
+      html {
+        scroll-padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+        overscroll-behavior-y: none;
+      }
+
+      body {
+        overflow-x: hidden;
+        overscroll-behavior-y: none;
+      }
+
+      /* Keep the product content clear of the fixed mobile bottom navigation. */
+      @media (max-width: 1024px) {
+        main {
+          padding-bottom: max(7rem, calc(7rem + env(safe-area-inset-bottom, 0px))) !important;
+        }
+
+        .fab,
+        .whatsapp-fab {
+          z-index: 2147483646 !important;
+        }
+
+        .fab {
+          right: 16px !important;
+          bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+
+        .whatsapp-fab {
+          right: 76px !important;
+          bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .fab,
+        .whatsapp-fab {
+          width: 48px !important;
+          height: 48px !important;
+        }
+
+        .fab {
+          right: 14px !important;
+        }
+
+        .whatsapp-fab {
+          right: 70px !important;
+        }
+      }
+
+      @media (min-width: 1025px) {
+        .fab { bottom: 24px !important; right: 24px !important; }
+        .whatsapp-fab { bottom: 24px !important; right: 84px !important; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function runFixes() {
+    injectViewportFixCSS();
     fixRuntimeConfig();
     fixSeo();
     fixImages();
