@@ -81,12 +81,11 @@ window.supabaseClient =
         'nextlevelDetailsFix'
     );
 
-    /* Customer review system — loaded early so its DOMContentLoaded
-       handler runs after details.js has created the product catalog. */
+    /* Customer review system. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
         loadSharedScript(
             'script[data-nextlevel-reviews]',
-            '/js/reviews.js?v=20260907-2',
+            '/js/reviews.js?v=20260907-3',
             'nextlevelReviews'
         );
         loadSharedScript(
@@ -94,10 +93,14 @@ window.supabaseClient =
             '/js/reviews-bridge.js?v=20260907-1',
             'nextlevelReviewsBridge'
         );
+        loadSharedScript(
+            'script[data-nextlevel-reviews-integration-fix]',
+            '/js/reviews-integration-fix.js?v=20260907-1',
+            'nextlevelReviewsIntegrationFix'
+        );
     }
 
-    /* Admin order dashboard — inject the review-management section
-       directly into admin-orders.html; no separate review page is required. */
+    /* Admin order dashboard — review management remains inside admin-orders.html. */
     if (/\/admin-orders\.html$/i.test(window.location.pathname)) {
         loadSharedScript(
             'script[data-nextlevel-admin-reviews-inline]',
