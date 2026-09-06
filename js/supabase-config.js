@@ -80,4 +80,15 @@ window.supabaseClient =
         '/js/details-page-fix.js?v=20260906-1',
         'nextlevelDetailsFix'
     );
+
+    /* Customer review system — details.html only. */
+    if (/\/details\.html$/i.test(window.location.pathname)) {
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSharedScript(
+                'script[data-nextlevel-reviews]',
+                '/js/reviews.js?v=20260907-1',
+                'nextlevelReviews'
+            );
+        }, { once: true });
+    }
 })();
