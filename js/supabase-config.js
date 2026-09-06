@@ -52,7 +52,7 @@ window.supabaseClient =
     /* Single owner for top + bottom navbar reveal-on-scroll behavior. */
     loadSharedScript(
         'script[data-nextlevel-navbar-scroll]',
-        '/js/navbar-scroll.js?v=20260906-3',
+        '/js/navbar-scroll.js?v=20260906-4',
         'nextlevelNavbarScroll'
     );
 
