@@ -28,10 +28,28 @@
     return data || {};
   }
 
+  function renderDashboardAvatar(url, name) {
+    const title = document.getElementById("customerName");
+    if (!title) return;
+
+    title.classList.add("nls-dashboard-name-with-avatar");
+    let avatar = title.querySelector(".nls-dashboard-profile-avatar");
+    if (!avatar) {
+      avatar = document.createElement("span");
+      avatar.className = "nls-dashboard-profile-avatar";
+      title.insertBefore(avatar, title.firstChild);
+    }
+
+    const safe = url ? escape(url) : "";
+    avatar.innerHTML = safe
+      ? `<img src="${safe}" alt="Profile picture">`
+      : `<span>${escape(initials(name))}</span>`;
+  }
+
   function applyAvatar(url, name) {
     const safe = url ? escape(url) : "";
 
-    /* Profile pictures are intentionally kept out of the top navbar. */
+    /* Top navbar profile avatar is intentionally removed. */
     document.querySelectorAll("[data-nls-profile-avatar], .nls-profile-avatar").forEach(el => {
       if (safe) {
         el.innerHTML = `<img src="${safe}" alt="Profile picture">`;
@@ -42,7 +60,10 @@
       }
     });
 
-    /* Mobile/tablet Account item remains the profile entry point. */
+    /* Large profile picture beside the dashboard welcome name. */
+    renderDashboardAvatar(url, name);
+
+    /* Mobile/tablet bottom navigation Account avatar. */
     const bottom = document.querySelector("#nls-mobile-bottom-nav .nls-bn-avatar");
     if (bottom) {
       if (safe) bottom.innerHTML = `<img src="${safe}" alt="Profile picture">`;
@@ -81,9 +102,18 @@
     const style = document.createElement("style");
     style.id = "nls-profile-global-styles";
     style.textContent = `
+      /* Desktop dashboard welcome profile picture. */
+      #customerName.nls-dashboard-name-with-avatar{display:flex;align-items:center;gap:18px;}
+      #customerName .nls-dashboard-profile-avatar{width:84px;height:84px;min-width:84px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:4px solid rgba(255,255,255,.9);box-shadow:0 12px 30px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.18);font-size:24px;font-weight:800;line-height:1;}
+      #customerName .nls-dashboard-profile-avatar img{width:100%;height:100%;display:block;object-fit:cover;}
+      #customerName .nls-dashboard-profile-avatar span{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;}
       .nls-avatar-initials{font-size:10px;font-weight:800;line-height:1}
       .nls-edit-profile-btn{margin-left:0;}
-      @media(max-width:640px){.nls-edit-profile-btn{width:100%;}}
+      @media(max-width:640px){
+        .nls-edit-profile-btn{width:100%;}
+        #customerName.nls-dashboard-name-with-avatar{gap:12px;}
+        #customerName .nls-dashboard-profile-avatar{width:64px;height:64px;min-width:64px;border-width:3px;font-size:18px;}
+      }
     `;
     document.head.appendChild(style);
   }
