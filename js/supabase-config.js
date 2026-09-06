@@ -26,7 +26,7 @@ window.supabaseClient =
         }
     );
 
-/* Load shared UI fixes, mobile navigation and profile system. */
+/* Load shared UI fixes, navigation and profile systems. */
 (function () {
     const loadSharedScript = (selector, src, dataKey) => {
         if (document.querySelector(selector)) return;
@@ -49,14 +49,12 @@ window.supabaseClient =
         'nextlevelNavigationFix'
     );
 
-    /* Mobile/tablet top + bottom navigation behavior. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
         '/js/mobile-bottom-nav.js?v=20260906-5',
         'nextlevelMobileBottomNav'
     );
 
-    /* Hard layer + image-ratio override. */
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav-layer-fix]',
         '/js/mobile-bottom-nav-layer-fix.js?v=20260906-3',
@@ -65,7 +63,14 @@ window.supabaseClient =
 
     loadSharedScript(
         'script[data-nextlevel-profile-system]',
-        '/js/profile.js?v=20260906-2',
+        '/js/profile.js?v=20260906-3',
         'nextlevelProfileSystem'
+    );
+
+    /* Desktop navbar account avatar + customer name. */
+    loadSharedScript(
+        'script[data-nextlevel-desktop-profile-nav]',
+        '/js/desktop-profile-nav.js?v=20260906-1',
+        'nextlevelDesktopProfileNav'
     );
 })();
