@@ -50,6 +50,7 @@ window.supabaseClient =
         loadSharedScript('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-2', 'nextlevelLegacyReviewCleanup');
         loadSharedScript('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-2', 'nextlevelReviewsProductBridge');
         loadSharedScript('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-2', 'nextlevelExistingUiReviews');
+        loadSharedScript('script[data-nextlevel-premium-review-ui]', '/js/reviews-premium-ui.js?v=20260907-1', 'nextlevelPremiumReviewUi');
     }
 
     /* Admin order dashboard — review management remains inside admin-orders.html. */
