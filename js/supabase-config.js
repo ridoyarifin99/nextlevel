@@ -37,83 +37,23 @@ window.supabaseClient =
         document.head.appendChild(script);
     };
 
-    loadSharedScript(
-        'script[data-nextlevel-cart-fix]',
-        '/js/cart-responsive-fix.js?v=20260906-1',
-        'nextlevelCartFix'
-    );
+    loadSharedScript('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260906-1', 'nextlevelCartFix');
+    loadSharedScript('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
+    loadSharedScript('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-4', 'nextlevelNavbarScroll');
+    loadSharedScript('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260906-12', 'nextlevelMobileBottomNav');
+    loadSharedScript('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
+    loadSharedScript('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260906-3', 'nextlevelDesktopProfileNav');
+    loadSharedScript('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260906-1', 'nextlevelDetailsFix');
 
-    loadSharedScript(
-        'script[data-nextlevel-navigation-fix]',
-        '/js/iframe-navigation-fix.js?v=20260906-1',
-        'nextlevelNavigationFix'
-    );
-
-    /* Single owner for top + bottom navbar reveal-on-scroll behavior. */
-    loadSharedScript(
-        'script[data-nextlevel-navbar-scroll]',
-        '/js/navbar-scroll.js?v=20260906-4',
-        'nextlevelNavbarScroll'
-    );
-
-    loadSharedScript(
-        'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-12',
-        'nextlevelMobileBottomNav'
-    );
-
-    loadSharedScript(
-        'script[data-nextlevel-profile-system]',
-        '/js/profile.js?v=20260906-3',
-        'nextlevelProfileSystem'
-    );
-
-    loadSharedScript(
-        'script[data-nextlevel-desktop-profile-nav]',
-        '/js/desktop-profile-nav.js?v=20260906-3',
-        'nextlevelDesktopProfileNav'
-    );
-
-    /* Product-detail-only compatibility and SEO hardening. */
-    loadSharedScript(
-        'script[data-nextlevel-details-fix]',
-        '/js/details-page-fix.js?v=20260906-1',
-        'nextlevelDetailsFix'
-    );
-
-    /* Customer review system. */
+    /* Customer reviews use the EXISTING details.html Reviews tab UI. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
-        /* Remove the legacy details.js customerReviews arrays before the
-           Supabase review system starts using window.products. */
-        loadSharedScript(
-            'script[data-nextlevel-legacy-review-cleanup]',
-            '/js/details-review-cleanup.js?v=20260907-1',
-            'nextlevelLegacyReviewCleanup'
-        );
-
-        loadSharedScript(
-            'script[data-nextlevel-reviews]',
-            '/js/reviews.js?v=20260907-3',
-            'nextlevelReviews'
-        );
-        loadSharedScript(
-            'script[data-nextlevel-reviews-bridge]',
-            '/js/reviews-bridge.js?v=20260907-1',
-            'nextlevelReviewsBridge'
-        );
-        loadSharedScript(
-            'script[data-nextlevel-reviews-integration-fix]',
-            '/js/reviews-integration-fix.js?v=20260907-1',
-            'nextlevelReviewsIntegrationFix'
-        );
+        loadSharedScript('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-1', 'nextlevelLegacyReviewCleanup');
+        loadSharedScript('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-1', 'nextlevelReviewsProductBridge');
+        loadSharedScript('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-1', 'nextlevelExistingUiReviews');
     }
 
     /* Admin order dashboard — review management remains inside admin-orders.html. */
     if (/\/admin-orders\.html$/i.test(window.location.pathname)) {
-        loadSharedScript(
-            'script[data-nextlevel-admin-reviews-inline]',
-            '/js/admin-reviews-inline.js?v=20260907-1',
-            'nextlevelAdminReviewsInline'
-        );
+        loadSharedScript('script[data-nextlevel-admin-reviews-inline]', '/js/admin-reviews-inline.js?v=20260907-1', 'nextlevelAdminReviewsInline');
     }
 })();
