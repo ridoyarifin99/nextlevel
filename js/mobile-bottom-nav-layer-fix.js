@@ -7,9 +7,6 @@
     const style = document.createElement("style");
     style.id = styleId;
     style.textContent = `
-        /* =========================================================
-           MOBILE BOTTOM NAV — HARD VISIBILITY/LAYER FIX
-           ========================================================= */
         #nls-mobile-bottom-nav {
             position: fixed !important;
             left: 10px !important;
@@ -30,31 +27,36 @@
             pointer-events: none !important;
         }
 
-        #nls-mobile-bottom-nav .nls-bn-slider {
-            z-index: 0 !important;
+        #nls-mobile-bottom-nav .nls-bn-slider { z-index: 0 !important; }
+        #nls-mobile-bottom-nav .nls-bn-item { position: relative !important; z-index: 1 !important; pointer-events: auto !important; }
+
+        /* Desktop authenticated account: large profile picture beside username. */
+        #userAccountArea {
+            align-items: center !important;
+            gap: 9px !important;
+        }
+        #userAccountArea .nls-account-icon {
+            width: 42px !important;
+            height: 42px !important;
+            min-width: 42px !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: linear-gradient(135deg,#6a11cb,#2575fc) !important;
+            color: #fff !important;
+        }
+        #userAccountArea .nls-account-icon img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
         }
 
-        #nls-mobile-bottom-nav .nls-bn-item {
-            position: relative !important;
-            z-index: 1 !important;
-            pointer-events: auto !important;
-        }
-
-        /* =========================================================
-           BANNER IMAGE RATIO FIX
-           Preserve the artwork's original proportions. No stretch
-           and no forced crop on narrow/mobile screens.
-           ========================================================= */
-        .mega-grid .mg-main {
-            aspect-ratio: 16 / 9 !important;
-        }
-
-        .mega-grid .mg-small {
-            aspect-ratio: 16 / 9 !important;
-        }
-
-        .mega-grid .mg-main img,
-        .mega-grid .mg-small img {
+        /* Preserve the artwork's 16:9 proportions. */
+        .mega-grid .mg-main, .mega-grid .mg-small { aspect-ratio: 16 / 9 !important; }
+        .mega-grid .mg-main img, .mega-grid .mg-small img {
             display: block !important;
             width: 100% !important;
             height: 100% !important;
@@ -65,26 +67,11 @@
             aspect-ratio: auto !important;
         }
 
-        @media (max-width: 1024px) {
-            body {
-                padding-bottom: 100px !important;
-            }
-        }
-
+        @media (max-width: 1024px) { body { padding-bottom: 100px !important; } }
         @media (max-width: 430px) {
-            #nls-mobile-bottom-nav {
-                left: 8px !important;
-                right: 8px !important;
-                height: 68px !important;
-                border-radius: 21px !important;
-            }
+            #nls-mobile-bottom-nav { left: 8px !important; right: 8px !important; height: 68px !important; border-radius: 21px !important; }
         }
-
-        @media (min-width: 1025px) {
-            #nls-mobile-bottom-nav {
-                display: none !important;
-            }
-        }
+        @media (min-width: 1025px) { #nls-mobile-bottom-nav { display: none !important; } }
     `;
     document.head.appendChild(style);
 })();
