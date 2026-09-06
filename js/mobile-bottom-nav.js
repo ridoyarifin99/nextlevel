@@ -45,6 +45,19 @@
     function isOffers(){const p=getCurrentPath();return p.includes('best-selling')||p.includes('offer');}
     function getInitials(name){const parts=String(name||'User').trim().split(/\s+/).filter(Boolean);return (parts.length>1?parts[0][0]+parts[parts.length-1][0]:(parts[0]?.[0]||'U')).toUpperCase().slice(0,2);}
 
+    async function getAccountData(){
+        let user=null;
+        try{const r=await window.supabaseClient?.auth?.getUser();user=r?.data?.user||null;}catch(_){ }
+        if(!user)return {user:null,avatarUrl:'',name:'User'};
+        const m=user.user_metadata||{};
+        let avatarUrl=m.avatar_url||m.picture||m.photo_url||'';
+        let name=m.full_name||m.name||user.email||'User';
+        try{const r=await window.supabaseClient.from('profiles').select('avatar_url,full_name').eq('id',user.id).maybeSingle();if(r.data?.avatar_url)avatarUrl=r.data.avatar_url;if(r.data?.full_name)name=r.data.full_name;}catch(_){ }
+        return {user,avatarUrl,name};
+    }
+
+    window.NLSAccountSystem={getAccountData};
+
     function createNav(){
         if(document.getElementById(NAV_ID))return document.getElementById(NAV_ID);
         const nav=document.createElement('nav');nav.id=NAV_ID;nav.setAttribute('aria-label','Mobile navigation');
@@ -72,11 +85,10 @@
 
     async function updateAccountButton(nav){
         const account=nav.querySelector('[data-bn="account"]'),avatar=nav.querySelector('.nls-bn-avatar');if(!account||!avatar)return;
-        let user=null;try{const r=await window.supabaseClient?.auth?.getUser();user=r?.data?.user||null;}catch(_){ }
-        if(!user){account.href='/login.html?redirect=/dashboard.html';avatar.innerHTML='<i class="fa-solid fa-user"></i>';return;}
-        account.href='/dashboard.html';const m=user.user_metadata||{};let avatarUrl=m.avatar_url||m.picture||m.photo_url||'';let profileName=m.full_name||m.name||user.email||'User';
-        try{const r=await window.supabaseClient.from('profiles').select('avatar_url,full_name').eq('id',user.id).maybeSingle();if(r.data?.avatar_url)avatarUrl=r.data.avatar_url;if(r.data?.full_name)profileName=r.data.full_name;}catch(_){ }
-        if(avatarUrl)avatar.innerHTML=`<img src="${String(avatarUrl).replace(/"/g,'&quot;')}" alt="Profile picture">`;else avatar.innerHTML=`<span style="font-size:9px;font-weight:800">${getInitials(profileName)}</span>`;
+        const data=await getAccountData();
+        if(!data.user){account.href='/login.html?redirect=/dashboard.html';avatar.innerHTML='<i class="fa-solid fa-user"></i>';return;}
+        account.href='/dashboard.html';
+        if(data.avatarUrl)avatar.innerHTML=`<img src="${String(data.avatarUrl).replace(/"/g,'&quot;')}" alt="Profile picture">`;else avatar.innerHTML=`<span style="font-size:9px;font-weight:800">${getInitials(data.name)}</span>`;
     }
 
     function setupScrollBehavior(nav){
@@ -86,22 +98,11 @@
         let lastY=Math.max(0,window.scrollY||0), ticking=false;
         const update=()=>{
             ticking=false;
-            if(window.innerWidth>1024){
-                nav.classList.remove('nls-scroll-hidden');
-                if(header)header.classList.remove('nls-scroll-hidden');
-                return;
-            }
-            const y=Math.max(0,window.scrollY||0), delta=y-lastY;
-            if(y<=12){
-                nav.classList.remove('nls-scroll-hidden');
-                if(header)header.classList.remove('nls-scroll-hidden');
-            }else if(delta>6){
-                nav.classList.add('nls-scroll-hidden');
-                if(header)header.classList.add('nls-scroll-hidden');
-            }else if(delta<-6){
-                nav.classList.remove('nls-scroll-hidden');
-                if(header)header.classList.remove('nls-scroll-hidden');
-            }
+            if(window.innerWidth>1024){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');return;}
+            const y=Math.max(0,window.scrollY||0),delta=y-lastY;
+            if(y<=12){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');}
+            else if(delta>6){nav.classList.add('nls-scroll-hidden');if(header)header.classList.add('nls-scroll-hidden');}
+            else if(delta<-6){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');}
             lastY=y;
         };
         window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
