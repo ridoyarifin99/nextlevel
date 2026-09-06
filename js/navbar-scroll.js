@@ -2,31 +2,26 @@
   "use strict";
 
   /*
-   * SINGLE owner of the responsive navbar scroll behavior.
+   * SINGLE owner of navbar show/hide behavior.
    *
-   * Rule:
-   *   - At the top: show both navbars.
-   *   - Real downward intent: hide both navbars.
-   *   - Real upward intent: show both navbars.
-   *
-   * Important: scroll position alone is NOT allowed to reveal the navbar at
-   * the bottom of the document. Mobile browsers can emit a small reverse
-   * scroll correction during overscroll/momentum. Touch and wheel gestures
-   * are therefore handled directly as the source of user intent.
+   * Important:
+   * We intentionally listen only to REAL document scrolling.
+   * Touch/wheel direction is not used because browsers can report gesture
+   * movement while the document is already at its scroll limit. That was
+   * causing the navbar and floating controls to reappear after an extra
+   * downward swipe at the bottom of the page.
    */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
 
   const TOP_ZONE = 2;
-  const MIN_SCROLL_DELTA = 1;
-  const INTENT_DELTA = 3;
-  const BOTTOM_TOLERANCE = 4;
+  const MIN_DELTA = 1;
+  const BOTTOM_GUARD = 12;
   const MOBILE_MAX = 1024;
 
   let lastY = 0;
   let hidden = false;
   let ticking = false;
-  let touchLastY = null;
 
   function getY() {
     return Math.max(
@@ -39,6 +34,11 @@
     );
   }
 
+  function getMaxY() {
+    const doc = document.documentElement;
+    return Math.max(0, doc.scrollHeight - window.innerHeight);
+  }
+
   function getHeader() {
     return document.getElementById("nlsHeader") || document.querySelector(".nls-header");
   }
@@ -47,18 +47,10 @@
     return document.getElementById("nls-mobile-bottom-nav");
   }
 
-  function isAtBottom(y = getY()) {
-    const doc = document.documentElement;
-    const maxY = Math.max(0, doc.scrollHeight - window.innerHeight);
-    return y >= maxY - BOTTOM_TOLERANCE;
-  }
-
   function applyState(shouldHide) {
     hidden = Boolean(shouldHide);
 
     const header = getHeader();
-    const bottom = getBottomNav();
-
     if (header) {
       header.classList.toggle("nls-scroll-hidden", hidden);
       header.style.setProperty(
@@ -71,53 +63,47 @@
       header.style.setProperty("pointer-events", hidden ? "none" : "auto", "important");
     }
 
+    const bottom = getBottomNav();
     if (bottom) {
-      const shouldHideBottom = hidden && window.innerWidth <= MOBILE_MAX;
-      bottom.classList.toggle("nls-scroll-hidden", shouldHideBottom);
+      const hideBottom = hidden && window.innerWidth <= MOBILE_MAX;
+      bottom.classList.toggle("nls-scroll-hidden", hideBottom);
       bottom.style.setProperty(
         "transform",
-        shouldHideBottom
-          ? "translate3d(0,calc(100% + 24px),0)"
-          : "translate3d(0,0,0)",
+        hideBottom ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,0,0)",
         "important"
       );
-      bottom.style.setProperty("opacity", shouldHideBottom ? "0" : "1", "important");
-      bottom.style.setProperty("pointer-events", shouldHideBottom ? "none" : "auto", "important");
+      bottom.style.setProperty("opacity", hideBottom ? "0" : "1", "important");
+      bottom.style.setProperty("pointer-events", hideBottom ? "none" : "auto", "important");
     }
   }
 
-  function show() {
-    if (hidden) applyState(false);
-  }
-
-  function hide() {
-    if (!hidden) applyState(true);
-  }
-
-  function updateFromScroll() {
+  function update() {
     ticking = false;
 
     const currentY = getY();
+    const maxY = getMaxY();
     const delta = currentY - lastY;
 
     if (currentY <= TOP_ZONE) {
-      show();
+      applyState(false);
       lastY = currentY;
       return;
     }
 
-    if (Math.abs(delta) < MIN_SCROLL_DELTA) return;
+    if (Math.abs(delta) < MIN_DELTA) {
+      return;
+    }
 
     if (delta > 0) {
-      /* Actual page movement downward is always a hide. */
-      hide();
+      /* Normal downward scrolling: hide. */
+      applyState(true);
     } else if (delta < 0) {
       /*
-       * Never infer an upward user gesture from a bottom-edge correction.
-       * If the user really swipes/wheels upward, the gesture handlers below
-       * call show() directly, even when the page cannot scroll any further.
+       * Only reveal when the page has genuinely moved upward away from the
+       * bottom. A small bottom-edge correction/bounce must never reveal it.
        */
-      if (!isAtBottom(currentY)) show();
+      const movedAwayFromBottom = currentY < maxY - BOTTOM_GUARD;
+      if (movedAwayFromBottom) applyState(false);
     }
 
     lastY = currentY;
@@ -126,51 +112,13 @@
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    window.requestAnimationFrame(updateFromScroll);
-  }
-
-  function onWheel(event) {
-    const deltaY = Number(event.deltaY) || 0;
-    if (Math.abs(deltaY) < INTENT_DELTA) return;
-
-    /* Wheel direction is explicit user intent, including at page bottom. */
-    if (deltaY > 0) hide();
-    else show();
-  }
-
-  function onTouchStart(event) {
-    if (!event.touches || !event.touches.length) return;
-    touchLastY = event.touches[0].clientY;
-  }
-
-  function onTouchMove(event) {
-    if (!event.touches || !event.touches.length || touchLastY === null) return;
-
-    const y = event.touches[0].clientY;
-    const fingerDelta = y - touchLastY;
-
-    if (Math.abs(fingerDelta) >= INTENT_DELTA) {
-      /* Finger up = page/downward intent -> hide. Finger down -> show. */
-      if (fingerDelta < 0) hide();
-      else show();
-      touchLastY = y;
-    }
-  }
-
-  function onTouchEnd() {
-    touchLastY = null;
+    window.requestAnimationFrame(update);
   }
 
   function init() {
     lastY = getY();
     applyState(false);
-
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     window.addEventListener(
       "resize",
