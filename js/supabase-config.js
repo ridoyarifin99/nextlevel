@@ -95,4 +95,14 @@ window.supabaseClient =
             'nextlevelReviewsBridge'
         );
     }
+
+    /* Admin order dashboard — inject the review-management section
+       directly into admin-orders.html; no separate review page is required. */
+    if (/\/admin-orders\.html$/i.test(window.location.pathname)) {
+        loadSharedScript(
+            'script[data-nextlevel-admin-reviews-inline]',
+            '/js/admin-reviews-inline.js?v=20260907-1',
+            'nextlevelAdminReviewsInline'
+        );
+    }
 })();
