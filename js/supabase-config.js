@@ -49,9 +49,17 @@ window.supabaseClient =
         'nextlevelNavigationFix'
     );
 
+    /* One controller owns both mobile/tablet nav bars. It loads first so the
+       legacy scroll function inside mobile-bottom-nav.js never binds. */
+    loadSharedScript(
+        'script[data-nextlevel-navbar-scroll]',
+        '/js/navbar-scroll.js?v=20260906-1',
+        'nextlevelNavbarScroll'
+    );
+
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-9',
+        '/js/mobile-bottom-nav.js?v=20260906-10',
         'nextlevelMobileBottomNav'
     );
 
