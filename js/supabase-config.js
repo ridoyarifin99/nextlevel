@@ -55,9 +55,10 @@ window.supabaseClient =
         'nextlevelMobileBottomNav'
     );
 
+    /* Cache-busted after the mobile navbar scroll controller was rewritten. */
     loadSharedScript(
         'script[data-nextlevel-nav-scroll-fix]',
-        '/js/nav-scroll-fix.js?v=20260906-1',
+        '/js/nav-scroll-fix.js?v=20260906-2',
         'nextlevelNavScrollFix'
     );
 
