@@ -73,4 +73,11 @@ window.supabaseClient =
         '/js/desktop-profile-nav.js?v=20260906-3',
         'nextlevelDesktopProfileNav'
     );
+
+    /* Product-detail-only compatibility and SEO hardening. */
+    loadSharedScript(
+        'script[data-nextlevel-details-fix]',
+        '/js/details-page-fix.js?v=20260906-1',
+        'nextlevelDetailsFix'
+    );
 })();
