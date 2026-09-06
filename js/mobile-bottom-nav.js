@@ -14,8 +14,7 @@
         style.textContent = `
             #${NAV_ID}{--nls-bn-primary:#6a11cb;--nls-bn-secondary:#2575fc;--nls-bn-text:#64748b;--nls-bn-active:#fff;position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:2147483647;display:none;height:70px;padding:7px;margin:0;border:1px solid rgba(226,232,240,.82);border-radius:22px;background:rgba(255,255,255,.94);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:0 18px 55px rgba(15,23,42,.22),0 3px 12px rgba(106,17,203,.12);isolation:isolate;overflow:visible;opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:transform .38s cubic-bezier(.16,1,.3,1),opacity .28s ease}
             #${NAV_ID}.nls-scroll-hidden{transform:translateY(calc(100% + 24px))!important;opacity:0!important;pointer-events:none!important}
-            .nls-header{transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .3s ease!important}
-            /* Mobile/tablet: the top navbar has no profile/login control. Account lives only in bottom navigation. */
+            .nls-header{transition:transform .38s cubic-bezier(.16,1,.3,1),opacity .28s ease,box-shadow .3s ease!important;will-change:transform,opacity}
             @media(max-width:1024px){#loginLink,#userAccountArea{display:none!important}}
             #${NAV_ID} .nls-bn-track{position:relative;width:100%;height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch}
             #${NAV_ID} .nls-bn-slider{position:absolute;z-index:0;top:0;bottom:0;left:0;width:20%;border-radius:17px;background:linear-gradient(135deg,var(--nls-bn-primary),var(--nls-bn-secondary));box-shadow:0 8px 22px rgba(106,17,203,.24);transform:translateX(0);transition:transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
@@ -36,7 +35,7 @@
             #${NAV_ID} .nls-bn-avatar img{width:100%;height:100%;object-fit:cover;display:block}
             @media(max-width:1024px){body{padding-bottom:100px!important}#${NAV_ID}{display:block!important;visibility:visible!important;bottom:max(10px,env(safe-area-inset-bottom))!important}}
             @media(max-width:430px){#${NAV_ID}{left:8px;right:8px;height:68px;border-radius:21px}}
-            @media(min-width:1025px){#${NAV_ID}{display:none!important}.nls-header.nls-scroll-hidden{transform:none!important}}
+            @media(min-width:1025px){#${NAV_ID}{display:none!important}.nls-header.nls-scroll-hidden{transform:none!important;opacity:1!important}}
             @media(prefers-reduced-motion:reduce){#${NAV_ID},#${NAV_ID} .nls-bn-slider,#${NAV_ID} .nls-bn-item,#${NAV_ID} .nls-bn-item i,#${NAV_ID} .nls-bn-item .nls-bn-avatar,#${NAV_ID} .nls-bn-item .nls-bn-label,.nls-header{transition-duration:.01ms!important}}
         `;
         document.head.appendChild(style);
@@ -96,20 +95,62 @@
     function setupScrollBehavior(nav){
         if(window.__NLSNavScrollBound)return;
         window.__NLSNavScrollBound=true;
-        const header=document.getElementById('nlsHeader');
-        let lastY=Math.max(0,window.scrollY||0), ticking=false;
+        const header=document.getElementById('nlsHeader')||document.querySelector('.nls-header');
+        let lastY=Math.max(0,window.scrollY||window.pageYOffset||0);
+        let ticking=false;
+        let direction='up';
+        let lastDirectionChangeY=lastY;
+
+        const showBars=()=>{
+            nav.classList.remove('nls-scroll-hidden');
+            if(header)header.classList.remove('nls-scroll-hidden');
+        };
+        const hideBars=()=>{
+            nav.classList.add('nls-scroll-hidden');
+            if(header)header.classList.add('nls-scroll-hidden');
+        };
+
         const update=()=>{
             ticking=false;
-            if(window.innerWidth>1024){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');return;}
-            const y=Math.max(0,window.scrollY||0),delta=y-lastY;
-            if(y<=12){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');}
-            else if(delta>6){nav.classList.add('nls-scroll-hidden');if(header)header.classList.add('nls-scroll-hidden');}
-            else if(delta<-6){nav.classList.remove('nls-scroll-hidden');if(header)header.classList.remove('nls-scroll-hidden');}
+            if(window.innerWidth>1024){showBars();return;}
+
+            const y=Math.max(0,window.scrollY||window.pageYOffset||0);
+            const delta=y-lastY;
+
+            /* Always visible at the top. */
+            if(y<=14){showBars();lastDirectionChangeY=y;direction='up';lastY=y;return;}
+
+            /* Ignore tiny touch/trackpad movement to prevent flicker. */
+            if(Math.abs(delta)<5){lastY=y;return;}
+
+            const nextDirection=delta>0?'down':'up';
+            if(nextDirection!==direction){
+                direction=nextDirection;
+                lastDirectionChangeY=y;
+            }
+
+            /* Reveal immediately when the user starts scrolling upward. */
+            if(direction==='up'){
+                showBars();
+            }else if(direction==='down' && y>55){
+                /* Hide after leaving the top area, without reacting to micro-scrolls. */
+                hideBars();
+            }
+
             lastY=y;
         };
-        window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(update)}},{passive:true});
-        window.addEventListener('resize',update,{passive:true});
-        update();
+
+        const onScroll=()=>{
+            if(!ticking){
+                ticking=true;
+                requestAnimationFrame(update);
+            }
+        };
+
+        window.addEventListener('scroll',onScroll,{passive:true});
+        window.addEventListener('resize',()=>{lastY=Math.max(0,window.scrollY||window.pageYOffset||0);update();},{passive:true});
+        window.addEventListener('orientationchange',()=>{setTimeout(()=>{lastY=Math.max(0,window.scrollY||window.pageYOffset||0);showBars();},120)},{passive:true});
+        showBars();
     }
 
     function init(){
