@@ -15,7 +15,8 @@
             #${NAV_ID}{--nls-bn-primary:#6a11cb;--nls-bn-secondary:#2575fc;--nls-bn-text:#64748b;--nls-bn-active:#fff;position:fixed;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:2147483647;display:none;height:70px;padding:7px;margin:0;border:1px solid rgba(226,232,240,.82);border-radius:22px;background:rgba(255,255,255,.94);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);box-shadow:0 18px 55px rgba(15,23,42,.22),0 3px 12px rgba(106,17,203,.12);isolation:isolate;overflow:visible;opacity:1;transform:none;visibility:visible;pointer-events:auto;transition:transform .38s cubic-bezier(.16,1,.3,1),opacity .28s ease}
             #${NAV_ID}.nls-scroll-hidden{transform:translateY(calc(100% + 24px))!important;opacity:0!important;pointer-events:none!important}
             .nls-header{transition:transform .38s cubic-bezier(.16,1,.3,1),box-shadow .3s ease!important}
-            @media(max-width:1024px){#userAccountArea{display:none!important}#loginLink .nls-account-icon{display:none!important}}
+            /* Mobile/tablet: the top navbar has no profile/login control. Account lives only in bottom navigation. */
+            @media(max-width:1024px){#loginLink,#userAccountArea{display:none!important}}
             #${NAV_ID} .nls-bn-track{position:relative;width:100%;height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch}
             #${NAV_ID} .nls-bn-slider{position:absolute;z-index:0;top:0;bottom:0;left:0;width:20%;border-radius:17px;background:linear-gradient(135deg,var(--nls-bn-primary),var(--nls-bn-secondary));box-shadow:0 8px 22px rgba(106,17,203,.24);transform:translateX(0);transition:transform .5s cubic-bezier(.16,1,.3,1);pointer-events:none}
             #${NAV_ID} .nls-bn-item{position:relative;z-index:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:5px 3px;border:0;border-radius:17px;background:transparent;color:var(--nls-bn-text);font:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .35s ease,transform .35s cubic-bezier(.16,1,.3,1)}
@@ -86,8 +87,9 @@
     async function updateAccountButton(nav){
         const account=nav.querySelector('[data-bn="account"]'),avatar=nav.querySelector('.nls-bn-avatar');if(!account||!avatar)return;
         const data=await getAccountData();
-        if(!data.user){account.href='/login.html?redirect=/dashboard.html';avatar.innerHTML='<i class="fa-solid fa-user"></i>';return;}
+        if(!data.user){account.href='/login.html?redirect=/dashboard.html';account.setAttribute('aria-label','Account — Login');avatar.innerHTML='<i class="fa-solid fa-user"></i>';return;}
         account.href='/dashboard.html';
+        account.setAttribute('aria-label',`Account — ${String(data.name||'User').replace(/"/g,'')}`);
         if(data.avatarUrl)avatar.innerHTML=`<img src="${String(data.avatarUrl).replace(/"/g,'&quot;')}" alt="Profile picture">`;else avatar.innerHTML=`<span style="font-size:9px;font-weight:800">${getInitials(data.name)}</span>`;
     }
 
