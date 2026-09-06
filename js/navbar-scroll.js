@@ -5,18 +5,22 @@
   window.__NLSNavScrollBound = true;
 
   /*
-   * YouTube / Instagram-style navigation:
-   * - scrolling down hides the top navbar and mobile bottom navbar quickly
-   * - even a very small upward scroll reveals them immediately
-   * - returning to the top always reveals everything
+   * YouTube / Instagram-style navigation.
+   * Downward intent hides both navbars; upward intent reveals them.
+   * Touch/wheel intent is tracked separately so browser momentum/overscroll
+   * at the bottom of a page cannot accidentally reveal the bottom navbar.
    */
   const TOP_ZONE = 2;
   const MIN_DELTA = 1;
+  const INTENT_DELTA = 2;
   const MOBILE_MAX = 1024;
 
   let lastY = 0;
   let hidden = false;
   let ticking = false;
+  let lastIntent = 0; // +1 = content moving down, -1 = content moving up
+  let touchStartY = null;
+  let touchLastY = null;
 
   function getY() {
     return Math.max(
@@ -68,27 +72,43 @@
     }
   }
 
+  function recordIntent(direction) {
+    if (direction !== 1 && direction !== -1) return;
+    lastIntent = direction;
+  }
+
   function update() {
     ticking = false;
 
     const currentY = getY();
     const delta = currentY - lastY;
 
-    /* Always reveal navigation at the very top. */
     if (currentY <= TOP_ZONE) {
       applyState(false);
       lastY = currentY;
       return;
     }
 
-    /* Ignore only sub-pixel/browser noise. */
     if (Math.abs(delta) < MIN_DELTA) return;
 
-    /* Down = hide immediately. Up = reveal immediately. */
+    /* Prefer the actual scroll direction when available. */
     if (delta > 0) {
+      recordIntent(1);
       applyState(true);
     } else if (delta < 0) {
-      applyState(false);
+      /*
+       * At the bottom, browsers can emit a tiny upward correction while a
+       * downward swipe/momentum is settling. Do not reveal the nav unless
+       * the user's actual gesture/wheel intent is upward.
+       */
+      const doc = document.documentElement;
+      const maxY = Math.max(0, doc.scrollHeight - window.innerHeight);
+      const atBottom = currentY >= maxY - 2;
+
+      if (!atBottom || lastIntent === -1) {
+        recordIntent(-1);
+        applyState(false);
+      }
     }
 
     lastY = currentY;
@@ -100,17 +120,51 @@
     window.requestAnimationFrame(update);
   }
 
+  function onWheel(event) {
+    if (Math.abs(event.deltaY) < INTENT_DELTA) return;
+    recordIntent(event.deltaY > 0 ? 1 : -1);
+  }
+
+  function onTouchStart(event) {
+    if (!event.touches || !event.touches.length) return;
+    touchStartY = event.touches[0].clientY;
+    touchLastY = touchStartY;
+  }
+
+  function onTouchMove(event) {
+    if (!event.touches || !event.touches.length || touchLastY === null) return;
+    const y = event.touches[0].clientY;
+    const fingerDelta = y - touchLastY;
+
+    if (Math.abs(fingerDelta) >= INTENT_DELTA) {
+      /* Finger up => page moves down; finger down => page moves up. */
+      recordIntent(fingerDelta < 0 ? 1 : -1);
+      touchLastY = y;
+    }
+  }
+
+  function onTouchEnd() {
+    touchStartY = null;
+    touchLastY = null;
+  }
+
   function init() {
     lastY = getY();
     applyState(false);
 
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    window.addEventListener("touchcancel", onTouchEnd, { passive: true });
 
     window.addEventListener(
       "resize",
       function () {
         lastY = getY();
+        lastIntent = 0;
         applyState(false);
       },
       { passive: true }
