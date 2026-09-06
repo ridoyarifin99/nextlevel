@@ -1,25 +1,31 @@
 (function () {
   "use strict";
 
+  /*
+   * SINGLE owner of the responsive navbar scroll behavior.
+   *
+   * Rule:
+   *   - At the top: show both navbars.
+   *   - Real downward intent: hide both navbars.
+   *   - Real upward intent: show both navbars.
+   *
+   * Important: scroll position alone is NOT allowed to reveal the navbar at
+   * the bottom of the document. Mobile browsers can emit a small reverse
+   * scroll correction during overscroll/momentum. Touch and wheel gestures
+   * are therefore handled directly as the source of user intent.
+   */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
 
-  /*
-   * YouTube / Instagram-style navigation.
-   * Downward intent hides both navbars; upward intent reveals them.
-   * Touch/wheel intent is tracked separately so browser momentum/overscroll
-   * at the bottom of a page cannot accidentally reveal the bottom navbar.
-   */
   const TOP_ZONE = 2;
-  const MIN_DELTA = 1;
-  const INTENT_DELTA = 2;
+  const MIN_SCROLL_DELTA = 1;
+  const INTENT_DELTA = 3;
+  const BOTTOM_TOLERANCE = 4;
   const MOBILE_MAX = 1024;
 
   let lastY = 0;
   let hidden = false;
   let ticking = false;
-  let lastIntent = 0; // +1 = content moving down, -1 = content moving up
-  let touchStartY = null;
   let touchLastY = null;
 
   function getY() {
@@ -41,74 +47,77 @@
     return document.getElementById("nls-mobile-bottom-nav");
   }
 
+  function isAtBottom(y = getY()) {
+    const doc = document.documentElement;
+    const maxY = Math.max(0, doc.scrollHeight - window.innerHeight);
+    return y >= maxY - BOTTOM_TOLERANCE;
+  }
+
   function applyState(shouldHide) {
+    hidden = Boolean(shouldHide);
+
     const header = getHeader();
     const bottom = getBottomNav();
-    hidden = !!shouldHide;
 
     if (header) {
       header.classList.toggle("nls-scroll-hidden", hidden);
       header.style.setProperty(
         "transform",
-        hidden ? "translate3d(0, -110%, 0)" : "translate3d(0, 0, 0)",
+        hidden ? "translate3d(0,-110%,0)" : "translate3d(0,0,0)",
         "important"
       );
       header.style.setProperty("opacity", hidden ? "0" : "1", "important");
       header.style.setProperty("visibility", hidden ? "hidden" : "visible", "important");
       header.style.setProperty("pointer-events", hidden ? "none" : "auto", "important");
-      header.style.setProperty("will-change", "transform", "important");
     }
 
     if (bottom) {
-      const mobileHide = hidden && window.innerWidth <= MOBILE_MAX;
-      bottom.classList.toggle("nls-scroll-hidden", mobileHide);
+      const shouldHideBottom = hidden && window.innerWidth <= MOBILE_MAX;
+      bottom.classList.toggle("nls-scroll-hidden", shouldHideBottom);
       bottom.style.setProperty(
         "transform",
-        mobileHide ? "translate3d(0, calc(100% + 24px), 0)" : "translate3d(0, 0, 0)",
+        shouldHideBottom
+          ? "translate3d(0,calc(100% + 24px),0)"
+          : "translate3d(0,0,0)",
         "important"
       );
-      bottom.style.setProperty("opacity", mobileHide ? "0" : "1", "important");
-      bottom.style.setProperty("pointer-events", mobileHide ? "none" : "auto", "important");
+      bottom.style.setProperty("opacity", shouldHideBottom ? "0" : "1", "important");
+      bottom.style.setProperty("pointer-events", shouldHideBottom ? "none" : "auto", "important");
     }
   }
 
-  function recordIntent(direction) {
-    if (direction !== 1 && direction !== -1) return;
-    lastIntent = direction;
+  function show() {
+    if (hidden) applyState(false);
   }
 
-  function update() {
+  function hide() {
+    if (!hidden) applyState(true);
+  }
+
+  function updateFromScroll() {
     ticking = false;
 
     const currentY = getY();
     const delta = currentY - lastY;
 
     if (currentY <= TOP_ZONE) {
-      applyState(false);
+      show();
       lastY = currentY;
       return;
     }
 
-    if (Math.abs(delta) < MIN_DELTA) return;
+    if (Math.abs(delta) < MIN_SCROLL_DELTA) return;
 
-    /* Prefer the actual scroll direction when available. */
     if (delta > 0) {
-      recordIntent(1);
-      applyState(true);
+      /* Actual page movement downward is always a hide. */
+      hide();
     } else if (delta < 0) {
       /*
-       * At the bottom, browsers can emit a tiny upward correction while a
-       * downward swipe/momentum is settling. Do not reveal the nav unless
-       * the user's actual gesture/wheel intent is upward.
+       * Never infer an upward user gesture from a bottom-edge correction.
+       * If the user really swipes/wheels upward, the gesture handlers below
+       * call show() directly, even when the page cannot scroll any further.
        */
-      const doc = document.documentElement;
-      const maxY = Math.max(0, doc.scrollHeight - window.innerHeight);
-      const atBottom = currentY >= maxY - 2;
-
-      if (!atBottom || lastIntent === -1) {
-        recordIntent(-1);
-        applyState(false);
-      }
+      if (!isAtBottom(currentY)) show();
     }
 
     lastY = currentY;
@@ -117,34 +126,38 @@
   function onScroll() {
     if (ticking) return;
     ticking = true;
-    window.requestAnimationFrame(update);
+    window.requestAnimationFrame(updateFromScroll);
   }
 
   function onWheel(event) {
-    if (Math.abs(event.deltaY) < INTENT_DELTA) return;
-    recordIntent(event.deltaY > 0 ? 1 : -1);
+    const deltaY = Number(event.deltaY) || 0;
+    if (Math.abs(deltaY) < INTENT_DELTA) return;
+
+    /* Wheel direction is explicit user intent, including at page bottom. */
+    if (deltaY > 0) hide();
+    else show();
   }
 
   function onTouchStart(event) {
     if (!event.touches || !event.touches.length) return;
-    touchStartY = event.touches[0].clientY;
-    touchLastY = touchStartY;
+    touchLastY = event.touches[0].clientY;
   }
 
   function onTouchMove(event) {
     if (!event.touches || !event.touches.length || touchLastY === null) return;
+
     const y = event.touches[0].clientY;
     const fingerDelta = y - touchLastY;
 
     if (Math.abs(fingerDelta) >= INTENT_DELTA) {
-      /* Finger up => page moves down; finger down => page moves up. */
-      recordIntent(fingerDelta < 0 ? 1 : -1);
+      /* Finger up = page/downward intent -> hide. Finger down -> show. */
+      if (fingerDelta < 0) hide();
+      else show();
       touchLastY = y;
     }
   }
 
   function onTouchEnd() {
-    touchStartY = null;
     touchLastY = null;
   }
 
@@ -153,7 +166,6 @@
     applyState(false);
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("wheel", onWheel, { passive: true });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
@@ -164,7 +176,6 @@
       "resize",
       function () {
         lastY = getY();
-        lastIntent = 0;
         applyState(false);
       },
       { passive: true }
