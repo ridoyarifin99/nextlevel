@@ -51,7 +51,7 @@ window.supabaseClient =
 
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-5',
+        '/js/mobile-bottom-nav.js?v=20260906-6',
         'nextlevelMobileBottomNav'
     );
 
@@ -67,10 +67,9 @@ window.supabaseClient =
         'nextlevelProfileSystem'
     );
 
-    /* Desktop navbar account avatar + customer name. */
     loadSharedScript(
         'script[data-nextlevel-desktop-profile-nav]',
-        '/js/desktop-profile-nav.js?v=20260906-2',
+        '/js/desktop-profile-nav.js?v=20260906-3',
         'nextlevelDesktopProfileNav'
     );
 })();
