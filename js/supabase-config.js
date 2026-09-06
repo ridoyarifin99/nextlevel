@@ -26,7 +26,7 @@ window.supabaseClient =
         }
     );
 
-/* Load shared UI fixes, navigation and profile systems. */
+/* Load shared UI, navigation and profile systems. */
 (function () {
     const loadSharedScript = (selector, src, dataKey) => {
         if (document.querySelector(selector)) return;
@@ -49,8 +49,7 @@ window.supabaseClient =
         'nextlevelNavigationFix'
     );
 
-    /* One controller owns both mobile/tablet nav bars. It loads first so the
-       legacy scroll function inside mobile-bottom-nav.js never binds. */
+    /* Single owner for mobile/tablet top + bottom navbar scroll behavior. */
     loadSharedScript(
         'script[data-nextlevel-navbar-scroll]',
         '/js/navbar-scroll.js?v=20260906-1',
@@ -59,14 +58,8 @@ window.supabaseClient =
 
     loadSharedScript(
         'script[data-nextlevel-mobile-bottom-nav]',
-        '/js/mobile-bottom-nav.js?v=20260906-10',
+        '/js/mobile-bottom-nav.js?v=20260906-11',
         'nextlevelMobileBottomNav'
-    );
-
-    loadSharedScript(
-        'script[data-nextlevel-mobile-bottom-nav-layer-fix]',
-        '/js/mobile-bottom-nav-layer-fix.js?v=20260906-3',
-        'nextlevelMobileBottomNavLayerFix'
     );
 
     loadSharedScript(
