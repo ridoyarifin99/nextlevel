@@ -39,8 +39,6 @@
   if (!window.NextLevelAuth) loadScript('/js/auth.js', 'canonical');
 
   if (isDashboard) {
-    loadScript('/js/dashboard-expiry-lock.js', 'expiry-lock');
-
     // dashboard.html is the renderer source, but production users normally
     // arrive through /dashboard. Load the DOM-based UI enhancer explicitly
     // for that route as well. It waits for #subscriptionsContainer and then
