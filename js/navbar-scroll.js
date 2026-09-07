@@ -17,6 +17,7 @@
   let accumulatedUp = 0;
   let ticking = false;
   let observerStarted = false;
+  let applying = false;
 
   function isMobile() {
     return window.innerWidth <= MOBILE_MAX;
@@ -71,17 +72,23 @@
     const header = getHeader();
     const bottom = getBottomNav();
 
-    apply(header, hidden, "top");
+    /* Prevent our own style mutations from being interpreted as a new layout. */
+    applying = true;
+    try {
+      apply(header, hidden, "top");
 
-    if (isMobile()) {
-      apply(bottom, hidden, "bottom");
-      if (bottom) bottom.style.setProperty("z-index", "50", "important");
-    } else if (bottom) {
-      bottom.classList.remove("nls-scroll-hidden");
-      bottom.style.removeProperty("transform");
-      bottom.style.removeProperty("opacity");
-      bottom.style.removeProperty("visibility");
-      bottom.style.removeProperty("pointer-events");
+      if (isMobile()) {
+        apply(bottom, hidden, "bottom");
+        if (bottom) bottom.style.setProperty("z-index", "50", "important");
+      } else if (bottom) {
+        bottom.classList.remove("nls-scroll-hidden");
+        bottom.style.removeProperty("transform");
+        bottom.style.removeProperty("opacity");
+        bottom.style.removeProperty("visibility");
+        bottom.style.removeProperty("pointer-events");
+      }
+    } finally {
+      applying = false;
     }
   }
 
@@ -129,12 +136,17 @@
   function observeNavigation() {
     if (observerStarted || !document.body) return;
     observerStarted = true;
+
+    /* Observe only DOM insertion/removal. Do NOT observe attributes: this
+       controller intentionally changes header/nav inline styles on every scroll. */
     const observer = new MutationObserver(function () {
+      if (applying) return;
       installStyles();
       const y = getY();
       if (y <= TOP_ZONE) setNavigationHidden(false);
       else setNavigationHidden(hidden);
     });
+
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
@@ -144,7 +156,6 @@
     setNavigationHidden(false);
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    /* Also catch scrolling produced by page/nested scrolling implementations. */
     document.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", resetAfterLayoutChange, { passive: true });
     window.addEventListener("pageshow", resetAfterLayoutChange, { passive: true });
