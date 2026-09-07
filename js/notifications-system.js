@@ -78,7 +78,10 @@
   }
 
   function bindMobile(){
-    const nav=document.getElementById("nls-mobile-bottom-nav");const b=nav?.querySelector('[data-bn="notifications"]');if(!b||b.dataset.notificationsBound)return;if(!userId){b.dataset.notificationsBound="authwait";return;}b.dataset.notificationsBound="true";b.addEventListener("click",e=>{e.preventDefault();openPanel();});
+    const nav=document.getElementById("nls-mobile-bottom-nav");const b=nav?.querySelector('[data-bn="notifications"]');
+    if(!b||b.dataset.notificationsBound==="true"||!userId)return;
+    b.dataset.notificationsBound="true";
+    b.addEventListener("click",e=>{e.preventDefault();openPanel();});
   }
 
   function subscribe(){
