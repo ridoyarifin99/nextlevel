@@ -22,8 +22,8 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 
     load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
     load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
-    load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-1', 'nextlevelNavbarScroll');
-    load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260908-1', 'nextlevelMobileNavInteraction');
+    load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-2', 'nextlevelNavbarScroll');
+    load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260908-2', 'nextlevelMobileNavInteraction');
     load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
