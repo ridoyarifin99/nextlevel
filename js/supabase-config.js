@@ -21,9 +21,6 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     };
 
     if (isDetailsPage) {
-        /* Must load before the generic controller: this page has legacy scripts
-           that can modify the header's class/style state. The dedicated
-           controller owns details navbar visibility and sets the global guard. */
         load('script[data-nextlevel-details-navbar-scroll]', '/js/details-navbar-scroll-fix.js?v=20260908-1', 'nextlevelDetailsNavbarScroll');
     } else {
         load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-6', 'nextlevelNavbarScroll');
@@ -36,7 +33,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
-    load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-3', 'nextlevelNotificationsSystem');
+    load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-4', 'nextlevelNotificationsSystem');
 
     if (isDetailsPage) {
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
