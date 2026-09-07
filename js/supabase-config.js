@@ -20,39 +20,24 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         document.head.appendChild(script);
     };
 
-    const loadCss = (selector, href, dataKey) => {
-        if (document.querySelector(selector)) return;
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = href;
-        link.dataset[dataKey] = "true";
-        document.head.appendChild(link);
-    };
+    /*
+     * Details pages intentionally use the EXACT same shared viewport/navigation
+     * stack as index.html. Keeping a second viewport implementation here caused
+     * different scroll physics and bottom-edge behavior on mobile devices.
+     */
+    load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
+    load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
+    load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260907-6', 'nextlevelNavbarScroll');
+    load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-2', 'nextlevelMobileNavInteraction');
+    load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
 
-    /* Details pages use one document scroll surface and one viewport contract. */
-    if (isDetailsPage) {
-        loadCss('link[data-nextlevel-details-viewport]', '/src/details-viewport.css?v=20260907-1', 'nextlevelDetailsViewport');
-        const markBody = () => document.body && document.body.classList.add('nls-details-page');
-        if (document.body) markBody();
-        else document.addEventListener('DOMContentLoaded', markBody, { once: true });
-    }
-
-    /* Global systems stay off details pages to avoid competing layout/viewport rules. */
-    if (!isDetailsPage) {
-        load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
-        load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
-        load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
-        load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-5', 'nextlevelNavbarScroll');
-        load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-1', 'nextlevelMobileNavInteraction');
-    }
-
+    /* Shared navigation/profile systems are identical to index.html. */
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
 
     if (isDetailsPage) {
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
-        load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
     }
 
     if (/\/details\.html$/i.test(path)) {
