@@ -8,11 +8,15 @@
   let userId = null;
   let channel = null;
   let observer = null;
+  let authTimer = null;
 
   const esc = value => String(value ?? "").replace(/[&<>'\"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'\"':"&quot;"}[c]));
   const icon = type => ({
-    order_received:"fa-bag-shopping", payment_submitted:"fa-receipt", payment_approved:"fa-circle-check",
-    payment_rejected:"fa-circle-exclamation", order_processing:"fa-gears", order_delivered:"fa-box-open", order_cancelled:"fa-ban"
+    order_received:"fa-bag-shopping", payment_submitted:"fa-receipt", payment_status:"fa-credit-card",
+    payment_approved:"fa-circle-check", payment_rejected:"fa-circle-exclamation", order_processing:"fa-gears",
+    order_delivered:"fa-box-open", order_cancelled:"fa-ban", order_status:"fa-truck-fast", component_status:"fa-box",
+    subscription_active:"fa-circle-play", subscription_renewed:"fa-rotate", subscription_expired:"fa-calendar-xmark",
+    subscription_status:"fa-id-card", review_reply:"fa-comment-dots"
   }[type] || "fa-bell");
 
   function injectStyles() {
@@ -20,7 +24,7 @@
     const s = document.createElement("style"); s.id = STYLE_ID;
     s.textContent = `
       #${PANEL_ID}-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;visibility:hidden;pointer-events:none;transition:all .25s ease;z-index:119}
-      #${PANEL_ID}{position:fixed;top:82px;right:18px;width:min(420px,calc(100vw - 28px));max-height:min(650px,calc(100vh - 110px));display:flex;flex-direction:column;background:rgba(255,255,255,.97);border:1px solid rgba(226,232,240,.9);border-radius:22px;box-shadow:0 25px 80px rgba(15,23,42,.25);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px) scale(.97);transition:all .3s cubic-bezier(.16,1,.3,1);z-index:120}
+      #${PANEL_ID}{position:fixed;top:82px;right:18px;width:min(440px,calc(100vw - 28px));max-height:min(680px,calc(100vh - 110px));display:flex;flex-direction:column;background:rgba(255,255,255,.98);border:1px solid rgba(226,232,240,.9);border-radius:22px;box-shadow:0 25px 80px rgba(15,23,42,.25);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-12px) scale(.97);transition:all .3s cubic-bezier(.16,1,.3,1);z-index:120}
       body.nls-notifications-open #${PANEL_ID}-backdrop{opacity:1;visibility:visible;pointer-events:auto}
       body.nls-notifications-open #${PANEL_ID}{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0) scale(1)}
       .nls-notif-head{padding:18px 18px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef2f7;background:linear-gradient(135deg,rgba(106,17,203,.07),rgba(37,117,252,.05))}
@@ -37,7 +41,7 @@
     if(document.getElementById(PANEL_ID)) return;
     const backdrop=document.createElement("div"); backdrop.id=PANEL_ID+"-backdrop";
     const panel=document.createElement("section"); panel.id=PANEL_ID; panel.setAttribute("role","dialog"); panel.setAttribute("aria-label","Notifications");
-    panel.innerHTML=`<div class="nls-notif-head"><div><h3>Notifications</h3><p id="nlsNotifSubtitle">Your latest order updates</p></div><div class="nls-notif-actions"><button type="button" id="nlsMarkAllRead" title="Mark all as read"><i class="fa-solid fa-check-double"></i></button><button type="button" id="nlsCloseNotifications" title="Close"><i class="fa-solid fa-xmark"></i></button></div></div><div class="nls-notif-list" id="nlsNotifList"><div class="nls-notif-empty"><i class="fa-regular fa-bell"></i><div>Loading notifications…</div></div></div><div class="nls-notif-footer"><button type="button" id="nlsClearNotifications">Mark all as read</button></div>`;
+    panel.innerHTML=`<div class="nls-notif-head"><div><h3>Notifications</h3><p id="nlsNotifSubtitle">Your latest account updates</p></div><div class="nls-notif-actions"><button type="button" id="nlsMarkAllRead" title="Mark all as read"><i class="fa-solid fa-check-double"></i></button><button type="button" id="nlsCloseNotifications" title="Close"><i class="fa-solid fa-xmark"></i></button></div></div><div class="nls-notif-list" id="nlsNotifList"><div class="nls-notif-empty"><i class="fa-regular fa-bell"></i><div>Loading notifications…</div></div></div><div class="nls-notif-footer"><button type="button" id="nlsClearNotifications">Mark all as read</button></div>`;
     document.body.append(backdrop,panel);
     backdrop.addEventListener("click",closePanel); panel.querySelector("#nlsCloseNotifications").addEventListener("click",closePanel);
     panel.querySelector("#nlsMarkAllRead").addEventListener("click",markAllRead); panel.querySelector("#nlsClearNotifications").addEventListener("click",markAllRead);
@@ -51,18 +55,26 @@
 
   function formatTime(date){const d=new Date(date),diff=Math.max(0,Date.now()-d.getTime()),m=Math.floor(diff/60000);if(m<1)return "Just now";if(m<60)return `${m}m ago`;const h=Math.floor(m/60);if(h<24)return `${h}h ago`;const days=Math.floor(h/24);if(days<7)return `${days}d ago`;return d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});}
 
+  async function syncExpiry(){
+    if(!userId||!window.supabaseClient)return;
+    try { await window.supabaseClient.rpc("sync_expired_subscriptions",{p_user_id:userId}); } catch(e) { console.warn("NEXT LEVEL SUBS expiry sync:",e); }
+  }
+
   async function loadNotifications(){
     if(!userId||!window.supabaseClient)return;
-    const {data,error}=await window.supabaseClient.from("notifications").select("id,type,title,message,link,metadata,is_read,created_at").eq("user_id",userId).order("created_at",{ascending:false}).limit(50);
+    const {data,error}=await window.supabaseClient.from("notifications").select("id,type,title,message,link,metadata,is_read,created_at,event_key").eq("user_id",userId).order("created_at",{ascending:false}).limit(100);
     if(error){console.warn("NEXT LEVEL SUBS notifications:",error);return;}
-    render(data||[]);
+    /* Defensive client-side dedupe for legacy rows created before event_key existed. */
+    const seen=new Set();
+    const unique=(data||[]).filter(n=>{const k=n.event_key||`${n.type}|${n.title}|${n.message}|${n.created_at}`;if(seen.has(k))return false;seen.add(k);return true;});
+    render(unique);
   }
 
   function render(items){
     const list=document.getElementById("nlsNotifList"); if(!list)return;
     const unread=items.filter(x=>!x.is_read).length; setCount(unread);
     const sub=document.getElementById("nlsNotifSubtitle"); if(sub)sub.textContent=unread?`${unread} unread notification${unread===1?"":"s"}`:"You're all caught up";
-    if(!items.length){list.innerHTML=`<div class="nls-notif-empty"><i class="fa-regular fa-bell"></i><div>No notifications yet</div><small>Order and payment updates will appear here.</small></div>`;return;}
+    if(!items.length){list.innerHTML=`<div class="nls-notif-empty"><i class="fa-regular fa-bell"></i><div>No notifications yet</div><small>Orders, payments, subscriptions and review replies will appear here.</small></div>`;return;}
     list.innerHTML=items.map(n=>`<article class="nls-notif-item ${n.is_read?"":"unread"}" data-notification-id="${esc(n.id)}" data-link="${esc(n.link||"")}"><div class="nls-notif-icon"><i class="fa-solid ${icon(n.type)}"></i></div><div><div class="nls-notif-title">${esc(n.title)}${n.is_read?"":"<span class=\"nls-notif-dot\"></span>"}</div><div class="nls-notif-message">${esc(n.message)}</div><div class="nls-notif-time">${formatTime(n.created_at)}</div></div></article>`).join("");
     list.querySelectorAll(".nls-notif-item").forEach(item=>item.addEventListener("click",async()=>{const id=item.dataset.notificationId;await window.supabaseClient.from("notifications").update({is_read:true}).eq("id",id).eq("user_id",userId);const link=item.dataset.link;if(link&&link!=="#")window.location.href=link;else loadNotifications();}));
   }
@@ -80,20 +92,22 @@
   function bindMobile(){
     const nav=document.getElementById("nls-mobile-bottom-nav");const b=nav?.querySelector('[data-bn="notifications"]');
     if(!b||b.dataset.notificationsBound==="true"||!userId)return;
-    b.dataset.notificationsBound="true";
-    b.addEventListener("click",e=>{e.preventDefault();openPanel();});
+    b.dataset.notificationsBound="true"; b.addEventListener("click",e=>{e.preventDefault();openPanel();});
   }
 
   function subscribe(){
     if(!userId||!window.supabaseClient)return;
     if(channel)window.supabaseClient.removeChannel(channel);
-    channel=window.supabaseClient.channel("nls-user-notifications-"+userId).on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:"user_id=eq."+userId},()=>loadNotifications()).on("postgres_changes",{event:"UPDATE",schema:"public",table:"notifications",filter:"user_id=eq."+userId},()=>loadNotifications()).subscribe();
+    channel=window.supabaseClient.channel("nls-user-notifications-"+userId)
+      .on("postgres_changes",{event:"INSERT",schema:"public",table:"notifications",filter:"user_id=eq."+userId},()=>loadNotifications())
+      .on("postgres_changes",{event:"UPDATE",schema:"public",table:"notifications",filter:"user_id=eq."+userId},()=>loadNotifications())
+      .subscribe();
   }
 
   async function auth(){
     try{const {data}=await window.supabaseClient.auth.getUser();userId=data?.user?.id||null;}catch(_){userId=null;}
-    if(!userId){setCount(0);return;}
-    ensurePanel();addDesktopButton();bindMobile();loadNotifications();subscribe();
+    if(!userId){setCount(0);if(channel){window.supabaseClient.removeChannel(channel);channel=null;}return;}
+    ensurePanel();addDesktopButton();bindMobile();await syncExpiry();await loadNotifications();subscribe();
   }
 
   function boot(){
@@ -101,7 +115,8 @@
     document.addEventListener("click",e=>{if(e.target.closest('a[href="#notifications"]')){e.preventDefault();openPanel();}});
     document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
     if(observer)observer.disconnect();observer=new MutationObserver(()=>{addDesktopButton();bindMobile();});observer.observe(document.body,{childList:true,subtree:true});
-    window.supabaseClient.auth.onAuthStateChange(()=>setTimeout(auth,0));auth();
+    window.supabaseClient.auth.onAuthStateChange(()=>{clearTimeout(authTimer);authTimer=setTimeout(auth,100);});
+    auth();
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
