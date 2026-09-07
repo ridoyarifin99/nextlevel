@@ -36,6 +36,14 @@
       "destination": "/register.html"
     },
     {
+      "source": "/product/:slug",
+      "destination": "/details.html?slug=:slug"
+    },
+    {
+      "source": "/products/:slug",
+      "destination": "/details.html?slug=:slug"
+    },
+    {
       "source": "/product/:slug*",
       "destination": "/api/product?slug=:slug*"
     },
