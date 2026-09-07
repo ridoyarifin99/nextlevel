@@ -12,11 +12,11 @@
 
   const esc = value => String(value ?? "").replace(/[&<>'\"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'\"':"&quot;"}[c]));
   const icon = type => ({
-    order_received:"fa-bag-shopping", payment_submitted:"fa-receipt", payment_status:"fa-credit-card",
-    payment_approved:"fa-circle-check", payment_rejected:"fa-circle-exclamation", order_processing:"fa-gears",
-    order_delivered:"fa-box-open", order_cancelled:"fa-ban", order_status:"fa-truck-fast", component_status:"fa-box",
-    subscription_active:"fa-circle-play", subscription_renewed:"fa-rotate", subscription_expired:"fa-calendar-xmark",
-    subscription_status:"fa-id-card", review_reply:"fa-comment-dots"
+    order_received:"fa-bag-shopping", order_pending:"fa-clock", order_processing:"fa-gears", order_delivered:"fa-box-open", order_cancelled:"fa-ban", order_status:"fa-truck-fast", order_information_updated:"fa-circle-info",
+    payment_submitted:"fa-receipt", payment_status:"fa-credit-card",
+    delivery_processing:"fa-truck-fast", delivery_delivered:"fa-box-open", delivery_cancelled:"fa-ban", delivery_status:"fa-box", delivery_information_updated:"fa-clipboard-check",
+    subscription_active:"fa-circle-play", subscription_renewed:"fa-rotate", subscription_expired:"fa-calendar-xmark", subscription_cancelled:"fa-ban", subscription_status:"fa-id-card", subscription_dates_updated:"fa-calendar-days", subscription_information_updated:"fa-circle-info", subscription_access_updated:"fa-key",
+    review_reply:"fa-comment-dots"
   }[type] || "fa-bell");
 
   function injectStyles() {
@@ -64,7 +64,6 @@
     if(!userId||!window.supabaseClient)return;
     const {data,error}=await window.supabaseClient.from("notifications").select("id,type,title,message,link,metadata,is_read,created_at,event_key").eq("user_id",userId).order("created_at",{ascending:false}).limit(100);
     if(error){console.warn("NEXT LEVEL SUBS notifications:",error);return;}
-    /* Defensive client-side dedupe for legacy rows created before event_key existed. */
     const seen=new Set();
     const unique=(data||[]).filter(n=>{const k=n.event_key||`${n.type}|${n.title}|${n.message}|${n.created_at}`;if(seen.has(k))return false;seen.add(k);return true;});
     render(unique);
