@@ -4,12 +4,11 @@
   /*
    * SINGLE owner of navbar show/hide behavior.
    *
-   * Important:
-   * We intentionally listen only to REAL document scrolling.
-   * Touch/wheel direction is not used because browsers can report gesture
-   * movement while the document is already at its scroll limit. That was
-   * causing the navbar and floating controls to reappear after an extra
-   * downward swipe at the bottom of the page.
+   * The page uses the real document scroll position only. In particular,
+   * mobile browser chrome can fire resize/visualViewport events while the
+   * user is scrolling at the bottom edge. A resize must NEVER be interpreted
+   * as an upward scroll, otherwise the bottom navbar can pop back in only
+   * after an extra forced swipe/overscroll.
    */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
@@ -90,18 +89,13 @@
       return;
     }
 
-    if (Math.abs(delta) < MIN_DELTA) {
-      return;
-    }
+    if (Math.abs(delta) < MIN_DELTA) return;
 
     if (delta > 0) {
       /* Normal downward scrolling: hide. */
       applyState(true);
     } else if (delta < 0) {
-      /*
-       * Only reveal when the page has genuinely moved upward away from the
-       * bottom. A small bottom-edge correction/bounce must never reveal it.
-       */
+      /* Reveal only after a real upward document movement. */
       const movedAwayFromBottom = currentY < maxY - BOTTOM_GUARD;
       if (movedAwayFromBottom) applyState(false);
     }
@@ -115,19 +109,27 @@
     window.requestAnimationFrame(update);
   }
 
+  function onResize() {
+    /*
+     * IMPORTANT: Do not call applyState(false) here.
+     * Android/iOS browser UI changes can emit resize while the user is at the
+     * bottom of the document. Keeping the current state prevents an unwanted
+     * navbar reveal that requires another forced swipe to reproduce.
+     */
+    const currentY = getY();
+    lastY = currentY;
+    if (currentY <= TOP_ZONE) applyState(false);
+    else applyState(hidden);
+  }
+
   function init() {
     lastY = getY();
     applyState(false);
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    window.addEventListener(
-      "resize",
-      function () {
-        lastY = getY();
-        applyState(false);
-      },
-      { passive: true }
-    );
+    window.addEventListener("resize", onResize, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", onResize, { passive: true });
+    }
   }
 
   if (document.readyState === "loading") {
