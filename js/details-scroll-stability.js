@@ -72,7 +72,6 @@
         .nls-logo-img { max-width:42vw !important; height:auto !important; }
         .nls-logo-text-container { max-width:24vw !important; width:110px !important; }
 
-        /* The fixed bottom nav must never become the scrolling container. */
         #nls-mobile-bottom-nav {
           position:fixed !important;
           left:max(8px,env(safe-area-inset-left,0px)) !important;
@@ -80,42 +79,30 @@
           bottom:max(10px,env(safe-area-inset-bottom,0px)) !important;
         }
 
-        /* Full-screen UI uses the real dynamic viewport. */
         .nls-drawer,
         .nls-drawer-overlay,
         .cart-overlay {
           height:100dvh !important;
-          height:100svh !important;
-          height:100vh !important;
+          max-height:100dvh !important;
         }
-        .nls-drawer { max-height:100dvh !important; overflow-y:auto !important; -webkit-overflow-scrolling:touch; }
+        .nls-drawer { overflow-y:auto !important; -webkit-overflow-scrolling:touch; }
         .cart-sidebar {
           height:100dvh !important;
-          height:100svh !important;
           max-height:100dvh !important;
           overflow:hidden !important;
         }
         .cart-items-container { min-height:0 !important; overflow-y:auto !important; -webkit-overflow-scrolling:touch; }
 
-        /* Never let tab rows force a wider layout. */
         .tab-button { min-width:0 !important; white-space:nowrap; }
         #tabContent { overflow:visible !important; }
-
-        /* Product media and plan grids stay inside narrow screens. */
         .gallery-container { width:100% !important; max-width:100% !important; }
         .gallery-slide { width:100% !important; min-width:100% !important; }
         .gallery-slide img { max-width:100% !important; }
         .plan-card { width:100% !important; }
         .feature-item span { min-width:0; overflow-wrap:anywhere; }
-
-        /* Long review text, emails and URLs cannot expand the page. */
         #tabContent *,#productDetails * { overflow-wrap:anywhere; word-break:normal; }
-
-        /* Leave enough real document space behind the fixed bottom nav. */
         main { padding-bottom:calc(92px + env(safe-area-inset-bottom,0px)) !important; }
-
-        .fab { bottom:calc(86px + env(safe-area-inset-bottom,0px)) !important; }
-        .whatsapp-fab { bottom:calc(86px + env(safe-area-inset-bottom,0px)) !important; }
+        .fab,.whatsapp-fab { bottom:calc(86px + env(safe-area-inset-bottom,0px)) !important; }
       }
 
       @media(min-width:${MOBILE_MAX + 1}px){
@@ -124,6 +111,10 @@
       }
     `;
     document.head.appendChild(style);
+  }
+
+  function setStyleIfChanged(el, prop, value) {
+    if (el && el.style.getPropertyValue(prop) !== value) el.style.setProperty(prop, value);
   }
 
   function repairScrollLock() {
@@ -137,25 +128,21 @@
 
     if (!drawerOpen && !cartOpen) {
       body.classList.remove("nls-mobile-menu-open");
-      body.style.removeProperty("overflow");
-      body.style.removeProperty("overflow-y");
-      body.style.removeProperty("position");
-      body.style.removeProperty("height");
+      ["overflow", "overflow-y", "position", "height"].forEach(p => body.style.removeProperty(p));
     }
   }
 
   function repairFixedPanels() {
+    if (!isMobile()) return;
     const drawer = document.getElementById("mobileDrawer");
     const overlay = document.getElementById("mobileMenuOverlay");
-    if (drawer && isMobile()) {
-      drawer.style.maxHeight = "100dvh";
-      drawer.style.height = "100dvh";
-      drawer.style.overflowY = "auto";
-      drawer.style.webkitOverflowScrolling = "touch";
+    if (drawer) {
+      setStyleIfChanged(drawer, "max-height", "100dvh");
+      setStyleIfChanged(drawer, "height", "100dvh");
+      setStyleIfChanged(drawer, "overflow-y", "auto");
+      if (drawer.style.webkitOverflowScrolling !== "touch") drawer.style.webkitOverflowScrolling = "touch";
     }
-    if (overlay && isMobile()) {
-      overlay.style.height = "100dvh";
-    }
+    if (overlay) setStyleIfChanged(overlay, "height", "100dvh");
   }
 
   function refresh() {
@@ -166,31 +153,17 @@
 
   function init() {
     refresh();
-
-    const observer = new MutationObserver(function () {
-      refresh();
-    });
-    observer.observe(document.body, {
-      subtree:true,
-      childList:true,
-      attributes:true,
-      attributeFilter:["class","style"]
-    });
-
+    const observer = new MutationObserver(function () { refresh(); });
+    observer.observe(document.body, { subtree:true, childList:true, attributes:true, attributeFilter:["class","style"] });
     window.addEventListener("resize", refresh, { passive:true });
     window.addEventListener("orientationchange", function () {
       setTimeout(refresh,100);
       setTimeout(refresh,500);
     }, { passive:true });
     window.addEventListener("pageshow", refresh, { passive:true });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", refresh, { passive:true });
-    }
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", refresh, { passive:true });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once:true });
-  } else {
-    init();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once:true });
+  else init();
 })();
