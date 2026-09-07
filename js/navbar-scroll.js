@@ -20,7 +20,7 @@
     if (document.querySelector('script[data-nextlevel-global-scroll]')) return;
     if (window.__NLS_GLOBAL_SCROLL_SYSTEM__) return;
     const script = document.createElement("script");
-    script.src = "/js/global-scroll-system.js?v=20260907-2";
+    script.src = "/js/global-scroll-system.js?v=20260908-1";
     script.async = false;
     script.dataset.nextlevelGlobalScroll = "true";
     document.head.appendChild(script);
@@ -34,12 +34,9 @@
       .background-orb,.orb-one,.orb-two{z-index:1!important}
       .nls-header,#nlsHeader,.checkout-header{z-index:20!important}
       .search-dropdown,.nls-nav-more-menu,.nls-mobile-search-panel{z-index:30!important}
-
-      /* Mobile drawer must sit above the persistent bottom navigation. */
       .mobile-menu-overlay,#mobileMenuOverlay,.nls-drawer-overlay{z-index:90!important}
       .nls-drawer,#mobileDrawer{z-index:100!important}
       .nav-menu{z-index:41!important}
-
       #nls-mobile-bottom-nav{z-index:50!important}
       .fab,.whatsapp-fab{z-index:60!important}
       .cart-overlay{z-index:70!important}
@@ -57,7 +54,15 @@
   }
 
   function isMobile() { return window.innerWidth <= MOBILE_MAX; }
-  function getHeader() { return document.getElementById("nlsHeader") || document.querySelector(".nls-header, .checkout-header"); }
+
+  /* Every normal site page uses nlsHeader; generic header is a safe fallback
+     for pages that were built before the shared header class was introduced. */
+  function getHeader() {
+    return document.getElementById("nlsHeader")
+      || document.querySelector(".nls-header, .checkout-header")
+      || document.querySelector("body > header, header");
+  }
+
   function getBottomNav() { return document.getElementById("nls-mobile-bottom-nav"); }
 
   function setElementVisibility(element, shouldHide, direction) {
@@ -78,7 +83,6 @@
     const bottom = getBottomNav();
 
     if (isMobile()) {
-      /* Top and bottom mobile nav are always synchronized. */
       setElementVisibility(header, hidden, "top");
       setElementVisibility(bottom, hidden, "bottom");
       if (bottom) bottom.style.setProperty("z-index", "50", "important");
@@ -128,10 +132,19 @@
   }
 
   function onResize() {
-    const currentY = getY();
-    lastY = currentY;
+    lastY = getY();
     accumulatedUp = 0;
-    setNavigationHidden(currentY > TOP_ZONE ? hidden : false);
+    setNavigationHidden(getY() > TOP_ZONE ? hidden : false);
+  }
+
+  /* Keep the controller working even when a page inserts/replaces its header
+     after the initial script load. */
+  function observeNavigationDom() {
+    const observer = new MutationObserver(() => {
+      if (getY() <= TOP_ZONE) setNavigationHidden(false);
+      else setNavigationHidden(hidden);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function init() {
@@ -142,6 +155,7 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
     if (window.visualViewport) window.visualViewport.addEventListener("resize", onResize, { passive: true });
+    observeNavigationDom();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
