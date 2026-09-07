@@ -4,8 +4,9 @@
  * Compatibility entry point for legacy pages that still reference /src/auth.js.
  * The canonical Supabase authentication implementation is /js/auth.js.
  *
- * This shim also removes the old localhost API setting, normalizes the
- * homepage favicon, and loads the scoped product-page compatibility layer.
+ * This shim only handles legacy production cleanup. Product-page fixes are
+ * loaded centrally by /js/supabase-config.js so details.html never gets two
+ * competing copies of the same runtime.
  */
 (function () {
   if (typeof window !== "undefined") {
@@ -23,20 +24,8 @@
     }
   }
 
-  function loadDetailsFix() {
-    if (!/\/product\//i.test(window.location.pathname) && !/details\.html$/i.test(window.location.pathname)) return;
-    if (window.__NLSDetailsFixRequested) return;
-    window.__NLSDetailsFixRequested = true;
-
-    var script = document.createElement("script");
-    script.src = "/js/details-page-fix.js";
-    script.defer = true;
-    document.head.appendChild(script);
-  }
-
   function init() {
     fixProductionAssets();
-    loadDetailsFix();
   }
 
   if (document.readyState === "loading") {
