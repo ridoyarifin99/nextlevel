@@ -5,28 +5,20 @@
   window.__NLSMobileNavInteractionLoaded = true;
 
   /*
-   * The mobile bottom navigation is persistent by design.
-   *
-   * Older versions hid it whenever the user tapped the top navbar. That made
-   * navigation disappear during checkout/login/signup interactions and fought
-   * with navbar-scroll.js. Visibility is now owned by responsive CSS only.
+   * navbar-scroll.js is the single owner of mobile navigation visibility.
+   * This helper only restores the correct stacking order after navigation,
+   * resize, or browser back/forward events and never forces the nav visible.
    */
-  function keepBottomNavStable() {
+  function keepBottomNavLayer() {
     const nav = document.getElementById("nls-mobile-bottom-nav");
     if (!nav || window.innerWidth > 1024) return;
-
-    nav.classList.remove("nls-scroll-hidden");
     nav.style.setProperty("z-index", "50", "important");
-    nav.style.setProperty("transform", "translate3d(0,0,0)", "important");
-    nav.style.setProperty("opacity", "1", "important");
-    nav.style.setProperty("visibility", "visible", "important");
-    nav.style.setProperty("pointer-events", "auto", "important");
   }
 
   function boot() {
-    keepBottomNavStable();
-    window.addEventListener("resize", keepBottomNavStable, { passive: true });
-    window.addEventListener("pageshow", keepBottomNavStable, { passive: true });
+    keepBottomNavLayer();
+    window.addEventListener("resize", keepBottomNavLayer, { passive: true });
+    window.addEventListener("pageshow", keepBottomNavLayer, { passive: true });
   }
 
   if (document.readyState === "loading") {
