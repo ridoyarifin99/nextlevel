@@ -45,7 +45,13 @@ window.supabaseClient =
     loadSharedScript('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-1', 'nextlevelMobileNavInteraction');
     loadSharedScript('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     loadSharedScript('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
-    loadSharedScript('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260906-1', 'nextlevelDetailsFix');
+    loadSharedScript('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-2', 'nextlevelDetailsFix');
+
+    /* Details page stability: scrolling, mobile viewport, drawer/cart locking,
+       safe-area handling and narrow-screen overflow protection. */
+    if (/\/details\.html$/i.test(window.location.pathname) || /\/product\//i.test(window.location.pathname)) {
+        loadSharedScript('script[data-nextlevel-details-scroll-stability]', '/js/details-scroll-stability.js?v=20260907-1', 'nextlevelDetailsScrollStability');
+    }
 
     /* Customer reviews use the EXISTING details.html Reviews tab UI. */
     if (/\/details\.html$/i.test(window.location.pathname)) {
