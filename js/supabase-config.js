@@ -36,6 +36,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         load('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260908-1', 'nextlevelExistingUiReviews');
         load('script[data-nextlevel-premium-review-ui]', '/js/reviews-premium-ui.js?v=20260907-1', 'nextlevelPremiumReviewUi');
         load('script[data-nextlevel-review-ux-polish]', '/js/reviews-ux-polish.js?v=20260908-1', 'nextlevelReviewUxPolish');
+        load('script[data-nextlevel-reply-media]', '/js/reviews-reply-media.js?v=20260908-1', 'nextlevelReplyMedia');
     }
 
     if (/\/admin-orders\.html$/i.test(path)) {
