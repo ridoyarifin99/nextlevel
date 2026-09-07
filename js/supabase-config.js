@@ -20,11 +20,24 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         document.head.appendChild(script);
     };
 
-    /*
-     * Details pages intentionally use a minimal runtime. Their document
-     * scroll is owned by details.html itself. Global mutation/viewport scripts
-     * are kept away from this page so they cannot fight over html/body styles.
-     */
+    const loadCss = (selector, href, dataKey) => {
+        if (document.querySelector(selector)) return;
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = href;
+        link.dataset[dataKey] = "true";
+        document.head.appendChild(link);
+    };
+
+    /* Details pages use one document scroll surface and one viewport contract. */
+    if (isDetailsPage) {
+        loadCss('link[data-nextlevel-details-viewport]', '/src/details-viewport.css?v=20260907-1', 'nextlevelDetailsViewport');
+        const markBody = () => document.body && document.body.classList.add('nls-details-page');
+        if (document.body) markBody();
+        else document.addEventListener('DOMContentLoaded', markBody, { once: true });
+    }
+
+    /* Global systems stay off details pages to avoid competing layout/viewport rules. */
     if (!isDetailsPage) {
         load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
         load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
@@ -33,7 +46,6 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-1', 'nextlevelMobileNavInteraction');
     }
 
-    /* These are the only shared UI systems intentionally active on details. */
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
