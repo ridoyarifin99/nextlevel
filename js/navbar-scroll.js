@@ -80,19 +80,34 @@
     (document.head || document.documentElement).appendChild(style);
   }
 
+  function expectedTransform(shouldHide, direction) {
+    return shouldHide
+      ? (direction === "bottom" ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,-110%,0)")
+      : "translate3d(0,0,0)";
+  }
+
   function apply(element, shouldHide, direction) {
     if (!element) return;
 
+    const transform = expectedTransform(shouldHide, direction);
     element.classList.toggle("nls-scroll-hidden", shouldHide);
-
-    const transform = shouldHide
-      ? (direction === "bottom" ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,-110%,0)")
-      : "translate3d(0,0,0)";
-
     element.style.setProperty("transform", transform, "important");
     element.style.setProperty("opacity", shouldHide ? "0" : "1", "important");
     element.style.setProperty("visibility", shouldHide ? "hidden" : "visible", "important");
     element.style.setProperty("pointer-events", shouldHide ? "none" : "auto", "important");
+  }
+
+  function navigationIsCorrect(element, shouldHide, direction) {
+    if (!element) return true;
+    const expected = expectedTransform(shouldHide, direction);
+    const computed = window.getComputedStyle(element);
+    const classState = element.classList.contains("nls-scroll-hidden");
+    const expectedOpacity = shouldHide ? "0" : "1";
+    const expectedVisibility = shouldHide ? "hidden" : "visible";
+    return classState === shouldHide &&
+      computed.opacity === expectedOpacity &&
+      computed.visibility === expectedVisibility &&
+      (computed.transform === expected || (expected === "translate3d(0,0,0)" && computed.transform === "none"));
   }
 
   function setNavigationHidden(shouldHide) {
@@ -119,6 +134,18 @@
     }
   }
 
+  function enforceNavigationState() {
+    if (applying) return;
+    const shouldHide = hidden && getY() > TOP_ZONE;
+    const headers = getHeaders();
+    const bottom = getBottomNav();
+
+    const headerBroken = headers.some((header) => !navigationIsCorrect(header, shouldHide, "top"));
+    const bottomBroken = isMobile() && bottom && !navigationIsCorrect(bottom, shouldHide, "bottom");
+
+    if (headerBroken || bottomBroken) setNavigationHidden(shouldHide);
+  }
+
   function update() {
     ticking = false;
     const currentY = getY();
@@ -131,7 +158,10 @@
       return;
     }
 
-    if (Math.abs(delta) < MIN_DELTA) return;
+    if (Math.abs(delta) < MIN_DELTA) {
+      enforceNavigationState();
+      return;
+    }
 
     if (delta > 0) {
       accumulatedUp = 0;
@@ -145,6 +175,7 @@
     }
 
     lastY = currentY;
+    enforceNavigationState();
   }
 
   function onScroll() {
@@ -164,16 +195,38 @@
     if (observerStarted || !document.body) return;
     observerStarted = true;
 
-    /* Catch headers/bottom-navs that are inserted dynamically without creating
-       a mutation loop when this controller itself changes inline styles. */
-    const observer = new MutationObserver(function () {
+    /* Details.html has legacy UI code that can touch header classes/styles.
+       Observe those changes and restore the single global navigation state.
+       The state check prevents a mutation loop from our own style writes. */
+    const observer = new MutationObserver(function (mutations) {
       if (applying) return;
-      installStyles();
-      const y = getY();
-      setNavigationHidden(y > TOP_ZONE ? hidden : false);
+      let relevant = false;
+      for (const mutation of mutations) {
+        if (mutation.type === "childList") {
+          relevant = true;
+          break;
+        }
+        if (mutation.type === "attributes" &&
+            (mutation.attributeName === "class" || mutation.attributeName === "style")) {
+          const target = mutation.target;
+          if (target && (target.matches?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav") || target.closest?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav"))) {
+            relevant = true;
+            break;
+          }
+        }
+      }
+      if (relevant) {
+        installStyles();
+        enforceNavigationState();
+      }
     });
 
-    observer.observe(document.body, { childList: true, subtree: true });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "style"]
+    });
   }
 
   function init() {
