@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  /* NEXT LEVEL SUBS — one global controller for top + mobile bottom navigation. */
+  /* NEXT LEVEL SUBS — one global controller for every site header + mobile bottom nav. */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
 
@@ -27,10 +27,16 @@
     return Math.max(0, window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body?.scrollTop || 0);
   }
 
+  /* All known top-header implementations used by the project. */
   function getHeader() {
     return document.getElementById("nlsHeader")
-      || document.querySelector("header.nls-header, header.checkout-header")
-      || document.querySelector("body > header, header");
+      || document.querySelector("header.nls-header")
+      || document.querySelector("header.checkout-header")
+      || document.querySelector("header.dashboard-header")
+      || document.querySelector(".dashboard-header")
+      || document.querySelector("header[data-nextlevel-header]")
+      || document.querySelector("body > header")
+      || document.querySelector("header");
   }
 
   function getBottomNav() {
@@ -42,7 +48,7 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      header.nls-header,#nlsHeader,header.checkout-header{
+      header.nls-header,#nlsHeader,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header]{
         transition:${TRANSITION}!important;
         will-change:transform,opacity;
       }
@@ -72,7 +78,6 @@
     const header = getHeader();
     const bottom = getBottomNav();
 
-    /* Prevent our own style mutations from being interpreted as a new layout. */
     applying = true;
     try {
       apply(header, hidden, "top");
@@ -137,8 +142,7 @@
     if (observerStarted || !document.body) return;
     observerStarted = true;
 
-    /* Observe only DOM insertion/removal. Do NOT observe attributes: this
-       controller intentionally changes header/nav inline styles on every scroll. */
+    /* Watch only insertion/removal. Attribute changes are intentionally ignored. */
     const observer = new MutationObserver(function () {
       if (applying) return;
       installStyles();
