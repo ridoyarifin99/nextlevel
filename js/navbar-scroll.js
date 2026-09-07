@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  /* NEXT LEVEL SUBS — one global controller for every site header + mobile bottom nav. */
+  /* NEXT LEVEL SUBS — one global scroll controller for every page header + mobile bottom nav. */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
 
@@ -27,16 +27,35 @@
     return Math.max(0, window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body?.scrollTop || 0);
   }
 
-  /* All known top-header implementations used by the project. */
-  function getHeader() {
-    return document.getElementById("nlsHeader")
-      || document.querySelector("header.nls-header")
-      || document.querySelector("header.checkout-header")
-      || document.querySelector("header.dashboard-header")
-      || document.querySelector(".dashboard-header")
-      || document.querySelector("header[data-nextlevel-header]")
-      || document.querySelector("body > header")
-      || document.querySelector("header");
+  /* The site does NOT use one identical header on every page. Control every
+     supported top-header variant instead of assuming a single #nlsHeader. */
+  function getHeaders() {
+    const selectors = [
+      "#nlsHeader",
+      "header.nls-header",
+      "header.checkout-header",
+      "header.dashboard-header",
+      ".dashboard-header",
+      "header[data-nextlevel-header]"
+    ];
+
+    const seen = new Set();
+    const headers = [];
+    selectors.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        if (!seen.has(element)) {
+          seen.add(element);
+          headers.push(element);
+        }
+      });
+    });
+
+    /* Fallback for a page with a plain top-level/sticky header. */
+    if (!headers.length) {
+      document.querySelectorAll("body > header").forEach((element) => headers.push(element));
+    }
+
+    return headers;
   }
 
   function getBottomNav() {
@@ -48,7 +67,7 @@
     const style = document.createElement("style");
     style.id = STYLE_ID;
     style.textContent = `
-      header.nls-header,#nlsHeader,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header]{
+      #nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header]{
         transition:${TRANSITION}!important;
         will-change:transform,opacity;
       }
@@ -63,10 +82,13 @@
 
   function apply(element, shouldHide, direction) {
     if (!element) return;
+
     element.classList.toggle("nls-scroll-hidden", shouldHide);
+
     const transform = shouldHide
       ? (direction === "bottom" ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,-110%,0)")
       : "translate3d(0,0,0)";
+
     element.style.setProperty("transform", transform, "important");
     element.style.setProperty("opacity", shouldHide ? "0" : "1", "important");
     element.style.setProperty("visibility", shouldHide ? "hidden" : "visible", "important");
@@ -75,12 +97,12 @@
 
   function setNavigationHidden(shouldHide) {
     hidden = Boolean(shouldHide);
-    const header = getHeader();
+    const headers = getHeaders();
     const bottom = getBottomNav();
 
     applying = true;
     try {
-      apply(header, hidden, "top");
+      headers.forEach((header) => apply(header, hidden, "top"));
 
       if (isMobile()) {
         apply(bottom, hidden, "bottom");
@@ -142,13 +164,13 @@
     if (observerStarted || !document.body) return;
     observerStarted = true;
 
-    /* Watch only insertion/removal. Attribute changes are intentionally ignored. */
+    /* Catch headers/bottom-navs that are inserted dynamically without creating
+       a mutation loop when this controller itself changes inline styles. */
     const observer = new MutationObserver(function () {
       if (applying) return;
       installStyles();
       const y = getY();
-      if (y <= TOP_ZONE) setNavigationHidden(false);
-      else setNavigationHidden(hidden);
+      setNavigationHidden(y > TOP_ZONE ? hidden : false);
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
@@ -163,7 +185,9 @@
     document.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", resetAfterLayoutChange, { passive: true });
     window.addEventListener("pageshow", resetAfterLayoutChange, { passive: true });
-    if (window.visualViewport) window.visualViewport.addEventListener("resize", resetAfterLayoutChange, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", resetAfterLayoutChange, { passive: true });
+    }
     observeNavigation();
   }
 
