@@ -7,6 +7,8 @@
   const BUCKET = "avatars";
   const MAX_SIZE = 5 * 1024 * 1024;
   const TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  let dashboardAvatarObserver = null;
+  let dashboardAvatarState = { url: "", name: "User" };
 
   function escape(value) {
     return String(value ?? "").replace(/[&<>'\"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'\"':"&quot;"}[c]));
@@ -43,15 +45,33 @@
   function renderDashboardAvatar(url, name) {
     const title = document.getElementById("customerName");
     if (!title) return;
+
+    dashboardAvatarState = { url: url || "", name: name || "User" };
     title.classList.add("nls-dashboard-name-with-avatar");
+
     let avatar = title.querySelector(".nls-dashboard-profile-avatar");
     if (!avatar) {
       avatar = document.createElement("span");
       avatar.className = "nls-dashboard-profile-avatar";
+      avatar.setAttribute("aria-hidden", "true");
       title.insertBefore(avatar, title.firstChild);
     }
-    const safe = url ? escape(url) : "";
-    avatar.innerHTML = safe ? `<img src="${safe}" alt="Profile picture">` : `<span>${escape(initials(name))}</span>`;
+
+    const safe = dashboardAvatarState.url ? escape(dashboardAvatarState.url) : "";
+    avatar.innerHTML = safe
+      ? `<img src="${safe}" alt="Profile picture">`
+      : `<span>${escape(initials(dashboardAvatarState.name))}</span>`;
+
+    if (!dashboardAvatarObserver) {
+      dashboardAvatarObserver = new MutationObserver(() => {
+        const currentTitle = document.getElementById("customerName");
+        if (!currentTitle || !dashboardAvatarState) return;
+        if (!currentTitle.querySelector(".nls-dashboard-profile-avatar")) {
+          renderDashboardAvatar(dashboardAvatarState.url, currentTitle.textContent.trim() || dashboardAvatarState.name);
+        }
+      });
+      dashboardAvatarObserver.observe(title, { childList: true });
+    }
   }
 
   function applyAvatar(url, name) {
@@ -100,13 +120,17 @@
     const style = document.createElement("style");
     style.id = "nls-profile-global-styles";
     style.textContent = `
-      #customerName.nls-dashboard-name-with-avatar{display:flex;align-items:center;gap:18px;}
-      #customerName .nls-dashboard-profile-avatar{width:84px;height:84px;min-width:84px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:4px solid rgba(255,255,255,.9);box-shadow:0 12px 30px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.18);font-size:24px;font-weight:800;line-height:1;}
+      #customerName.nls-dashboard-name-with-avatar{display:flex;align-items:center;gap:16px;min-width:0;}
+      #customerName .nls-dashboard-profile-avatar{width:76px;height:76px;min-width:76px;flex:0 0 76px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#6a11cb,#2575fc);color:#fff;border:3px solid rgba(255,255,255,.95);box-shadow:0 10px 26px rgba(15,23,42,.22),0 0 0 1px rgba(255,255,255,.2);font-size:21px;font-weight:800;line-height:1;}
       #customerName .nls-dashboard-profile-avatar img{width:100%;height:100%;display:block;object-fit:cover;}
       #customerName .nls-dashboard-profile-avatar span{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;}
       .nls-avatar-initials{font-size:10px;font-weight:800;line-height:1}
       .nls-edit-profile-btn{margin-left:0;}
-      @media(max-width:640px){.nls-edit-profile-btn{width:100%;}#customerName.nls-dashboard-name-with-avatar{gap:12px;}#customerName .nls-dashboard-profile-avatar{width:64px;height:64px;min-width:64px;border-width:3px;font-size:18px;}}
+      @media(max-width:640px){
+        .nls-edit-profile-btn{width:100%;}
+        #customerName.nls-dashboard-name-with-avatar{gap:12px;align-items:center;}
+        #customerName .nls-dashboard-profile-avatar{width:58px;height:58px;min-width:58px;flex-basis:58px;border-width:3px;font-size:17px;}
+      }
     `;
     document.head.appendChild(style);
   }
