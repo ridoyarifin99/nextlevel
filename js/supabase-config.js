@@ -37,6 +37,7 @@ window.supabaseClient =
         document.head.appendChild(script);
     };
 
+    loadSharedScript('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-1', 'nextlevelMobileViewportFix');
     loadSharedScript('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260906-1', 'nextlevelCartFix');
     loadSharedScript('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
     loadSharedScript('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-5', 'nextlevelNavbarScroll');
