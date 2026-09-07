@@ -34,14 +34,18 @@
       .background-orb,.orb-one,.orb-two{z-index:1!important}
       .nls-header,#nlsHeader,.checkout-header{z-index:20!important}
       .search-dropdown,.nls-nav-more-menu,.nls-mobile-search-panel{z-index:30!important}
-      .mobile-menu-overlay,#mobileMenuOverlay,.nls-drawer-overlay{z-index:40!important}
-      .nav-menu,.nls-drawer,#mobileDrawer{z-index:41!important}
+
+      /* Mobile drawer must sit above the persistent bottom navigation. */
+      .mobile-menu-overlay,#mobileMenuOverlay,.nls-drawer-overlay{z-index:90!important}
+      .nls-drawer,#mobileDrawer{z-index:100!important}
+      .nav-menu{z-index:41!important}
+
       #nls-mobile-bottom-nav{z-index:50!important}
       .fab,.whatsapp-fab{z-index:60!important}
       .cart-overlay{z-index:70!important}
       .cart-sidebar{z-index:71!important}
       #successModal,#accountSetupModal,.nls-modal,.modal{z-index:80!important}
-      .loading-overlay,.notification,#notification,.toast,[role="alert"]{z-index:90!important}
+      .loading-overlay,.notification,#notification,.toast,[role="alert"]{z-index:110!important}
       @media(max-width:1024px){#nls-mobile-bottom-nav{z-index:50!important}}
       @media(min-width:1025px){#nls-mobile-bottom-nav{display:none!important}}
     `;
