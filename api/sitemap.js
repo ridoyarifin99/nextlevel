@@ -27,7 +27,6 @@ function loadProducts() {
     const source = fs.readFileSync(path.join(__dirname, "..", "js", "details.js"), "utf8");
     const marker = source.indexOf("const products");
     if (marker < 0) throw new Error("Product catalog declaration not found in js/details.js");
-
     const start = source.indexOf("[", marker);
     if (start < 0) throw new Error("Product catalog array not found in js/details.js");
 
@@ -41,56 +40,25 @@ function loadProducts() {
     for (let i = start; i < source.length; i++) {
         const c = source[i];
         const n = source[i + 1];
-
-        if (lineComment) {
-            if (c === "\n") lineComment = false;
-            continue;
-        }
-        if (blockComment) {
-            if (c === "*" && n === "/") {
-                blockComment = false;
-                i++;
-            }
-            continue;
-        }
+        if (lineComment) { if (c === "\n") lineComment = false; continue; }
+        if (blockComment) { if (c === "*" && n === "/") { blockComment = false; i++; } continue; }
         if (quote) {
-            if (escaped) {
-                escaped = false;
-                continue;
-            }
-            if (c === "\\") {
-                escaped = true;
-                continue;
-            }
+            if (escaped) { escaped = false; continue; }
+            if (c === "\\") { escaped = true; continue; }
             if (c === quote) quote = null;
             continue;
         }
-        if (c === "'" || c === '"' || c === "`") {
-            quote = c;
-            continue;
-        }
-        if (c === "/" && n === "/") {
-            lineComment = true;
-            i++;
-            continue;
-        }
-        if (c === "/" && n === "*") {
-            blockComment = true;
-            i++;
-            continue;
-        }
+        if (c === "'" || c === '"' || c === "`") { quote = c; continue; }
+        if (c === "/" && n === "/") { lineComment = true; i++; continue; }
+        if (c === "/" && n === "*") { blockComment = true; i++; continue; }
         if (c === "[") depth++;
         else if (c === "]") {
             depth--;
-            if (depth === 0) {
-                end = i + 1;
-                break;
-            }
+            if (depth === 0) { end = i + 1; break; }
         }
     }
 
     if (end < 0) throw new Error("Could not find end of product catalog array");
-
     const products = vm.runInNewContext("(" + source.slice(start, end) + ")", Object.create(null), { timeout: 3000 });
     if (!Array.isArray(products)) throw new Error("Extracted product catalog is not an array");
     return products;
@@ -115,7 +83,6 @@ function buildURLs() {
         const slug = slugify(product.slug || product.name);
         if (slug) urls.add(`/product/${slug}`);
     }
-
     return [...urls];
 }
 
