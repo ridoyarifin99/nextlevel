@@ -19,16 +19,29 @@
   let observerStarted = false;
   let applying = false;
 
-  function isMobile() {
-    return window.innerWidth <= MOBILE_MAX;
+  function isMobile() { return window.innerWidth <= MOBILE_MAX; }
+
+  function getScrollSource() {
+    /* /product/:slug renders details.html inside a same-origin iframe.
+       In that case the browser page may be scrolling the parent while the
+       details document itself stays at scrollY=0. Follow the real page scroll. */
+    try {
+      if (window.top !== window.self && window.parent && typeof window.parent.scrollY === "number") {
+        return window.parent;
+      }
+    } catch (_) {}
+    return window;
   }
 
   function getY() {
-    return Math.max(0, window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body?.scrollTop || 0);
+    const source = getScrollSource();
+    try {
+      return Math.max(0, source.scrollY || source.pageYOffset || source.document.documentElement.scrollTop || source.document.body?.scrollTop || 0);
+    } catch (_) {
+      return Math.max(0, window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body?.scrollTop || 0);
+    }
   }
 
-  /* The site does NOT use one identical header on every page. Control every
-     supported top-header variant instead of assuming a single #nlsHeader. */
   function getHeaders() {
     const selectors = [
       "#nlsHeader",
@@ -38,29 +51,18 @@
       ".dashboard-header",
       "header[data-nextlevel-header]"
     ];
-
     const seen = new Set();
     const headers = [];
     selectors.forEach((selector) => {
       document.querySelectorAll(selector).forEach((element) => {
-        if (!seen.has(element)) {
-          seen.add(element);
-          headers.push(element);
-        }
+        if (!seen.has(element)) { seen.add(element); headers.push(element); }
       });
     });
-
-    /* Fallback for a page with a plain top-level/sticky header. */
-    if (!headers.length) {
-      document.querySelectorAll("body > header").forEach((element) => headers.push(element));
-    }
-
+    if (!headers.length) document.querySelectorAll("body > header").forEach((element) => headers.push(element));
     return headers;
   }
 
-  function getBottomNav() {
-    return document.getElementById("nls-mobile-bottom-nav");
-  }
+  function getBottomNav() { return document.getElementById("nls-mobile-bottom-nav"); }
 
   function installStyles() {
     if (document.getElementById(STYLE_ID)) return;
@@ -71,24 +73,18 @@
         transition:${TRANSITION}!important;
         will-change:transform,opacity;
       }
-      #nls-mobile-bottom-nav{
-        transition:${TRANSITION}!important;
-        will-change:transform,opacity;
-      }
+      #nls-mobile-bottom-nav{transition:${TRANSITION}!important;will-change:transform,opacity}
       @media(min-width:1025px){#nls-mobile-bottom-nav{display:none!important}}
     `;
     (document.head || document.documentElement).appendChild(style);
   }
 
   function expectedTransform(shouldHide, direction) {
-    return shouldHide
-      ? (direction === "bottom" ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,-110%,0)")
-      : "translate3d(0,0,0)";
+    return shouldHide ? (direction === "bottom" ? "translate3d(0,calc(100% + 24px),0)" : "translate3d(0,-110%,0)") : "translate3d(0,0,0)";
   }
 
   function apply(element, shouldHide, direction) {
     if (!element) return;
-
     const transform = expectedTransform(shouldHide, direction);
     element.classList.toggle("nls-scroll-hidden", shouldHide);
     element.style.setProperty("transform", transform, "important");
@@ -104,21 +100,16 @@
     const classState = element.classList.contains("nls-scroll-hidden");
     const expectedOpacity = shouldHide ? "0" : "1";
     const expectedVisibility = shouldHide ? "hidden" : "visible";
-    return classState === shouldHide &&
-      computed.opacity === expectedOpacity &&
-      computed.visibility === expectedVisibility &&
-      (computed.transform === expected || (expected === "translate3d(0,0,0)" && computed.transform === "none"));
+    return classState === shouldHide && computed.opacity === expectedOpacity && computed.visibility === expectedVisibility && (computed.transform === expected || (expected === "translate3d(0,0,0)" && computed.transform === "none"));
   }
 
   function setNavigationHidden(shouldHide) {
     hidden = Boolean(shouldHide);
     const headers = getHeaders();
     const bottom = getBottomNav();
-
     applying = true;
     try {
       headers.forEach((header) => apply(header, hidden, "top"));
-
       if (isMobile()) {
         apply(bottom, hidden, "bottom");
         if (bottom) bottom.style.setProperty("z-index", "50", "important");
@@ -129,9 +120,7 @@
         bottom.style.removeProperty("visibility");
         bottom.style.removeProperty("pointer-events");
       }
-    } finally {
-      applying = false;
-    }
+    } finally { applying = false; }
   }
 
   function enforceNavigationState() {
@@ -139,10 +128,8 @@
     const shouldHide = hidden && getY() > TOP_ZONE;
     const headers = getHeaders();
     const bottom = getBottomNav();
-
     const headerBroken = headers.some((header) => !navigationIsCorrect(header, shouldHide, "top"));
     const bottomBroken = isMobile() && bottom && !navigationIsCorrect(bottom, shouldHide, "bottom");
-
     if (headerBroken || bottomBroken) setNavigationHidden(shouldHide);
   }
 
@@ -150,19 +137,13 @@
     ticking = false;
     const currentY = getY();
     const delta = currentY - lastY;
-
     if (currentY <= TOP_ZONE) {
       accumulatedUp = 0;
       setNavigationHidden(false);
       lastY = currentY;
       return;
     }
-
-    if (Math.abs(delta) < MIN_DELTA) {
-      enforceNavigationState();
-      return;
-    }
-
+    if (Math.abs(delta) < MIN_DELTA) { enforceNavigationState(); return; }
     if (delta > 0) {
       accumulatedUp = 0;
       if (!hidden) setNavigationHidden(true);
@@ -173,7 +154,6 @@
         if (hidden) setNavigationHidden(false);
       }
     }
-
     lastY = currentY;
     enforceNavigationState();
   }
@@ -194,59 +174,35 @@
   function observeNavigation() {
     if (observerStarted || !document.body) return;
     observerStarted = true;
-
-    /* Details.html has legacy UI code that can touch header classes/styles.
-       Observe those changes and restore the single global navigation state.
-       The state check prevents a mutation loop from our own style writes. */
     const observer = new MutationObserver(function (mutations) {
       if (applying) return;
       let relevant = false;
       for (const mutation of mutations) {
-        if (mutation.type === "childList") {
-          relevant = true;
-          break;
-        }
-        if (mutation.type === "attributes" &&
-            (mutation.attributeName === "class" || mutation.attributeName === "style")) {
+        if (mutation.type === "childList") { relevant = true; break; }
+        if (mutation.type === "attributes" && (mutation.attributeName === "class" || mutation.attributeName === "style")) {
           const target = mutation.target;
-          if (target && (target.matches?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav") || target.closest?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav"))) {
-            relevant = true;
-            break;
-          }
+          if (target && (target.matches?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav") || target.closest?.("#nlsHeader,header.nls-header,header.checkout-header,header.dashboard-header,.dashboard-header,header[data-nextlevel-header],#nls-mobile-bottom-nav"))) { relevant = true; break; }
         }
       }
-      if (relevant) {
-        installStyles();
-        enforceNavigationState();
-      }
+      if (relevant) { installStyles(); enforceNavigationState(); }
     });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["class", "style"]
-    });
+    observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["class","style"]});
   }
 
   function init() {
     installStyles();
     lastY = getY();
     setNavigationHidden(false);
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
-    window.addEventListener("resize", resetAfterLayoutChange, { passive: true });
-    window.addEventListener("pageshow", resetAfterLayoutChange, { passive: true });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", resetAfterLayoutChange, { passive: true });
-    }
+    const source = getScrollSource();
+    source.addEventListener("scroll", onScroll, {passive:true});
+    window.addEventListener("scroll", onScroll, {passive:true});
+    document.addEventListener("scroll", onScroll, {passive:true,capture:true});
+    window.addEventListener("resize", resetAfterLayoutChange, {passive:true});
+    window.addEventListener("pageshow", resetAfterLayoutChange, {passive:true});
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", resetAfterLayoutChange, {passive:true});
     observeNavigation();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init, { once: true });
-  } else {
-    init();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once:true});
+  else init();
 })();
