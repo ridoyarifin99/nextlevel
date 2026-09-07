@@ -22,13 +22,13 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 
     load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
     load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
-    load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-5', 'nextlevelNavbarScroll');
+    load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-6', 'nextlevelNavbarScroll');
     load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260908-2', 'nextlevelMobileNavInteraction');
     load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
-    load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-1', 'nextlevelNotificationsSystem');
+    load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-2', 'nextlevelNotificationsSystem');
 
     if (isDetailsPage) {
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
