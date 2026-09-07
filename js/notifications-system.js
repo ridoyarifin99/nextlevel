@@ -13,7 +13,7 @@
   const esc = value => String(value ?? "").replace(/[&<>'\"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'\"':"&quot;"}[c]));
   const icon = type => ({
     order_received:"fa-bag-shopping", order_pending:"fa-clock", order_processing:"fa-gears", order_delivered:"fa-box-open", order_cancelled:"fa-ban", order_status:"fa-truck-fast", order_information_updated:"fa-circle-info",
-    payment_submitted:"fa-receipt", payment_status:"fa-credit-card",
+    payment_submitted:"fa-receipt", payment_approved:"fa-circle-check", payment_failed:"fa-circle-xmark", payment_cancelled:"fa-ban", payment_refunded:"fa-arrow-rotate-left", payment_status:"fa-credit-card",
     delivery_processing:"fa-truck-fast", delivery_delivered:"fa-box-open", delivery_cancelled:"fa-ban", delivery_status:"fa-box", delivery_information_updated:"fa-clipboard-check",
     subscription_active:"fa-circle-play", subscription_renewed:"fa-rotate", subscription_expired:"fa-calendar-xmark", subscription_cancelled:"fa-ban", subscription_status:"fa-id-card", subscription_dates_updated:"fa-calendar-days", subscription_information_updated:"fa-circle-info", subscription_access_updated:"fa-key",
     review_reply:"fa-comment-dots"
@@ -111,7 +111,7 @@
 
   function boot(){
     injectStyles();ensurePanel();
-    document.addEventListener("click",e=>{if(e.target.closest('a[href="#notifications"]')){e.preventDefault();openPanel();}});
+    document.addEventListener("click",e=>{if(e.target.closest('a[href=\"#notifications\"]')){e.preventDefault();openPanel();}});
     document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
     if(observer)observer.disconnect();observer=new MutationObserver(()=>{addDesktopButton();bindMobile();});observer.observe(document.body,{childList:true,subtree:true});
     window.supabaseClient.auth.onAuthStateChange(()=>{clearTimeout(authTimer);authTimer=setTimeout(auth,100);});
