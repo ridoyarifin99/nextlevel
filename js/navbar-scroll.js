@@ -2,7 +2,7 @@
   "use strict";
 
   /*
-   * NEXT LEVEL SUBS global stacking order + header scroll behavior.
+   * NEXT LEVEL SUBS global navigation + scrolling behavior.
    * The mobile bottom navigation is persistent and never participates in
    * scroll-hide logic. Modals/dialogs intentionally sit above it.
    */
@@ -17,6 +17,16 @@
   let lastY = 0;
   let hidden = false;
   let ticking = false;
+
+  function loadGlobalScrollSystem() {
+    if (document.querySelector('script[data-nextlevel-global-scroll]')) return;
+    if (window.__NLS_GLOBAL_SCROLL_SYSTEM__) return;
+    const script = document.createElement("script");
+    script.src = "/js/global-scroll-system.js?v=20260907-1";
+    script.async = false;
+    script.dataset.nextlevelGlobalScroll = "true";
+    document.head.appendChild(script);
+  }
 
   function installZIndexSystem() {
     if (document.getElementById(STYLE_ID)) return;
@@ -55,7 +65,7 @@
   }
 
   function getHeader() {
-    return document.getElementById("nlsHeader") || document.querySelector(".nls-header");
+    return document.getElementById("nlsHeader") || document.querySelector(".nls-header, .checkout-header");
   }
 
   function setHeaderHidden(shouldHide) {
@@ -122,6 +132,7 @@
   }
 
   function init() {
+    loadGlobalScrollSystem();
     installZIndexSystem();
     lastY = getY();
     setHeaderHidden(false);
