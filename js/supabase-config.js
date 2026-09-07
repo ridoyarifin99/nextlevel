@@ -39,10 +39,11 @@ window.supabaseClient =
 
     loadSharedScript('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260906-1', 'nextlevelCartFix');
     loadSharedScript('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
-    loadSharedScript('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-4', 'nextlevelNavbarScroll');
+    loadSharedScript('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-5', 'nextlevelNavbarScroll');
     loadSharedScript('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260906-12', 'nextlevelMobileBottomNav');
+    loadSharedScript('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-1', 'nextlevelMobileNavInteraction');
     loadSharedScript('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
-    loadSharedScript('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260906-3', 'nextlevelDesktopProfileNav');
+    loadSharedScript('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
     loadSharedScript('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260906-1', 'nextlevelDetailsFix');
 
     /* Customer reviews use the EXISTING details.html Reviews tab UI. */
