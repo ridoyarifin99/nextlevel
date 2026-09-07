@@ -145,6 +145,25 @@
     });
   }
 
+  function loadReviewSystems() {
+    if (window.__NLSReviewSystemsRequested) return;
+    window.__NLSReviewSystemsRequested = true;
+    const scripts = [
+      ["data-nextlevel-legacy-review-cleanup", "/js/details-review-cleanup.js?v=20260908-1"],
+      ["data-nextlevel-reviews-product-bridge", "/js/reviews-product-bridge.js?v=20260908-1"],
+      ["data-nextlevel-existing-ui-reviews", "/js/reviews-existing-ui.js?v=20260908-1"],
+      ["data-nextlevel-premium-review-ui", "/js/reviews-premium-ui.js?v=20260908-1"]
+    ];
+    scripts.forEach(([key, src]) => {
+      if (document.querySelector(`script[${key}]`)) return;
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = false;
+      script.setAttribute(key, "true");
+      document.head.appendChild(script);
+    });
+  }
+
   function runFixes() {
     fixRuntimeConfig();
     fixSeo();
@@ -153,6 +172,7 @@
     fixInteractiveCards();
     fixBuyNowLabel();
     fixNetflixTvCopy();
+    loadReviewSystems();
   }
 
   function init() {
