@@ -38,13 +38,11 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 
     if (isDetailsPage) {
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
-    }
-
-    if (/\/details\.html$/i.test(path)) {
         load('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-2', 'nextlevelLegacyReviewCleanup');
         load('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-2', 'nextlevelReviewsProductBridge');
         load('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-2', 'nextlevelExistingUiReviews');
         load('script[data-nextlevel-premium-review-ui]', '/js/reviews-premium-ui.js?v=20260907-1', 'nextlevelPremiumReviewUi');
+        load('script[data-nextlevel-review-ux-polish]', '/js/reviews-ux-polish.js?v=20260908-1', 'nextlevelReviewUxPolish');
     }
 
     if (/\/admin-orders\.html$/i.test(path)) {
