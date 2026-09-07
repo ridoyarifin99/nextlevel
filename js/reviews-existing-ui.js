@@ -5,7 +5,8 @@
  * No standalone/new review section is created.
  */
 (() => {
-  if (!/\/details\.html$/i.test(window.location.pathname)) return;
+  const path = window.location.pathname;
+  if (!/\/details\.html$/i.test(path) && !/\/product\//i.test(path)) return;
   if (!window.supabaseClient) return;
 
   const supabase = window.supabaseClient;
@@ -44,7 +45,12 @@
   let initialized = false;
 
   function productName() {
-    return window.currentProduct?.name || new URLSearchParams(location.search).get("name") || "";
+    if (window.currentProduct?.name) return window.currentProduct.name;
+    const params = new URLSearchParams(location.search);
+    const queryName = params.get("name");
+    if (queryName) return queryName;
+    const match = location.pathname.match(/\/product\/([^/?#]+)/i);
+    return match ? decodeURIComponent(match[1]) : "";
   }
 
   function productSlug() {
@@ -342,7 +348,6 @@
       if (tab === "reviews") return renderReviews();
       return originalSwitchTab.apply(this, arguments);
     };
-    /* Keep the existing details.html tab UI; only replace its review data/content. */
     if (document.querySelector(".tab-button.active")?.textContent?.toLowerCase().includes("reviews")) renderReviews();
   }
 
