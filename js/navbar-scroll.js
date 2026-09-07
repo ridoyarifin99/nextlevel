@@ -2,15 +2,14 @@
   "use strict";
 
   /*
-   * Header owns scroll-hide behavior.
-   * The mobile bottom navigation is a persistent navigation surface and must
-   * never be hidden because of document scrolling, browser chrome resizing, or
-   * a tap on the top navbar. This prevents checkout/auth flows from losing the
-   * bottom navigation unexpectedly.
+   * NEXT LEVEL SUBS global stacking order + header scroll behavior.
+   * The mobile bottom navigation is persistent and never participates in
+   * scroll-hide logic. Modals/dialogs intentionally sit above it.
    */
   if (window.__NLSNavScrollBound) return;
   window.__NLSNavScrollBound = true;
 
+  const STYLE_ID = "nls-global-z-index-system-runtime";
   const TOP_ZONE = 2;
   const MIN_DELTA = 1;
   const MOBILE_MAX = 1024;
@@ -18,6 +17,31 @@
   let lastY = 0;
   let hidden = false;
   let ticking = false;
+
+  function installZIndexSystem() {
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = `
+      /* NLS z-index layers: 1 background, 10 content, 20 header,
+         30 menus, 40 drawer, 50 mobile bottom nav, 60 FAB,
+         70 cart overlay, 71 cart, 80 modal, 90 alerts/loading. */
+      .background-orb,.orb-one,.orb-two{z-index:1!important}
+      .nls-header,#nlsHeader,.checkout-header{z-index:20!important}
+      .search-dropdown,.nls-nav-more-menu,.nls-mobile-search-panel{z-index:30!important}
+      .mobile-menu-overlay,#mobileMenuOverlay,.nls-drawer-overlay{z-index:40!important}
+      .nav-menu,.nls-drawer,#mobileDrawer{z-index:41!important}
+      #nls-mobile-bottom-nav{z-index:50!important}
+      .fab,.whatsapp-fab{z-index:60!important}
+      .cart-overlay{z-index:70!important}
+      .cart-sidebar{z-index:71!important}
+      #successModal,#accountSetupModal,.nls-modal,.modal{z-index:80!important}
+      .loading-overlay,.notification,#notification,.toast,[role="alert"]{z-index:90!important}
+      @media(max-width:1024px){#nls-mobile-bottom-nav{display:block!important;visibility:visible!important;z-index:50!important}}
+      @media(min-width:1025px){#nls-mobile-bottom-nav{display:none!important}}
+    `;
+    document.head.appendChild(style);
+  }
 
   function getY() {
     return Math.max(
@@ -98,6 +122,7 @@
   }
 
   function init() {
+    installZIndexSystem();
     lastY = getY();
     setHeaderHidden(false);
     keepBottomNavVisible();
