@@ -50,13 +50,11 @@
         overscroll-behavior-x: none;
       }
 
-      /* Keep the document as the primary scroller. */
       body:not(.${LOCK_CLASS}) {
         overflow-y: auto;
       }
 
-      /* Never let fixed mobile navigation consume the last content row. */
-      @media (max-width: 1023px) {
+      @media (max-width: 1024px) {
         :root { --nls-bottom-nav-space: calc(78px + env(safe-area-inset-bottom)); }
 
         body {
@@ -68,7 +66,6 @@
         }
       }
 
-      /* Standard nested scroll surfaces. */
       [data-scroll-container],
       .scroll-container,
       .overflow-y-auto,
@@ -84,16 +81,13 @@
         touch-action: pan-y;
       }
 
-      /* Do not create accidental horizontal page scrolling. */
       img, video, iframe, canvas, svg { max-width: 100%; }
 
-      /* Preserve the visual scrollbar without changing layout width. */
       html::-webkit-scrollbar { width: var(--nls-scrollbar-size); height: var(--nls-scrollbar-size); }
       html::-webkit-scrollbar-track { background: transparent; }
       html::-webkit-scrollbar-thumb { border-radius: 999px; background: rgba(127,127,127,.38); border: 2px solid transparent; background-clip: padding-box; }
       html { scrollbar-width: thin; scrollbar-color: rgba(127,127,127,.45) transparent; }
 
-      /* Modal lock is applied to the body while retaining the saved document offset. */
       body.${LOCK_CLASS} {
         position: fixed;
         left: 0;
@@ -115,7 +109,7 @@
     var nav = document.getElementById("nls-mobile-bottom-nav");
     var navSpace = 0;
 
-    if (nav && window.innerWidth <= 1023) {
+    if (nav && window.innerWidth <= 1024) {
       navSpace = Math.ceil(nav.getBoundingClientRect().height || 0);
       navSpace += 4;
     }
@@ -125,7 +119,10 @@
       navSpace > 0 ? navSpace + "px" : "calc(78px + env(safe-area-inset-bottom))"
     );
 
-    var header = document.querySelector("header, .nls-header, #nlsHeader, .checkout-header");
+    var header = document.getElementById("nlsHeader")
+      || document.querySelector("header.nls-header, header.checkout-header, header.dashboard-header, .dashboard-header, header[data-nextlevel-header]")
+      || document.querySelector("header");
+
     if (header) {
       var h = Math.ceil(header.getBoundingClientRect().height || 0);
       document.documentElement.style.setProperty("--nls-scroll-top-offset", h + "px");
