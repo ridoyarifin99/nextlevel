@@ -20,27 +20,27 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         document.head.appendChild(script);
     };
 
-    /* Shared functionality. */
-    load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-2', 'nextlevelCartFix');
-    load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
-    load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-1', 'nextlevelMobileBottomNav');
-    load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
-    load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
-
     /*
-       Details pages deliberately do NOT load the global viewport/scroll/nav
-       mutation scripts. details.html owns its document scrolling; having
-       several scripts rewrite html/body overflow, transforms and viewport
-       heights was the source of the conflicting behavior.
-    */
+     * Details pages intentionally use a minimal runtime. Their document
+     * scroll is owned by details.html itself. Global mutation/viewport scripts
+     * are kept away from this page so they cannot fight over html/body styles.
+     */
     if (!isDetailsPage) {
-        load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-1', 'nextlevelMobileViewportFix');
+        load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
+        load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
+        load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
         load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260906-5', 'nextlevelNavbarScroll');
         load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-1', 'nextlevelMobileNavInteraction');
     }
 
+    /* These are the only shared UI systems intentionally active on details. */
+    load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
+    load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
+    load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
+
     if (isDetailsPage) {
-        load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-3', 'nextlevelDetailsFix');
+        load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
+        load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
     }
 
     if (/\/details\.html$/i.test(path)) {
