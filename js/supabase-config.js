@@ -20,18 +20,11 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         document.head.appendChild(script);
     };
 
-    /*
-     * Details pages intentionally use the EXACT same shared viewport/navigation
-     * stack as index.html. Keeping a second viewport implementation here caused
-     * different scroll physics and bottom-edge behavior on mobile devices.
-     */
     load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
     load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
     load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260907-6', 'nextlevelNavbarScroll');
     load('script[data-nextlevel-mobile-nav-interaction]', '/js/mobile-nav-interaction.js?v=20260907-2', 'nextlevelMobileNavInteraction');
     load('script[data-nextlevel-navigation-fix]', '/js/iframe-navigation-fix.js?v=20260906-1', 'nextlevelNavigationFix');
-
-    /* Shared navigation/profile systems are identical to index.html. */
     load('script[data-nextlevel-mobile-bottom-nav]', '/js/mobile-bottom-nav.js?v=20260907-2', 'nextlevelMobileBottomNav');
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260906-3', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
@@ -40,7 +33,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
         load('script[data-nextlevel-legacy-review-cleanup]', '/js/details-review-cleanup.js?v=20260907-2', 'nextlevelLegacyReviewCleanup');
         load('script[data-nextlevel-reviews-product-bridge]', '/js/reviews-product-bridge.js?v=20260907-2', 'nextlevelReviewsProductBridge');
-        load('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260907-2', 'nextlevelExistingUiReviews');
+        load('script[data-nextlevel-existing-ui-reviews]', '/js/reviews-existing-ui.js?v=20260908-1', 'nextlevelExistingUiReviews');
         load('script[data-nextlevel-premium-review-ui]', '/js/reviews-premium-ui.js?v=20260907-1', 'nextlevelPremiumReviewUi');
         load('script[data-nextlevel-review-ux-polish]', '/js/reviews-ux-polish.js?v=20260908-1', 'nextlevelReviewUxPolish');
     }
