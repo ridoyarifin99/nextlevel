@@ -1,0 +1,190 @@
+/*
+ * Next Level Subs — Details Page Viewport Contract
+ *
+ * This stylesheet is intentionally self-contained. It does NOT set body
+ * height, body overflow, position:fixed, or a custom scroll container.
+ * The document remains the single page scroll surface.
+ *
+ * Uses modern dynamic viewport units (dvh/dvw) with safe fallbacks for
+ * mobile browsers whose address/tool bars change the visual viewport.
+ */
+
+html:has(body.nls-details-page),
+html {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body.nls-details-page,
+body {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: none;
+}
+
+/* Never allow a child to create horizontal page overflow. */
+body.nls-details-page > *,
+body > * {
+  max-width: 100%;
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg,
+iframe {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* The header belongs to the normal document flow. */
+.nls-details-page .nls-header,
+body.nls-details-page .nls-header {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  top: 0;
+}
+
+.nls-container,
+main,
+main > *,
+#tabContent,
+.product-details,
+.product-detail,
+.details-container,
+.details-content {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Prevent long names, URLs, review text and flex children from widening a page. */
+.nls-details-page :where(h1,h2,h3,h4,h5,h6,p,a,span,div,button,li) {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.nls-details-page :where(.flex,.grid) > * {
+  min-width: 0;
+}
+
+/*
+ * True viewport-sized surfaces.
+ * Prefer dvh: it follows the visible viewport as browser chrome expands/
+ * collapses. svh is the safe fallback, then vh for older browsers.
+ */
+.nls-details-page .nls-drawer,
+body.nls-details-page .nls-drawer,
+.nls-details-page .nls-drawer-overlay,
+body.nls-details-page .nls-drawer-overlay,
+.nls-details-page .cart-overlay,
+body.nls-details-page .cart-overlay,
+.nls-details-page .cart-sidebar,
+body.nls-details-page .cart-sidebar {
+  max-height: 100vh;
+  max-height: 100svh;
+  max-height: 100dvh;
+}
+
+.nls-details-page .nls-drawer,
+body.nls-details-page .nls-drawer,
+.nls-details-page .cart-sidebar,
+body.nls-details-page .cart-sidebar {
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+.nls-details-page .nls-drawer,
+body.nls-details-page .nls-drawer,
+.nls-details-page .cart-sidebar,
+body.nls-details-page .cart-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nls-details-page .nls-drawer-overlay,
+body.nls-details-page .nls-drawer-overlay,
+.nls-details-page .cart-overlay,
+body.nls-details-page .cart-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  width: 100dvw;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+}
+
+/* Avoid 100vw scrollbar-width jumps on normal content. */
+.nls-details-page .nls-container,
+body.nls-details-page .nls-container {
+  width: 100%;
+}
+
+/* Small-screen layout: account for notches/cutouts without changing the viewport itself. */
+@media (max-width: 1024px) {
+  body.nls-details-page {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  body.nls-details-page .nls-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  body.nls-details-page main {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  body.nls-details-page .nls-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+@media (max-width: 480px) {
+  body.nls-details-page .nls-container {
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+}
+
+/* Landscape phones/tablets: don't force desktop-sized minimums. */
+@media (orientation: landscape) and (max-width: 1024px) {
+  body.nls-details-page .nls-container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Accessibility: don't force smooth scrolling on touch devices. */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto !important;
+  }
+}
