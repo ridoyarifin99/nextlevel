@@ -36,7 +36,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-5', 'nextlevelNotificationsSystem');
 
     if (/\/dashboard\.html$/i.test(path)) {
-        load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-1', 'nextlevelDashboardButtonsResponsive');
+        load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-2', 'nextlevelDashboardButtonsResponsive');
     }
 
     if (isDetailsPage) {
