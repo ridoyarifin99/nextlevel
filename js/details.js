@@ -79,7 +79,7 @@ const products = [
                 description: "Thousands of movies and TV shows",
                 icon: "fab fa-amazon",
                 color: "#FF9900",
-                image: "./assets/cards/prime_video.svg",
+                image: "./assets/cards/prime_video.webp",
                 images: [
                     "./assets/details/primevideo/prime1.webp",
                     "./assets/details/primevideo/prime2.webp",
@@ -154,7 +154,7 @@ const products = [
                 description: "HBO, Warner Bros., DC, Max Originals",
                 icon: "fas fa-tv",
                 color: "#6a19ff",
-                image: "./assets/cards/hbo_max.svg",
+                image: "./assets/cards/hbo_max.webp",
                 images: [
                     "./assets/details/hbomax/1.webp",
                     "./assets/details/hbomax/2.webp",
@@ -228,7 +228,7 @@ const products = [
                 description: "Anime and manga streaming service",
                 icon: "fas fa-play-circle",
                 color: "#F47521",
-                image: "./assets/cards/crunchy.png",
+                image: "./assets/cards/crunchy.webp",
                 images: [
                     "./assets/details/crunchyroll/1.webp",
                     "./assets/details/crunchyroll/2.jpg",
@@ -459,7 +459,7 @@ const products = [
                 description: "Bengali. Bold. Streaming",
                 icon: "fas fa-play-circle",
                 color: "#ED1D51",
-                image: "./assets/cards/hoichoi.png",
+                image: "./assets/cards/hoichoi.webp",
                 images: [
                     "./assets/details/hoichoi/1.webp",
                     "./assets/details/hoichoi/2.webp",
@@ -537,7 +537,7 @@ const products = [
                 description: "Bengali. Bold. Streaming",
                 icon: "fas fa-play-circle",
                 color: "#ED1D51",
-                image: "./assets/cards/bongo.png",
+                image: "./assets/cards/bongo.webp",
                 images: [
                     "./assets/details/bongo/1.webp",
                     "./assets/details/bongo/2.webp",
