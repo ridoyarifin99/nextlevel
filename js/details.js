@@ -154,7 +154,7 @@ const products = [
                 description: "HBO, Warner Bros., DC, Max Originals",
                 icon: "fas fa-tv",
                 color: "#6a19ff",
-                image: "./assets/cards/hbo_max.webp",
+                image: "./assets/cards/hbo-max.webp",
                 images: [
                     "./assets/details/hbomax/1.webp",
                     "./assets/details/hbomax/2.webp",
