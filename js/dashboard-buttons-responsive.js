@@ -1,5 +1,6 @@
 (function () {
   "use strict";
+
   if (window.__NLSDashboardButtonsResponsiveLoaded) return;
   window.__NLSDashboardButtonsResponsiveLoaded = true;
 
@@ -7,18 +8,33 @@
 
   function apply() {
     if (document.getElementById("nls-dashboard-buttons-responsive")) return;
+
     const style = document.createElement("style");
     style.id = "nls-dashboard-buttons-responsive";
     style.textContent = `
+      /* Dashboard welcome actions: one responsive source of truth. */
       @media (max-width: 1024px) {
         .welcome-actions {
-          gap: 8px;
-          flex-wrap: wrap;
+          display: flex;
+          flex: 0 1 auto;
           align-items: center;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+          gap: 8px;
+          min-width: 0;
         }
-        .welcome-actions .btn-premium,
-        .welcome-actions .btn-outline-premium,
-        .welcome-actions .nls-edit-profile-btn {
+
+        .welcome-actions > .btn-premium,
+        .welcome-actions > .btn-outline-premium,
+        .welcome-actions > .nls-edit-profile-btn {
+          box-sizing: border-box;
+          display: inline-flex;
+          flex: 0 1 auto;
+          align-items: center;
+          justify-content: center;
+          width: auto !important;
+          min-width: 0;
+          max-width: 100%;
           min-height: 42px;
           height: 42px;
           padding: 0 14px;
@@ -26,38 +42,37 @@
           font-size: .8rem;
           line-height: 1;
           white-space: nowrap;
-          flex: 0 1 auto;
-          width: auto !important;
-          min-width: 0;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
-        .welcome-actions .btn-premium span,
-        .welcome-actions .btn-outline-premium span,
-        .welcome-actions .nls-edit-profile-btn span {
+
+        .welcome-actions > .btn-premium span,
+        .welcome-actions > .btn-outline-premium span,
+        .welcome-actions > .nls-edit-profile-btn span {
           min-width: 0;
-          overflow: hidden;
-          text-overflow: ellipsis;
           white-space: nowrap;
         }
-        .welcome-actions .btn-premium i,
-        .welcome-actions .btn-outline-premium i,
-        .welcome-actions .nls-edit-profile-btn i {
+
+        .welcome-actions > .btn-premium i,
+        .welcome-actions > .btn-outline-premium i,
+        .welcome-actions > .nls-edit-profile-btn i {
           flex: 0 0 auto;
         }
       }
 
       @media (max-width: 640px) {
-        .welcome-content { gap: 18px; }
+        .welcome-content {
+          gap: 18px;
+        }
+
         .welcome-actions {
           width: 100%;
+          flex: 1 1 100%;
           justify-content: flex-start;
           gap: 8px;
         }
-        .welcome-actions .btn-premium,
-        .welcome-actions .btn-outline-premium,
-        .welcome-actions .nls-edit-profile-btn {
+
+        .welcome-actions > .btn-premium,
+        .welcome-actions > .btn-outline-premium,
+        .welcome-actions > .nls-edit-profile-btn {
           min-height: 40px;
           height: 40px;
           padding: 0 12px;
@@ -66,11 +81,10 @@
         }
       }
 
-      @media (max-width: 380px) {
-        .welcome-actions { gap: 6px; }
-        .welcome-actions .btn-premium,
-        .welcome-actions .btn-outline-premium,
-        .welcome-actions .nls-edit-profile-btn {
+      @media (max-width: 420px) {
+        .welcome-actions > .btn-premium,
+        .welcome-actions > .btn-outline-premium,
+        .welcome-actions > .nls-edit-profile-btn {
           min-height: 38px;
           height: 38px;
           padding: 0 10px;
@@ -79,6 +93,7 @@
         }
       }
     `;
+
     document.head.appendChild(style);
   }
 
