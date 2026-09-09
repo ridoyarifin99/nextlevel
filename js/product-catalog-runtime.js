@@ -1,56 +1,23 @@
 "use strict";
-/* Central catalog bridge: DB is authoritative; legacy media remains a migration fallback until imported into product_media. */
+/* Central catalog bridge: Supabase is authoritative. */
 (function(){
-  const KEY="nls:product-catalog:v1";
-  const RELOADED="nls:product-catalog:reloaded";
-  const CART_KEY="streamHubCart";
+  const KEY="nls:product-catalog:v1",RELOADED="nls:product-catalog:reloaded",CART_KEY="streamHubCart";
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   const slugOf=p=>String(p?.slug||p?.name||"").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
-  const mediaFor=(p,role)=>{const media=Array.isArray(p?.product_media)?p.product_media:[];return media.filter(x=>x&&x.is_active!==false&&x.role===role).sort((a,b)=>(a.display_order||0)-(b.display_order||0));};
+  const mediaFor=(p,role)=>(Array.isArray(p?.product_media)?p.product_media:[]).filter(x=>x&&x.is_active!==false&&x.role===role).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
   const mediaUrl=x=>x?.url||"";
   const normalize=list=>(Array.isArray(list)?list:[]).map(p=>({slug:p.slug,name:p.name,price:Number(p.price||0),old_price:p.old_price==null?null:Number(p.old_price),image:p.image_url||p.image||mediaUrl(mediaFor(p,"primary")[0])||"",category:p.category||p.product_categories?.slug||"",available:p.is_available!==false}));
   const sig=list=>JSON.stringify(normalize(list));
 
-  const syncCheckoutCart=list=>{
-    try{
-      const raw=localStorage.getItem(CART_KEY);if(!raw)return;const cart=JSON.parse(raw);if(!Array.isArray(cart)||!cart.length)return;
-      const bySlug=new Map(list.map(p=>[String(p.slug||"").toLowerCase(),p]));const byName=new Map(list.map(p=>[String(p.name||"").trim().toLowerCase(),p]));
-      const next=cart.map(item=>{
-        const p=bySlug.get(String(item.slug||item.product_slug||"").toLowerCase())||byName.get(String(item.name||"").trim().toLowerCase());if(!p)return item;
-        const plans=Array.isArray(p.product_plans)?p.product_plans:[],current=item.selectedPlan||{};
-        const wantedDuration=String(current.duration||item.duration||"").trim().toLowerCase(),wantedName=String(current.name||"").trim().toLowerCase();
-        const plan=plans.find(x=>String(x.duration||"").trim().toLowerCase()===wantedDuration)||plans.find(x=>String(x.name||"").trim().toLowerCase()===wantedName)||plans[0]||null;
-        const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||item.image||"";
-        if(!plan)return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,available:p.is_available!==false};
-        return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,price:Number(plan.price||0),duration:plan.duration||plan.name||item.duration||"month",selectedPlan:{name:plan.name,duration:plan.duration,price:Number(plan.price||0),old_price:plan.old_price==null?null:Number(plan.old_price),currency:plan.currency||p.currency||"BDT"},available:p.is_available!==false&&plan.is_available!==false};
-      });
-      localStorage.setItem(CART_KEY,JSON.stringify(next));window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));
-      if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();if(typeof window.updateCartCount==="function")window.updateCartCount();
-    }catch(e){console.warn("NEXT LEVEL SUBS: could not sync checkout cart",e)}
-  };
+  const syncCheckoutCart=list=>{try{
+    const raw=localStorage.getItem(CART_KEY);if(!raw)return;const cart=JSON.parse(raw);if(!Array.isArray(cart)||!cart.length)return;
+    const bySlug=new Map(list.map(p=>[String(p.slug||"").toLowerCase(),p])),byName=new Map(list.map(p=>[String(p.name||"").trim().toLowerCase(),p]));
+    const next=cart.map(item=>{const p=bySlug.get(String(item.slug||item.product_slug||"").toLowerCase())||byName.get(String(item.name||"").trim().toLowerCase());if(!p)return item;const plans=Array.isArray(p.product_plans)?p.product_plans:[],current=item.selectedPlan||{};const wantedDuration=String(current.duration||item.duration||"").trim().toLowerCase(),wantedName=String(current.name||"").trim().toLowerCase();const plan=plans.find(x=>String(x.duration||"").trim().toLowerCase()===wantedDuration)||plans.find(x=>String(x.name||"").trim().toLowerCase()===wantedName)||plans[0]||null;const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||item.image||"";if(!plan)return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,available:p.is_available!==false};return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,price:Number(plan.price||0),duration:plan.duration||plan.name||item.duration||"month",selectedPlan:{name:plan.name,duration:plan.duration,price:Number(plan.price||0),old_price:plan.old_price==null?null:Number(plan.old_price),currency:plan.currency||p.currency||"BDT"},available:p.is_available!==false&&plan.is_available!==false});});
+    localStorage.setItem(CART_KEY,JSON.stringify(next));window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();if(typeof window.updateCartCount==="function")window.updateCartCount();
+  }catch(e){console.warn("NEXT LEVEL SUBS: could not sync checkout cart",e)}};
 
-  const apply=list=>{
-    if(!Array.isArray(window.NextLevelSubs?.subscriptions))return false;
-    const target=window.NextLevelSubs.subscriptions;
-    const legacyBySlug=new Map(target.map(p=>[slugOf(p),p]));
-    const mapped=list.map(p=>{
-      const legacy=legacyBySlug.get(slugOf(p))||{};
-      const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||legacy.image||"";
-      const logo=mediaUrl(mediaFor(p,"logo")[0])||legacy.logo||"";
-      const gallery=mediaFor(p,"gallery").map(mediaUrl).filter(Boolean);
-      const legacyGallery=Array.isArray(legacy.images)?legacy.images.filter(Boolean):[];
-      const serviceMedia=mediaFor(p,"service").map(x=>({url:mediaUrl(x),name:x.service_name||x.title||"",alt:x.alt_text||""})).filter(x=>x.url);
-      const legacyService=Array.isArray(legacy.serviceImages)?legacy.serviceImages.filter(x=>x?.url):[];
-      return {...p,image:primary,logo,images:gallery.length?gallery:legacyGallery,serviceImages:serviceMedia.length?serviceMedia:legacyService,categories:p.product_categories?[p.product_categories.slug]:p.categories||[],duration:p.product_plans?.[0]?.duration||p.duration||"month",price:Number(p.price||p.product_plans?.[0]?.price||0),pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""}))};
-    });
-    target.splice(0,target.length,...mapped);window.products=target;window.NextLevelSubs.getProductBySlug=slug=>target.find(p=>p.slug===slug)||null;syncCheckoutCart(list);window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:target}}));return true;
-  };
+  const apply=list=>{if(!Array.isArray(window.NextLevelSubs?.subscriptions))return false;const target=window.NextLevelSubs.subscriptions,legacyBySlug=new Map(target.map(p=>[slugOf(p),p]));const mapped=list.map(p=>{const legacy=legacyBySlug.get(slugOf(p))||{},cat=String(p.product_categories?.slug||p.category||"");const categories=new Set(Array.isArray(p.categories)?p.categories:[]);if(cat)categories.add(cat);if(p.is_featured)categories.add("best-selling");if(cat==="popular-streaming")categories.add("popular-streaming");if(cat==="music-streaming")categories.add("music-streaming");if(cat==="cloud-storage")categories.add("cloud-storage");if(cat==="vpn")categories.add("vpn");if(cat==="aiDesign")categories.add("aiDesign");if(cat==="combo")categories.add("combo");if(cat==="education")categories.add("education");if(cat==="adult")categories.add("adult");const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||legacy.image||"",logo=mediaUrl(mediaFor(p,"logo")[0])||legacy.logo||"",gallery=mediaFor(p,"gallery").map(mediaUrl).filter(Boolean),legacyGallery=Array.isArray(legacy.images)?legacy.images.filter(Boolean):[],serviceMedia=mediaFor(p,"service").map(x=>({url:mediaUrl(x),name:x.service_name||x.title||"",alt:x.alt_text||""})).filter(x=>x.url),legacyService=Array.isArray(legacy.serviceImages)?legacy.serviceImages.filter(x=>x?.url):[];return {...p,image:primary,logo,images:gallery.length?gallery:legacyGallery,serviceImages:serviceMedia.length?serviceMedia:legacyService,categories:[...categories],duration:p.product_plans?.[0]?.duration||p.duration||"month",price:Number(p.price||p.product_plans?.[0]?.price||0),pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""}))};});target.splice(0,target.length,...mapped);window.products=target;window.NextLevelSubs.getProductBySlug=slug=>target.find(p=>p.slug===slug)||null;syncCheckoutCart(list);window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:target}}));return true;};
 
-  async function run(){
-    for(let i=0;i<80;i++){if(window.NextLevelSubs?.subscriptions)break;await sleep(50)}if(!window.NextLevelSubs?.subscriptions)return;
-    let cached=null;try{cached=JSON.parse(localStorage.getItem(KEY)||"null")}catch{}if(Array.isArray(cached)&&cached.length)apply(cached);
-    const before=sig(window.NextLevelSubs.subscriptions);
-    try{const r=await fetch("/api/products",{cache:"no-store"});if(!r.ok)throw Error("Catalog API "+r.status);const body=await r.json(),fresh=body.products||[];localStorage.setItem(KEY,JSON.stringify(fresh));apply(fresh);const changed=before!==sig(fresh);if(changed&&!sessionStorage.getItem(RELOADED)){sessionStorage.setItem(RELOADED,"1");location.reload()}else if(!changed)sessionStorage.removeItem(RELOADED);}catch(e){console.warn("NEXT LEVEL SUBS: centralized catalog unavailable; using cached/static catalog",e)}
-  }
+  async function run(){for(let i=0;i<80;i++){if(window.NextLevelSubs?.subscriptions)break;await sleep(50)}if(!window.NextLevelSubs?.subscriptions)return;let cached=null;try{cached=JSON.parse(localStorage.getItem(KEY)||"null")}catch{}if(Array.isArray(cached)&&cached.length)apply(cached);const before=sig(window.NextLevelSubs.subscriptions);try{const r=await fetch("/api/products",{cache:"no-store"});if(!r.ok)throw Error("Catalog API "+r.status);const body=await r.json(),fresh=body.products||[];localStorage.setItem(KEY,JSON.stringify(fresh));apply(fresh);const changed=before!==sig(fresh);if(changed&&!sessionStorage.getItem(RELOADED)){sessionStorage.setItem(RELOADED,"1");location.reload()}else if(!changed)sessionStorage.removeItem(RELOADED)}catch(e){console.warn("NEXT LEVEL SUBS: centralized catalog unavailable; using cached/static catalog",e)}}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
 })();
