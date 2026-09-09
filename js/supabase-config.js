@@ -14,7 +14,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-mobile-bottom-nav]','/js/profile.js?v=20260908-2','nextlevelProfileSystem');
   load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
-  load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-4','nextlevelProductCatalogRuntime');
+  load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-5','nextlevelProductCatalogRuntime');
   if(/\/dashboard\.html$/i.test(path))load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');
   if(isDetailsPage){
     load('script[data-nextlevel-details-fix]','/js/details-page-fix.js?v=20260910-2','nextlevelDetailsFix');
@@ -29,6 +29,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   }
   if(/\/admin-products\.html$/i.test(path)){
     load('script[data-nextlevel-admin-product-media-system]','/js/admin-product-media-system.js?v=20260910-2','nextlevelAdminProductMediaSystem');
+    load('script[data-nextlevel-admin-product-category-system]','/js/admin-product-category-system.js?v=20260910-1','nextlevelAdminProductCategorySystem');
   }
   load('script[data-nextlevel-product-display-sync]','/js/product-display-sync.js?v=20260909-1','nextlevelProductDisplaySync');
 })();
