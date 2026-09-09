@@ -58,5 +58,9 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         load('script[data-nextlevel-admin-orders-design]', '/js/admin-orders-design.js?v=20260909-1', 'nextlevelAdminOrdersDesign');
     }
 
+    if (/\/admin-products\.html$/i.test(path)) {
+        load('script[data-nextlevel-admin-product-storage]', '/js/admin-product-storage.js?v=20260910-1', 'nextlevelAdminProductStorage');
+    }
+
     load('script[data-nextlevel-product-display-sync]', '/js/product-display-sync.js?v=20260909-1', 'nextlevelProductDisplaySync');
 })();
