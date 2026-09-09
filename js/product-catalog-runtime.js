@@ -36,12 +36,12 @@
     const mapped=list.map(p=>{
       const legacy=legacyBySlug.get(slugOf(p))||{};
       const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||legacy.image||"";
-      const logo=mediaUrl(mediaFor(p,"logo")[0])||legacy.logo||primary;
+      const logo=mediaUrl(mediaFor(p,"logo")[0])||legacy.logo||"";
       const gallery=mediaFor(p,"gallery").map(mediaUrl).filter(Boolean);
       const legacyGallery=Array.isArray(legacy.images)?legacy.images.filter(Boolean):[];
       const serviceMedia=mediaFor(p,"service").map(x=>({url:mediaUrl(x),name:x.service_name||x.title||"",alt:x.alt_text||""})).filter(x=>x.url);
       const legacyService=Array.isArray(legacy.serviceImages)?legacy.serviceImages.filter(x=>x?.url):[];
-      return {...p,image:primary,logo,images:gallery.length?gallery:(legacyGallery.length?legacyGallery:[primary]),serviceImages:serviceMedia.length?serviceMedia:legacyService,categories:p.product_categories?[p.product_categories.slug]:p.categories||[],duration:p.product_plans?.[0]?.duration||p.duration||"month",price:Number(p.price||p.product_plans?.[0]?.price||0),pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""}))};
+      return {...p,image:primary,logo,images:gallery.length?gallery:legacyGallery,serviceImages:serviceMedia.length?serviceMedia:legacyService,categories:p.product_categories?[p.product_categories.slug]:p.categories||[],duration:p.product_plans?.[0]?.duration||p.duration||"month",price:Number(p.price||p.product_plans?.[0]?.price||0),pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""}))};
     });
     target.splice(0,target.length,...mapped);window.products=target;window.NextLevelSubs.getProductBySlug=slug=>target.find(p=>p.slug===slug)||null;syncCheckoutCart(list);window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:target}}));return true;
   };
