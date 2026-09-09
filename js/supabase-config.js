@@ -10,15 +10,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 (function () {
     const path = window.location.pathname;
     const isDetailsPage = /\/details\.html$/i.test(path) || /\/product\//i.test(path);
-
-    const load = (selector, src, dataKey) => {
-        if (document.querySelector(selector)) return;
-        const script = document.createElement("script");
-        script.src = src;
-        script.async = false;
-        script.dataset[dataKey] = "true";
-        document.head.appendChild(script);
-    };
+    const load = (selector, src, dataKey) => { if (document.querySelector(selector)) return; const script=document.createElement("script"); script.src=src; script.async=false; script.dataset[dataKey]="true"; document.head.appendChild(script); };
 
     if (isDetailsPage) load('script[data-nextlevel-details-navbar-scroll]', '/js/details-navbar-scroll-fix.js?v=20260908-1', 'nextlevelDetailsNavbarScroll');
     else load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-6', 'nextlevelNavbarScroll');
@@ -56,6 +48,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 
     if (/\/admin-products\.html$/i.test(path)) {
         load('script[data-nextlevel-admin-product-media]', '/js/admin-product-media.js?v=20260910-2', 'nextlevelAdminProductMedia');
+        load('script[data-nextlevel-admin-product-media-legacy-ui]', '/js/admin-product-media-legacy-ui.js?v=20260910-1', 'nextlevelAdminProductMediaLegacyUi');
     }
 
     load('script[data-nextlevel-product-display-sync]', '/js/product-display-sync.js?v=20260909-1', 'nextlevelProductDisplaySync');
