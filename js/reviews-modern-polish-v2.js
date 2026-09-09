@@ -1,5 +1,5 @@
 "use strict";
-/* Next Level Subs — modern review polish: fixes malformed avatar markup, adds owner delete,
+/* Next Level Subs — modern review polish: fixes malformed avatar markup, adds reliable owner delete,
  * compact reply UX, emoji picker, reply deletion, and defensive DOM cleanup. */
 (() => {
   const path = window.location.pathname;
@@ -44,8 +44,24 @@
   async function decorateReplyOwner(reply,replyId,ownerId){const user=await getUser();if(!user||user.id!==ownerId)return;if(reply.querySelector("[data-nls-reply-delete]"))return;const actions=document.createElement("div");actions.className="nls-reply-own-actions";actions.innerHTML=`<button type="button" data-nls-reply-delete="${esc(replyId)}" class="delete"><i class="far fa-trash-can"></i> Delete</button>`;reply.appendChild(actions);actions.querySelector("button")?.addEventListener("click",()=>deleteReply(replyId));}
   async function deleteReply(id){const user=await getUser();if(!user||!id)return;if(!confirm("Delete your reply? This cannot be undone."))return;if(busy)return;busy=true;try{const {data:media}=await db().from("review_media").select("id,storage_path,user_id").eq("reply_id",id);const paths=(media||[]).map(x=>x.storage_path).filter(Boolean);if(paths.length)await db().storage.from("review-media").remove(paths);const {error}=await db().from("review_replies").delete().eq("id",id).eq("user_id",user.id);if(error)throw error;toast("Reply deleted");window.switchTab?.("reviews");}catch(e){console.error(e);toast(e?.message||"Unable to delete reply",true)}finally{busy=false;}}
   async function deleteReview(card){const id=card?.dataset.reviewId;if(!id)return;const user=await getUser();if(!user)return;if(!confirm("Delete your review and its media? This cannot be undone."))return;if(busy)return;busy=true;try{const {data:replies}=await db().from("review_replies").select("id").eq("review_id",id);const replyIds=(replies||[]).map(x=>x.id);const {data:media}=await db().from("review_media").select("id,storage_path").or(`review_id.eq.${id}${replyIds.length?`,reply_id.in.(${replyIds.join(",")})`:""}`);const paths=(media||[]).map(x=>x.storage_path).filter(Boolean);if(paths.length)await db().storage.from("review-media").remove(paths);const {error}=await db().from("product_reviews").delete().eq("id",id).eq("user_id",user.id);if(error)throw error;toast("Review deleted");window.switchTab?.("reviews");}catch(e){console.error(e);toast(e?.message||"Unable to delete review",true)}finally{busy=false;}}
-  function addDeleteButtons(){document.querySelectorAll(".nls-review-card[data-review-id]").forEach(card=>{const actions=card.querySelector(".nls-review-actions");if(!actions||actions.querySelector("[data-nls-review-delete]"))return;if(!actions.querySelector("[data-edit]"))return;const b=document.createElement("button");b.type="button";b.className="nls-review-action nls-review-delete";b.dataset.nlsReviewDelete="1";b.innerHTML=`<i class="far fa-trash-can mr-1"></i> Delete`;b.addEventListener("click",()=>deleteReview(card));actions.appendChild(b);});}
-  async function decorate(){styles();addDeleteButtons();enhanceReplies();}
+  async function addDeleteButtons(){
+    const user=await getUser();
+    if(!user)return;
+    const cards=[...document.querySelectorAll(".nls-review-card[data-review-id]")];
+    if(!cards.length)return;
+    const ids=cards.map(card=>card.dataset.reviewId).filter(Boolean);
+    try{
+      const {data,error}=await db().from("product_reviews").select("id,user_id").in("id",ids);
+      if(error)throw error;
+      const owned=new Set((data||[]).filter(row=>row.user_id===user.id).map(row=>row.id));
+      cards.forEach(card=>{
+        const actions=card.querySelector(".nls-review-actions"),id=card.dataset.reviewId;
+        if(!actions||!owned.has(id)||actions.querySelector("[data-nls-review-delete]"))return;
+        const b=document.createElement("button");b.type="button";b.className="nls-review-action nls-review-delete";b.dataset.nlsReviewDelete="1";b.innerHTML=`<i class="far fa-trash-can mr-1"></i> Delete`;b.addEventListener("click",()=>deleteReview(card));actions.appendChild(b);
+      });
+    }catch(e){console.warn("NEXT LEVEL SUBS: could not resolve review owners",e)}
+  }
+  async function decorate(){styles();await addDeleteButtons();enhanceReplies();}
   function schedule(){clearTimeout(observerTimer);observerTimer=setTimeout(decorate,120)}
   function install(){styles();const box=document.getElementById("tabContent");if(box)new MutationObserver(schedule).observe(box,{childList:true,subtree:true});const original=window.switchTab;if(typeof original==="function"&&!original.__nlsModernReview){const wrapped=function(tab){const result=original.apply(this,arguments);if(tab==="reviews")setTimeout(decorate,220);return result};wrapped.__nlsModernReview=true;window.switchTab=wrapped;}setTimeout(decorate,600);}
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",install,{once:true});else install();
