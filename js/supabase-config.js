@@ -4,8 +4,11 @@ window.SUPABASE_ANON_KEY="sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7";
 window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
 (function(){
   const path=window.location.pathname,isDetailsPage=/\/details\.html$/i.test(path)||/\/product\//i.test(path);
+  /* details.html historically included input.css in addition to output.css. Keep the source file for development, but never load it in production pages. */
+  document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
+  /* Prevent stale localhost compatibility configuration from surviving into production. */
+  if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  /* One navbar owner only. navbar-scroll.js already follows parent scroll for product iframes. */
   load('script[data-nextlevel-navbar-scroll]','/js/navbar-scroll.js?v=20260910-1','nextlevelNavbarScroll');
   load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');load('script[data-nextlevel-mobile-viewport-fix]','/js/mobile-viewport-fix.js?v=20260907-2','nextlevelMobileViewportFix');load('script[data-nextlevel-mobile-nav-interaction]','/js/mobile-nav-interaction.js?v=20260908-2','nextlevelMobileNavInteraction');load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');load('script[data-nextlevel-mobile-bottom-nav]','/js/mobile-bottom-nav.js?v=20260907-2','nextlevelMobileBottomNav');load('script[data-nextlevel-profile-system]','/js/profile.js?v=20260908-2','nextlevelProfileSystem');load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-4','nextlevelProductCatalogRuntime');
   if(/\/dashboard\.html$/i.test(path))load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');
