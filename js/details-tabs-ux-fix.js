@@ -31,122 +31,73 @@
     .nls-review-cta:hover{transform:translateY(-2px);filter:saturate(1.05)}
     .nls-review-cta:hover::after{transform:translateX(110%)}
     .nls-review-cta:active{transform:translateY(0) scale(.98)}
-    @media(max-width:640px){
-      .tab-button{padding-left:.7rem;padding-right:.7rem}
-      .nls-faq-item.nls-faq-open .nls-faq-answer{padding-left:.85rem!important;padding-right:.85rem!important}
-    }
-    @media(prefers-reduced-motion:reduce){
-      .tab-button,.nls-tab-content-transition,.nls-faq-item,.nls-faq-answer,.nls-faq-chevron,.nls-review-cta{transition:none!important}
-      .nls-review-cta::after{display:none}
-    }
+    @media(max-width:640px){.tab-button{padding-left:.7rem;padding-right:.7rem}.nls-faq-item.nls-faq-open .nls-faq-answer{padding-left:.85rem!important;padding-right:.85rem!important}}
+    @media(prefers-reduced-motion:reduce){.tab-button,.nls-tab-content-transition,.nls-faq-item,.nls-faq-answer,.nls-faq-chevron,.nls-review-cta{transition:none!important}.nls-review-cta::after{display:none}}
   `;
   document.head.appendChild(style);
 
-  function animateContent() {
-    const content = document.getElementById("tabContent");
-    if (!content) return;
-    content.classList.remove("nls-tab-content-visible");
-    content.classList.add("nls-tab-content-transition");
-    if (prefersReduced) {
-      content.classList.add("nls-tab-content-visible");
-      return;
-    }
-    requestAnimationFrame(() => requestAnimationFrame(() => content.classList.add("nls-tab-content-visible")));
+  function animateContent(){
+    const content=document.getElementById("tabContent"); if(!content)return;
+    content.classList.remove("nls-tab-content-visible"); content.classList.add("nls-tab-content-transition");
+    if(prefersReduced){content.classList.add("nls-tab-content-visible");return;}
+    requestAnimationFrame(()=>requestAnimationFrame(()=>content.classList.add("nls-tab-content-visible")));
   }
 
-  function decorateFaq() {
-    const content = document.getElementById("tabContent");
-    if (!content) return;
-    content.querySelectorAll("button").forEach(button => {
-      const answer = button.nextElementSibling;
-      const icon = button.querySelector("i");
-      if (!answer || !icon || !/question|faq/i.test(button.parentElement?.textContent || "")) return;
-      if (button.dataset.nlsFaqEnhanced === "1") return;
-      button.dataset.nlsFaqEnhanced = "1";
-      const item = button.parentElement;
-      item.classList.add("nls-faq-item");
-      button.classList.add("nls-faq-question");
-      answer.classList.add("nls-faq-answer");
-      icon.classList.add("nls-faq-chevron");
-      const inner = document.createElement("div");
-      while (answer.firstChild) inner.appendChild(answer.firstChild);
-      answer.appendChild(inner);
-      answer.classList.remove("hidden");
-      const old = window.toggleFAQ;
-      button.onclick = e => {
+  function decorateFaq(){
+    const content=document.getElementById("tabContent"); if(!content)return;
+    content.querySelectorAll("button").forEach(button=>{
+      const answer=button.nextElementSibling;
+      const icon=button.querySelector("i.fa-chevron-down,.fa-chevron-down");
+      if(!answer||!icon)return;
+      if(button.dataset.nlsFaqEnhanced==="1")return;
+      button.dataset.nlsFaqEnhanced="1";
+      const item=button.parentElement;
+      item.classList.add("nls-faq-item"); button.classList.add("nls-faq-question"); answer.classList.add("nls-faq-answer"); icon.classList.add("nls-faq-chevron");
+      const inner=document.createElement("div"); while(answer.firstChild)inner.appendChild(answer.firstChild); answer.appendChild(inner); answer.classList.remove("hidden");
+      button.onclick=e=>{
         e.preventDefault();
-        const open = item.classList.contains("nls-faq-open");
-        if (typeof old === "function") {
-          /* Keep the original function available for compatibility, but don't let
-             its hidden-class toggle fight the animated accordion. */
-          try { old(button); } catch (_) {}
-        }
-        answer.classList.remove("hidden");
-        item.classList.toggle("nls-faq-open", !open);
-        button.setAttribute("aria-expanded", String(!open));
-        if (open) setTimeout(() => { if (!item.classList.contains("nls-faq-open")) answer.classList.remove("hidden"); }, 360);
+        const open=item.classList.contains("nls-faq-open");
+        answer.classList.remove("hidden"); item.classList.toggle("nls-faq-open",!open); button.setAttribute("aria-expanded",String(!open));
       };
-      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-expanded","false");
     });
   }
 
-  function decorateReviewCta() {
-    const content = document.getElementById("tabContent");
-    if (!content) return;
-    content.querySelectorAll("button").forEach(button => {
-      if (/write\s+a\s+review/i.test(button.textContent || "")) {
+  function decorateReviewCta(){
+    const content=document.getElementById("tabContent"); if(!content)return;
+    content.querySelectorAll("button").forEach(button=>{
+      if(/write\s+a\s+review/i.test(button.textContent||"")){
         button.classList.add("nls-review-cta");
-        if (!button.dataset.nlsReviewUx) {
-          button.dataset.nlsReviewUx = "1";
-          button.addEventListener("click", () => {
-            setTimeout(() => {
-              const form = content.querySelector(".nls-existing-review-form, [data-review-form]");
-              form?.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
-            }, 80);
-          });
+        if(!button.dataset.nlsReviewUx){
+          button.dataset.nlsReviewUx="1";
+          button.addEventListener("click",()=>setTimeout(()=>content.querySelector(".nls-existing-review-form,[data-review-form]")?.scrollIntoView({behavior:prefersReduced?"auto":"smooth",block:"nearest"}),80));
         }
       }
     });
   }
 
-  let wrapped = false;
-  function wrapTabFunctions() {
-    if (typeof window.switchTab !== "function") return false;
-    if (window.switchTab.__nlsUxWrapped) return true;
-    const original = window.switchTab;
-    const wrappedSwitch = function(tab) {
-      const content = document.getElementById("tabContent");
-      if (content) content.classList.remove("nls-tab-content-visible");
-      original(tab);
-      animateContent();
-      setTimeout(() => { decorateFaq(); decorateReviewCta(); }, 20);
+  let wrapped=false;
+  function wrapTabFunctions(){
+    if(typeof window.switchTab!=="function")return false;
+    if(window.switchTab.__nlsUxWrapped)return true;
+    const original=window.switchTab;
+    const wrappedSwitch=function(tab){
+      const content=document.getElementById("tabContent"); if(content)content.classList.remove("nls-tab-content-visible");
+      original(tab); animateContent(); setTimeout(()=>{decorateFaq();decorateReviewCta();},20);
     };
-    wrappedSwitch.__nlsUxWrapped = true;
-    window.switchTab = wrappedSwitch;
-    wrapped = true;
-    return true;
+    wrappedSwitch.__nlsUxWrapped=true; window.switchTab=wrappedSwitch; wrapped=true; return true;
   }
 
-  const observer = new MutationObserver(() => {
-    decorateFaq();
-    decorateReviewCta();
-  });
-
-  function init() {
-    if (wrapped || wrapTabFunctions()) {
-      const content = document.getElementById("tabContent");
-      if (content) observer.observe(content, { childList: true, subtree: true });
-      animateContent();
-      decorateFaq();
-      decorateReviewCta();
-      return true;
+  let observer;
+  function init(){
+    if(wrapped||wrapTabFunctions()){
+      const content=document.getElementById("tabContent");
+      if(content&&!observer){observer=new MutationObserver(()=>{decorateFaq();decorateReviewCta();});observer.observe(content,{childList:true,subtree:true});}
+      animateContent();decorateFaq();decorateReviewCta();return true;
     }
     return false;
   }
 
-  let attempts = 0;
-  const timer = setInterval(() => {
-    attempts++;
-    if (init() || attempts > 100) clearInterval(timer);
-  }, 50);
+  let attempts=0;
+  const timer=setInterval(()=>{attempts++;if(init()||attempts>100)clearInterval(timer);},50);
 })();
