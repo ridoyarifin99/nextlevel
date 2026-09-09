@@ -34,7 +34,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260908-2', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
     load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-5', 'nextlevelNotificationsSystem');
-    load('script[data-nextlevel-product-catalog-runtime]', '/js/product-catalog-runtime.js?v=20260909-1', 'nextlevelProductCatalogRuntime');
+    load('script[data-nextlevel-product-catalog-runtime]', '/js/product-catalog-runtime.js?v=20260909-2', 'nextlevelProductCatalogRuntime');
 
     if (/\/dashboard\.html$/i.test(path)) {
         load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-2', 'nextlevelDashboardButtonsResponsive');
