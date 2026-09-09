@@ -1,6 +1,6 @@
 "use strict";
 const fs=require("fs"),path=require("path");
-const SITE={name:"NEXT LEVEL SUBS",domain:"https://www.nextlevelsubs.com",language:"en-BD",logo:"/assets/logo.png",facebook:"https://www.facebook.com/nextlevelestoresubs",whatsapp:"https://wa.me/8801644490566"};
+const SITE={name:"NEXT LEVEL SUBS",domain:"https://www.nextlevelsubs.com",language:"en-BD",logo:"/images/logo.png",facebook:"https://www.facebook.com/nextlevelestoresubs",whatsapp:"https://wa.me/8801644490566"};
 const aliases={netflix:"netflix-premium",duolingo:"doulingo","youtube-premium-nonrenewable":"youtube-premium-non-renewable"};
 function slugify(v){return String(v==null?"":v).toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")}
 function escapeHTML(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;")}
