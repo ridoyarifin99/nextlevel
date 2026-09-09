@@ -9,10 +9,26 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
-  load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');load('script[data-nextlevel-mobile-viewport-fix]','/js/mobile-viewport-fix.js?v=20260907-2','nextlevelMobileViewportFix');load('script[data-nextlevel-mobile-bottom-nav]','/js/profile.js?v=20260908-2','nextlevelProfileSystem');load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-4','nextlevelProductCatalogRuntime');
+  load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');
+  load('script[data-nextlevel-mobile-viewport-fix]','/js/mobile-viewport-fix.js?v=20260907-2','nextlevelMobileViewportFix');
+  load('script[data-nextlevel-mobile-bottom-nav]','/js/profile.js?v=20260908-2','nextlevelProfileSystem');
+  load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');
+  load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
+  load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-4','nextlevelProductCatalogRuntime');
   if(/\/dashboard\.html$/i.test(path))load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');
-  if(isDetailsPage){load('script[data-nextlevel-details-fix]','/js/details-page-fix.js?v=20260907-4','nextlevelDetailsFix');load('script[data-nextlevel-details-tabs-ux]','/js/details-tabs-ux-fix.js?v=20260910-1','nextlevelDetailsTabsUx');load('script[data-nextlevel-details-premium-content]','/js/details-premium-content.js?v=20260910-2','nextlevelDetailsPremiumContent');load('script[data-nextlevel-reviews-system]','/js/reviews-system.js?v=20260910-1','nextlevelReviewsSystem');load('script[data-nextlevel-product-media-details]','/js/product-media-details-bridge.js?v=20260910-1','nextlevelProductMediaDetails');}
-  if(/\/admin-orders\.html$/i.test(path)){load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');load('script[data-nextlevel-admin-product-management-link]','/js/admin-product-management-link.js?v=20260909-1','nextlevelAdminProductManagementLink');load('script[data-nextlevel-admin-orders-design]','/js/admin-orders-design.js?v=20260909-1','nextlevelAdminOrdersDesign');}
-  if(/\/admin-products\.html$/i.test(path)){load('script[data-nextlevel-admin-product-media]','/js/admin-product-media.js?v=20260910-5','nextlevelAdminProductMedia');load('script[data-nextlevel-admin-product-media-legacy-ui]','/js/admin-product-media-legacy-ui.js?v=20260910-1','nextlevelAdminProductMediaLegacyUi');load('script[data-nextlevel-admin-product-media-migrate]','/js/admin-product-media-migrate.js?v=20260910-2','nextlevelAdminProductMediaMigrate');load('script[data-nextlevel-admin-product-media-upload-all]','/js/admin-product-media-upload-all.js?v=20260910-2','nextlevelAdminProductMediaUploadAll');}
+  if(isDetailsPage){
+    load('script[data-nextlevel-details-fix]','/js/details-page-fix.js?v=20260910-2','nextlevelDetailsFix');
+    load('script[data-nextlevel-details-premium-content]','/js/details-premium-content.js?v=20260910-2','nextlevelDetailsPremiumContent');
+    load('script[data-nextlevel-reviews-system]','/js/reviews-system.js?v=20260910-1','nextlevelReviewsSystem');
+    load('script[data-nextlevel-product-media-details]','/js/product-media-details-bridge.js?v=20260910-1','nextlevelProductMediaDetails');
+  }
+  if(/\/admin-orders\.html$/i.test(path)){
+    load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');
+    load('script[data-nextlevel-admin-product-management-link]','/js/admin-product-management-link.js?v=20260909-1','nextlevelAdminProductManagementLink');
+    load('script[data-nextlevel-admin-orders-design]','/js/admin-orders-design.js?v=20260909-1','nextlevelAdminOrdersDesign');
+  }
+  if(/\/admin-products\.html$/i.test(path)){
+    load('script[data-nextlevel-admin-product-media-system]','/js/admin-product-media-system.js?v=20260910-2','nextlevelAdminProductMediaSystem');
+  }
   load('script[data-nextlevel-product-display-sync]','/js/product-display-sync.js?v=20260909-1','nextlevelProductDisplaySync');
 })();
