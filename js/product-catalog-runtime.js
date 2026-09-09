@@ -5,8 +5,24 @@
   const RELOADED="nls:product-catalog:reloaded";
   const CART_KEY="streamHubCart";
   const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-  const normalize=list=>(Array.isArray(list)?list:[]).map(p=>({slug:p.slug,name:p.name,price:Number(p.price||0),old_price:p.old_price==null?null:Number(p.old_price),image:p.image||p.image_url||"",category:p.category||p.product_categories?.slug||"",available:p.is_available!==false}));
+
+  const mediaFor = (p, role) => {
+    const media = Array.isArray(p?.product_media) ? p.product_media : [];
+    return media.filter(x => x && x.is_active !== false && x.role === role).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+  };
+  const mediaUrl = x => x?.url || "";
+
+  const normalize = list => (Array.isArray(list)?list:[]).map(p=>({
+    slug:p.slug,
+    name:p.name,
+    price:Number(p.price||0),
+    old_price:p.old_price==null?null:Number(p.old_price),
+    image:p.image_url||p.image||mediaUrl(mediaFor(p,"primary")[0])||"",
+    category:p.category||p.product_categories?.slug||"",
+    available:p.is_available!==false
+  }));
   const sig=list=>JSON.stringify(normalize(list));
+
   const syncCheckoutCart=list=>{
     try{
       const raw=localStorage.getItem(CART_KEY); if(!raw)return;
@@ -21,17 +37,63 @@
         const wantedDuration=String(current.duration||item.duration||"").trim().toLowerCase();
         const wantedName=String(current.name||"").trim().toLowerCase();
         const plan=plans.find(x=>String(x.duration||"").trim().toLowerCase()===wantedDuration)||plans.find(x=>String(x.name||"").trim().toLowerCase()===wantedName)||plans[0]||null;
-        if(!plan)return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image_url||p.image||item.image||"",available:p.is_available!==false};
-        return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image_url||p.image||"",price:Number(plan.price||0),duration:plan.duration||plan.name||item.duration||"month",selectedPlan:{name:plan.name,duration:plan.duration,price:Number(plan.price||0),old_price:plan.old_price==null?null:Number(plan.old_price),currency:plan.currency||p.currency||"BDT"},available:p.is_available!==false&&plan.is_available!==false};
+        const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||item.image||"";
+        if(!plan)return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,available:p.is_available!==false};
+        return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:primary,price:Number(plan.price||0),duration:plan.duration||plan.name||item.duration||"month",selectedPlan:{name:plan.name,duration:plan.duration,price:Number(plan.price||0),old_price:plan.old_price==null?null:Number(plan.old_price),currency:plan.currency||p.currency||"BDT"},available:p.is_available!==false&&plan.is_available!==false};
       });
       localStorage.setItem(CART_KEY,JSON.stringify(next));
-      try{cart=next}catch{}
       window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));
       if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();
       if(typeof window.updateCartCount==="function")window.updateCartCount();
     }catch(e){console.warn("NEXT LEVEL SUBS: could not sync checkout cart",e)}
   };
-  const apply=list=>{if(!Array.isArray(window.NextLevelSubs?.subscriptions))return false;const target=window.NextLevelSubs.subscriptions;const mapped=list.map(p=>({...p,image:p.image_url||p.image||"",categories:p.product_categories?[p.product_categories.slug]:p.categories||[],duration:p.product_plans?.[0]?.duration||p.duration||"month",price:Number(p.price||p.product_plans?.[0]?.price||0),pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT"}))}));target.splice(0,target.length,...mapped);window.products=target;window.NextLevelSubs.getProductBySlug=slug=>target.find(p=>p.slug===slug)||null;syncCheckoutCart(list);window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:target}}));return true};
-  async function run(){for(let i=0;i<80;i++){if(window.NextLevelSubs?.subscriptions)break;await sleep(50)}if(!window.NextLevelSubs?.subscriptions)return;let cached=null;try{cached=JSON.parse(localStorage.getItem(KEY)||"null")}catch{}if(Array.isArray(cached)&&cached.length)apply(cached);const before=sig(window.NextLevelSubs.subscriptions);try{const r=await fetch("/api/products",{cache:"no-store"});if(!r.ok)throw Error("Catalog API "+r.status);const body=await r.json();const fresh=body.products||[];localStorage.setItem(KEY,JSON.stringify(fresh));apply(fresh);const changed=before!==sig(fresh);if(changed&&!sessionStorage.getItem(RELOADED)){sessionStorage.setItem(RELOADED,"1");location.reload()}else if(!changed)sessionStorage.removeItem(RELOADED)}catch(e){console.warn("NEXT LEVEL SUBS: centralized catalog unavailable; using cached/static catalog",e)}}
+
+  const apply=list=>{
+    if(!Array.isArray(window.NextLevelSubs?.subscriptions))return false;
+    const target=window.NextLevelSubs.subscriptions;
+    const mapped=list.map(p=>{
+      const primary=mediaUrl(mediaFor(p,"primary")[0])||p.image_url||p.image||"";
+      const logo=mediaUrl(mediaFor(p,"logo")[0])||primary;
+      const gallery=mediaFor(p,"gallery").map(mediaUrl).filter(Boolean);
+      const serviceMedia=mediaFor(p,"service").map(x=>({url:mediaUrl(x),name:x.service_name||x.title||"",alt:x.alt_text||""})).filter(x=>x.url);
+      return {
+        ...p,
+        image:primary,
+        logo,
+        images:gallery.length?gallery:[primary],
+        serviceImages:serviceMedia,
+        categories:p.product_categories?[p.product_categories.slug]:p.categories||[],
+        duration:p.product_plans?.[0]?.duration||p.duration||"month",
+        price:Number(p.price||p.product_plans?.[0]?.price||0),
+        pricing:(p.product_plans||[]).map(x=>({duration:x.duration,price:Number(x.price||0),old_price:x.old_price,currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""}))
+      };
+    });
+    target.splice(0,target.length,...mapped);
+    window.products=target;
+    window.NextLevelSubs.getProductBySlug=slug=>target.find(p=>p.slug===slug)||null;
+    syncCheckoutCart(list);
+    window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:target}}));
+    return true;
+  };
+
+  async function run(){
+    for(let i=0;i<80;i++){if(window.NextLevelSubs?.subscriptions)break;await sleep(50)}
+    if(!window.NextLevelSubs?.subscriptions)return;
+    let cached=null;try{cached=JSON.parse(localStorage.getItem(KEY)||"null")}catch{}
+    if(Array.isArray(cached)&&cached.length)apply(cached);
+    const before=sig(window.NextLevelSubs.subscriptions);
+    try{
+      const r=await fetch("/api/products",{cache:"no-store"});
+      if(!r.ok)throw Error("Catalog API "+r.status);
+      const body=await r.json();
+      const fresh=body.products||[];
+      localStorage.setItem(KEY,JSON.stringify(fresh));
+      apply(fresh);
+      const changed=before!==sig(fresh);
+      if(changed&&!sessionStorage.getItem(RELOADED)){sessionStorage.setItem(RELOADED,"1");location.reload()}
+      else if(!changed)sessionStorage.removeItem(RELOADED);
+    }catch(e){console.warn("NEXT LEVEL SUBS: centralized catalog unavailable; using cached/static catalog",e)}
+  }
+
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",run,{once:true});else run();
 })();
