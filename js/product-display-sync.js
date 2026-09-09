@@ -125,16 +125,17 @@
             const price = safeNumber(sub.price);
 
             const title = card.querySelector("h3, .subscription-title, .product-name");
-            if (title && name) title.textContent = name;
+            if (title && name && title.textContent !== name) title.textContent = name;
 
             if (image) {
                 const img = card.querySelector("img");
-                if (img) {
+                if (img && img.src !== new URL(image, window.location.href).href) {
                     img.src = image;
                     img.removeAttribute("srcset");
                 }
             }
 
+            const priceText = `৳${money(price)}`;
             let priceEl = card.querySelector("[data-custom-subscription-price]");
             if (!priceEl) {
                 priceEl = document.createElement("div");
@@ -149,7 +150,7 @@
                 }
             }
 
-            priceEl.textContent = `৳${money(price)}`;
+            if (priceEl.textContent !== priceText) priceEl.textContent = priceText;
         });
     }
 
@@ -268,21 +269,28 @@
                 const plan = firstText(primary.plan_duration, item.plan_duration, "Standard");
 
                 const nameEl = productEl.querySelector(".product-name");
-                if (nameEl && name) nameEl.textContent = name;
+                if (nameEl && name && nameEl.textContent !== name) nameEl.textContent = name;
 
                 const imageEl = productEl.querySelector(".product-img");
                 if (imageEl && image) {
-                    imageEl.src = image;
-                    imageEl.removeAttribute("srcset");
+                    const resolvedImage = new URL(image, window.location.href).href;
+                    if (imageEl.src !== resolvedImage) {
+                        imageEl.src = image;
+                        imageEl.removeAttribute("srcset");
+                    }
                 }
 
                 const tags = productEl.querySelectorAll(".tag");
-                if (tags[0]) tags[0].textContent = `Plan: ${plan}`;
-                if (tags[1]) tags[1].textContent = `Qty: ${quantity}`;
-                if (tags[2]) tags[2].textContent = `Unit: ৳${money(unitPrice)}`;
+                const planText = `Plan: ${plan}`;
+                const qtyText = `Qty: ${quantity}`;
+                const unitText = `Unit: ৳${money(unitPrice)}`;
+                if (tags[0] && tags[0].textContent !== planText) tags[0].textContent = planText;
+                if (tags[1] && tags[1].textContent !== qtyText) tags[1].textContent = qtyText;
+                if (tags[2] && tags[2].textContent !== unitText) tags[2].textContent = unitText;
 
+                const totalText = `৳${money(unitPrice * quantity)}`;
                 const totalEl = productEl.querySelector(".product-price");
-                if (totalEl) totalEl.textContent = `৳${money(unitPrice * quantity)}`;
+                if (totalEl && totalEl.textContent !== totalText) totalEl.textContent = totalText;
             });
         });
     }
