@@ -1,194 +1,72 @@
-(function () {
-  "use strict";
-
-  const isProductPage = /\/product\//i.test(window.location.pathname) || /details\.html$/i.test(window.location.pathname);
-  if (!isProductPage || window.__NLSDetailsFixLoaded) return;
+"use strict";
+(() => {
+  if (!/\/details\.html$/i.test(location.pathname) && !/\/product\//i.test(location.pathname)) return;
+  if (window.__NLSDetailsFixLoaded) return;
   window.__NLSDetailsFixLoaded = true;
 
   const SITE = "https://www.nextlevelsubs.com";
-
-  function slugFromUrl() {
-    const match = window.location.pathname.match(/\/product\/([^/?#]+)/i);
-    if (match) return decodeURIComponent(match[1]);
-    try {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("slug") || params.get("product") || "";
-    } catch (_) { return ""; }
-  }
-
-  function titleize(slug) {
-    return slug.replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase()).trim();
-  }
-
-  function setMeta(name, content) {
-    if (!content) return;
-    let el = document.querySelector(`meta[name="${name}"]`);
-    if (!el) {
-      el = document.createElement("meta");
-      el.name = name;
-      document.head.appendChild(el);
-    }
-    el.content = content;
-  }
-
-  function setOg(property, content) {
-    if (!content) return;
-    let el = document.querySelector(`meta[property="${property}"]`);
-    if (!el) {
-      el = document.createElement("meta");
-      el.setAttribute("property", property);
-      document.head.appendChild(el);
-    }
-    el.content = content;
-  }
+  const $ = (s, root = document) => root.querySelector(s);
+  const slugFromUrl = () => {
+    const m = location.pathname.match(/\/product\/([^/?#]+)/i);
+    if (m) return decodeURIComponent(m[1]);
+    try { const p = new URLSearchParams(location.search); return p.get("slug") || p.get("product") || ""; } catch { return ""; }
+  };
+  const titleize = s => String(s || "").replace(/[-_]+/g, " ").replace(/\b\w/g, c => c.toUpperCase()).trim();
+  const setMeta = (name, content) => { if (!content) return; let el = $(`meta[name="${name}"]`); if (!el) { el = document.createElement("meta"); el.name = name; document.head.appendChild(el); } el.content = content; };
+  const setOg = (property, content) => { if (!content) return; let el = $(`meta[property="${property}"]`); if (!el) { el = document.createElement("meta"); el.setAttribute("property", property); document.head.appendChild(el); } el.content = content; };
 
   function fixSeo() {
-    const slug = slugFromUrl();
-    if (!slug) return;
-    const fallbackName = titleize(slug);
-    const heading = document.querySelector("h1, [data-product-name], .product-title, .details-title");
-    const productName = (heading && heading.textContent.trim()) || fallbackName;
-    const description = document.querySelector('meta[name="description"]')?.content ||
-      `Buy ${productName} subscription in Bangladesh from Next Level Subs. View plans, pricing, features and instant delivery options.`;
-    const canonicalUrl = `${SITE}/product/${encodeURIComponent(slug)}`;
-
+    const slug = slugFromUrl(); if (!slug) return;
+    const heading = $("h1, [data-product-name], .product-title, .details-title");
+    const productName = heading?.textContent.trim() || titleize(slug);
+    const description = $("meta[name=description]")?.content || `Buy ${productName} subscription in Bangladesh from Next Level Subs. View plans, pricing, features and instant delivery options.`;
+    const canonical = `${SITE}/product/${encodeURIComponent(slug)}`;
     document.title = `${productName} Subscription | NEXT LEVEL SUBS`;
     setMeta("description", description.slice(0, 160));
     setMeta("twitter:title", document.title);
     setMeta("twitter:description", description.slice(0, 200));
     setOg("og:title", document.title);
     setOg("og:description", description.slice(0, 200));
-    setOg("og:url", canonicalUrl);
-
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.rel = "canonical";
-      document.head.appendChild(canonical);
-    }
-    canonical.href = canonicalUrl;
+    setOg("og:url", canonical);
+    let link = $("link[rel=canonical]"); if (!link) { link = document.createElement("link"); link.rel = "canonical"; document.head.appendChild(link); } link.href = canonical;
   }
 
   function fixRuntimeConfig() {
-    if (window.AUTH_API_BASE && /localhost|127\.0\.0\.1/i.test(window.AUTH_API_BASE)) {
-      window.AUTH_API_BASE = "";
-    }
+    if (window.AUTH_API_BASE && /localhost|127\.0\.0\.1/i.test(String(window.AUTH_API_BASE))) delete window.AUTH_API_BASE;
   }
 
   function normalizeUrl(value) {
     if (!value || typeof value !== "string") return value;
     let src = value.trim();
-    if (!src || /^https?:\/\//i.test(src) || src.startsWith("data:") || src.startsWith("blob:")) return src;
-    src = src.replace(/^\.\//, "/").replace(/^\.\.\//, "/");
-    src = src.replace(/\/assets\/assets\//g, "/assets/");
+    if (!src || /^https?:\/\//i.test(src) || /^(data|blob):/i.test(src)) return src;
+    src = src.replace(/^\.\//, "/").replace(/^\.\.\//, "/").replace(/\/assets\/assets\//g, "/assets/");
     if (src.includes("/assets/") && !src.startsWith("/assets/")) src = "/assets/" + src.split("/assets/").pop();
     return src;
   }
 
   function fixImages() {
-    document.querySelectorAll("img, source").forEach(el => {
-      ["src", "srcset"].forEach(attr => {
-        const value = el.getAttribute(attr);
-        if (!value) return;
-        if (attr === "srcset") {
-          const fixed = value.split(",").map(part => {
-            const bits = part.trim().split(/\s+/);
-            bits[0] = normalizeUrl(bits[0]);
-            return bits.join(" ");
-          }).join(", ");
-          if (fixed !== value) el.setAttribute(attr, fixed);
-        } else {
-          const fixed = normalizeUrl(value);
-          if (fixed !== value) el.setAttribute(attr, fixed);
-        }
-      });
-    });
+    document.querySelectorAll("img,source").forEach(el => ["src","srcset"].forEach(attr => {
+      const value = el.getAttribute(attr); if (!value) return;
+      if (attr === "srcset") { const fixed = value.split(",").map(part => { const bits = part.trim().split(/\s+/); bits[0] = normalizeUrl(bits[0]); return bits.join(" "); }).join(", "); if (fixed !== value) el.setAttribute(attr, fixed); }
+      else { const fixed = normalizeUrl(value); if (fixed !== value) el.setAttribute(attr, fixed); }
+    }));
   }
 
   function fixFavoriteIds() {
-    document.querySelectorAll("#favoriteIcon").forEach((el, index) => {
-      if (index > 0) el.id = `favoriteIcon-${index + 1}`;
-    });
-  }
-
-  function fixInteractiveCards() {
-    document.querySelectorAll("a").forEach(a => {
-      a.querySelectorAll("button").forEach(button => {
-        const replacement = document.createElement("span");
-        replacement.className = button.className;
-        replacement.innerHTML = button.innerHTML;
-        [...button.attributes].forEach(attr => {
-          if (attr.name !== "id" && attr.name !== "type") replacement.setAttribute(attr.name, attr.value);
-        });
-        a.replaceChild(replacement, button);
-      });
-    });
+    const icons = document.querySelectorAll("#favoriteIcon");
+    icons.forEach((el, i) => { if (i > 0) el.id = `favoriteIcon-${i + 1}`; });
   }
 
   function fixBuyNowLabel() {
-    [...document.querySelectorAll("button, a")].filter(el => /buy\s*now/i.test(el.textContent || "")).forEach(el => {
+    document.querySelectorAll("button,a").forEach(el => {
+      if (!/buy\s*now/i.test(el.textContent || "")) return;
       const icon = el.querySelector("i");
-      if (icon) {
-        icon.classList.remove("fa-whatsapp", "fab", "fa-whatsapp-square");
-        icon.classList.add("fa-solid", "fa-bag-shopping");
-      }
+      if (icon) { icon.classList.remove("fa-whatsapp","fab","fa-whatsapp-square"); icon.classList.add("fa-solid","fa-bag-shopping"); }
       el.setAttribute("aria-label", "Buy now");
     });
   }
 
-  function fixNetflixTvCopy() {
-    const bodyText = document.body.textContent || "";
-    if (!/Netflix\s+For\s+TV/i.test(bodyText)) return;
-    [...document.querySelectorAll("h1,h2,h3,h4,p")].forEach(el => {
-      const text = el.textContent.trim();
-      if (/Crunchyroll/i.test(text) && /Netflix|TV|subscription/i.test(bodyText)) el.textContent = text.replace(/Crunchyroll/gi, "Netflix For TV");
-    });
-  }
-
-  function loadReviewSystems() {
-    if (window.__NLSReviewSystemsRequested) return;
-    window.__NLSReviewSystemsRequested = true;
-    const scripts = [
-      ["data-nextlevel-legacy-review-cleanup", "/js/details-review-cleanup.js?v=20260908-1"],
-      ["data-nextlevel-reviews-product-bridge", "/js/reviews-product-bridge.js?v=20260908-1"],
-      ["data-nextlevel-existing-ui-reviews", "/js/reviews-existing-ui.js?v=20260908-1"],
-      ["data-nextlevel-premium-review-ui", "/js/reviews-premium-ui.js?v=20260908-1"]
-    ];
-    scripts.forEach(([key, src]) => {
-      if (document.querySelector(`script[${key}]`)) return;
-      const script = document.createElement("script");
-      script.src = src;
-      script.async = false;
-      script.setAttribute(key, "true");
-      document.head.appendChild(script);
-    });
-  }
-
-  function runFixes() {
-    fixRuntimeConfig();
-    fixSeo();
-    fixImages();
-    fixFavoriteIds();
-    fixInteractiveCards();
-    fixBuyNowLabel();
-    fixNetflixTvCopy();
-    loadReviewSystems();
-  }
-
-  function init() {
-    runFixes();
-    let scheduled = false;
-    const observer = new MutationObserver(() => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(() => {
-        scheduled = false;
-        runFixes();
-      });
-    });
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["src", "srcset"] });
-  }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
-  else init();
+  function run() { fixRuntimeConfig(); fixSeo(); fixImages(); fixFavoriteIds(); fixBuyNowLabel(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run, {once:true}); else run();
+  [400, 1000, 2200].forEach(ms => setTimeout(run, ms));
 })();
