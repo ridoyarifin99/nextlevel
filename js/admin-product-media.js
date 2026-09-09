@@ -10,192 +10,96 @@
 
   const slugify = v => String(v || "product").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "product";
   const toast = (message, bad = false) => {
-    const host = $("toast");
-    if (!host) return;
-    const x = document.createElement("div");
-    x.className = `toast ${bad ? "error" : "success"}`;
-    x.textContent = message;
-    host.appendChild(x);
-    setTimeout(() => x.remove(), 3500);
+    const host = $("toast"); if (!host) return;
+    const x = document.createElement("div"); x.className = `toast ${bad ? "error" : "success"}`; x.textContent = message; host.appendChild(x); setTimeout(() => x.remove(), 3500);
   };
-  const roleLabel = role => ({primary:"Primary / Card Image", logo:"Product Logo", gallery:"Details Gallery", service:"Service / Component Image"}[role] || role);
+  const roleLabel = role => ({primary:"Primary / Card Image",logo:"Product Logo",gallery:"Details Gallery",service:"Service / Component Image"}[role] || role);
 
   function injectStyles() {
     if ($("nls-product-media-styles")) return;
-    const style = document.createElement("style");
-    style.id = "nls-product-media-styles";
-    style.textContent = `
-      .nls-media-box{grid-column:1/-1;border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fafbff}
-      .nls-media-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
-      .nls-media-head h3{margin:0;font-size:14px}.nls-media-head p{margin:3px 0 0;color:#6b7280;font-size:11px}
-      .nls-media-group{border:1px solid #e5e7eb;border-radius:11px;background:#fff;padding:10px;margin-top:9px}
-      .nls-media-title{font-size:11px;font-weight:900;color:#374151;margin-bottom:8px}
-      .nls-media-row{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:9px;align-items:center;margin-top:8px}
-      .nls-media-thumb{width:72px;height:58px;border:1px solid #e5e7eb;border-radius:9px;object-fit:contain;background:#f8fafc;padding:4px}
-      .nls-media-fields{display:grid;grid-template-columns:1fr 1fr;gap:7px}.nls-media-fields input{min-width:0;border:1px solid #dbe0e7;border-radius:8px;padding:8px;font-size:11px}
-      .nls-media-actions{display:flex;gap:5px;flex-wrap:wrap}.nls-media-actions button{border:1px solid #dbe0e7;background:#fff;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.nls-media-actions .remove{color:#b91c1c;border-color:#fecaca}
-      .nls-media-upload input{display:none}.nls-media-upload{display:inline-flex;align-items:center;gap:5px}
-      .nls-media-add{margin-top:9px}.nls-media-empty{font-size:11px;color:#9ca3af;padding:8px 0}
-      @media(max-width:700px){.nls-media-row{grid-template-columns:58px minmax(0,1fr)}.nls-media-thumb{width:58px;height:50px}.nls-media-actions{grid-column:2}.nls-media-fields{grid-template-columns:1fr}}
-    `;
+    const style = document.createElement("style"); style.id = "nls-product-media-styles";
+    style.textContent = `.nls-media-box{grid-column:1/-1;border:1px solid #e5e7eb;border-radius:14px;padding:14px;background:#fafbff}.nls-media-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.nls-media-head h3{margin:0;font-size:14px}.nls-media-head p{margin:3px 0 0;color:#6b7280;font-size:11px}.nls-media-group{border:1px solid #e5e7eb;border-radius:11px;background:#fff;padding:10px;margin-top:9px}.nls-media-title{font-size:11px;font-weight:900;color:#374151;margin-bottom:8px}.nls-media-row{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:9px;align-items:center;margin-top:8px}.nls-media-thumb{width:72px;height:58px;border:1px solid #e5e7eb;border-radius:9px;object-fit:contain;background:#f8fafc;padding:4px}.nls-media-fields{display:grid;grid-template-columns:1fr 1fr;gap:7px}.nls-media-fields input{min-width:0;border:1px solid #dbe0e7;border-radius:8px;padding:8px;font-size:11px}.nls-media-actions{display:flex;gap:5px;flex-wrap:wrap}.nls-media-actions button{border:1px solid #dbe0e7;background:#fff;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.nls-media-actions .remove{color:#b91c1c;border-color:#fecaca}.nls-media-upload input{display:none}.nls-media-upload{display:inline-flex;align-items:center;gap:5px}.nls-media-add{margin-top:9px}.nls-media-empty{font-size:11px;color:#9ca3af;padding:8px 0}@media(max-width:700px){.nls-media-row{grid-template-columns:58px minmax(0,1fr)}.nls-media-thumb{width:58px;height:50px}.nls-media-actions{grid-column:2}.nls-media-fields{grid-template-columns:1fr}}`;
     document.head.appendChild(style);
   }
 
-  function normalizeMedia(list) {
-    return (Array.isArray(list) ? list : []).map(x => ({
-      id: x.id || null,
-      role: x.role || "gallery",
-      url: x.url || "",
-      storage_path: x.storage_path || "",
-      alt_text: x.alt_text || "",
-      title: x.title || "",
-      service_name: x.service_name || "",
-      display_order: Number(x.display_order || 0),
-      is_active: x.is_active !== false,
-      metadata: x.metadata || {}
-    }));
-  }
-
-  function createMedia(role, data = {}) {
-    return normalizeMedia([{...data, role}])[0];
-  }
+  function normalizeMedia(list) { return (Array.isArray(list) ? list : []).map(x => ({id:x.id||null,role:x.role||"gallery",url:x.url||"",storage_path:x.storage_path||"",alt_text:x.alt_text||"",title:x.title||"",service_name:x.service_name||"",display_order:Number(x.display_order||0),is_active:x.is_active!==false,metadata:x.metadata||{},__tmp:x.__tmp||null})); }
+  function createMedia(role, data = {}) { return normalizeMedia([{...data,role}])[0]; }
+  function key(item) { if (item.id) return `id:${item.id}`; item.__tmp ||= (crypto.randomUUID?.() || Math.random().toString(36).slice(2)); return `tmp:${item.__tmp}`; }
+  function updateThumb(row,url){const img=row?.querySelector(".nls-media-thumb");if(img)img.src=url||"/images/logo.png";}
 
   function mount() {
-    injectStyles();
-    if ($("nlsProductMedia")) return;
-    const image = $("pImage");
-    const field = image?.closest(".field") || image?.parentElement;
-    const host = document.createElement("div");
-    host.id = "nlsProductMedia";
-    host.className = "nls-media-box";
-    host.innerHTML = `
-      <div class="nls-media-head">
-        <div><h3>Product Media Library</h3><p>One structured media system for the card/hero image, logo, details gallery and service images.</p></div>
-      </div>
-      <div class="nls-media-group"><div class="nls-media-title">Primary / Card Image</div><div id="nlsPrimaryMedia"></div></div>
-      <div class="nls-media-group"><div class="nls-media-title">Product Logo</div><div id="nlsLogoMedia"></div></div>
-      <div class="nls-media-group"><div class="nls-media-title">Details Gallery</div><div id="nlsGalleryMedia"></div><button type="button" class="btn nls-media-add" data-media-add="gallery">+ Add Gallery Image</button></div>
-      <div class="nls-media-group"><div class="nls-media-title">Service / Component Images</div><div id="nlsServiceMedia"></div><button type="button" class="btn nls-media-add" data-media-add="service">+ Add Service Image</button></div>
-    `;
-    (field?.parentElement || $("plans")?.parentElement)?.appendChild(host);
-    host.addEventListener("click", e => {
-      const add = e.target.closest("[data-media-add]");
-      if (add) { current.push(createMedia(add.dataset.mediaAdd)); render(); }
-      const remove = e.target.closest("[data-media-remove]");
-      if (remove) { const id = remove.dataset.mediaRemove; current = current.filter(x => String(x.id || "") !== String(id)); if (!id) current = current.filter(x => x.__tmp !== remove.closest("[data-media-key]")?.dataset.mediaKey); render(); }
+    injectStyles(); if ($("nlsProductMedia")) return;
+    const image=$("pImage"), field=image?.closest(".field")||image?.parentElement;
+    const host=document.createElement("div"); host.id="nlsProductMedia"; host.className="nls-media-box";
+    host.innerHTML=`<div class="nls-media-head"><div><h3>Product Media Library</h3><p>One structured media system for the card/hero image, logo, details gallery and service images.</p></div></div><div class="nls-media-group"><div class="nls-media-title">Primary / Card Image</div><div id="nlsPrimaryMedia"></div></div><div class="nls-media-group"><div class="nls-media-title">Product Logo</div><div id="nlsLogoMedia"></div></div><div class="nls-media-group"><div class="nls-media-title">Details Gallery</div><div id="nlsGalleryMedia"></div><button type="button" class="btn nls-media-add" data-media-add="gallery">+ Add Gallery Image</button></div><div class="nls-media-group"><div class="nls-media-title">Service / Component Images</div><div id="nlsServiceMedia"></div><button type="button" class="btn nls-media-add" data-media-add="service">+ Add Service Image</button></div>`;
+    (field?.parentElement||$("plans")?.parentElement)?.appendChild(host);
+
+    image?.addEventListener("input",()=>{
+      const primary=current.find(x=>x.role==="primary"); if(primary && primary.url!==image.value.trim()){primary.url=image.value.trim();primary.storage_path="";render();}
     });
-    host.addEventListener("input", e => {
-      const row = e.target.closest("[data-media-key]"); if (!row) return;
-      const item = current.find(x => (x.id ? `id:${x.id}` : `tmp:${x.__tmp}`) === row.dataset.mediaKey); if (!item) return;
-      if (e.target.dataset.mediaField) item[e.target.dataset.mediaField] = e.target.value;
-      if (e.target.dataset.mediaField === "url") updateThumb(row, item.url);
-      if (item.role === "primary" && e.target.dataset.mediaField === "url") { const p = $("pImage"); if (p) p.value = item.url; }
+    host.addEventListener("click",e=>{
+      const add=e.target.closest("[data-media-add]");
+      if(add){current.push(createMedia(add.dataset.mediaAdd));render();return;}
+      const remove=e.target.closest("[data-media-remove]");
+      if(remove){const row=remove.closest("[data-media-key]");const k=row?.dataset.mediaKey;current=current.filter(x=>key(x)!==k);render();}
     });
-    host.addEventListener("change", async e => {
-      const input = e.target.closest("input[type=file][data-media-file]"); if (!input) return;
-      const row = input.closest("[data-media-key]"); const item = current.find(x => (x.id ? `id:${x.id}` : `tmp:${x.__tmp}`) === row?.dataset.mediaKey); if (!item || !input.files?.[0]) return;
-      await uploadFor(item, input.files[0]); input.value = "";
+    host.addEventListener("input",e=>{
+      const row=e.target.closest("[data-media-key]");if(!row)return;const item=current.find(x=>key(x)===row.dataset.mediaKey);if(!item)return;
+      if(e.target.dataset.mediaField)item[e.target.dataset.mediaField]=e.target.value;
+      if(e.target.dataset.mediaField==="url")updateThumb(row,item.url);
+      if(item.role==="primary"&&e.target.dataset.mediaField==="url"&&image)image.value=item.url;
     });
-    const observer = new MutationObserver(() => { if ($( "productModal")?.classList.contains("show")) render(); });
-    if ($("productModal")) observer.observe($("productModal"), {attributes:true, attributeFilter:["class"]});
+    host.addEventListener("change",async e=>{
+      const input=e.target.closest("input[type=file][data-media-file]");if(!input)return;const row=input.closest("[data-media-key]");const item=current.find(x=>key(x)===row?.dataset.mediaKey);if(!item||!input.files?.[0])return;await uploadFor(item,input.files[0]);input.value="";
+    });
   }
 
-  function key(item) { return item.id ? `id:${item.id}` : `tmp:${item.__tmp || (item.__tmp = crypto.randomUUID?.() || Math.random().toString(36).slice(2))}`; }
-  function updateThumb(row, url) { const img = row?.querySelector(".nls-media-thumb"); if (!img) return; img.src = url || "/images/logo.png"; }
-
-  function row(item) {
-    const k = key(item);
-    const service = item.role === "service" ? `<input data-media-field="service_name" placeholder="Service name" value="${esc(item.service_name)}">` : "";
-    return `<div class="nls-media-row" data-media-key="${esc(k)}">
-      <img class="nls-media-thumb" src="${esc(item.url || "/images/logo.png")}" alt="">
-      <div class="nls-media-fields">
-        ${service}
-        <input data-media-field="title" placeholder="Title (optional)" value="${esc(item.title)}">
-        <input data-media-field="alt_text" placeholder="Alt text" value="${esc(item.alt_text)}">
-        <input data-media-field="url" placeholder="Public image URL" value="${esc(item.url)}">
-      </div>
-      <div class="nls-media-actions">
-        <label class="nls-media-upload"><button type="button" class="btn">Upload</button><input type="file" data-media-file accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"></label>
-        <button type="button" class="remove" data-media-remove="${esc(item.id || "")}">Remove</button>
-      </div>
-    </div>`;
+  function row(item){
+    const k=key(item);
+    const service=item.role==="service"?`<input data-media-field="service_name" placeholder="Service name" value="${esc(item.service_name)}">`:"";
+    return `<div class="nls-media-row" data-media-key="${esc(k)}"><img class="nls-media-thumb" src="${esc(item.url||"/images/logo.png")}" alt=""><div class="nls-media-fields">${service}<input data-media-field="title" placeholder="Title (optional)" value="${esc(item.title)}"><input data-media-field="alt_text" placeholder="Alt text" value="${esc(item.alt_text)}"><input data-media-field="url" placeholder="Public image URL" value="${esc(item.url)}"></div><div class="nls-media-actions"><label class="nls-media-upload"><button type="button" class="btn">Upload</button><input type="file" data-media-file accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"></label><button type="button" class="remove" data-media-remove="${esc(item.id||"")}">Remove</button></div></div>`;
   }
 
-  function render() {
-    const box = $("nlsProductMedia"); if (!box) return;
-    const active = current.filter(x => x.is_active !== false);
-    const primary = active.find(x => x.role === "primary") || createMedia("primary");
-    const logo = active.find(x => x.role === "logo") || createMedia("logo");
-    if (!current.some(x => x.role === "primary")) current.unshift(primary);
-    if (!current.some(x => x.role === "logo")) current.push(logo);
-    const gallery = current.filter(x => x.role === "gallery");
-    const service = current.filter(x => x.role === "service");
-    $("nlsPrimaryMedia").innerHTML = row(current.find(x => x.role === "primary"));
-    $("nlsLogoMedia").innerHTML = row(current.find(x => x.role === "logo"));
-    $("nlsGalleryMedia").innerHTML = gallery.length ? gallery.map(row).join("") : '<div class="nls-media-empty">No gallery images yet.</div>';
-    $("nlsServiceMedia").innerHTML = service.length ? service.map(row).join("") : '<div class="nls-media-empty">No service/component images yet.</div>';
+  function render(){
+    if(!$("nlsProductMedia"))return;
+    if(!current.some(x=>x.role==="primary"))current.unshift(createMedia("primary"));
+    if(!current.some(x=>x.role==="logo"))current.push(createMedia("logo"));
+    $("nlsPrimaryMedia").innerHTML=row(current.find(x=>x.role==="primary"));
+    $("nlsLogoMedia").innerHTML=row(current.find(x=>x.role==="logo"));
+    const gallery=current.filter(x=>x.role==="gallery"),service=current.filter(x=>x.role==="service");
+    $("nlsGalleryMedia").innerHTML=gallery.length?gallery.map(row).join(""):'<div class="nls-media-empty">No gallery images yet.</div>';
+    $("nlsServiceMedia").innerHTML=service.length?service.map(row).join(""):'<div class="nls-media-empty">No service/component images yet.</div>';
   }
 
-  async function uploadFor(item, file) {
-    if (!TYPES.has(file.type) || file.size > MAX) { toast("Use a supported image up to 10MB.", true); return; }
-    const slug = slugify($("pSlug")?.value || $("pName")?.value);
-    const ext = (file.name.split(".").pop() || "webp").toLowerCase().replace(/[^a-z0-9]/g, "") || "webp";
-    const path = `products/${slug}/${item.role}/${Date.now()}-${crypto.randomUUID?.() || Math.random().toString(36).slice(2)}.${ext}`;
-    try {
-      const client = db();
-      const {error} = await client.storage.from(BUCKET).upload(path, file, {upsert:false, contentType:file.type, cacheControl:"31536000"});
-      if (error) throw error;
-      const {data} = client.storage.from(BUCKET).getPublicUrl(path);
-      item.url = data.publicUrl; item.storage_path = path; item.is_active = true;
-      if (item.role === "primary" && $("pImage")) $("pImage").value = item.url;
-      render(); toast(`${roleLabel(item.role)} uploaded.`);
-    } catch (e) { console.error(e); toast(e?.message || "Image upload failed.", true); }
+  async function uploadFor(item,file){
+    if(!TYPES.has(file.type)||file.size>MAX){toast("Use a supported image up to 10MB.",true);return;}
+    const slug=slugify($("pSlug")?.value||$("pName")?.value),ext=(file.name.split(".").pop()||"webp").toLowerCase().replace(/[^a-z0-9]/g,"")||"webp";
+    const path=`products/${slug}/${item.role}/${Date.now()}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}.${ext}`;
+    try{const client=db();const {error}=await client.storage.from(BUCKET).upload(path,file,{upsert:false,contentType:file.type,cacheControl:"31536000"});if(error)throw error;const {data}=client.storage.from(BUCKET).getPublicUrl(path);item.url=data.publicUrl;item.storage_path=path;item.is_active=true;if(item.role==="primary"&&$("pImage"))$("pImage").value=item.url;render();toast(`${roleLabel(item.role)} uploaded.`);}catch(e){console.error(e);toast(e?.message||"Image upload failed.",true);}
   }
 
-  async function open(product) {
+  async function open(product){
     mount();
-    const productId = product?.id;
-    if (!productId) { current = [createMedia("primary"), createMedia("logo")]; render(); return; }
-    const r = await db().from("product_media").select("*").eq("product_id", productId).order("role").order("display_order").order("created_at");
-    if (r.error) throw r.error;
-    current = normalizeMedia(r.data || []);
-    if (!current.some(x => x.role === "primary")) current.unshift(createMedia("primary", {url:product.image_url || "", alt_text:product.name || ""}));
-    if (!current.some(x => x.role === "logo")) current.push(createMedia("logo", {url:product.image_url || "", alt_text:`${product.name || ""} logo`}));
+    if(!product?.id){current=[createMedia("primary",{url:$("pImage")?.value||""}),createMedia("logo")];render();return;}
+    const r=await db().from("product_media").select("*").eq("product_id",product.id).order("role").order("display_order").order("created_at");if(r.error)throw r.error;
+    current=normalizeMedia(r.data||[]);
+    if(!current.some(x=>x.role==="primary"))current.unshift(createMedia("primary",{url:product.image_url||"",alt_text:product.name||""}));
+    if(!current.some(x=>x.role==="logo"))current.push(createMedia("logo",{url:product.image_url||"",alt_text:`${product.name||""} logo`}));
     render();
   }
 
-  function collect() {
-    return current.filter(x => x.is_active !== false).map((x, i) => ({...x, display_order:i}));
+  function collect(){return current.filter(x=>x.is_active!==false).map((x,i)=>({...x,display_order:i}));}
+
+  async function save(productId){
+    if(!productId)return;
+    const rows=collect(),primary=rows.find(x=>x.role==="primary");if(primary?.url&&$("pImage"))$("pImage").value=primary.url;
+    const existing=await db().from("product_media").select("id").eq("product_id",productId);if(existing.error)throw existing.error;
+    const ids=rows.map(x=>x.id).filter(Boolean),removed=(existing.data||[]).map(x=>x.id).filter(id=>!ids.includes(id));
+    if(removed.length){const d=await db().from("product_media").delete().in("id",removed);if(d.error)throw d.error;}
+    const payload=rows.map(x=>({...x.id?{id:x.id}:{},product_id:productId,role:x.role,url:x.url||"",storage_path:x.storage_path||null,alt_text:x.alt_text||null,title:x.title||null,service_name:x.service_name||null,display_order:x.role==="gallery"||x.role==="service"?x.display_order:0,is_active:true,metadata:x.metadata||{}})).filter(x=>x.url);
+    if(payload.length){const up=await db().from("product_media").upsert(payload,{onConflict:"id"});if(up.error)throw up.error;}
   }
 
-  async function save(productId) {
-    if (!productId) return;
-    const rows = collect();
-    const primary = rows.find(x => x.role === "primary");
-    if (primary?.url && $("pImage")) $("pImage").value = primary.url;
-    const existing = await db().from("product_media").select("id").eq("product_id", productId);
-    if (existing.error) throw existing.error;
-    const ids = rows.map(x => x.id).filter(Boolean);
-    const removed = (existing.data || []).map(x => x.id).filter(id => !ids.includes(id));
-    if (removed.length) { const d = await db().from("product_media").delete().in("id", removed); if (d.error) throw d.error; }
-    if (!rows.length) return;
-    const payload = rows.map(x => ({
-      ...(x.id ? {id:x.id} : {}),
-      product_id:productId,
-      role:x.role,
-      url:x.url || "",
-      storage_path:x.storage_path || null,
-      alt_text:x.alt_text || null,
-      title:x.title || null,
-      service_name:x.service_name || null,
-      display_order:x.role === "gallery" || x.role === "service" ? x.display_order : 0,
-      is_active:true,
-      metadata:x.metadata || {}
-    })).filter(x => x.url);
-    const up = await db().from("product_media").upsert(payload, {onConflict:"id"});
-    if (up.error) throw up.error;
-  }
-
-  window.NextLevelProductMedia = {mount, open, collect, save, roleLabel};
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, {once:true}); else mount();
+  window.NextLevelProductMedia={mount,open,collect,save,roleLabel};
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
 })();
