@@ -20,11 +20,8 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
         document.head.appendChild(script);
     };
 
-    if (isDetailsPage) {
-        load('script[data-nextlevel-details-navbar-scroll]', '/js/details-navbar-scroll-fix.js?v=20260908-1', 'nextlevelDetailsNavbarScroll');
-    } else {
-        load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-6', 'nextlevelNavbarScroll');
-    }
+    if (isDetailsPage) load('script[data-nextlevel-details-navbar-scroll]', '/js/details-navbar-scroll-fix.js?v=20260908-1', 'nextlevelDetailsNavbarScroll');
+    else load('script[data-nextlevel-navbar-scroll]', '/js/navbar-scroll.js?v=20260908-6', 'nextlevelNavbarScroll');
 
     load('script[data-nextlevel-cart-fix]', '/js/cart-responsive-fix.js?v=20260907-3', 'nextlevelCartFix');
     load('script[data-nextlevel-mobile-viewport-fix]', '/js/mobile-viewport-fix.js?v=20260907-2', 'nextlevelMobileViewportFix');
@@ -36,9 +33,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-5', 'nextlevelNotificationsSystem');
     load('script[data-nextlevel-product-catalog-runtime]', '/js/product-catalog-runtime.js?v=20260910-1', 'nextlevelProductCatalogRuntime');
 
-    if (/\/dashboard\.html$/i.test(path)) {
-        load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-2', 'nextlevelDashboardButtonsResponsive');
-    }
+    if (/\/dashboard\.html$/i.test(path)) load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-2', 'nextlevelDashboardButtonsResponsive');
 
     if (isDetailsPage) {
         load('script[data-nextlevel-details-fix]', '/js/details-page-fix.js?v=20260907-4', 'nextlevelDetailsFix');
@@ -60,7 +55,6 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     }
 
     if (/\/admin-products\.html$/i.test(path)) {
-        load('script[data-nextlevel-admin-product-storage]', '/js/admin-product-storage.js?v=20260910-1', 'nextlevelAdminProductStorage');
         load('script[data-nextlevel-admin-product-media]', '/js/admin-product-media.js?v=20260910-2', 'nextlevelAdminProductMedia');
     }
 
