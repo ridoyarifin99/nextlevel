@@ -52,4 +52,6 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     if (/\/admin-orders\.html$/i.test(path)) {
         load('script[data-nextlevel-admin-reviews-inline]', '/js/admin-reviews-inline.js?v=20260907-2', 'nextlevelAdminReviewsInline');
     }
+
+    load('script[data-nextlevel-product-display-sync]', '/js/product-display-sync.js?v=20260909-1', 'nextlevelProductDisplaySync');
 })();
