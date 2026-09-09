@@ -34,10 +34,16 @@
   }
 
   function repair(root = document) {
+    root.querySelectorAll?.(".nls-review-author, .nls-existing-reply").forEach(parent => {
+      cleanParent(parent);
+      const image = parent.querySelector(":scope > .nls-review-avatar");
+      if (image?.tagName === "IMG") {
+        parent.querySelectorAll(":scope > .nls-review-avatar-fallback").forEach(node => node.remove());
+      }
+    });
+
     root.querySelectorAll?.(AVATAR_SELECTOR).forEach(avatar => {
       const parent = avatar.parentElement;
-      cleanParent(parent);
-
       if (avatar.tagName !== "IMG") return;
       if (avatar.dataset.nlsAvatarSafe === "1") return;
 
@@ -46,6 +52,7 @@
       avatar.addEventListener("error", () => fallbackFor(avatar), { once: true });
 
       if (avatar.complete && avatar.naturalWidth === 0) fallbackFor(avatar);
+      cleanParent(parent);
     });
   }
 
