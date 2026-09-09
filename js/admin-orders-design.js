@@ -11,19 +11,26 @@
         .brand { min-width: 0; }
         .brand-icon { flex: 0 0 44px; }
         .brand-title { letter-spacing: -.02em; }
-        .header-actions { align-items: center; }
+        .header-actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex:0 0 auto; }
+        .header-actions > a,
+        .header-actions > button,
+        .header-actions .icon-btn,
         .header-actions .nav-btn {
-            min-height: 42px; border: 1px solid #dbe3f0; border-radius: 12px;
-            background: linear-gradient(180deg,#fff,#f8fafc); color: #334155;
-            padding: 0 13px; display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; text-decoration: none; font-size: 12px; font-weight: 850;
-            box-shadow: 0 3px 10px rgba(15,23,42,.04); transition: .18s ease;
+            box-sizing:border-box; width:42px; min-width:42px; height:42px; min-height:42px;
+            margin:0; padding:0; border:1px solid #dbe3f0; border-radius:12px;
+            display:inline-flex; align-items:center; justify-content:center; align-self:center;
+            flex:0 0 42px; line-height:1; vertical-align:middle; font-size:14px;
         }
-        .header-actions .nav-btn:hover { transform: translateY(-1px); border-color: #bfdbfe; color: #1d4ed8; box-shadow: 0 7px 18px rgba(37,99,235,.10); }
-        .header-actions .nav-btn.products { background: linear-gradient(135deg,#2563eb,#4f46e5); border-color: transparent; color: #fff; }
-        .header-actions .nav-btn.products:hover { color: #fff; box-shadow: 0 8px 20px rgba(79,70,229,.22); }
-        .header-actions .icon-btn { transition: .18s ease; }
-        .header-actions .icon-btn:hover { transform: translateY(-1px); border-color: #bfdbfe; color: #2563eb; }
+        .header-actions .icon-btn,
+        .header-actions .nav-btn {
+            background:linear-gradient(180deg,#fff,#f8fafc); color:#334155;
+            text-decoration:none; box-shadow:0 3px 10px rgba(15,23,42,.04); transition:.18s ease;
+        }
+        .header-actions .icon-btn:hover,
+        .header-actions .nav-btn:hover { transform:translateY(-1px); border-color:#bfdbfe; color:#2563eb; box-shadow:0 7px 18px rgba(37,99,235,.10); }
+        .header-actions #adminProductManagementLink { background:linear-gradient(135deg,#2563eb,#4f46e5); border-color:transparent; color:#fff; }
+        .header-actions #adminProductManagementLink:hover { color:#fff; box-shadow:0 8px 20px rgba(79,70,229,.22); }
+        .header-actions .nav-btn span { display:none; }
 
         .page { padding-top: 34px; }
         .page-title { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; }
@@ -80,9 +87,10 @@
             .brand-subtitle { display:none; }
             .brand-title { font-size:13px; }
             .header-actions { gap:6px; }
-            .header-actions .nav-btn { width:42px; padding:0; }
-            .header-actions .nav-btn span { display:none; }
-            .header-actions .icon-btn { width:42px; height:42px; }
+            .header-actions > a,
+            .header-actions > button,
+            .header-actions .icon-btn,
+            .header-actions .nav-btn { width:42px; min-width:42px; height:42px; min-height:42px; flex-basis:42px; }
             .toolbar { position:relative; padding:11px; }
             .page { padding-top:22px; }
             .order-head { padding:16px; }
@@ -100,21 +108,4 @@
         }
     `;
     document.head.appendChild(style);
-
-    function addProductButton() {
-        const actions = document.querySelector(".header-actions");
-        if (!actions || actions.querySelector("[data-nextlevel-product-management]")) return;
-        const a = document.createElement("a");
-        a.className = "nav-btn products";
-        a.href = "admin-products.html";
-        a.dataset.nextlevelProductManagement = "true";
-        a.innerHTML = '<i class="fas fa-boxes-stacked"></i><span>Product Management</span>';
-        actions.insertBefore(a, actions.firstChild);
-    }
-
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", addProductButton, { once: true });
-    } else {
-        addProductButton();
-    }
 })();
