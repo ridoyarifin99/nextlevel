@@ -34,7 +34,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
     load('script[data-nextlevel-profile-system]', '/js/profile.js?v=20260908-2', 'nextlevelProfileSystem');
     load('script[data-nextlevel-desktop-profile-nav]', '/js/desktop-profile-nav.js?v=20260907-1', 'nextlevelDesktopProfileNav');
     load('script[data-nextlevel-notifications-system]', '/js/notifications-system.js?v=20260908-5', 'nextlevelNotificationsSystem');
-    load('script[data-nextlevel-product-catalog-runtime]', '/js/product-catalog-runtime.js?v=20260909-2', 'nextlevelProductCatalogRuntime');
+    load('script[data-nextlevel-product-catalog-runtime]', '/js/product-catalog-runtime.js?v=20260910-1', 'nextlevelProductCatalogRuntime');
 
     if (/\/dashboard\.html$/i.test(path)) {
         load('script[data-nextlevel-dashboard-buttons-responsive]', '/js/dashboard-buttons-responsive.js?v=20260908-2', 'nextlevelDashboardButtonsResponsive');
@@ -60,6 +60,7 @@ window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window
 
     if (/\/admin-products\.html$/i.test(path)) {
         load('script[data-nextlevel-admin-product-storage]', '/js/admin-product-storage.js?v=20260910-1', 'nextlevelAdminProductStorage');
+        load('script[data-nextlevel-admin-product-media]', '/js/admin-product-media.js?v=20260910-2', 'nextlevelAdminProductMedia');
     }
 
     load('script[data-nextlevel-product-display-sync]', '/js/product-display-sync.js?v=20260909-1', 'nextlevelProductDisplaySync');
