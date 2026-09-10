@@ -1,0 +1,11 @@
+"use strict";
+/* NEXT LEVEL SUBS — single central product source for every page. */
+(function(){
+  if(window.__NLSCentralCatalogBooted)return;window.__NLSCentralCatalogBooted=true;
+  const KEY="nls:central-catalog:v2";
+  const normalize=p=>{if(!p)return null;const media=Array.isArray(p.product_media)?p.product_media.filter(x=>x&&x.is_active!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0)):[];const role=r=>media.filter(x=>x.role===r);const primary=role("primary")[0]?.url||p.image_url||p.image||"";const logo=role("logo")[0]?.url||primary;const gallery=role("gallery").map(x=>x.url).filter(Boolean);const plans=(p.product_plans||[]).filter(x=>x&&x.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0));return {...p,image:primary,logo,images:[...new Set([primary,...gallery].filter(Boolean))],product_plans:plans,pricing:plans.map(x=>({id:x.id,name:x.name,duration:x.duration,price:Number(x.price||0),old_price:x.old_price==null?null:Number(x.old_price),currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""})),price:Number(p.price||plans[0]?.price||0)};};
+  async function fetchCatalog(){const r=await fetch("/api/products",{cache:"no-store"});if(!r.ok)throw Error(`Central catalog API ${r.status}`);const b=await r.json();return(b.products||[]).map(normalize).filter(Boolean)}
+  const publish=list=>{window.NLSCentralCatalog={products:list,getBySlug:s=>list.find(p=>p.slug===s),getById:id=>list.find(p=>p.id===id),getByName:n=>list.find(p=>String(p.name).toLowerCase()===String(n).toLowerCase())};window.NextLevelSubs=window.NextLevelSubs||{};window.NextLevelSubs.subscriptions=list;window.products=list;window.dispatchEvent(new CustomEvent("nls:central-catalog-ready",{detail:{products:list}}));window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:list}}));};
+  async function boot(){let list=[];try{list=await fetchCatalog();localStorage.setItem(KEY,JSON.stringify(list))}catch(e){try{list=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{list=[]}console.warn("NEXT LEVEL SUBS: central catalog fallback",e)}if(list.length)publish(list);}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+})();
