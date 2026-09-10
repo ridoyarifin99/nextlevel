@@ -142,6 +142,8 @@
       if (paths.length) { const s = await db().storage.from(BUCKET).remove(paths); if (s.error) console.warn("Product media storage cleanup failed", s.error); }
     }
     if (rows.length) { const u = await db().from("product_media").upsert(rows, {onConflict:"id"}); if (u.error) throw u.error; }
+    try { localStorage.setItem("nls:central-catalog-changed", String(Date.now())); } catch (e) {}
+    window.dispatchEvent(new CustomEvent("nls:central-catalog-changed"));
   }
 
   window.NextLevelProductMedia = { mount, open, collect, save, roleLabel: label };
