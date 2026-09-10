@@ -7,7 +7,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;document.head.appendChild(script);script.dataset[dataKey]="true"};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260910-2','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260910-3','nextlevelCentralCatalog');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
   load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');
@@ -16,6 +16,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
+  if(/\/(index|)$/.test(path)||/^\/$/.test(path))load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260910-1','nextlevelIndexCentralSync');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260910-1','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){load('script[data-nextlevel-details-fix]','/js/details-page-fix.js?v=20260910-2','nextlevelDetailsFix');load('script[data-nextlevel-details-premium-content]','/js/details-premium-content.js?v=20260910-2','nextlevelDetailsPremiumContent');load('script[data-nextlevel-reviews-system]','/js/reviews-system.js?v=20260910-1','nextlevelReviewsSystem');load('script[data-nextlevel-product-media-details]','/js/product-media-details-bridge.js?v=20260910-1','nextlevelProductMediaDetails');load('script[data-nextlevel-details-central-logo]','/js/details-central-logo-sync.js?v=20260910-1','nextlevelDetailsCentralLogo');}
   if(/\/admin-orders\.html$/i.test(path)){load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');load('script[data-nextlevel-admin-product-management-link]','/js/admin-product-management-link.js?v=20260909-1','nextlevelAdminProductManagementLink');load('script[data-nextlevel-admin-orders-design]','/js/admin-orders-design.js?v=20260909-1','nextlevelAdminOrdersDesign');load('script[data-nextlevel-admin-orders-central-runtime]','/js/admin-orders-central-runtime.js?v=20260910-2','nextlevelAdminOrdersCentralRuntime');}
