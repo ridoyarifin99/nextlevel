@@ -33,5 +33,8 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-admin-product-category-system]','/js/admin-product-category-system.js?v=20260910-1','nextlevelAdminProductCategorySystem');
     load('script[data-nextlevel-promo-management]','/js/promo-management.js?v=20260910-4','nextlevelPromoManagement');
   }
+  if(/\/checkout\.html$/i.test(path)){
+    load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
+  }
   load('script[data-nextlevel-product-display-sync]','/js/product-display-sync.js?v=20260909-1','nextlevelProductDisplaySync');
 })();
