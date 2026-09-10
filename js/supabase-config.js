@@ -32,7 +32,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-admin-product-media-system]','/js/admin-product-media-system.js?v=20260910-2','nextlevelAdminProductMediaSystem');
     load('script[data-nextlevel-admin-product-category-system]','/js/admin-product-category-system.js?v=20260910-1','nextlevelAdminProductCategorySystem');
     load('script[data-nextlevel-promo-management]','/js/promo-management.js?v=20260910-4','nextlevelPromoManagement');
-    load('script[data-nextlevel-legacy-details-import]','/js/legacy-details-import.js?v=20260910-2','nextlevelLegacyDetailsImport');
+    load('script[data-nextlevel-legacy-details-import]','/js/legacy-details-import.js?v=20260910-3','nextlevelLegacyDetailsImport');
   }
   if(/\/checkout\.html$/i.test(path)){
     load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
