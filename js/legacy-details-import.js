@@ -82,11 +82,17 @@
     toast(`Legacy details migration complete: ${results.length} products imported into Central Product Management.`);
     window.dispatchEvent(new CustomEvent("nls:catalog-migrated",{detail:results}));
   }
-  addEventListener("DOMContentLoaded",()=>setTimeout(()=>{
+  window.NextLevelLegacyDetailsImport=importLegacyDetails;
+  addEventListener("DOMContentLoaded",()=>{
     const b=$("importLegacy");
     if(!b) return;
     b.textContent="Import Details.js Data";
     b.title="One-time migration of the original details.js catalog into Supabase Central Product Management";
-    b.onclick=()=>importLegacyDetails().catch(e=>{busy(false);toast(e.message||String(e),true);});
-  },0));
+    // Capture the click before the legacy admin-products.js onclick handler can run.
+    b.addEventListener("click",e=>{
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      importLegacyDetails().catch(err=>{busy(false);toast(err.message||String(err),true);});
+    },true);
+  });
 })();
