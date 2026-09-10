@@ -83,9 +83,11 @@
     window.dispatchEvent(new CustomEvent("nls:catalog-migrated",{detail:results}));
   }
   window.NextLevelLegacyDetailsImport=importLegacyDetails;
-  addEventListener("DOMContentLoaded",()=>{
+  const bindImportButton=()=>{
     const b=$("importLegacy");
-    if(!b) return;
+    if(!b) return false;
+    if(b.dataset.nextlevelLegacyImporterBound==="true") return true;
+    b.dataset.nextlevelLegacyImporterBound="true";
     b.textContent="Import Details.js Data";
     b.title="One-time migration of the original details.js catalog into Supabase Central Product Management";
     // Capture the click before the legacy admin-products.js onclick handler can run.
@@ -94,5 +96,13 @@
       e.stopImmediatePropagation();
       importLegacyDetails().catch(err=>{busy(false);toast(err.message||String(err),true);});
     },true);
-  });
+    return true;
+  };
+  if(document.readyState==="loading") addEventListener("DOMContentLoaded",bindImportButton,{once:true});
+  else bindImportButton();
+  // The importer is loaded dynamically; if the button is not present yet, retry briefly.
+  if(!$("importLegacy")){
+    let attempts=0;
+    const timer=setInterval(()=>{if(bindImportButton()||++attempts>=100)clearInterval(timer);},50);
+  }
 })();
