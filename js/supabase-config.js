@@ -6,7 +6,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   const path=window.location.pathname,isDetailsPage=/\/details\.html$/i.test(path)||/\/product\//i.test(path);
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
-  const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
+  const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;document.head.appendChild(script);script.dataset[dataKey]="true"};
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
   load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');
@@ -32,7 +32,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-admin-product-media-system]','/js/admin-product-media-system.js?v=20260910-2','nextlevelAdminProductMediaSystem');
     load('script[data-nextlevel-admin-product-category-system]','/js/admin-product-category-system.js?v=20260910-1','nextlevelAdminProductCategorySystem');
     load('script[data-nextlevel-promo-management]','/js/promo-management.js?v=20260910-4','nextlevelPromoManagement');
-    load('script[data-nextlevel-legacy-details-import]','/js/legacy-details-import.js?v=20260910-1','nextlevelLegacyDetailsImport');
+    load('script[data-nextlevel-legacy-details-import]','/js/legacy-details-import.js?v=20260910-2','nextlevelLegacyDetailsImport');
   }
   if(/\/checkout\.html$/i.test(path)){
     load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
