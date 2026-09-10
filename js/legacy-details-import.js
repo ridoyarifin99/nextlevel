@@ -64,7 +64,7 @@
       const mr=await client.from("product_media").select("id,url,role").eq("product_id",productId);
       if(mr.error) throw mr.error;
       const oldMedia=mr.data||[];
-      const desired=media.map((url,j)=>({url,role:j===0?"primary":"gallery",display_order:j,alt_text:p.name,title:p.name,is_active:true,metadata:{source:"legacy_details_migration",legacy_commit:"1e21a3c73c4c1d7589626906c9b3d1c8a60dc269"}}));
+      const desired=media.map((url,j)=>({url,role:j===0?"primary":"gallery",display_order:j,alt_text:p.name,title:p.name,is_active:true,metadata:{source:"legacy_details_migration",legacy_commit:"1e21a3c73c4c1d758962690c9b3d1c8a60dc269"}}));
       const mediaRows=desired.map((x,j)=>({...x,product_id:productId,id:oldMedia[j]?.id}));
       const keepMedia=mediaRows.map(x=>x.id).filter(Boolean);
       const delMedia=oldMedia.map(x=>x.id).filter(id=>!keepMedia.includes(id));
@@ -76,11 +76,11 @@
     toast(`Legacy details migration complete: ${results.length} products imported into Central Product Management.`);
     window.dispatchEvent(new CustomEvent("nls:catalog-migrated",{detail:results}));
   }
-  addEventListener("DOMContentLoaded",()=>{
+  addEventListener("DOMContentLoaded",()=>setTimeout(()=>{
     const b=$("importLegacy");
     if(!b) return;
     b.textContent="Import Details.js Data";
     b.title="One-time migration of the original details.js catalog into Supabase Central Product Management";
     b.onclick=()=>importLegacyDetails().catch(e=>{busy(false);toast(e.message||String(e),true);});
-  });
+  },0));
 })();
