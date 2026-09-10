@@ -19,11 +19,9 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(/\/(index|)$/.test(path)||/^\/$/.test(path))load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260910-1','nextlevelIndexCentralSync');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260910-1','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){
+    /* Details page has one tab owner: the legacy visual shell + the dedicated Reviews system. */
     load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260911-1','nextlevelDetailsNavigationFix');
-    load('script[data-nextlevel-details-fix]','/js/details-page-fix.js?v=20260910-2','nextlevelDetailsFix');
-    load('script[data-nextlevel-details-premium-content]','/js/details-premium-content.js?v=20260910-2','nextlevelDetailsPremiumContent');
-    /* Reviews must be the outermost tab owner so no legacy/premium tab enhancer can repaint it later. */
-    load('script[data-nextlevel-reviews-system-v3]','/js/reviews-system-v3.js?v=20260911-2','nextlevelReviewsSystemV3');
+    load('script[data-nextlevel-reviews-system-v3]','/js/reviews-system-v3.js?v=20260911-3','nextlevelReviewsSystemV3');
     load('script[data-nextlevel-product-media-details]','/js/product-media-details-bridge.js?v=20260910-1','nextlevelProductMediaDetails');
     load('script[data-nextlevel-details-central-logo]','/js/details-central-logo-sync.js?v=20260910-1','nextlevelDetailsCentralLogo');
     load('script[data-nextlevel-details-related-cards-fix]','/js/details-related-cards-fix.js?v=20260910-2','nextlevelDetailsRelatedCardsFix');
