@@ -3,6 +3,7 @@
   const RAW_URL = "https://raw.githubusercontent.com/ridoyarifin99/nextlevel/1e21a3c73c4c1d7589626906c9b3d1c8a60dc269/js/details.js";
   const db = () => window.supabaseClient;
   const $ = id => document.getElementById(id);
+  const uuid = () => (crypto && crypto.randomUUID ? crypto.randomUUID() : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)));
   const slugify = v => String(v || "").toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
   const busy = (on,msg="Working…") => { const b=$("busy"),t=$("busyText"); if(b)b.hidden=!on; if(t)t.textContent=msg; };
   const toast = (message,bad=false) => { const host=$("toast"); if(!host){alert(message);return;} const x=document.createElement("div"); x.className=`toast ${bad?"error":"success"}`; x.textContent=message; host.appendChild(x); setTimeout(()=>x.remove(),5000); };
@@ -55,7 +56,7 @@
       const existing=await client.from("product_plans").select("id,display_order").eq("product_id",productId).order("display_order");
       if(existing.error) throw existing.error;
       const oldPlans=existing.data||[];
-      const rows=plans.map((x,j)=>({...x,product_id:productId,id:oldPlans[j]?.id}));
+      const rows=plans.map((x,j)=>({...x,product_id:productId,id:oldPlans[j]?.id||uuid()}));
       const keep=rows.map(x=>x.id).filter(Boolean);
       const removable=oldPlans.map(x=>x.id).filter(id=>!keep.includes(id));
       if(removable.length){
@@ -70,7 +71,7 @@
       if(mr.error) throw mr.error;
       const oldMedia=mr.data||[];
       const desired=media.map((url,j)=>({url,role:j===0?"primary":"gallery",display_order:j,alt_text:p.name,title:p.name,is_active:true,metadata:{source:"legacy_details_migration",legacy_commit:"1e21a3c73c4c1d7589626906c9b3d1c8a60dc269"}}));
-      const mediaRows=desired.map((x,j)=>({...x,product_id:productId,id:oldMedia[j]?.id}));
+      const mediaRows=desired.map((x,j)=>({...x,product_id:productId,id:oldMedia[j]?.id||uuid()}));
       const keepMedia=mediaRows.map(x=>x.id).filter(Boolean);
       const delMedia=oldMedia.map(x=>x.id).filter(id=>!keepMedia.includes(id));
       if(delMedia.length){const d=await client.from("product_media").delete().in("id",delMedia);if(d.error)throw d.error;}
@@ -81,22 +82,11 @@
     toast(`Legacy details migration complete: ${results.length} products imported into Central Product Management.`);
     window.dispatchEvent(new CustomEvent("nls:catalog-migrated",{detail:results}));
   }
-
-  // Expose the central importer and intercept the button at capture phase so the
-  // legacy admin-products.js onclick handler cannot run instead.
-  window.NextLevelLegacyDetailsImport = importLegacyDetails;
-  document.addEventListener("click", event => {
-    const b = event.target?.closest?.("#importLegacy");
-    if (!b) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    importLegacyDetails().catch(e => { busy(false); toast(e.message || String(e), true); });
-  }, true);
-
   addEventListener("DOMContentLoaded",()=>setTimeout(()=>{
     const b=$("importLegacy");
     if(!b) return;
     b.textContent="Import Details.js Data";
     b.title="One-time migration of the original details.js catalog into Supabase Central Product Management";
+    b.onclick=()=>importLegacyDetails().catch(e=>{busy(false);toast(e.message||String(e),true);});
   },0));
 })();
