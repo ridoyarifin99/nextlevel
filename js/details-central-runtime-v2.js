@@ -1,25 +1,126 @@
 "use strict";
 (() => {
-  if (window.__NLSDetailsCentralRuntimeV2) return;
-  window.__NLSDetailsCentralRuntimeV2 = true;
-  const p=window.__NLS_CENTRAL_PRODUCT__; if(!p)return;
-  const plans=(p.product_plans||[]).filter(x=>x&&x.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
-  const media=role=>(p.product_media||[]).filter(x=>x&&x.is_active!==false&&x.role===role).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
-  const primary=media('primary')[0]?.url||p.image_url||p.image||'';
-  const gallery=media('gallery').map(x=>x.url).filter(Boolean);
-  const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
-  const abs=u=>{try{return new URL(u,location.origin).href}catch{return u}};
-  const money=(v,c='BDT')=>`${c==='BDT'?'৳':c+' '}${Number(v||0).toLocaleString('en-BD',{maximumFractionDigits:2})}`;
-  const images=()=>[primary,...gallery].filter(Boolean);
-  function patchImages(){const srcs=images();const els=[...document.querySelectorAll('#productDetails img')];els.forEach((el,i)=>{const u=srcs[i%srcs.length];if(u){el.src=abs(u);el.removeAttribute('srcset');el.alt=`${p.name} ${i+1}`;}})}
-  function patchHeader(){const h=[...document.querySelectorAll('#productDetails h1,h1')].find(x=>x.textContent.trim());if(h)h.textContent=p.name;const d=document.querySelector('#productDetails p.text-gray-600.mb-6,.product-description,[data-product-description]');if(d&&p.description)d.textContent=p.description;const b=document.getElementById('breadcrumbProduct');if(b)b.textContent=p.name;document.title=`${p.name} Subscription | NEXT LEVEL SUBS`}
-  function renderPlans(){const heading=[...document.querySelectorAll('#productDetails h3')].find(x=>/select subscription plan/i.test(x.textContent||''));if(!heading)return;const host=heading.parentElement;if(!host)return;host.querySelectorAll('.plan-card,[data-central-plan-list]').forEach(x=>x.remove());const wrap=document.createElement('div');wrap.className='grid grid-cols-2 gap-3';wrap.dataset.centralPlanList='1';wrap.innerHTML=plans.map((x,i)=>`<div class="plan-card p-4 rounded-xl border border-gray-200 text-center ${i===0?'selected':''}" data-central-plan-index="${i}"><div class="font-medium mt-2">${esc(x.duration||x.name)}</div><div class="text-2xl font-bold mt-1">${esc(money(x.price,x.currency||p.currency||'BDT'))}</div>${x.old_price!=null?`<div class="text-xs text-gray-400 line-through">${esc(money(x.old_price,x.currency||p.currency||'BDT'))}</div>`:''}</div>`).join('');host.appendChild(wrap);wrap.querySelectorAll('[data-central-plan-index]').forEach(el=>el.addEventListener('click',()=>{window.__NLS_CENTRAL_SELECTED_PLAN_INDEX=Number(el.dataset.centralPlanIndex);wrap.querySelectorAll('.plan-card').forEach(x=>x.classList.toggle('selected',x===el));}));window.__NLS_CENTRAL_SELECTED_PLAN_INDEX=0}
-  function renderFeatures(){const h=[...document.querySelectorAll('#productDetails h3')].find(x=>/key features/i.test(x.textContent||''));if(!h||!Array.isArray(p.features)||!p.features.length)return;const host=h.parentElement;host.querySelectorAll('[data-central-features]').forEach(x=>x.remove());const wrap=document.createElement('div');wrap.dataset.centralFeatures='1';wrap.className='grid grid-cols-1 sm:grid-cols-2 gap-2';wrap.innerHTML=p.features.map(f=>`<div class="flex items-center p-2 bg-gray-50 rounded-lg"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(typeof f==='string'?f:f?.text||f?.name||'')}</span></div>`).join('');host.appendChild(wrap)}
-  function patchTabs(){window.switchTab=function(tab){const out=document.getElementById('tabContent');if(!out)return;document.querySelectorAll('.tab-button').forEach(b=>b.classList.toggle('active',(b.textContent||'').toLowerCase().includes(tab)));if(tab==='description'){out.innerHTML=`<div class="prose max-w-none"><p class="text-gray-700">${esc(p.description||'')}</p></div>`}else if(tab==='features'){out.innerHTML=`<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${(p.features||[]).map(f=>`<div class="flex items-start p-4 bg-gray-50 rounded-lg"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span>${esc(typeof f==='string'?f:f?.text||f?.name||'')}</span></div>`).join('')}</div>`}else if(tab==='faq'){out.innerHTML=(p.faq||[]).length?`<div class="space-y-4">${p.faq.map(f=>`<div class="border border-gray-200 rounded-lg p-4"><div class="font-semibold">${esc(f.question||'')}</div><div class="text-gray-600 mt-2">${esc(f.answer||'')}</div></div>`).join('')}</div>`:'<p class="text-gray-600">No FAQs available for this product.</p>'}else{out.innerHTML='<p class="text-gray-600">No customer reviews available yet.</p>'}}}
-  function cartItem(){const i=Math.max(0,Math.min(Number(window.__NLS_CENTRAL_SELECTED_PLAN_INDEX||0),plans.length-1));const plan=plans[i]||plans[0]||{price:p.price||0,currency:p.currency||'BDT',duration:'Standard'};return {...p,product_id:p.id,selectedPlan:{...plan,product_id:p.id},plan_id:plan.id||null,price:plan.price,quantity:1,image:primary}}
-  function saveItem(){const item=cartItem();let cart=[];try{cart=JSON.parse(localStorage.getItem('streamHubCart')||'[]');if(!Array.isArray(cart))cart=[]}catch{};const idx=cart.findIndex(x=>x.product_id===item.product_id);if(idx>=0)cart[idx]=item;else cart.push(item);localStorage.setItem('streamHubCart',JSON.stringify(cart));return item}
-  function patchCartActions(){window.addToCart=function(){saveItem();const m=document.getElementById('successModal');if(m)m.classList.remove('hidden')};window.buyNow=function(){saveItem();location.href='/checkout.html'}}
-  async function patchRelated(){const db=window.supabaseClient;if(!db)return;try{const r=await db.from('products').select('id,name,slug,description,image_url,price,currency,product_media(role,url,is_active,display_order),product_plans(price,currency,duration,is_available,display_order)').eq('is_available',true).eq('is_archived',false).neq('id',p.id).order('display_order').limit(5);if(r.error||!r.data)return;const root=document.getElementById('relatedProducts');if(!root)return;root.innerHTML=r.data.map(x=>{const m=(x.product_media||[]).filter(y=>y.is_active!==false&&y.role==='primary').sort((a,b)=>(a.display_order||0)-(b.display_order||0))[0]?.url||x.image_url||'';const pl=(x.product_plans||[]).filter(y=>y.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0))[0];return `<div class="subscription-card"><a href="/product/${encodeURIComponent(x.slug)}" class="card-link"><div class="product-image-container"><img src="${esc(abs(m))}" alt="${esc(x.name)}" class="product-image" loading="lazy"></div><div class="p-3"><h3 class="font-bold text-base">${esc(x.name)}</h3><p class="text-xs text-gray-500 mb-2">${esc(x.description||'')}</p><div class="text-lg font-bold">${esc(money(pl?.price??x.price,x.currency||pl?.currency||'BDT'))}</div><span class="nls-btn-details text-sm">See Details <i class="fa-solid fa-arrow-right-long"></i></span></div></a></div>`}).join('')}catch(e){console.warn('Central related products unavailable',e)}}
-  function apply(){patchImages();patchHeader();renderPlans();renderFeatures();patchTabs();patchCartActions();patchRelated()}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();[700,1600,3000].forEach(ms=>setTimeout(apply,ms));
+  if (window.__NLSDetailsCentralRuntimeV2Booted) return;
+  window.__NLSDetailsCentralRuntimeV2Booted = true;
+
+  const start = () => {
+    const p = window.__NLS_CENTRAL_PRODUCT__;
+    if (!p) {
+      // /api/product.js injects the product near the end of <body>. The
+      // central catalog loader can execute earlier, so wait instead of
+      // permanently exiting before the injected product exists.
+      if (!window.__NLSDetailsCentralRuntimeV2Waiting) {
+        window.__NLSDetailsCentralRuntimeV2Waiting = true;
+        let attempts = 0;
+        const timer = setInterval(() => {
+          if (window.__NLS_CENTRAL_PRODUCT__) {
+            clearInterval(timer);
+            window.__NLSDetailsCentralRuntimeV2Waiting = false;
+            start();
+          } else if (++attempts >= 120) {
+            clearInterval(timer);
+            window.__NLSDetailsCentralRuntimeV2Waiting = false;
+            console.warn("NEXT LEVEL SUBS: central product data was not injected into details page");
+          }
+        }, 50);
+      }
+      return;
+    }
+    if (window.__NLSDetailsCentralRuntimeV2Applied) return;
+    window.__NLSDetailsCentralRuntimeV2Applied = true;
+
+    const plans=(p.product_plans||[]).filter(x=>x&&x.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+    const media=role=>(p.product_media||[]).filter(x=>x&&x.is_active!==false&&x.role===role).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+    const primary=media('primary')[0]?.url||p.image_url||p.image||'';
+    const gallery=media('gallery').map(x=>x.url).filter(Boolean);
+    const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[c]));
+    const abs=u=>{try{return new URL(u,location.origin).href}catch{return u}};
+    const money=(v,c='BDT')=>`${c==='BDT'?'৳':c+' '}${Number(v||0).toLocaleString('en-BD',{maximumFractionDigits:2})}`;
+    const images=()=>[primary,...gallery].filter(Boolean);
+
+    function patchImages(){
+      const srcs=images();
+      if(!srcs.length)return;
+      const els=[...document.querySelectorAll('#productDetails img, .product-details img, [data-product-details] img, img[data-product-image]')];
+      els.forEach((el,i)=>{const u=srcs[i%srcs.length];if(u){el.src=abs(u);el.removeAttribute('srcset');el.alt=`${p.name} ${i+1}`;}});
+    }
+    function patchHeader(){
+      const h=[...document.querySelectorAll('#productDetails h1,h1')].find(x=>x.textContent.trim());
+      if(h)h.textContent=p.name;
+      const d=document.querySelector('#productDetails p.text-gray-600.mb-6,.product-description,[data-product-description]');
+      if(d&&p.description)d.textContent=p.description;
+      const b=document.getElementById('breadcrumbProduct');
+      if(b)b.textContent=p.name;
+      document.title=`${p.name} Subscription | NEXT LEVEL SUBS`;
+    }
+    function renderPlans(){
+      const heading=[...document.querySelectorAll('#productDetails h3')].find(x=>/select subscription plan/i.test(x.textContent||''));
+      if(!heading)return;
+      const host=heading.parentElement;
+      if(!host)return;
+      host.querySelectorAll('.plan-card,[data-central-plan-list]').forEach(x=>x.remove());
+      if(!plans.length)return;
+      const wrap=document.createElement('div');
+      wrap.className='grid grid-cols-2 gap-3';
+      wrap.dataset.centralPlanList='1';
+      wrap.innerHTML=plans.map((x,i)=>`<div class="plan-card p-4 rounded-xl border border-gray-200 text-center ${i===0?'selected':''}" data-central-plan-index="${i}"><div class="font-medium mt-2">${esc(x.duration||x.name)}</div><div class="text-2xl font-bold mt-1">${esc(money(x.price,x.currency||p.currency||'BDT'))}</div>${x.old_price!=null?`<div class="text-xs text-gray-400 line-through">${esc(money(x.old_price,x.currency||p.currency||'BDT'))}</div>`:''}</div>`).join('');
+      host.appendChild(wrap);
+      wrap.querySelectorAll('[data-central-plan-index]').forEach(el=>el.addEventListener('click',()=>{window.__NLS_CENTRAL_SELECTED_PLAN_INDEX=Number(el.dataset.centralPlanIndex);wrap.querySelectorAll('.plan-card').forEach(x=>x.classList.toggle('selected',x===el));}));
+      window.__NLS_CENTRAL_SELECTED_PLAN_INDEX=0;
+    }
+    function renderFeatures(){
+      const h=[...document.querySelectorAll('#productDetails h3')].find(x=>/key features/i.test(x.textContent||''));
+      if(!h||!Array.isArray(p.features)||!p.features.length)return;
+      const host=h.parentElement;
+      host.querySelectorAll('[data-central-features]').forEach(x=>x.remove());
+      const wrap=document.createElement('div');
+      wrap.dataset.centralFeatures='1';
+      wrap.className='grid grid-cols-1 sm:grid-cols-2 gap-2';
+      wrap.innerHTML=p.features.map(f=>`<div class="flex items-center p-2 bg-gray-50 rounded-lg"><i class="fas fa-check-circle text-green-500 mr-2"></i><span class="text-gray-700">${esc(typeof f==='string'?f:f?.text||f?.name||'')}</span></div>`).join('');
+      host.appendChild(wrap);
+    }
+    function patchTabs(){
+      window.switchTab=function(tab){
+        const out=document.getElementById('tabContent');
+        if(!out)return;
+        document.querySelectorAll('.tab-button').forEach(b=>b.classList.toggle('active',(b.textContent||'').toLowerCase().includes(tab)));
+        if(tab==='description')out.innerHTML=`<div class="prose max-w-none"><p class="text-gray-700">${esc(p.description||'')}</p></div>`;
+        else if(tab==='features')out.innerHTML=`<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${(p.features||[]).map(f=>`<div class="flex items-start p-4 bg-gray-50 rounded-lg"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span>${esc(typeof f==='string'?f:f?.text||f?.name||'')}</span></div>`).join('')}</div>`;
+        else if(tab==='faq')out.innerHTML=(p.faq||[]).length?`<div class="space-y-4">${p.faq.map(f=>`<div class="border border-gray-200 rounded-lg p-4"><div class="font-semibold">${esc(f.question||'')}</div><div class="text-gray-600 mt-2">${esc(f.answer||'')}</div></div>`).join('')}</div>`:'<p class="text-gray-600">No FAQs available for this product.</p>';
+        else out.innerHTML='<p class="text-gray-600">No customer reviews available yet.</p>';
+      };
+    }
+    function cartItem(){
+      const i=Math.max(0,Math.min(Number(window.__NLS_CENTRAL_SELECTED_PLAN_INDEX||0),plans.length-1));
+      const plan=plans[i]||plans[0]||{price:p.price||0,currency:p.currency||'BDT',duration:'Standard'};
+      return {...p,product_id:p.id,selectedPlan:{...plan,product_id:p.id},plan_id:plan.id||null,price:plan.price,quantity:1,image:primary};
+    }
+    function saveItem(){
+      const item=cartItem();let cart=[];
+      try{cart=JSON.parse(localStorage.getItem('streamHubCart')||'[]');if(!Array.isArray(cart))cart=[]}catch{}
+      const idx=cart.findIndex(x=>x.product_id===item.product_id);
+      if(idx>=0)cart[idx]=item;else cart.push(item);
+      localStorage.setItem('streamHubCart',JSON.stringify(cart));
+      return item;
+    }
+    function patchCartActions(){window.addToCart=function(){saveItem();const m=document.getElementById('successModal');if(m)m.classList.remove('hidden')};window.buyNow=function(){saveItem();location.href='/checkout.html'}}
+    async function patchRelated(){
+      const db=window.supabaseClient;if(!db)return;
+      try{
+        const r=await db.from('products').select('id,name,slug,description,image_url,price,currency,product_media(role,url,is_active,display_order),product_plans(price,currency,duration,is_available,display_order)').eq('is_available',true).eq('is_archived',false).neq('id',p.id).order('display_order').limit(5);
+        if(r.error||!r.data)return;
+        const root=document.getElementById('relatedProducts');if(!root)return;
+        root.innerHTML=r.data.map(x=>{
+          const m=(x.product_media||[]).filter(y=>y.is_active!==false&&y.role==='primary').sort((a,b)=>(a.display_order||0)-(b.display_order||0))[0]?.url||x.image_url||'';
+          const pl=(x.product_plans||[]).filter(y=>y.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0))[0];
+          return `<div class="subscription-card"><a href="/product/${encodeURIComponent(x.slug)}" class="card-link"><div class="product-image-container"><img src="${esc(abs(m))}" alt="${esc(x.name)}" class="product-image" loading="lazy"></div><div class="p-3"><h3 class="font-bold text-base">${esc(x.name)}</h3><p class="text-xs text-gray-500 mb-2">${esc(x.description||'')}</p><div class="text-lg font-bold">${esc(money(pl?.price??x.price,x.currency||pl?.currency||'BDT'))}</div><span class="nls-btn-details text-sm">See Details <i class="fa-solid fa-arrow-right-long"></i></span></div></a></div>`;
+        }).join('');
+      }catch(e){console.warn('Central related products unavailable',e)}
+    }
+    function apply(){patchImages();patchHeader();renderPlans();renderFeatures();patchTabs();patchCartActions();patchRelated()}
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
+    [700,1600,3000].forEach(ms=>setTimeout(apply,ms));
+  };
+
+  start();
 })();
