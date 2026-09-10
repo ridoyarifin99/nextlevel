@@ -103,7 +103,14 @@
     document.addEventListener("click",e=>{const b=e.target.closest?.(".tab-button");if(b){setTimeout(takeOver,0);if(/review/i.test(b.textContent||""))setTimeout(schedule,0)}});
     const tab=document.getElementById("tabContent");
     if(tab)new MutationObserver(()=>{if(rendering)return;if(isReviewsActive()){const root=document.getElementById("nlsReviewsRoot");if(!root||root.parentElement!==tab)schedule()}}).observe(tab,{childList:true});
-    setInterval(takeOver,500);
+    // The central Details runtime can be loaded before or after this file.
+    // Retry only during startup; never keep a permanent polling loop alive.
+    let attempts = 0;
+    const retry = () => {
+      if (installTabOwner() || attempts++ >= 40) return;
+      setTimeout(retry, 250);
+    };
+    retry();
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();

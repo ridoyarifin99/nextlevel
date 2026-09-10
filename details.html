@@ -30,15 +30,12 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"Organization","name":"Next Level Subs","url":"https://www.nextlevelsubs.com/","logo":"https://www.nextlevelsubs.com/images/logo.png","description":"Premium digital subscriptions and services in Bangladesh.","contactPoint":{"@type":"ContactPoint","telephone":"+8801644490566","contactType":"customer service","availableLanguage":["English","Bengali"]},"sameAs":["https://www.facebook.com/nextlevelestoresubs","https://wa.me/8801644490566"]}
   </script>
-  <script>window.AUTH_API_BASE = "http://localhost:8080";</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./js/supabase-config.js"></script>
   <script src="./js/auth.js"></script>
   <link rel="stylesheet" href="./src/output.css">
   <link rel="stylesheet" href="./src/all.min.css">
-  <link rel="stylesheet" href="./src/input.css">
   <script src="./src/aos.js"></script>
-  <script src="./src/auth.js"></script>
 </head>
 <body>
   <div class="nls-drawer-overlay" id="mobileMenuOverlay"></div>
@@ -942,15 +939,6 @@
           } else if (t === 'features') {
             const features = currentProduct.features || [];
             tabContent.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${features.map((f, i) => `<div class="flex items-start p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors" data-aos="fade-up" data-aos-delay="${i*100}"><i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i><span class="text-gray-700">${esc(f)}</span></div>`).join('')}</div>`;
-          } else if (t === 'reviews') {
-            let r = '';
-            if (currentProduct.customerReviews.length) {
-              r = `<div class="space-y-4">${currentProduct.customerReviews.map((v, i) => `<div class="border-b border-gray-200 pb-4" data-aos="fade-up" data-aos-delay="${i*100}"><div class="flex items-center justify-between mb-2"><div class="flex items-center"><div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3"><span class="font-semibold text-gray-700">${esc(v.name.charAt(0))}</span></div><div><h4 class="font-medium">${esc(v.name)}</h4><div class="flex text-yellow-400 text-sm">${generateStars(v.rating)}</div></div></div><span class="text-sm text-gray-500">${formatDate(v.date)}</span></div><p class="text-gray-700">${esc(v.comment)}</p></div>`).join('')}</div>`;
-            } else {
-              r = `<div class="text-center py-8"><i class="fas fa-comments text-4xl text-gray-300 mb-4"></i><p class="text-gray-600">No reviews yet. Be the first to review this product!</p></div>`;
-            }
-            const rating = currentProduct.rating || getStableRating(currentProduct.name);
-            tabContent.innerHTML = `<div class="space-y-6"><div class="flex items-center justify-between"><div><h3 class="text-xl font-semibold">Customer Reviews</h3><div class="flex items-center mt-1"><div class="flex text-yellow-400 text-xl">${generateStars(rating)}</div><span class="ml-2 text-gray-600">${rating} out of 5</span></div></div><button class="btn-primary px-4 py-2 rounded-lg">Write a Review</button></div>${r}</div>`;
           } else if (t === 'faq') {
             let f = '';
             if (currentProduct.faq.length) {
