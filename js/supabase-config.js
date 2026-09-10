@@ -32,3 +32,4 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(/\/checkout\.html$/i.test(path))load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
   load('script[data-nextlevel-product-display-sync]','/js/product-display-sync.js?v=20260909-1','nextlevelProductDisplaySync');
 })();
+// Final Details premium presentation layer activated for production.
