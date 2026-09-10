@@ -13,7 +13,12 @@
     const r=await fetch(RAW_URL,{cache:"no-store"});
     if(!r.ok) throw Error(`Could not load legacy details.js (${r.status}).`);
     const src=await r.text();
-    const legacy=new Function(`${src}\nreturn products;`)();
+    const start=src.indexOf("const products =");
+    if(start<0) throw Error("Legacy product array was not found.");
+    const arrayStart=src.indexOf("[",start);
+    const end=src.indexOf("];",arrayStart);
+    if(arrayStart<0||end<0) throw Error("Legacy product array could not be parsed.");
+    const legacy=new Function(`return ${src.slice(arrayStart,end+1)};`)();
     if(!Array.isArray(legacy)||!legacy.length) throw Error("Legacy details.js did not contain a product catalog.");
     return legacy;
   }
