@@ -44,7 +44,6 @@
       }
     });
 
-    /* If a subscription detail modal is already open, update its catalog-facing fields too. */
     const modalTitle=document.getElementById("nlsModalTitle");
     if(modalTitle&&text(modalTitle)){
       const product=products.find(p=>slug(p.name)===slug(text(modalTitle))||slug(p.slug)===slug(text(modalTitle)));
@@ -67,10 +66,13 @@
   window.NLSDashboardCentralRefresh=refresh;
   const boot=()=>{
     apply();
-    new MutationObserver(()=>requestAnimationFrame(apply)).observe(document.body,{childList:true,subtree:true});
+    let queued=false;
+    const observer=new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;apply()})});
+    observer.observe(document.getElementById("subscriptionsContainer")||document.body,{childList:true,subtree:true});
     window.addEventListener("nls:central-catalog-ready",apply);
     window.addEventListener("nextlevel:products-updated",apply);
-    setInterval(apply,2000);
+    /* Low-frequency safety net only; central catalog events are the primary path. */
+    setInterval(apply,10000);
   };
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
 })();
