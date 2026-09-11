@@ -7,7 +7,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-3','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-4','nextlevelCentralCatalog');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-1','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
@@ -40,6 +40,6 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
     setTimeout(()=>load('script[data-nextlevel-checkout-central-guard]','/js/checkout-central-order-guard.js?v=20260912-3','nextlevelCheckoutCentralGuard'),0);
   }
-  load('script[data-nextlevel-product-display-sync]','/js/product-display-sync.js?v=20260912-1','nextlevelProductDisplaySync');
+  /* Admin/dashboard central runtimes now own their own data projection; the old
+     global product-display-sync was a duplicate Supabase reader and is no longer loaded. */
 })();
-// Final Details premium presentation layer activated for production.
