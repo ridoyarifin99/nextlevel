@@ -17,7 +17,10 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
-  if(/\/(index|)$/.test(path)||/^\/$/.test(path))load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260910-1','nextlevelIndexCentralSync');
+  if(/\/(index|)$/.test(path)||/^\/$/.test(path)){
+    load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260910-1','nextlevelIndexCentralSync');
+    load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-1','nextlevelIndexCartCentralLogoSync');
+  }
   if(/\/(index|)$/.test(path)||/^\/$/.test(path)||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-3','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){
