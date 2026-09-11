@@ -7,16 +7,6 @@
   const norm = v => String(v || "").trim().toLowerCase();
   const getCatalog = () => window.NLSCentralCatalog?.products || [];
 
-  const findProduct = (item) => {
-    const catalog = getCatalog();
-    if (!catalog.length) return null;
-    const slug = norm(item?.slug || item?.product_slug);
-    const name = norm(item?.name);
-    return catalog.find(p => slug && norm(p.slug) === slug)
-      || catalog.find(p => name && norm(p.name) === name)
-      || null;
-  };
-
   const sync = () => {
     const catalog = getCatalog();
     if (!catalog.length) return;
@@ -43,10 +33,15 @@
     window.addEventListener("nextlevel:products-updated", sync);
     window.addEventListener("nextlevel:checkout-cart-updated", sync);
 
-    new MutationObserver(() => requestAnimationFrame(sync))
-      .observe(document.body, { childList: true, subtree: true });
+    let queued = false;
+    new MutationObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; sync(); });
+    }).observe(document.body, { childList: true, subtree: true });
 
-    setInterval(sync, 1000);
+    /* Safety net only; event-driven sync is the primary path. */
+    setInterval(sync, 5000);
   };
 
   if (document.readyState === "loading") {
