@@ -3,12 +3,12 @@ window.SUPABASE_URL="https://zrptkmjdltqdjzrpogyo.supabase.co";
 window.SUPABASE_ANON_KEY="sb_publishable_KcWSkkO1L4z0U6UUfZijyw_KIJ_d5m7";
 window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SUPABASE_ANON_KEY,{auth:{detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
 (function(){
-  const path=window.location.pathname,isDetailsPage=/\/details\.html$/i.test(path)||/\/product\//i.test(path);
+  const path=window.location.pathname,isDetailsPage=/\/details\.html$/i.test(path)||/\/product\//i.test(path),isStorefrontRoute=/\/(index|best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)$/.test(path)||/^\/$/.test(path);
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-4','nextlevelCentralCatalog');
-  load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-1','nextlevelCentralLiveSync');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-5','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
   load('script[data-nextlevel-cart-fix]','/js/cart-responsive-fix.js?v=20260907-3','nextlevelCartFix');
@@ -17,11 +17,12 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-desktop-profile-nav]','/js/desktop-profile-nav.js?v=20260907-1','nextlevelDesktopProfileNav');
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
-  if(/\/(index|)$/.test(path)||/^\/$/.test(path)){
-    load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260912-3','nextlevelIndexCentralSync');
-    load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-2','nextlevelIndexCartCentralLogoSync');
+  if(isStorefrontRoute){
+    load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260912-4','nextlevelIndexCentralSync');
+    load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-1','nextlevelIndexCentralAuthoritative');
   }
-  if(/\/(index|)$/.test(path)||/^\/$/.test(path)||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
+  if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-4','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){
     load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260911-1','nextlevelDetailsNavigationFix');
