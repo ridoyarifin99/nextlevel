@@ -6,8 +6,26 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   const path=window.location.pathname,isDetailsPage=/\/details\.html$/i.test(path)||/\/product\//i.test(path),isStorefrontRoute=/\/(index|best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)$/.test(path)||/^\/$/.test(path);
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
+
+  /* The old homepage runtime still exists inline for UI behavior, but its deleted
+     hardcoded catalog must never be required. Expose a live array-like adapter
+     backed only by Product Central so the legacy runtime cannot crash or render
+     stale hardcoded products while the authoritative renderer takes over. */
+  if(isStorefrontRoute&&!window.raw){
+    const liveList=mapper=>new Proxy([],{
+      get(target,prop){
+        const source=Array.isArray(window.NLSCentralCatalog?.products)?window.NLSCentralCatalog.products:[];
+        const arr=mapper?source.map(mapper):source;
+        if(prop===Symbol.iterator)return arr[Symbol.iterator].bind(arr);
+        const value=arr[prop];
+        return typeof value==='function'?value.bind(arr):value;
+      }
+    });
+    window.raw={map:mapper=>liveList(mapper)};
+  }
+
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-6','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-7','nextlevelCentralCatalog');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
@@ -18,8 +36,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
   if(isStorefrontRoute){
-    /* index-central-authoritative is the only storefront product renderer. */
-    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-4','nextlevelIndexCentralAuthoritative');
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-5','nextlevelIndexCentralAuthoritative');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
   }
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
