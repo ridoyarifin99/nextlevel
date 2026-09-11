@@ -15,7 +15,7 @@
   window.addEventListener("storage",e=>{if(e.key===SIGNAL)refresh();});
   window.addEventListener(SIGNAL,refresh);
   window.addEventListener("focus",()=>refresh());
-  /* Realtime is the primary path; 1-second polling is a safety net if Realtime is unavailable. */
-  setInterval(()=>{if(document.visibilityState==="visible")refresh()},1000);
+  /* Realtime is the primary path. Poll only as a low-frequency safety net. */
+  setInterval(()=>{if(document.visibilityState==="visible")refresh()},15000);
   window.NLSCentralCatalogRefresh=refresh;
 })();
