@@ -4,7 +4,6 @@
   window.__NLSCheckoutCentralGuard=true;
 
   const CART_KEY="streamHubCart";
-  const waitFor=(fn,timeout=10000)=>new Promise((resolve,reject)=>{const start=Date.now();const tick=()=>{if(fn())return resolve(true);if(Date.now()-start>timeout)return reject(new Error("Checkout initialization timed out."));setTimeout(tick,50)};tick()});
   const getCart=()=>{try{const v=JSON.parse(localStorage.getItem(CART_KEY)||"[]");return Array.isArray(v)?v:[]}catch{return[]}};
   const saveCart=cart=>localStorage.setItem(CART_KEY,JSON.stringify(cart));
   const money=n=>Number(n||0);
@@ -43,12 +42,19 @@
   }
 
   async function submitCanonically(original){
+    const form=document.getElementById("checkoutForm");
+    if(form&&!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
     const cart=await canonicalizeCart();
     const sessionResult=await window.supabaseClient.auth.getSession();
     const user=sessionResult?.data?.session?.user;
     if(!user) return original();
 
     const get=id=>(document.getElementById(id)?.value||"").trim();
+    if(!get("paymentSenderNumber"))throw new Error("Please enter the payment sender number.");
+    if(!get("paymentReference"))throw new Error("Please enter the transaction ID / payment reference.");
     const items=cart.map(item=>({product_slug:item.slug||item.product_slug,plan_id:item.selectedPlan?.id,quantity:Math.max(1,Number(item.quantity||1))}));
     if(items.some(x=>!x.product_slug||!x.plan_id))throw new Error("One or more cart items could not be matched to the current catalog. Please return to the product page and add them again.");
 
