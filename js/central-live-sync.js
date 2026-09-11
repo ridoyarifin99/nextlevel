@@ -5,7 +5,7 @@
   window.__NLSCentralLiveSync=true;
   const path=String(location.pathname||"").toLowerCase();
   const isDetails=/\/details\.html$/.test(path)||/\/product\//.test(path);
-  const isIndex=/\/(index)?$/.test(path)||/\/index\.html$/.test(path);
+  const isStorefront=/\/(index|best-selling|streaming|music|storage|vpn|aidesign|combos|education|adult)$/.test(path)||/^\/$/.test(path);
   const isCheckout=/\/checkout\.html$/.test(path);
   const isDashboard=/\/dashboard\.html$/.test(path);
   const isAdminOrders=/\/admin-orders\.html$/.test(path);
@@ -19,9 +19,9 @@
     const catalogChanged=!!lastCatalog&&lastCatalog!==catalogSig;
     const currentChanged=!!lastCurrentProduct&&lastCurrentProduct!==currentSig;
     lastCatalog=catalogSig;lastCurrentProduct=currentSig;
-    if(isCheckout||isDashboard||isAdminOrders)refreshCartUI();
+    if(isStorefront||isCheckout||isDashboard||isAdminOrders)refreshCartUI();
     if(isDetails&&currentChanged&&currentSig){const key=`nls:details-live:${location.href}`,seen=sessionStorage.getItem(key);if(seen!==currentSig){sessionStorage.setItem(key,currentSig);location.reload();}}
-    if(isIndex&&catalogChanged){const key=`nls:index-live:${location.pathname}`,seen=sessionStorage.getItem(key);if(seen!==catalogSig){sessionStorage.setItem(key,catalogSig);location.reload();}}
+    if(isStorefront&&catalogChanged){const key=`nls:storefront-live:${location.pathname}`,seen=sessionStorage.getItem(key);if(seen!==catalogSig){sessionStorage.setItem(key,catalogSig);location.reload();}}
   }
   function subscribe(){const db=window.supabaseClient;if(!db?.channel)return;const channel=db.channel("nls-central-catalog-live").on("postgres_changes",{event:"*",schema:"public",table:"products"},()=>window.NLSCentralCatalogRefresh?.()).on("postgres_changes",{event:"*",schema:"public",table:"product_plans"},()=>window.NLSCentralCatalogRefresh?.()).on("postgres_changes",{event:"*",schema:"public",table:"product_media"},()=>window.NLSCentralCatalogRefresh?.());channel.subscribe(status=>{if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")setTimeout(subscribe,3000);});}
   function boot(){const apply=()=>handleCatalog(window.NLSCentralCatalog?.products||[]);apply();window.addEventListener("nls:central-catalog-ready",apply);window.addEventListener("nextlevel:products-updated",apply);subscribe();}
