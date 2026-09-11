@@ -1,0 +1,53 @@
+name: One-time homepage cleanup
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.event.head_commit.message != 'refactor: remove legacy homepage catalog runtime'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove legacy homepage catalog runtime
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          old = '''  <script src="/js/index-product.js"></script>\n\n  <script>\n    (() => {'''
+          marker = '''    // Banner Carousel'''
+          start = text.find(old)
+          if start == -1:
+              raise SystemExit('legacy homepage runtime start not found')
+          end_marker = text.find(marker, start)
+          if end_marker == -1:
+              raise SystemExit('banner marker not found')
+          end = text.rfind('    })();', start, end_marker)
+          if end == -1:
+              raise SystemExit('legacy homepage runtime end not found')
+          end += len('    })();')
+          replacement = '''  <script src="/js/index-ui-central.js?v=20260912-1"></script>\n\n  <script>\n'''
+          text = text[:start] + replacement + text[end:]
+          if '/js/index-product.js' in text or 'const subs=raw.map' in text:
+              raise SystemExit('legacy homepage catalog reference still present')
+          p.write_text(text, encoding='utf-8')
+
+      - name: Commit cleaned homepage
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No homepage changes needed"
+            exit 0
+          fi
+          git commit -m "refactor: remove legacy homepage catalog runtime"
+          git push
