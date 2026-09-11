@@ -142,16 +142,22 @@
         } finally { syncing = false; }
     }
 
-    function schedule() { clearTimeout(timer); timer = setTimeout(sync, 100); }
+    function schedule() { clearTimeout(timer); timer = setTimeout(sync, 150); }
 
     function boot() {
         sync();
         const target = document.getElementById("ordersContainer") || document.body;
-        new MutationObserver(schedule).observe(target, { childList: true, subtree: true });
+        let queued = false;
+        new MutationObserver(() => {
+            if (queued) return;
+            queued = true;
+            requestAnimationFrame(() => { queued = false; schedule(); });
+        }).observe(target, { childList: true, subtree: true });
         window.addEventListener("nextlevel:products-updated", schedule);
         window.addEventListener("nls:central-catalog-ready", schedule);
         window.addEventListener("nextlevel:central-live-updated", schedule);
-        setInterval(sync, 2000);
+        /* Low-frequency safety net only; catalog events are the primary path. */
+        setInterval(sync, 10000);
     }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot, { once: true }); else boot();
 })();
