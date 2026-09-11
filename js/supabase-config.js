@@ -20,7 +20,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(isStorefrontRoute){
     load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260912-4','nextlevelIndexCentralSync');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
-    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-1','nextlevelIndexCentralAuthoritative');
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-2','nextlevelIndexCentralAuthoritative');
   }
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-4','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
