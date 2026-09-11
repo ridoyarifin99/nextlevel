@@ -26,12 +26,13 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(isDetailsPage){
     load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260911-1','nextlevelDetailsNavigationFix');
     load('script[data-nextlevel-reviews-system-v3]','/js/reviews-system-v3.js?v=20260911-3','nextlevelReviewsSystemV3');
-    load('script[data-nextlevel-product-media-details]','/js/product-media-details-bridge.js?v=20260912-1','nextlevelProductMediaDetails');
+    /* Service-media cards were presentation-only and are intentionally not injected into details pages. */
     load('script[data-nextlevel-details-central-logo]','/js/details-central-logo-sync.js?v=20260912-1','nextlevelDetailsCentralLogo');
     load('script[data-nextlevel-details-plan-fix]','/js/details-plan-selection-fix.js?v=20260912-1','nextlevelDetailsPlanFix');
     load('script[data-nextlevel-details-related-cards-fix]','/js/details-related-cards-fix.js?v=20260912-1','nextlevelDetailsRelatedCardsFix');
     load('script[data-nextlevel-details-premium-polish]','/js/details-premium-polish.js?v=20260911-1','nextlevelDetailsPremiumPolish');
     load('script[data-nextlevel-details-premium-finish]','/js/details-premium-finish.js?v=20260911-1','nextlevelDetailsPremiumFinish');
+    load('script[data-nextlevel-details-buy-now-icon]','/js/details-buy-now-icon.js?v=20260912-1','nextlevelDetailsBuyNowIcon');
   }
   if(/\/admin-orders\.html$/i.test(path)){load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');load('script[data-nextlevel-admin-product-management-link]','/js/admin-product-management-link.js?v=20260909-1','nextlevelAdminProductManagementLink');load('script[data-nextlevel-admin-orders-design]','/js/admin-orders-design.js?v=20260909-1','nextlevelAdminOrdersDesign');load('script[data-nextlevel-admin-orders-central-runtime]','/js/admin-orders-central-runtime.js?v=20260912-4','nextlevelAdminOrdersCentralRuntime');}
   if(/\/admin-products\.html$/i.test(path)){load('script[data-nextlevel-admin-product-media-system]','/js/admin-product-media-system.js?v=20260910-2','nextlevelAdminProductMediaSystem');load('script[data-nextlevel-admin-product-category-system]','/js/admin-product-category-system.js?v=20260910-1','nextlevelAdminProductCategorySystem');load('script[data-nextlevel-promo-management]','/js/promo-management.js?v=20260910-4','nextlevelPromoManagement');load('script[data-nextlevel-legacy-details-import]','/js/legacy-details-import.js?v=20260910-4','nextlevelLegacyDetailsImport');}
