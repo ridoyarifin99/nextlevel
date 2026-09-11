@@ -34,7 +34,8 @@
         ||(p.product_plans||[]).find(x=>String(x.duration||x.name||"").toLowerCase()===wantedDuration&&x.is_available!==false)
         ||(p.product_plans||[])[0];
       if(!plan||plan.is_available===false)throw new Error(`${p.name} has no available plan for the selected option.`);
-      return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image||p.image_url||item.image,selectedPlan:{...plan,price:money(plan.price),currency:plan.currency||p.currency||"BDT"},price:money(plan.price),duration:plan.duration||plan.name};
+      const logo=p.logo||p.product_logo||p.image||p.image_url||item.logo||item.image;
+      return {...item,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image||p.image_url||item.image,logo,product_logo:logo,selectedPlan:{...plan,price:money(plan.price),currency:plan.currency||p.currency||"BDT"},price:money(plan.price),duration:plan.duration||plan.name};
     });
     saveCart(next);
     window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));
