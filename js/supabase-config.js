@@ -7,7 +7,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-5','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-6','nextlevelCentralCatalog');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
@@ -18,16 +18,15 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
   if(isStorefrontRoute){
-    load('script[data-nextlevel-index-central-sync]','/js/index-central-sync.js?v=20260912-4','nextlevelIndexCentralSync');
+    /* index-central-authoritative is the only storefront product renderer. */
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-3','nextlevelIndexCentralAuthoritative');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
-    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-2','nextlevelIndexCentralAuthoritative');
   }
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-4','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){
     load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260911-1','nextlevelDetailsNavigationFix');
     load('script[data-nextlevel-reviews-system-v3]','/js/reviews-system-v3.js?v=20260911-3','nextlevelReviewsSystemV3');
-    /* Service-media cards were presentation-only and are intentionally not injected into details pages. */
     load('script[data-nextlevel-details-central-logo]','/js/details-central-logo-sync.js?v=20260912-1','nextlevelDetailsCentralLogo');
     load('script[data-nextlevel-details-plan-fix]','/js/details-plan-selection-fix.js?v=20260912-1','nextlevelDetailsPlanFix');
     load('script[data-nextlevel-details-related-cards-fix]','/js/details-related-cards-fix.js?v=20260912-1','nextlevelDetailsRelatedCardsFix');
@@ -42,6 +41,4 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-promo-checkout]','/js/promo-checkout.js?v=20260910-2','nextlevelPromoCheckout');
     setTimeout(()=>load('script[data-nextlevel-checkout-central-guard]','/js/checkout-central-order-guard.js?v=20260912-3','nextlevelCheckoutCentralGuard'),0);
   }
-  /* Admin/dashboard central runtimes now own their own data projection; the old
-     global product-display-sync was a duplicate Supabase reader and is no longer loaded. */
 })();
