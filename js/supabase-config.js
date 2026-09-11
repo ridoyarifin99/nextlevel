@@ -19,7 +19,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
   if(isStorefrontRoute){
     /* index-central-authoritative is the only storefront product renderer. */
-    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-3','nextlevelIndexCentralAuthoritative');
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-4','nextlevelIndexCentralAuthoritative');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
   }
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
