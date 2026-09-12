@@ -1,7 +1,11 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin-
+Disallow: /dashboard
+Disallow: /login
+Disallow: /signup
+Disallow: /register
+Disallow: /checkout
+Disallow: /api/
 Sitemap: https://www.nextlevelsubs.com/sitemap.xml
-Allow: /src/
-Allow: /css/
-Allow: /assets/
-Allow: /js/
