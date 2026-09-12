@@ -1,0 +1,46 @@
+name: Fix homepage product rendering
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fix:
+    if: "github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, 'fix: prevent AOS from hiding central product cards')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch renderer
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('js/index-central-authoritative.js')
+          s = p.read_text()
+          old = '    card.setAttribute("data-aos", "fade-up");\n'
+          if old not in s:
+              raise SystemExit('expected card AOS line not found')
+          s = s.replace(old, '', 1)
+          old2 = '      container.dataset.nlsCentralCount = String(list.length);\n'
+          new2 = '      container.dataset.nlsCentralCount = String(list.length);\n      if (window.AOS?.refreshHard) window.AOS.refreshHard();\n      else if (window.AOS?.refresh) window.AOS.refresh();\n'
+          if old2 not in s:
+              raise SystemExit('expected render completion line not found')
+          s = s.replace(old2, new2, 1)
+          p.write_text(s)
+          PY
+          git diff --check
+          git add js/index-central-authoritative.js
+          git commit -m "fix: prevent AOS from hiding central product cards"
+          git push
+      - name: Remove temporary workflow
+        if: always()
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm -f .github/workflows/fix-home-render-aos.yml || true
+          git commit -m "chore: remove temporary homepage render workflow" || true
+          git push || true
