@@ -18,27 +18,21 @@
     const categories=[...new Set(configuredCategories.map(x=>String(x||"").trim().toLowerCase()).filter(Boolean))];
     return {...p,image:primary,logo,images:gallery.length?gallery:(primary?[primary]:[]),serviceImages:service,product_plans:plans,pricing:plans.map(x=>({id:x.id,name:x.name,duration:x.duration,price:Number(x.price||0),old_price:x.old_price==null?null:Number(x.old_price),currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||"",features:Array.isArray(x.features)?x.features:[]})),price:Number(p.price||plans[0]?.price||0),categories,rating:Number(p.rating||extra.legacy_rating||0)||null,reviews:Number(p.reviews||extra.legacy_review_count||0)||0,customerReviews:Array.isArray(p.customerReviews)?p.customerReviews:(Array.isArray(extra.legacy_customer_reviews)?extra.legacy_customer_reviews:[])};
   };
-  const catalogSignature=list=>JSON.stringify((list||[]).map(p=>({
-    id:p.id,slug:p.slug,name:p.name,description:p.description,image:p.image,logo:p.logo,price:p.price,features:p.features,faq:p.faq,services:p.services,extra_data:p.extra_data,categories:p.categories,rating:p.rating,reviews:p.reviews,customerReviews:p.customerReviews,
-    plans:(p.product_plans||[]).map(x=>({id:x.id,name:x.name,duration:x.duration,price:x.price,old_price:x.old_price,currency:x.currency,available:x.is_available,features:x.features,extra_data:x.extra_data})),
-    media:(p.product_media||[]).filter(x=>x&&x.is_active!==false).map(x=>({id:x.id,role:x.role,url:x.url,order:x.display_order,metadata:x.metadata}))
-  })));
-  async function fetchCatalog(){const r=await fetch("/api/products?_nls_catalog="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(`Central catalog API ${r.status}`);const b=await r.json();return(b.products||[]).map(normalize).filter(Boolean)}
+  const catalogSignature=list=>JSON.stringify((list||[]).map(p=>({id:p.id,slug:p.slug,name:p.name,description:p.description,image:p.image,logo:p.logo,price:p.price,features:p.features,faq:p.faq,services:p.services,extra_data:p.extra_data,categories:p.categories,rating:p.rating,reviews:p.reviews,customerReviews:p.customerReviews,plans:(p.product_plans||[]).map(x=>({id:x.id,name:x.name,duration:x.duration,price:x.price,old_price:x.old_price,currency:x.currency,available:x.is_available,features:x.features,extra_data:x.extra_data})),media:(p.product_media||[]).filter(x=>x&&x.is_active!==false).map(x=>({id:x.id,role:x.role,url:x.url,order:x.display_order,metadata:x.metadata}))})));
+  const fetchCatalog=async(fresh)=>{const url=fresh?"/api/products?_nls_catalog="+Date.now():"/api/products";const r=await fetch(url,{cache:fresh?"no-store":"default",credentials:"same-origin"});if(!r.ok)throw Error(`Central catalog API ${r.status}`);const b=await r.json();return(b.products||[]).map(normalize).filter(Boolean)};
   const syncCart=list=>{try{const raw=localStorage.getItem(CART);if(!raw)return;const cart=JSON.parse(raw);if(!Array.isArray(cart))return;const bySlug=new Map(list.map(p=>[String(p.slug).toLowerCase(),p]));const next=[];for(const i of cart){const p=bySlug.get(String(i.slug||i.product_slug||"").toLowerCase());if(!p)continue;const wanted=String(i.selectedPlan?.id||"");const wantedDuration=String(i.selectedPlan?.duration||i.duration||"").toLowerCase();const plan=p.product_plans.find(x=>String(x.id||"")===wanted&&x.is_available!==false)||p.product_plans.find(x=>String(x.duration||x.name||"").toLowerCase()===wantedDuration)||p.product_plans[0];if(!plan)continue;next.push({...i,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image,logo:p.logo,product_logo:p.logo,price:Number(plan?.price??p.price),duration:plan?.duration||i.duration,selectedPlan:{...plan,price:Number(plan.price||0)}});}localStorage.setItem(CART,JSON.stringify(next));window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();}catch(e){console.warn("NEXT LEVEL SUBS: cart central sync skipped",e)}};
   const publish=list=>{const sig=catalogSignature(list);if(sig===lastSignature)return false;lastSignature=sig;localStorage.setItem(KEY,JSON.stringify(list));window.NLSCentralCatalog={products:list,getBySlug:s=>list.find(p=>p.slug===s),getById:id=>list.find(p=>p.id===id),getByName:n=>list.find(p=>String(p.name).toLowerCase()===String(n).toLowerCase())};window.NextLevelSubs=window.NextLevelSubs||{};window.NextLevelSubs.subscriptions=list;window.products=list;syncCart(list);window.dispatchEvent(new CustomEvent("nls:central-catalog-ready",{detail:{products:list}}));window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:list}}));return true;};
-  async function refresh(){try{const list=await fetchCatalog();publish(list);return true}catch(e){console.warn("NEXT LEVEL SUBS: central catalog refresh failed",e)}return false}
+  async function refresh(fresh=true){try{const list=await fetchCatalog(fresh);publish(list);return true}catch(e){console.warn("NEXT LEVEL SUBS: central catalog refresh failed",e)}return false}
   async function boot(){
-    /* Cache-first: paint the last known central catalog immediately, then reconcile with Supabase. */
-    let cached=[];
-    try{cached=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(cached))cached=[];}catch{cached=[];}
+    let cached=[];try{cached=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(cached))cached=[];}catch{cached=[];}
     if(cached.length)publish(cached);
-    refresh();
+    refresh(false).then(()=>{if(cached.length)refresh(true);});
     if(!cached.length&&window.__NLS_CENTRAL_PRODUCT__){const fallback=normalize(window.__NLS_CENTRAL_PRODUCT__);if(fallback)publish([fallback]);}
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
-  window.addEventListener("storage",e=>{if(e.key===SIGNAL)refresh();});
-  window.addEventListener(SIGNAL,refresh);
-  window.addEventListener("focus",()=>refresh());
-  setInterval(()=>{if(document.visibilityState==="visible")refresh()},15000);
-  window.NLSCentralCatalogRefresh=refresh;
+  window.addEventListener("storage",e=>{if(e.key===SIGNAL)refresh(true);});
+  window.addEventListener(SIGNAL,()=>refresh(true));
+  window.addEventListener("focus",()=>refresh(true));
+  setInterval(()=>{if(document.visibilityState==="visible")refresh(true)},30000);
+  window.NLSCentralCatalogRefresh=()=>refresh(true);
 })();
