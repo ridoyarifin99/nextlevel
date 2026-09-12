@@ -7,10 +7,6 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   document.querySelectorAll('link[rel="stylesheet"][href*="input.css"]').forEach(link=>link.remove());
   if(/^https?:\/\/localhost(?::\d+)?/i.test(String(window.AUTH_API_BASE||"")))delete window.AUTH_API_BASE;
 
-  /* The old homepage runtime still exists inline for UI behavior, but its deleted
-     hardcoded catalog must never be required. Expose a live array-like adapter
-     backed only by Product Central so the legacy runtime cannot crash or render
-     stale hardcoded products while the authoritative renderer takes over. */
   if(isStorefrontRoute&&!window.raw){
     const liveList=mapper=>new Proxy([],{
       get(target,prop){
@@ -39,6 +35,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(isStorefrontRoute){
     load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-5','nextlevelIndexCentralAuthoritative');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
+    load('script[data-nextlevel-index-filter-central-fix]','/js/index-filter-central-fix.js?v=20260912-1','nextlevelIndexFilterCentralFix');
   }
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-4','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
