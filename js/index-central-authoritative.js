@@ -12,13 +12,12 @@
     "music-streaming": "musicStreamingContainer",
     "cloud-storage": "cloudStorageContainer",
     "vpn": "vpnContainer",
-    "aiDesign": "aiDesignContainer",
+    "aidesign": "aiDesignContainer",
     "combo": "comboContainer",
     "education": "educationContainer",
     "adult": "adultContainer"
   };
 
-  /* Never expose legacy/placeholder cards while the central catalog is loading. */
   Object.values(CATEGORIES).forEach(id => {
     const el = document.getElementById(id);
     if (el) el.setAttribute("data-nls-central-pending", "1");
@@ -36,28 +35,25 @@
   function plansOf(p) {
     return Array.isArray(p?.product_plans) ? p.product_plans.filter(x => x && x.is_available !== false) : [];
   }
-
-  /* Match the central API schema: availability is controlled by is_available.
-     A product is allowed to render even if it currently has no plan; buying then
-     remains unavailable until Product Central supplies an available plan. */
   function validProduct(p) {
-    return !!p && p.is_available !== false && p.is_archived !== true &&
-      !!String(p.slug ?? "").trim() && !!String(p.name ?? "").trim();
+    return !!p && p.is_available !== false && p.is_archived !== true && !!String(p.slug ?? "").trim() && !!String(p.name ?? "").trim();
   }
-
   function planOf(p) { return plansOf(p)[0] || null; }
   function priceOf(p) { const x = planOf(p); return Number(x?.price ?? p?.price ?? 0); }
   function durationOf(p) { return String(planOf(p)?.duration ?? p?.duration ?? "month"); }
   function imageOf(p) { return p?.logo || p?.product_logo || p?.image || p?.image_url || ""; }
   function signature(p) { return JSON.stringify({ id:p.id, slug:p.slug, name:p.name, image:imageOf(p), description:p.description, price:priceOf(p), duration:durationOf(p), categories:categoriesOf(p) }); }
 
-  function makeCard(p) {
+  function makeCard(p, index) {
     const card = document.createElement("div");
     card.className = "subscription-card";
     card.dataset.productId = p.id || "";
     card.dataset.productSlug = p.slug || "";
     card.dataset.centralAuthoritative = "1";
     card.dataset.centralSignature = signature(p);
+    card.dataset.aos = "fade-up";
+    card.dataset.aosDuration = "500";
+    card.dataset.aosDelay = String(Math.min(Number(index || 0) * 60, 360));
     const image = imageOf(p), name = p.name, description = p.description || "";
     const price = priceOf(p), duration = durationOf(p), cats = categoriesOf(p);
     const best = cats.includes("best-selling") || !!p.is_featured;
@@ -72,10 +68,13 @@
     return card;
   }
 
-  function decorate(card, p) {
+  function decorate(card, p, index) {
     card.dataset.productId = p.id || "";
     card.dataset.productSlug = p.slug || "";
     card.dataset.centralSignature = signature(p);
+    card.dataset.aos = "fade-up";
+    card.dataset.aosDuration = "500";
+    card.dataset.aosDelay = String(Math.min(Number(index || 0) * 60, 360));
     const img = card.querySelector("img"), image = imageOf(p);
     if (img && image) { img.src = image; img.removeAttribute("srcset"); img.alt = `${p.name} logo`; }
     const title = card.querySelector("[data-product-name],.product-name,.subscription-name,.product-title,.subscription-title,h3,h4");
@@ -88,13 +87,23 @@
     if (duration) duration.textContent = `/${durationOf(p)}`;
   }
 
+  function ensureAOS() {
+    if (!window.AOS) return;
+    if (!window.__NLSAOSInitialized) {
+      window.__NLSAOSInitialized = true;
+      window.AOS.init({ duration: 500, easing: "ease-out-cubic", once: false, offset: 80, disableMutationObserver: false });
+    }
+    if (window.AOS.refreshHard) window.AOS.refreshHard();
+    else if (window.AOS.refresh) window.AOS.refresh();
+  }
+
   function renderCatalog() {
     const catalog = window.NLSCentralCatalog?.products;
     if (!Array.isArray(catalog)) return false;
     const products = catalog.filter(validProduct);
     Object.entries(CATEGORIES).forEach(([category, id]) => {
       const container = document.getElementById(id); if (!container) return;
-      const list = products.filter(p => categoriesOf(p).includes(category) || (category === "best-selling" && p.is_featured));
+      const list = products.filter(p => categoriesOf(p).includes(norm(category)) || (category === "best-selling" && p.is_featured));
       const existing = [...container.querySelectorAll(":scope > .subscription-card")];
       const managed = existing.filter(x => x.dataset.centralAuthoritative === "1");
       const reusable = new Map();
@@ -102,7 +111,7 @@
       const fragment = document.createDocumentFragment();
       list.forEach((p, index) => {
         let card = reusable.get(String(p.id || "")) || reusable.get(norm(p.slug));
-        if (!card) card = makeCard(p); else decorate(card, p);
+        if (!card) card = makeCard(p, index); else decorate(card, p, index);
         card.dataset.centralAuthoritative = "1"; card.style.order = String(index); fragment.appendChild(card);
       });
       container.replaceChildren(fragment);
@@ -114,9 +123,8 @@
       }
       container.removeAttribute("data-nls-central-pending");
       container.dataset.nlsCentralCount = String(list.length);
-      if (window.AOS?.refreshHard) window.AOS.refreshHard();
-      else if (window.AOS?.refresh) window.AOS.refresh();
     });
+    ensureAOS();
     return true;
   }
 
