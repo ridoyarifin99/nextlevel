@@ -17,6 +17,6 @@
     { "source": "/products/:slug*", "destination": "/api/product?slug=:slug*" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/src/input.css", "destination": "/src/output.css" },
-    { "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)", "destination": "/index.html" }
+    { "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)", "destination": "/api/category?category=:match[1]" }
   ]
 }
