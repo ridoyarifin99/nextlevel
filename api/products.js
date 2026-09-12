@@ -28,10 +28,10 @@ module.exports = async function (req, res) {
     // Avoid the old products -> plans -> media nested join. With a large catalog,
     // that join can multiply rows and intermittently hit Supabase/Vercel timeouts.
     // Fetch each small relation independently and assemble the canonical catalog here.
-    const [products, plans, media] = await Promise.all([
+    const [products, plans, media, categories] = await Promise.all([
       query(
         "products",
-        "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,badge,features,faq,keywords,seo_title,seo_description,seo_canonical,services,extra_data,is_archived,product_categories(id,name,slug)"
+        "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,badge,features,faq,keywords,seo_title,seo_description,seo_canonical,services,extra_data,is_archived"
       ),
       query(
         "product_plans",
@@ -41,7 +41,13 @@ module.exports = async function (req, res) {
         "product_media",
         "id,product_id,role,url,storage_path,alt_text,title,service_name,display_order,is_active,metadata"
       ),
+      query(
+        "product_categories",
+        "id,name,slug"
+      ),
     ]);
+
+    const categoriesById = new Map((categories || []).map(c => [c.id, c]));
 
     const plansByProduct = new Map();
     for (const plan of plans || []) {
@@ -68,6 +74,7 @@ module.exports = async function (req, res) {
           .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
         return {
           ...p,
+          product_categories: categoriesById.get(p.category_id) || null,
           product_plans: productPlans,
           product_media: productMedia,
         };
