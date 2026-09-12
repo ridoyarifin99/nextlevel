@@ -25,7 +25,7 @@ async function query(table, select, params = {}) {
   }
 }
 
-async function optionalQuery(table, select, params = []) {
+async function optionalQuery(table, select, params = {}) {
   try {
     return await query(table, select, params);
   } catch (e) {
@@ -46,10 +46,17 @@ module.exports = async function (req, res) {
      * The products table is the required source for the storefront.
      * Plans/media/categories are enrichments: a slow optional table must
      * never turn the entire homepage catalog into a 500 response.
+     *
+     * Homepage section membership is also central catalog data. Older
+     * imported products stored their multi-section assignments in
+     * extra_data.legacy_categories; newer edits may use
+     * extra_data.homepage_categories. Both are read from Supabase and
+     * projected into the public `categories` field below. No hardcoded
+     * storefront catalog is used.
      */
     const products = await query(
       "products",
-      "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,is_archived"
+      "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,is_archived,extra_data"
     );
 
     const availableProducts = (products || [])
@@ -99,19 +106,47 @@ module.exports = async function (req, res) {
         const productMedia = (mediaByProduct.get(p.id) || [])
           .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
         const category = categoriesById.get(p.category_id) || null;
+        const extra = p.extra_data && typeof p.extra_data === "object" ? p.extra_data : {};
+        const configuredCategories = Array.isArray(extra.homepage_categories)
+          ? extra.homepage_categories
+          : Array.isArray(extra.legacy_categories)
+            ? extra.legacy_categories
+            : [];
+        const categorySlugs = [...new Set([
+          category?.slug,
+          ...configuredCategories
+        ].map(x => String(x || "").trim().toLowerCase()).filter(Boolean))];
         return {
           ...p,
           product_categories: category,
           product_plans: productPlans,
           product_media: productMedia,
+          categories: categorySlugs,
         };
       })
       .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
       .map(p => ({
-        ...p,
+        id: p.id,
+        category_id: p.category_id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        image_url: p.image_url,
+        icon: p.icon,
+        brand_color: p.brand_color,
+        currency: p.currency,
+        price: p.price,
+        old_price: p.old_price,
+        is_available: p.is_available,
+        display_order: p.display_order,
+        is_featured: p.is_featured,
+        is_archived: p.is_archived,
+        product_categories: p.product_categories,
+        categories: p.categories,
+        product_plans: p.product_plans,
+        product_media: p.product_media,
         url: `/product/${p.slug}`,
         canonicalUrl: `https://www.nextlevelsubs.com/product/${p.slug}`,
-        categories: p.product_categories?.slug ? [p.product_categories.slug] : [],
         media: {
           primary: p.product_media.filter(x => x.role === "primary").slice(0, 1),
           logo: p.product_media.filter(x => x.role === "logo").slice(0, 1),
