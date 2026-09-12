@@ -19,7 +19,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     window.raw={map:mapper=>liveList(mapper)};
   }
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
-  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-8','nextlevelCentralCatalog');
+  load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-9','nextlevelCentralCatalog');
   load('script[data-nextlevel-central-search]','/js/central-search-runtime.js?v=20260912-1','nextlevelCentralSearch');
   load('script[data-nextlevel-add-to-cart-animation]','/js/add-to-cart-animation.js?v=20260912-1','nextlevelAddToCartAnimation');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
@@ -32,7 +32,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   load('script[data-nextlevel-notifications-system]','/js/notifications-system.js?v=20260908-5','nextlevelNotificationsSystem');
   load('script[data-nextlevel-product-catalog-runtime]','/js/product-catalog-runtime.js?v=20260910-6','nextlevelProductCatalogRuntime');
   if(isStorefrontRoute){
-    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-5','nextlevelIndexCentralAuthoritative');
+    load('script[data-nextlevel-index-central-authoritative]','/js/index-central-authoritative.js?v=20260912-6','nextlevelIndexCentralAuthoritative');
     load('script[data-nextlevel-index-cart-central-logo-sync]','/js/index-cart-central-logo-sync.js?v=20260912-3','nextlevelIndexCartCentralLogoSync');
     load('script[data-nextlevel-index-filter-central-fix]','/js/index-filter-central-fix.js?v=20260912-1','nextlevelIndexFilterCentralFix');
   }
@@ -47,6 +47,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-details-premium-polish]','/js/details-premium-polish.js?v=20260911-1','nextlevelDetailsPremiumPolish');
     load('script[data-nextlevel-details-premium-finish]','/js/details-premium-finish.js?v=20260911-1','nextlevelDetailsPremiumFinish');
     load('script[data-nextlevel-details-buy-now-icon]','/js/details-buy-now-icon.js?v=20260912-1','nextlevelDetailsBuyNowIcon');
+    load('script[data-nextlevel-details-6month-popular-badge]','/js/details-6month-popular-badge.js?v=20260912-1','nextlevelDetails6MonthPopularBadge');
   }
   if(/\/admin-orders\.html$/i.test(path)){
     load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');
