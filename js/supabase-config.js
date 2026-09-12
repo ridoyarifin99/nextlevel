@@ -20,7 +20,8 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   }
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
   load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-9','nextlevelCentralCatalog');
-  load('script[data-nextlevel-central-search]','/js/central-search-runtime.js?v=20260912-1','nextlevelCentralSearch');
+  load('script[data-nextlevel-central-search]','/js/central-search-runtime.js?v=20260912-2','nextlevelCentralSearch');
+  load('script[data-nextlevel-navbar-search-ui-fix]','/js/navbar-search-ui-fix.js?v=20260912-1','nextlevelNavbarSearchUIFix');
   load('script[data-nextlevel-add-to-cart-animation]','/js/add-to-cart-animation.js?v=20260912-1','nextlevelAddToCartAnimation');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
@@ -39,7 +40,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
   if(isStorefrontRoute||isDetailsPage)load('script[data-nextlevel-mobile-fab-position-fix]','/js/mobile-fab-position-fix.js?v=20260912-2','nextlevelMobileFabPositionFix');
   if(/\/dashboard\.html$/i.test(path)){load('script[data-nextlevel-dashboard-central-sync]','/js/dashboard-central-sync.js?v=20260912-4','nextlevelDashboardCentralSync');load('script[data-nextlevel-dashboard-buttons-responsive]','/js/dashboard-buttons-responsive.js?v=20260908-2','nextlevelDashboardButtonsResponsive');}
   if(isDetailsPage){
-    load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260911-1','nextlevelDetailsNavigationFix');
+    load('script[data-nextlevel-details-navigation-fix]','/js/details-navigation-fix.js?v=20260912-2','nextlevelDetailsNavigationFix');
     load('script[data-nextlevel-reviews-system-v3]','/js/reviews-system-v3.js?v=20260911-3','nextlevelReviewsSystemV3');
     load('script[data-nextlevel-details-central-logo]','/js/details-central-logo-sync.js?v=20260912-1','nextlevelDetailsCentralLogo');
     load('script[data-nextlevel-details-plan-fix]','/js/details-plan-selection-fix.js?v=20260912-1','nextlevelDetailsPlanFix');
@@ -47,7 +48,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
     load('script[data-nextlevel-details-premium-polish]','/js/details-premium-polish.js?v=20260911-1','nextlevelDetailsPremiumPolish');
     load('script[data-nextlevel-details-premium-finish]','/js/details-premium-finish.js?v=20260911-1','nextlevelDetailsPremiumFinish');
     load('script[data-nextlevel-details-buy-now-icon]','/js/details-buy-now-icon.js?v=20260912-1','nextlevelDetailsBuyNowIcon');
-    load('script[data-nextlevel-details-6month-popular-badge]','/js/details-6month-popular-badge.js?v=20260912-1','nextlevelDetails6MonthPopularBadge');
+    load('script[data-nextlevel-details-6month-popular-badge]','/js/details-6month-popular-badge.js?v=20260912-2','nextlevelDetails6MonthPopularBadge');
   }
   if(/\/admin-orders\.html$/i.test(path)){
     load('script[data-nextlevel-admin-reviews-inline]','/js/admin-reviews-inline.js?v=20260907-2','nextlevelAdminReviewsInline');
