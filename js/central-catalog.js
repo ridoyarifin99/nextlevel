@@ -4,8 +4,25 @@
   if(window.__NLSCentralCatalogBooted)return;window.__NLSCentralCatalogBooted=true;
   const KEY="nls:central-catalog:v2",CART="streamHubCart",SIGNAL="nls:central-catalog-changed";
   let lastSignature="";
-  const normalize=p=>{if(!p)return null;const media=Array.isArray(p.product_media)?p.product_media.filter(x=>x&&x.is_active!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0)):[];const role=r=>media.filter(x=>x.role===r);const primary=role("primary")[0]?.url||p.image_url||p.image||"";const logo=role("logo")[0]?.url||p.logo||"";const gallery=role("gallery").map(x=>x.url).filter(Boolean);const service=role("service").map(x=>({url:x.url,name:x.service_name||x.title||x.alt_text||"Included service",alt:x.alt_text||x.title||x.service_name||"Included service",title:x.title||x.service_name||""})).filter(x=>x.url);const plans=(p.product_plans||[]).filter(x=>x&&x.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0));return {...p,image:primary,logo,images:gallery,serviceImages:service,product_plans:plans,pricing:plans.map(x=>({id:x.id,name:x.name,duration:x.duration,price:Number(x.price||0),old_price:x.old_price==null?null:Number(x.old_price),currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||""})),price:Number(p.price||plans[0]?.price||0)};};
-  const catalogSignature=list=>JSON.stringify((list||[]).map(p=>({id:p.id,slug:p.slug,name:p.name,image:p.image,logo:p.logo,plans:(p.product_plans||[]).map(x=>({id:x.id,name:x.name,duration:x.duration,price:x.price,available:x.is_available})),media:(p.product_media||[]).filter(x=>x&&x.is_active!==false).map(x=>({id:x.id,role:x.role,url:x.url,order:x.display_order}))})));
+  const normalize=p=>{
+    if(!p)return null;
+    const media=Array.isArray(p.product_media)?p.product_media.filter(x=>x&&x.is_active!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0)):[];
+    const role=r=>media.filter(x=>x.role===r);
+    const primary=role("primary")[0]?.url||p.image_url||p.image||"";
+    const logo=role("logo")[0]?.url||p.logo||"";
+    const gallery=role("gallery").map(x=>x.url).filter(Boolean);
+    const service=role("service").map(x=>({url:x.url,name:x.service_name||x.title||x.alt_text||"Included service",alt:x.alt_text||x.title||x.service_name||"Included service",title:x.title||x.service_name||""})).filter(x=>x.url);
+    const plans=(p.product_plans||[]).filter(x=>x&&x.is_available!==false).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+    const extra=p.extra_data&&typeof p.extra_data==="object"?p.extra_data:{};
+    const configuredCategories=Array.isArray(p.categories)?p.categories:(Array.isArray(extra.homepage_categories)?extra.homepage_categories:(Array.isArray(extra.legacy_categories)?extra.legacy_categories:[]));
+    const categories=[...new Set(configuredCategories.map(x=>String(x||"").trim().toLowerCase()).filter(Boolean))];
+    return {...p,image:primary,logo,images:gallery.length?gallery:(primary?[primary]:[]),serviceImages:service,product_plans:plans,pricing:plans.map(x=>({id:x.id,name:x.name,duration:x.duration,price:Number(x.price||0),old_price:x.old_price==null?null:Number(x.old_price),currency:x.currency||p.currency||"BDT",popular:!!x.extra_data?.popular,discount:x.extra_data?.discount||"",features:Array.isArray(x.features)?x.features:[]})),price:Number(p.price||plans[0]?.price||0),categories,rating:Number(p.rating||extra.legacy_rating||0)||null,reviews:Number(p.reviews||extra.legacy_review_count||0)||0,customerReviews:Array.isArray(p.customerReviews)?p.customerReviews:(Array.isArray(extra.legacy_customer_reviews)?extra.legacy_customer_reviews:[])};
+  };
+  const catalogSignature=list=>JSON.stringify((list||[]).map(p=>({
+    id:p.id,slug:p.slug,name:p.name,description:p.description,image:p.image,logo:p.logo,price:p.price,features:p.features,faq:p.faq,services:p.services,extra_data:p.extra_data,categories:p.categories,rating:p.rating,reviews:p.reviews,customerReviews:p.customerReviews,
+    plans:(p.product_plans||[]).map(x=>({id:x.id,name:x.name,duration:x.duration,price:x.price,old_price:x.old_price,currency:x.currency,available:x.is_available,features:x.features,extra_data:x.extra_data})),
+    media:(p.product_media||[]).filter(x=>x&&x.is_active!==false).map(x=>({id:x.id,role:x.role,url:x.url,order:x.display_order,metadata:x.metadata}))
+  })));
   async function fetchCatalog(){const r=await fetch("/api/products?_nls_catalog="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(`Central catalog API ${r.status}`);const b=await r.json();return(b.products||[]).map(normalize).filter(Boolean)}
   const syncCart=list=>{try{const raw=localStorage.getItem(CART);if(!raw)return;const cart=JSON.parse(raw);if(!Array.isArray(cart))return;const bySlug=new Map(list.map(p=>[String(p.slug).toLowerCase(),p]));const next=[];for(const i of cart){const p=bySlug.get(String(i.slug||i.product_slug||"").toLowerCase());if(!p)continue;const wanted=String(i.selectedPlan?.id||"");const wantedDuration=String(i.selectedPlan?.duration||i.duration||"").toLowerCase();const plan=p.product_plans.find(x=>String(x.id||"")===wanted&&x.is_available!==false)||p.product_plans.find(x=>String(x.duration||x.name||"").toLowerCase()===wantedDuration)||p.product_plans[0];if(!plan)continue;next.push({...i,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image,logo:p.logo,product_logo:p.logo,price:Number(plan?.price??p.price),duration:plan?.duration||i.duration,selectedPlan:{...plan,price:Number(plan.price||0)}});}localStorage.setItem(CART,JSON.stringify(next));window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();}catch(e){console.warn("NEXT LEVEL SUBS: cart central sync skipped",e)}};
   const publish=list=>{const sig=catalogSignature(list);if(sig===lastSignature)return false;lastSignature=sig;localStorage.setItem(KEY,JSON.stringify(list));window.NLSCentralCatalog={products:list,getBySlug:s=>list.find(p=>p.slug===s),getById:id=>list.find(p=>p.id===id),getByName:n=>list.find(p=>String(p.name).toLowerCase()===String(n).toLowerCase())};window.NextLevelSubs=window.NextLevelSubs||{};window.NextLevelSubs.subscriptions=list;window.products=list;syncCart(list);window.dispatchEvent(new CustomEvent("nls:central-catalog-ready",{detail:{products:list}}));window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:list}}));return true;};
@@ -15,7 +32,6 @@
   window.addEventListener("storage",e=>{if(e.key===SIGNAL)refresh();});
   window.addEventListener(SIGNAL,refresh);
   window.addEventListener("focus",()=>refresh());
-  /* Realtime is the primary path. Poll only as a low-frequency safety net. */
   setInterval(()=>{if(document.visibilityState==="visible")refresh()},15000);
   window.NLSCentralCatalogRefresh=refresh;
 })();
