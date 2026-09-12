@@ -7,15 +7,11 @@ async function query(table, select, params = {}) {
   const u = new URL(`${SUPABASE_URL}/rest/v1/${table}`);
   u.searchParams.set("select", select);
   Object.entries(params).forEach(([key, value]) => u.searchParams.set(key, String(value)));
-
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 8000);
   try {
     const r = await fetch(u, {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-      },
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
       signal: controller.signal,
     });
     if (!r.ok) throw Error(`${table} request failed (${r.status})`);
@@ -42,44 +38,27 @@ module.exports = async function (req, res) {
       return res.end("Method Not Allowed");
     }
 
-    /*
-     * The products table is the required source for the storefront.
-     * Plans/media/categories are enrichments: a slow optional table must
-     * never turn the entire homepage catalog into a 500 response.
-     *
-     * Homepage section membership is also central catalog data. Older
-     * imported products stored their multi-section assignments in
-     * extra_data.legacy_categories; newer edits may use
-     * extra_data.homepage_categories. Both are read from Supabase and
-     * projected into the public `categories` field below. No hardcoded
-     * storefront catalog is used.
-     */
+    /* Product Central is the complete source for storefront + product detail data. */
     const products = await query(
       "products",
-      "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,is_archived,extra_data"
+      "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,badge,features,faq,keywords,seo_title,seo_description,seo_canonical,services,extra_data,is_archived"
     );
-
-    const availableProducts = (products || [])
-      .filter(p => p.is_available === true && p.is_archived !== true);
-
+    const availableProducts = (products || []).filter(p => p.is_available === true && p.is_archived !== true);
     const ids = availableProducts.map(p => p.id).filter(Boolean);
     const idFilter = ids.length ? `in.(${ids.join(",")})` : "in.(-1)";
 
     const [plans, media, categories] = await Promise.all([
       optionalQuery(
         "product_plans",
-        "id,product_id,name,duration,price,old_price,currency,is_available,display_order",
+        "id,product_id,name,duration,price,old_price,currency,is_available,display_order,features,extra_data",
         { product_id: idFilter }
       ),
       optionalQuery(
         "product_media",
-        "id,product_id,role,url,alt_text,title,service_name,display_order,is_active",
+        "id,product_id,role,url,alt_text,title,service_name,display_order,is_active,metadata",
         { product_id: idFilter }
       ),
-      optionalQuery(
-        "product_categories",
-        "id,name,slug"
-      ),
+      optionalQuery("product_categories", "id,name,slug,description,display_order,is_active"),
     ]);
 
     const categoriesById = new Map((categories || []).map(c => [c.id, c]));
@@ -101,10 +80,8 @@ module.exports = async function (req, res) {
 
     const clean = availableProducts
       .map(p => {
-        const productPlans = (plansByProduct.get(p.id) || [])
-          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
-        const productMedia = (mediaByProduct.get(p.id) || [])
-          .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+        const productPlans = (plansByProduct.get(p.id) || []).sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+        const productMedia = (mediaByProduct.get(p.id) || []).sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
         const category = categoriesById.get(p.category_id) || null;
         const extra = p.extra_data && typeof p.extra_data === "object" ? p.extra_data : {};
         const configuredCategories = Array.isArray(extra.homepage_categories)
@@ -116,44 +93,28 @@ module.exports = async function (req, res) {
           category?.slug,
           ...configuredCategories
         ].map(x => String(x || "").trim().toLowerCase()).filter(Boolean))];
+        const legacyReviews = Array.isArray(extra.legacy_customer_reviews) ? extra.legacy_customer_reviews : [];
         return {
           ...p,
           product_categories: category,
           product_plans: productPlans,
           product_media: productMedia,
           categories: categorySlugs,
+          images: productMedia.filter(x => x.role === "gallery").map(x => x.url).filter(Boolean),
+          rating: Number(extra.legacy_rating || 0) || null,
+          reviews: Number(extra.legacy_review_count || 0) || 0,
+          customerReviews: legacyReviews,
+          url: `/product/${p.slug}`,
+          canonicalUrl: `https://www.nextlevelsubs.com/product/${p.slug}`,
+          media: {
+            primary: productMedia.filter(x => x.role === "primary").slice(0, 1),
+            logo: productMedia.filter(x => x.role === "logo").slice(0, 1),
+            gallery: productMedia.filter(x => x.role === "gallery"),
+            service: productMedia.filter(x => x.role === "service"),
+          },
         };
       })
-      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
-      .map(p => ({
-        id: p.id,
-        category_id: p.category_id,
-        name: p.name,
-        slug: p.slug,
-        description: p.description,
-        image_url: p.image_url,
-        icon: p.icon,
-        brand_color: p.brand_color,
-        currency: p.currency,
-        price: p.price,
-        old_price: p.old_price,
-        is_available: p.is_available,
-        display_order: p.display_order,
-        is_featured: p.is_featured,
-        is_archived: p.is_archived,
-        product_categories: p.product_categories,
-        categories: p.categories,
-        product_plans: p.product_plans,
-        product_media: p.product_media,
-        url: `/product/${p.slug}`,
-        canonicalUrl: `https://www.nextlevelsubs.com/product/${p.slug}`,
-        media: {
-          primary: p.product_media.filter(x => x.role === "primary").slice(0, 1),
-          logo: p.product_media.filter(x => x.role === "logo").slice(0, 1),
-          gallery: p.product_media.filter(x => x.role === "gallery"),
-          service: p.product_media.filter(x => x.role === "service"),
-        },
-      }));
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
