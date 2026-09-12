@@ -25,6 +25,15 @@ async function query(table, select, params = {}) {
   }
 }
 
+async function optionalQuery(table, select, params = []) {
+  try {
+    return await query(table, select, params);
+  } catch (e) {
+    console.warn(`Central products API: optional ${table} query unavailable:`, e?.message || e);
+    return [];
+  }
+}
+
 module.exports = async function (req, res) {
   try {
     if (req.method !== "GET" && req.method !== "HEAD") {
@@ -34,25 +43,33 @@ module.exports = async function (req, res) {
     }
 
     /*
-     * This endpoint is the lightweight storefront catalog.
-     * Product detail/SEO payloads belong to /api/product.js.
-     * Keep this query intentionally small so the homepage cannot disappear
-     * because large JSON fields (FAQ/features/metadata/etc.) time out.
+     * The products table is the required source for the storefront.
+     * Plans/media/categories are enrichments: a slow optional table must
+     * never turn the entire homepage catalog into a 500 response.
      */
-    const [products, plans, media, categories] = await Promise.all([
-      query(
-        "products",
-        "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,is_archived"
-      ),
-      query(
+    const products = await query(
+      "products",
+      "id,category_id,name,slug,description,image_url,icon,brand_color,currency,price,old_price,is_available,display_order,is_featured,is_archived"
+    );
+
+    const availableProducts = (products || [])
+      .filter(p => p.is_available === true && p.is_archived !== true);
+
+    const ids = availableProducts.map(p => p.id).filter(Boolean);
+    const idFilter = ids.length ? `in.(${ids.join(",")})` : "in.(-1)";
+
+    const [plans, media, categories] = await Promise.all([
+      optionalQuery(
         "product_plans",
-        "id,product_id,name,duration,price,old_price,currency,is_available,display_order"
+        "id,product_id,name,duration,price,old_price,currency,is_available,display_order",
+        { product_id: idFilter }
       ),
-      query(
+      optionalQuery(
         "product_media",
-        "id,product_id,role,url,alt_text,title,service_name,display_order,is_active"
+        "id,product_id,role,url,alt_text,title,service_name,display_order,is_active",
+        { product_id: idFilter }
       ),
-      query(
+      optionalQuery(
         "product_categories",
         "id,name,slug"
       ),
@@ -75,8 +92,7 @@ module.exports = async function (req, res) {
       mediaByProduct.set(item.product_id, list);
     }
 
-    const clean = (products || [])
-      .filter(p => p.is_available === true && p.is_archived !== true)
+    const clean = availableProducts
       .map(p => {
         const productPlans = (plansByProduct.get(p.id) || [])
           .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
