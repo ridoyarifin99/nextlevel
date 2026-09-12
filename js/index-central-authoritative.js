@@ -58,7 +58,6 @@
     card.dataset.productSlug = p.slug || "";
     card.dataset.centralAuthoritative = "1";
     card.dataset.centralSignature = signature(p);
-    card.setAttribute("data-aos", "fade-up");
     const image = imageOf(p), name = p.name, description = p.description || "";
     const price = priceOf(p), duration = durationOf(p), cats = categoriesOf(p);
     const best = cats.includes("best-selling") || !!p.is_featured;
@@ -115,6 +114,8 @@
       }
       container.removeAttribute("data-nls-central-pending");
       container.dataset.nlsCentralCount = String(list.length);
+      if (window.AOS?.refreshHard) window.AOS.refreshHard();
+      else if (window.AOS?.refresh) window.AOS.refresh();
     });
     return true;
   }
