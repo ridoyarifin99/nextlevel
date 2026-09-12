@@ -26,6 +26,7 @@ window.supabaseClient=window.supabase.createClient(window.SUPABASE_URL,window.SU
 
   const load=(selector,src,dataKey)=>{if(document.querySelector(selector))return;const script=document.createElement("script");script.src=src;script.async=false;script.dataset[dataKey]="true";document.head.appendChild(script)};
   load('script[data-nextlevel-central-catalog]','/js/central-catalog.js?v=20260912-7','nextlevelCentralCatalog');
+  load('script[data-nextlevel-add-to-cart-animation]','/js/add-to-cart-animation.js?v=20260912-1','nextlevelAddToCartAnimation');
   load('script[data-nextlevel-central-live-sync]','/js/central-live-sync.js?v=20260912-2','nextlevelCentralLiveSync');
   load('script[data-nextlevel-mobile-navigation]','/js/mobile-navigation-system.js?v=20260910-1','nextlevelMobileNavigation');
   load('script[data-nextlevel-navigation-fix]','/js/iframe-navigation-fix.js?v=20260906-1','nextlevelNavigationFix');
