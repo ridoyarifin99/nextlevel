@@ -17,6 +17,14 @@
     { "source": "/products/:slug*", "destination": "/api/product?slug=:slug*" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/src/input.css", "destination": "/src/output.css" },
-    { "source": "/(best-selling|streaming|music|storage|vpn|aiDesign|combos|education|adult)", "destination": "/api/category?category=:match[1]" }
+    { "source": "/best-selling", "destination": "/api/category?category=best-selling" },
+    { "source": "/streaming", "destination": "/api/category?category=streaming" },
+    { "source": "/music", "destination": "/api/category?category=music" },
+    { "source": "/storage", "destination": "/api/category?category=storage" },
+    { "source": "/vpn", "destination": "/api/category?category=vpn" },
+    { "source": "/aiDesign", "destination": "/api/category?category=aiDesign" },
+    { "source": "/combos", "destination": "/api/category?category=combos" },
+    { "source": "/education", "destination": "/api/category?category=education" },
+    { "source": "/adult", "destination": "/api/category?category=adult" }
   ]
 }
