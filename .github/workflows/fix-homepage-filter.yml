@@ -18,30 +18,23 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           p = Path('js/index-ui-central.js')
           s = p.read_text()
-          old = 'let cart=[],searchTimer=null,filterTimer=null;'
-          new = 'let cart=[],searchTimer=null,filterTimer=null,filterInitialized=false;'
-          if old in s and 'filterInitialized=false' not in s:
-              s = s.replace(old, new, 1)
-          old_fn = 'function syncFilters(){if(!minP||!maxP)return;const all=products(),max=Math.max(0,...all.map(price));if(!Number.isFinite(Number(maxP.value))||Number(maxP.value)>max)maxP.value=max;if(Number(minP.value)>max)minP.value=0;minP.min=0;maxP.min=0;minP.max=max;maxP.max=max;if(Number(minP.value)>Number(maxP.value))minP.value=maxP.value;if(Number(maxP.value)<Number(minP.value))minP.value=maxP.value;if(minPV)minPV.textContent=`৳${Number(minP.value||0).toLocaleString("en-BD")}`;if(maxPV)maxPV.textContent=`৳${Number(maxP.value||max).toLocaleString("en-BD")}`;applyFilters();}'
-          new_fn = 'function syncFilters(){if(!minP||!maxP)return;const all=products(),max=Math.max(0,...all.map(price));const currentMax=Number(maxP.value);if(!filterInitialized||!Number.isFinite(currentMax)||currentMax<=0)maxP.value=max;else if(currentMax>max)maxP.value=max;if(Number(minP.value)>max)minP.value=0;minP.min=0;maxP.min=0;minP.max=max;maxP.max=max;if(Number(minP.value)>Number(maxP.value))minP.value=maxP.value;if(Number(maxP.value)<Number(minP.value))minP.value=minP.value;if(minPV)minPV.textContent=`৳${Number(minP.value||0).toLocaleString("en-BD")}`;if(maxPV)maxPV.textContent=`৳${Number(maxP.value||max).toLocaleString("en-BD")}`;filterInitialized=true;applyFilters();}'
-          if old_fn not in s:
-              raise SystemExit('expected syncFilters function not found')
-          s = s.replace(old_fn, new_fn, 1)
-          p.write_text(s)
-
+          s = s.replace('let cart=[],searchTimer=null,filterTimer=null;', 'let cart=[],searchTimer=null,filterTimer=null,filterInitialized=false;', 1)
+          pattern = r'function syncFilters\(\)\{.*?\}\n  function setupFilters'
+          replacement = '''function syncFilters(){if(!minP||!maxP)return;const all=products(),max=Math.max(0,...all.map(price));const currentMax=Number(maxP.value);if(!filterInitialized||!Number.isFinite(currentMax)||currentMax<=0)maxP.value=max;else if(currentMax>max)maxP.value=max;if(Number(minP.value)>max)minP.value=0;minP.min=0;maxP.min=0;minP.max=max;maxP.max=max;if(Number(minP.value)>Number(maxP.value))minP.value=maxP.value;if(Number(maxP.value)<Number(minP.value))minP.value=minP.value;if(minPV)minPV.textContent=`৳${Number(minP.value||0).toLocaleString("en-BD")}`;if(maxPV)maxPV.textContent=`৳${Number(maxP.value||max).toLocaleString("en-BD")}`;filterInitialized=true;applyFilters();}
+  function setupFilters'''
+          s2, n = re.subn(pattern, replacement, s, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit(f'expected syncFilters block, replacements={n}')
+          p.write_text(s2)
           h = Path('index.html')
-          hs = h.read_text()
-          hs = hs.replace('/js/index-ui-central.js?v=20260912-1', '/js/index-ui-central.js?v=20260912-2')
+          hs = h.read_text().replace('/js/index-ui-central.js?v=20260912-1', '/js/index-ui-central.js?v=20260912-2')
           h.write_text(hs)
           PY
           git diff --check
           git add js/index-ui-central.js index.html
-          if git diff --cached --quiet; then
-            echo 'No changes required.'
-            exit 0
-          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -m 'fix: initialize homepage price filter after central catalog loads'
