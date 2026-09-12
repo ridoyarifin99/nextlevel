@@ -27,7 +27,14 @@
   const syncCart=list=>{try{const raw=localStorage.getItem(CART);if(!raw)return;const cart=JSON.parse(raw);if(!Array.isArray(cart))return;const bySlug=new Map(list.map(p=>[String(p.slug).toLowerCase(),p]));const next=[];for(const i of cart){const p=bySlug.get(String(i.slug||i.product_slug||"").toLowerCase());if(!p)continue;const wanted=String(i.selectedPlan?.id||"");const wantedDuration=String(i.selectedPlan?.duration||i.duration||"").toLowerCase();const plan=p.product_plans.find(x=>String(x.id||"")===wanted&&x.is_available!==false)||p.product_plans.find(x=>String(x.duration||x.name||"").toLowerCase()===wantedDuration)||p.product_plans[0];if(!plan)continue;next.push({...i,name:p.name,slug:p.slug,product_slug:p.slug,image:p.image,logo:p.logo,product_logo:p.logo,price:Number(plan?.price??p.price),duration:plan?.duration||i.duration,selectedPlan:{...plan,price:Number(plan.price||0)}});}localStorage.setItem(CART,JSON.stringify(next));window.dispatchEvent(new CustomEvent("nextlevel:checkout-cart-updated",{detail:{cart:next}}));if(typeof window.renderOrderSummary==="function")window.renderOrderSummary();}catch(e){console.warn("NEXT LEVEL SUBS: cart central sync skipped",e)}};
   const publish=list=>{const sig=catalogSignature(list);if(sig===lastSignature)return false;lastSignature=sig;localStorage.setItem(KEY,JSON.stringify(list));window.NLSCentralCatalog={products:list,getBySlug:s=>list.find(p=>p.slug===s),getById:id=>list.find(p=>p.id===id),getByName:n=>list.find(p=>String(p.name).toLowerCase()===String(n).toLowerCase())};window.NextLevelSubs=window.NextLevelSubs||{};window.NextLevelSubs.subscriptions=list;window.products=list;syncCart(list);window.dispatchEvent(new CustomEvent("nls:central-catalog-ready",{detail:{products:list}}));window.dispatchEvent(new CustomEvent("nextlevel:products-updated",{detail:{products:list}}));return true;};
   async function refresh(){try{const list=await fetchCatalog();publish(list);return true}catch(e){console.warn("NEXT LEVEL SUBS: central catalog refresh failed",e)}return false}
-  async function boot(){let list=[];try{list=await fetchCatalog()}catch(e){try{list=JSON.parse(localStorage.getItem(KEY)||"[]")}catch{list=[]}if(!list.length&&window.__NLS_CENTRAL_PRODUCT__)list=[normalize(window.__NLS_CENTRAL_PRODUCT__)];console.warn("NEXT LEVEL SUBS: central catalog fallback",e)}if(list.length)publish(list);}
+  async function boot(){
+    /* Cache-first: paint the last known central catalog immediately, then reconcile with Supabase. */
+    let cached=[];
+    try{cached=JSON.parse(localStorage.getItem(KEY)||"[]");if(!Array.isArray(cached))cached=[];}catch{cached=[];}
+    if(cached.length)publish(cached);
+    refresh();
+    if(!cached.length&&window.__NLS_CENTRAL_PRODUCT__){const fallback=normalize(window.__NLS_CENTRAL_PRODUCT__);if(fallback)publish([fallback]);}
+  }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
   window.addEventListener("storage",e=>{if(e.key===SIGNAL)refresh();});
   window.addEventListener(SIGNAL,refresh);
